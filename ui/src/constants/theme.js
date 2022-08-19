@@ -1,4 +1,5 @@
 // CONSTANTS
+import { colors } from 'constants/colors'
 import { values } from 'constants/values'
 
 // MUIS
@@ -63,6 +64,15 @@ let customThemePrivate = createTheme({
         },
       },
     },
+  },
+  palette: {
+    primary: colors.primary,
+    secondary: colors.secondary,
+    error: colors.error,
+    info: colors.info,
+    warning: colors.warning,
+    success: colors.success,
+    text: colors.text,
   },
   typography: {
     fontFamily: values.fontFamilyDmMono,
