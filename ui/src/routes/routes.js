@@ -8,6 +8,7 @@ const routes = [
     path: '/sign-in',
     element: <SignIn/>,
     routeType: 'authentication',
+    authenticationType: 'half',
   },
   // PRIVATE
   {
