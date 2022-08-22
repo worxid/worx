@@ -1,4 +1,5 @@
 // ASSETS
+import LogoProductWithText from 'assets/images/logos/product-logo-with-text.svg'
 import PictureComplementary from 'assets/images/pictures/authentication-complementary.svg'
 
 // MUIS
@@ -24,7 +25,7 @@ const Authentication = (props) => {
       <Grid
         item
         xs={6}
-        className={classes.contentSide}
+        className={`${classes.content} ${classes.contentSide}`}
       >
         <Stack className={classes.containerText}>
           {/* TITLE */}
@@ -57,8 +58,19 @@ const Authentication = (props) => {
       <Grid
         item
         xs={6}
+        className={`${classes.content} ${classes.contentMain}`}
       >
+        {/* PRODUCT LOGO */}
+        <Box
+          component='img'
+          src={LogoProductWithText}
+          alt=''
+        />
+
         {children}
+
+        {/* EMPTY BOX */}
+        <Box/>
       </Grid>
     </Grid>
   )

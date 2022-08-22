@@ -8,10 +8,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: '100vh',
   },
-  contentSide: {
+  content: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+  },
+  contentSide: {
     position: 'relative',
     backgroundColor: theme.palette.primary.main,
     borderRight: `3px solid ${theme.palette.common.black}`,
@@ -32,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   pictureComplementary: {
     width: '92%',
     alignSelf: 'flex-end',
+  },
+  contentMain: {
+    alignItems: 'center',
+    margin: '60px 0px',
   },
 }))
 
