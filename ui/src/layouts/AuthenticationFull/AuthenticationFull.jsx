@@ -1,10 +1,22 @@
+// MUIS
+import Stack from '@mui/material/Stack'
+
+// STYLES
+import useStyles from './authenticationFullUseStyles'
+
 const AuthenticationFull = (props) => {
   const { children } = props
+  
+  const classes = useStyles()
 
   return (
-    <div>
+    <Stack
+      justifyContent='center'
+      alignItems='center'
+      className={classes.root}
+    >
       {children}
-    </div>
+    </Stack>
   )
 }
 
