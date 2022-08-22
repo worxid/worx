@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 // ASSETS
-import LogoFavicon from 'assets/images/logos/favicon.png'
+import LogoProductLogoOnly from 'assets/images/logos/product-logo-only.svg'
 
 // COMPONENTS
 import AuthenticationRoute from 'components/Routes/AuthenticationRoute'
@@ -33,7 +33,7 @@ const App = () => {
   // CHANGE THE FAVICON
   useEffect(() => {
     const faviconElement = document.getElementById('favicon')
-    faviconElement.href = LogoFavicon
+    faviconElement.href = LogoProductLogoOnly
   }, [])
 
   return (
