@@ -9,9 +9,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // STYLES
-import useStyles from './authenticationUseStyles'
+import useStyles from './authenticationHalfUseStyles'
 
-const Authentication = (props) => {
+const AuthenticationHalf = (props) => {
   const { children } = props
 
   const classes = useStyles()
@@ -76,4 +76,4 @@ const Authentication = (props) => {
   )
 }
 
-export default Authentication
+export default AuthenticationHalf
