@@ -1,10 +1,66 @@
+// ASSETS
+import PictureComplementary from 'assets/images/pictures/authentication-complementary.svg'
+
+// MUIS
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+// STYLES
+import useStyles from './authenticationUseStyles'
+
 const Authentication = (props) => {
   const { children } = props
 
+  const classes = useStyles()
+
   return (
-    <div>
-      {children}
-    </div>
+    <Grid 
+      container
+      className={classes.root}
+    >
+      {/* SIDE CONTENT */}
+      <Grid
+        item
+        xs={6}
+        className={classes.contentSide}
+      >
+        <Stack className={classes.containerText}>
+          {/* TITLE */}
+          <Typography
+            variant='h5'
+            className={`${classes.text} ${classes.textTitle}`}
+          >
+            Mobile Form System For Professional Field Workers
+          </Typography>
+
+          {/* CAPTION */}
+          <Typography
+            variant='subtitle1'
+            className={classes.text}
+          >
+            A hassle-free mobile data collection and workforce management for any business and professional teams.
+          </Typography>
+        </Stack>
+
+        {/* COMPLEMENTARY IMAGE */}
+        <Box
+          component='img'
+          src={PictureComplementary}
+          alt=''
+          className={classes.pictureComplementary}
+        />
+      </Grid>
+
+      {/* MAIN CONTENT */}
+      <Grid
+        item
+        xs={6}
+      >
+        {children}
+      </Grid>
+    </Grid>
   )
 }
 
