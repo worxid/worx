@@ -1,4 +1,8 @@
+// ASSETS
+import LogoProductWithTextWhite from 'assets/images/logos/product-logo-with-text-white.svg'
+
 // MUIS
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 
 // STYLES
@@ -15,7 +19,21 @@ const AuthenticationFull = (props) => {
       alignItems='center'
       className={classes.root}
     >
-      {children}
+      {/* PRODUCT LOGO */}
+      <Box
+        component='img'
+        src={LogoProductWithTextWhite}
+        alt=''
+        className={classes.logoProduct}
+      />
+
+      {/* CONTENT CONTAINER */}
+      <Stack 
+        alignItems='center'
+        className={classes.containerContent}
+      >
+        {children}
+      </Stack>
     </Stack>
   )
 }
