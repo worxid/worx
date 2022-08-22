@@ -5,21 +5,36 @@ import { Navigate } from 'react-router-dom'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // LAYOUTS
-import Authentication from 'layouts/Authentication/Authentication'
+import AuthenticationFull from 'layouts/AuthenticationFull/AuthenticationFull'
+import AuthenticationHalf from 'layouts/AuthenticationHalf/AuthenticationHalf'
 
 // UTILITIES
 import { isObjectEmpty } from 'utilities/validation'
 
 function AuthenticationRoute(props) {
-  const { children } = props
+  const { 
+    children, 
+    type,
+  } = props
 
   const { auth } = useContext(AllPagesContext)
 
+  const getAuthenticationComponent = (inputType) => {
+    if (inputType === 'half') return (
+      <AuthenticationHalf>
+        {children}
+      </AuthenticationHalf>
+    )
+    else if (inputType === 'full') return (
+      <AuthenticationFull>
+        {children}
+      </AuthenticationFull>
+    )
+  }
+
   return (
     isObjectEmpty(auth) ? 
-      <Authentication>
-        {children}
-      </Authentication> :
+      getAuthenticationComponent(type) :
       <Navigate 
         replace 
         to='/home'
