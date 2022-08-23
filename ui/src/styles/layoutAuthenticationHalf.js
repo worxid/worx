@@ -5,6 +5,10 @@ import { values } from 'constants/values'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
+  form: {
+    width: '100%',
+    textAlign: 'center',
+  },
   textTitle: {
     fontWeight: 700,
     fontFamily: values.fontFamilySpaceMono,

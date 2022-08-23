@@ -62,8 +62,15 @@ const SignUp = () => {
     })
   }
 
+  const handleFormButtonClick = (inputEvent) => {
+    inputEvent.preventDefault()
+  }
+
   return (
-    <>
+    <form 
+      onSubmit={handleFormButtonClick}
+      className={layoutClasses.form}
+    >
       {/* TITLE */}
       <Typography
         variant='h6'
@@ -216,6 +223,7 @@ const SignUp = () => {
         className={layoutClasses.buttonAction}
         disabled={isActionButtonDisabled}
         disableElevation
+        type='submit'
       >
         Sign Up
       </Button>
@@ -234,7 +242,7 @@ const SignUp = () => {
           Sign In
         </Link>
       </Typography>
-    </>
+    </form>
   )
 }
 
