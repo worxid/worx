@@ -8,6 +8,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
+import Link from '@mui/material/Link'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -218,6 +219,21 @@ const SignUp = () => {
       >
         Sign Up
       </Button>
+
+      {/* SIGN IN TEXT */}
+      <Typography
+        variant='subtitle1'
+        className='fontFamilySpaceMono'
+      >
+        Already have an account?&nbsp;
+        <Link
+          underline='none'
+          href='/sign-in'
+          className='fontWeight'
+        >
+          Sign In
+        </Link>
+      </Typography>
     </>
   )
 }
