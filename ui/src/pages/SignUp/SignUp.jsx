@@ -48,14 +48,13 @@ const SignUp = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
-  const [ value, setValue ] = useState(dummyCountryList[0].name)
   const [ inputValue, setInputValue ] = useState(dummyCountryList[0].name)
 
-  const handleFormObjectChange = (inputEvent) => {
+  const handleFormObjectChange = (inputKey, inputNewValue) => {
     setFormObject(current => {
       return {
         ...current,
-        [inputEvent.target.name]: inputEvent.target.value,
+        [inputKey]: inputNewValue,
       }
     })
   }
@@ -82,10 +81,9 @@ const SignUp = () => {
         
         <OutlinedInput
           autoFocus
-          name='companyEmail'
           type='email'
           value={formObject.companyEmail}
-          onChange={handleFormObjectChange}
+          onChange={(event) => handleFormObjectChange('companyEmail', event.target.value)}
           label='Company Email'
         />
 
@@ -105,10 +103,9 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
-          name='fullName'
           type='text'
           value={formObject.fullName}
-          onChange={handleFormObjectChange}
+          onChange={(event) => handleFormObjectChange('fullName', event.target.value)}
           label='Full Name'
         />
 
@@ -128,10 +125,9 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
-          name='companyName'
           type='text'
           value={formObject.companyName}
-          onChange={handleFormObjectChange}
+          onChange={(event) => handleFormObjectChange('companyName', event.target.value)}
           label='Company Name'
         />
 
@@ -142,8 +138,8 @@ const SignUp = () => {
 
       {/* COUNTRY AUTOCOMPLETE */}
       <Autocomplete
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={formObject.country}
+        onChange={(event, newValue) => handleFormObjectChange('country', newValue)}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
         options={dummyCountryList}
@@ -152,7 +148,6 @@ const SignUp = () => {
         renderInput={(params) => (
           <TextField 
             {...params} 
-            name='country'
             label='Country' 
             helperText={formHelperObject.country}
           />
@@ -170,10 +165,9 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
-          name='phoneNumber'
           type='number'
           value={formObject.phoneNumber}
-          onChange={handleFormObjectChange}
+          onChange={(event) => handleFormObjectChange('phoneNumber', event.target.value)}
           label='Phone Number'
         />
 
@@ -193,10 +187,9 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
-          name='password'
           type={isPasswordShown ? 'text' : 'password'}
           value={formObject.password}
-          onChange={handleFormObjectChange}
+          onChange={(event) => handleFormObjectChange('password', event.target.value)}
           label='Password'
           endAdornment={
             <InputAdornment position='end'>
