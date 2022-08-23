@@ -3,9 +3,15 @@ import { useState } from 'react'
 // MUIS
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
+
+// MUI ICONS
+import IconVisibility from '@mui/icons-material/Visibility'
+import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthenticationHalf'
@@ -18,6 +24,7 @@ const SignUp = () => {
     fullName: '',
     companyName: '',
     phoneNumber: '',
+    password: '',
   }
 
   const initialFormHelperObject = {
@@ -25,10 +32,12 @@ const SignUp = () => {
     fullName: null,
     companyName: null,
     phoneNumber: null,
+    password: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
+  const [ isPasswordShown, setIsPasswordShown ] = useState(false)
 
   const handleFormObjectChange = (inputEvent) => {
     setFormObject(current => {
@@ -138,6 +147,36 @@ const SignUp = () => {
 
         <FormHelperText>
           {formHelperObject.phoneNumber}
+        </FormHelperText>
+      </FormControl>
+
+      {/* PASSWORD FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+        error={formHelperObject.password}
+      >
+        <InputLabel>
+          Password
+        </InputLabel>
+        
+        <OutlinedInput
+          name='password'
+          type={isPasswordShown ? 'text' : 'password'}
+          value={formObject.password}
+          onChange={handleFormObjectChange}
+          label='Password'
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton onClick={() => setIsPasswordShown(current => !current)}>
+                {isPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+
+        <FormHelperText>
+          {formHelperObject.password}
         </FormHelperText>
       </FormControl>
     </>
