@@ -33,7 +33,7 @@ const SignUp = () => {
     companyEmail: '',
     fullName: '',
     companyName: '',
-    country: dummyCountryList[0].name,
+    country: dummyCountryList[0],
     phoneNumber: '',
     password: '',
   }
@@ -84,6 +84,7 @@ const SignUp = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.companyEmail}
+        color='secondary'
       >
         <InputLabel>
           Company Email
@@ -107,6 +108,7 @@ const SignUp = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.fullName}
+        color='secondary'
       >
         <InputLabel>
           Full Name
@@ -129,6 +131,7 @@ const SignUp = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.companyName}
+        color='secondary'
       >
         <InputLabel>
           Company Name
@@ -158,7 +161,8 @@ const SignUp = () => {
         renderInput={(params) => (
           <TextField 
             {...params} 
-            label='Country' 
+            label='Country'
+            color='secondary'
             error={formHelperObject.country}
             helperText={formHelperObject.country ?? ' '}
           />
@@ -170,6 +174,7 @@ const SignUp = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.phoneNumber}
+        color='secondary'
       >
         <InputLabel>
           Phone Number
@@ -192,6 +197,7 @@ const SignUp = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.password}
+        color='secondary'
       >
         <InputLabel>
           Password
