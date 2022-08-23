@@ -15,10 +15,12 @@ const SignUp = () => {
 
   const initialFormObject = {
     companyEmail: '',
+    fullName: '',
   }
 
   const initialFormHelperObject = {
     companyEmail: null,
+    fullName: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
@@ -60,10 +62,31 @@ const SignUp = () => {
           label='Company Email'
         />
 
-        {formHelperObject.companyEmail &&
         <FormHelperText>
           {formHelperObject.companyEmail}
-        </FormHelperText>}
+        </FormHelperText>
+      </FormControl>
+
+      {/* FULL NAME FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+      >
+        <InputLabel>
+          Full Name
+        </InputLabel>
+        
+        <OutlinedInput
+          name='fullName'
+          type='text'
+          value={formObject.fullName}
+          onChange={handleFormObjectChange}
+          label='Full Name'
+        />
+
+        <FormHelperText>
+          {formHelperObject.fullName}
+        </FormHelperText>
       </FormControl>
     </>
   )
