@@ -17,12 +17,14 @@ const SignUp = () => {
     companyEmail: '',
     fullName: '',
     companyName: '',
+    phoneNumber: '',
   }
 
   const initialFormHelperObject = {
     companyEmail: null,
     fullName: null,
     companyName: null,
+    phoneNumber: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
@@ -113,6 +115,29 @@ const SignUp = () => {
 
         <FormHelperText>
           {formHelperObject.companyName}
+        </FormHelperText>
+      </FormControl>
+
+      {/* PHONE NUMBER FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+        error={formHelperObject.phoneNumber}
+      >
+        <InputLabel>
+          Phone Number
+        </InputLabel>
+        
+        <OutlinedInput
+          name='phoneNumber'
+          type='number'
+          value={formObject.phoneNumber}
+          onChange={handleFormObjectChange}
+          label='Phone Number'
+        />
+
+        <FormHelperText>
+          {formHelperObject.phoneNumber}
         </FormHelperText>
       </FormControl>
     </>
