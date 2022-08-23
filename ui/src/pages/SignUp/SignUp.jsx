@@ -1,12 +1,14 @@
 import { useState } from 'react'
 
 // MUIS
+import Autocomplete from '@mui/material/Autocomplete'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
@@ -19,10 +21,17 @@ import useLayoutStyles from 'styles/layoutAuthenticationHalf'
 const SignUp = () => {
   const layoutClasses = useLayoutStyles()
 
+  const dummyCountryList = [
+    { name: 'Indonesia' },
+    { name: 'Malaysia' },
+    { name: 'Singapore' },
+  ]
+
   const initialFormObject = {
     companyEmail: '',
     fullName: '',
     companyName: '',
+    country: dummyCountryList[0].name,
     phoneNumber: '',
     password: '',
   }
@@ -31,6 +40,7 @@ const SignUp = () => {
     companyEmail: null,
     fullName: null,
     companyName: null,
+    country: null,
     phoneNumber: null,
     password: null,
   }
@@ -38,6 +48,8 @@ const SignUp = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
+  const [ value, setValue ] = useState(dummyCountryList[0].name)
+  const [ inputValue, setInputValue ] = useState(dummyCountryList[0].name)
 
   const handleFormObjectChange = (inputEvent) => {
     setFormObject(current => {
@@ -69,6 +81,7 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
+          autoFocus
           name='companyEmail'
           type='email'
           value={formObject.companyEmail}
@@ -126,6 +139,25 @@ const SignUp = () => {
           {formHelperObject.companyName}
         </FormHelperText>
       </FormControl>
+
+      {/* COUNTRY AUTOCOMPLETE */}
+      <Autocomplete
+        value={value}
+        onChange={(event, newValue) => setValue(newValue)}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+        options={dummyCountryList}
+        getOptionLabel={(option) => option.name}
+        fullWidth
+        renderInput={(params) => (
+          <TextField 
+            {...params} 
+            name='country'
+            label='Country' 
+            helperText={formHelperObject.country}
+          />
+        )}
+      />
 
       {/* PHONE NUMBER FORM */}
       <FormControl 
