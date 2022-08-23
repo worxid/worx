@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: values.fontFamilySpaceMono,
     marginBottom: 40,
   },
+  buttonAction: {
+    margin: '24px 0px',
+  },
 }))
 
 export default useStyles

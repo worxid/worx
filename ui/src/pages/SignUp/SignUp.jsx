@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
+import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
@@ -48,7 +49,8 @@ const SignUp = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
-  const [ inputValue, setInputValue ] = useState(dummyCountryList[0].name)
+  const [ countryInputValue, setCountryInputValue ] = useState(dummyCountryList[0].name)
+  const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
 
   const handleFormObjectChange = (inputKey, inputNewValue) => {
     setFormObject(current => {
@@ -140,8 +142,8 @@ const SignUp = () => {
       <Autocomplete
         value={formObject.country}
         onChange={(event, newValue) => handleFormObjectChange('country', newValue)}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+        inputValue={countryInputValue}
+        onInputChange={(event, newInputValue) => setCountryInputValue(newInputValue)}
         options={dummyCountryList}
         getOptionLabel={(option) => option.name}
         fullWidth
@@ -149,7 +151,8 @@ const SignUp = () => {
           <TextField 
             {...params} 
             label='Country' 
-            helperText={formHelperObject.country}
+            error={formHelperObject.country}
+            helperText={formHelperObject.country ?? ' '}
           />
         )}
       />
@@ -204,6 +207,17 @@ const SignUp = () => {
           {formHelperObject.password}
         </FormHelperText>
       </FormControl>
+
+      {/* SIGN UP BUTTON */}
+      <Button
+        variant='contained'
+        fullWidth
+        className={layoutClasses.buttonAction}
+        disabled={isActionButtonDisabled}
+        disableElevation
+      >
+        Sign Up
+      </Button>
     </>
   )
 }
