@@ -7,10 +7,25 @@ import { createTheme, responsiveFontSizes } from '@mui/material'
 
 let customThemePrivate = createTheme({
   components: {
+    MuiButton: {
+      defaultProps: {
+        sx: {
+          textTransform: 'none',
+        },
+      },
+    },
     MuiFilledInput: {
       defaultProps: {
         sx: {
           fontSize: 14,
+        },
+      },
+    },
+    MuiFormHelperText: {
+      defaultProps: {
+        sx: {
+          height: '24px',
+          marginTop: 0,
         },
       },
     },

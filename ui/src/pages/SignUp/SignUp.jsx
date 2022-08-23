@@ -229,15 +229,12 @@ const SignUp = () => {
       </Button>
 
       {/* SIGN IN TEXT */}
-      <Typography
-        variant='subtitle1'
-        className='fontFamilySpaceMono'
-      >
+      <Typography variant='subtitle1'>
         Already have an account?&nbsp;
         <Link
           underline='none'
           href='/sign-in'
-          className='fontWeight'
+          className={layoutClasses.linkInsideText}
         >
           Sign In
         </Link>

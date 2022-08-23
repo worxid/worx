@@ -16,13 +16,17 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: values.fontFamilySpaceMono,
     marginBottom: 40,
   },
-  textLink: {
+  link: {
     alignSelf: 'flex-end',
     fontWeight: 700,
     fontFamily: values.fontFamilySpaceMono,
   },
   buttonAction: {
     margin: '24px 0px',
+  },
+  linkInsideText: {
+    fontWeight: 700,
+    fontFamily: values.fontFamilySpaceMono,
   },
 }))
 

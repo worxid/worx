@@ -26,9 +26,6 @@ const GlobalStyles = () => {
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
         },
-        '.fontWeight': {
-          fontWeight: 700,
-        },
 
         // SCROLLBAR
         '&::-webkit-scrollbar': {
