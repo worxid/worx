@@ -6,73 +6,6 @@ import { values } from 'constants/values'
 import { createTheme, responsiveFontSizes } from '@mui/material'
 
 let customTheme = createTheme({
-  components: {
-    MuiFilledInput: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-        },
-      },
-    },
-    MuiFormHelperText: {
-      defaultProps: {
-        sx: {
-          height: '24px',
-          marginTop: 0,
-        },
-      },
-    },
-    MuiInput: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-        },
-      },
-    },
-    MuiInputLabel: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-        },
-      },
-    },
-    MuiListItemText: {
-      defaultProps: {
-        sx: {
-          '& .MuiTypography-root': {
-            fontSize: 14,
-          },
-        },
-      },
-    },
-    MuiMenuItem: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-        },
-      },
-    },
-    MuiOutlinedInput: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-        },
-      },
-    },
-    MuiTextField: {
-      defaultProps: {
-        sx: {
-          fontSize: 14,
-          '& .MuiInputBase-input': {
-            fontSize: 14,
-          },
-          '& .MuiInputLabel-root': {
-            fontSize: 14,
-          },
-        },
-      },
-    },
-  },
   palette: {
     primary: colors.primary,
     secondary: colors.secondary,
@@ -102,6 +35,41 @@ customTheme = createTheme(customTheme, {
           '&:hover': {
             boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
               4px 4px 0px ${customTheme.palette.common.black}`,
+          },
+        },
+      },
+    },
+    MuiFormHelperText: {
+      defaultProps: {
+        sx: {
+          height: '24px',
+          marginTop: 0,
+        },
+      },
+    },
+    MuiInputLabel: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+          '& .MuiInputBase-input': {
+            fontSize: 14,
+          },
+          '& .MuiInputLabel-root': {
+            fontSize: 14,
           },
         },
       },
