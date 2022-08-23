@@ -5,15 +5,8 @@ import { values } from 'constants/values'
 // MUIS
 import { createTheme, responsiveFontSizes } from '@mui/material'
 
-let customThemePrivate = createTheme({
+let customTheme = createTheme({
   components: {
-    MuiButton: {
-      defaultProps: {
-        sx: {
-          textTransform: 'none',
-        },
-      },
-    },
     MuiFilledInput: {
       defaultProps: {
         sx: {
@@ -94,6 +87,28 @@ let customThemePrivate = createTheme({
   },
 })
 
-customThemePrivate = responsiveFontSizes(customThemePrivate)
+customTheme = createTheme(customTheme, {
+  components: {
+    MuiButton: {
+      defaultProps: {
+        sx: {
+          border: `2px solid ${customTheme.palette.common.black}`,
+          borderRadius: 0,
+          height: 48,
+          fontFamily: values.fontFamilySpaceMono,
+          fontWeight: 700,
+          textTransform: 'none',
+          boxShadow: `2px 2px 0px ${customTheme.palette.common.black}`,
+          '&:hover': {
+            boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
+              4px 4px 0px ${customTheme.palette.common.black}`,
+          },
+        },
+      },
+    },
+  },
+})
 
-export default customThemePrivate
+customTheme = responsiveFontSizes(customTheme)
+
+export default customTheme
