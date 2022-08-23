@@ -33,7 +33,7 @@ const SignUp = () => {
     companyEmail: '',
     fullName: '',
     companyName: '',
-    country: dummyCountryList[0].name,
+    country: dummyCountryList[0],
     phoneNumber: '',
     password: '',
   }
