@@ -67,7 +67,10 @@ const AuthenticationHalf = (props) => {
           alt=''
         />
 
-        {children}
+        {/* CHILDREN CONTAINER */}
+        <Stack className={classes.containerChildren}>
+          {children}
+        </Stack>
 
         {/* EMPTY BOX */}
         <Box/>

@@ -22,6 +22,11 @@ const GlobalStyles = () => {
           clipRule: 'evenodd',
         },
 
+        // GENERAL
+        '.fontFamilySpaceMono': {
+          fontFamily: `${values.fontFamilySpaceMono} !important`,
+        },
+
         // SCROLLBAR
         '&::-webkit-scrollbar': {
           width: 5,

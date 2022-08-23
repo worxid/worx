@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     margin: '60px 0px',
   },
+  containerChildren: {
+    width: 480,
+    alignItems: 'center',
+  },
 }))
 
 export default useStyles
