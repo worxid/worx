@@ -57,7 +57,12 @@ customTheme = createTheme(customTheme, {
     MuiOutlinedInput: {
       defaultProps: {
         sx: {
+          borderRadius: 0,
           fontSize: 14,
+          height: 48,
+          '& fieldset': {
+            border: `2px solid ${customTheme.palette.common.black}`,
+          },
         },
       },
     },
