@@ -2,6 +2,7 @@
 import Home from 'pages/Home/Home'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
+import SignUpFinish from 'pages/SignUpFinish/SignUpFinish'
 
 const routes = [
   // AUTHENTICATION
@@ -16,6 +17,12 @@ const routes = [
     element: <SignUp/>,
     routeType: 'authentication',
     authenticationType: 'half',
+  },
+  {
+    path: '/sign-up-finish',
+    element: <SignUpFinish/>,
+    routeType: 'authentication',
+    authenticationType: 'full',
   },
   // PRIVATE
   {
