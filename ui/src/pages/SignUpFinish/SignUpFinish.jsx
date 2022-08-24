@@ -20,6 +20,7 @@ const SignUpFinish = () => {
         component='img'
         src={IconEmail}
         alt=''
+        className={layoutClasses.icon}
       />
 
       {/* TITLE */}

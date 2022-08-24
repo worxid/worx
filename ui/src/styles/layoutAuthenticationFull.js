@@ -5,6 +5,9 @@ import { values } from 'constants/values'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
+  icon: {
+    height: 100,
+  },
   textTitle: {
     margin: '32px 0px 12px',
     fontFamily: values.fontFamilySpaceMono,
