@@ -7,7 +7,6 @@ import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
-import Link from '@mui/material/Link'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
 
@@ -18,22 +17,23 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthenticationHalf'
 
-const SignIn = () => {
+const ResetPassword = () => {
   const layoutClasses = useLayoutStyles()
-
+  
   const initialFormObject = {
-    companyEmail: '',
-    password: '',
+    newPassword: '',
+    confirmPassword: '',
   }
 
   const initialFormHelperObject = {
-    companyEmail: null,
-    password: null,
+    newPassword: null,
+    confirmPassword: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
-  const [ isPasswordShown, setIsPasswordShown ] = useState(false)
+  const [ isNewPasswordShown, setIsNewPasswordShown ] = useState(false)
+  const [ isConfirmPasswordShown, setIsConfirmPasswordShown ] = useState(false)
   const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
 
   // HANDLE FORM INPUT CHANGE
@@ -61,74 +61,70 @@ const SignIn = () => {
         variant='h6'
         className={layoutClasses.textTitle}
       >
-        Sign in to your Worx Account
+        Reset Password
       </Typography>
 
-      {/* COMPANY EMAIL FORM */}
+      {/* NEW PASSWORD FORM */}
       <FormControl 
         variant='outlined' 
         fullWidth
-        error={formHelperObject.companyEmail}
+        error={formHelperObject.newPassword}
         color='secondary'
       >
         <InputLabel>
-          Company Email
+          New Password
         </InputLabel>
         
         <OutlinedInput
-          autoFocus
-          type='email'
-          value={formObject.companyEmail}
-          onChange={(event) => handleFormObjectChange('companyEmail', event.target.value)}
-          label='Company Email'
-        />
-
-        <FormHelperText>
-          {formHelperObject.companyEmail}
-        </FormHelperText>
-      </FormControl>
-
-      {/* PASSWORD FORM */}
-      <FormControl 
-        variant='outlined' 
-        fullWidth
-        error={formHelperObject.password}
-        color='secondary'
-      >
-        <InputLabel>
-          Password
-        </InputLabel>
-        
-        <OutlinedInput
-          type={isPasswordShown ? 'text' : 'password'}
-          value={formObject.password}
-          onChange={(event) => handleFormObjectChange('password', event.target.value)}
-          label='Password'
+          type={isNewPasswordShown ? 'text' : 'password'}
+          value={formObject.newPassword}
+          onChange={(event) => handleFormObjectChange('newPassword', event.target.value)}
+          label='New Password'
           endAdornment={
             <InputAdornment position='end'>
-              <IconButton onClick={() => setIsPasswordShown(current => !current)}>
-                {isPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
+              <IconButton onClick={() => setIsNewPasswordShown(current => !current)}>
+                {isNewPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
               </IconButton>
             </InputAdornment>
           }
         />
 
         <FormHelperText>
-          {formHelperObject.password}
+          {formHelperObject.newPassword}
         </FormHelperText>
       </FormControl>
 
-      {/* FORGOT PASSWORD LINK */}
-      <Link
-        variant='subtitle1'
-        className={layoutClasses.link}
-        underline='none'
-        href='/forgot-password'
+      {/* CONFIRM PASSWORD FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+        error={formHelperObject.confirmPassword}
+        color='secondary'
       >
-        Forgot Password?
-      </Link>
+        <InputLabel>
+          Confirm Password
+        </InputLabel>
+        
+        <OutlinedInput
+          type={isConfirmPasswordShown ? 'text' : 'password'}
+          value={formObject.confirmPassword}
+          onChange={(event) => handleFormObjectChange('confirmPassword', event.target.value)}
+          label='Confirm Password'
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton onClick={() => setIsConfirmPasswordShown(current => !current)}>
+                {isConfirmPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
 
-      {/* SIGN IN BUTTON */}
+        <FormHelperText>
+          {formHelperObject.confirmPassword}
+        </FormHelperText>
+      </FormControl>
+
+      {/* RESET MY PASSWORD BUTTON */}
       <Button
         variant='contained'
         fullWidth
@@ -137,22 +133,10 @@ const SignIn = () => {
         disableElevation
         type='submit'
       >
-        Sign In
+        Save New Password
       </Button>
-
-      {/* SIGN UP TEXT */}
-      <Typography variant='subtitle1'>
-        Don't have an account?&nbsp;
-        <Link
-          underline='none'
-          href='/sign-up'
-          className={layoutClasses.linkInsideText}
-        >
-          Sign Up
-        </Link>
-      </Typography>
     </form>
   )
 }
 
-export default SignIn
+export default ResetPassword
