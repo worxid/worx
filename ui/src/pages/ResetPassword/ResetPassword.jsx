@@ -133,7 +133,7 @@ const ResetPassword = () => {
         disableElevation
         type='submit'
       >
-        Reset My Password
+        Save My Password
       </Button>
     </form>
   )
