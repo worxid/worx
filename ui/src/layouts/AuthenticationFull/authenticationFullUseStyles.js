@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     border: `3px solid ${theme.palette.common.black}`,
     padding: 60,
+    alignItems: 'center',
+    textAlign: 'center',
   },
 }))
 
