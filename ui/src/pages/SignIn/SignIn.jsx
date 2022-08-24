@@ -128,7 +128,7 @@ const SignIn = () => {
         Forgot Password?
       </Link>
 
-      {/* SIGN UP BUTTON */}
+      {/* SIGN IN BUTTON */}
       <Button
         variant='contained'
         fullWidth
