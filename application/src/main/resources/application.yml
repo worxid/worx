@@ -1,0 +1,12 @@
+server:
+  port: ${HTTP_BIND_PORT:8080}
+
+# SQL DAO Configuration
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/worx}
+    username: ${SPRING_DATASOURCE_USERNAME:worx}
+    password: ${SPRING_DATASOURCE_PASSWORD:worx}
+    driver-class-name: ${SPRING_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    hikari:
+      maximum-pool-size: ${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}
