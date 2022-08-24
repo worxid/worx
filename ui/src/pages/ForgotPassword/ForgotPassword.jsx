@@ -4,36 +4,27 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import Link from '@mui/material/Link'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
 
-// MUI ICONS
-import IconVisibility from '@mui/icons-material/Visibility'
-import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
-
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthenticationHalf'
 
-const SignIn = () => {
+const ForgotPassword = () => {
   const layoutClasses = useLayoutStyles()
-
+  
   const initialFormObject = {
     companyEmail: '',
-    password: '',
   }
 
   const initialFormHelperObject = {
     companyEmail: null,
-    password: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
-  const [ isPasswordShown, setIsPasswordShown ] = useState(false)
   const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
 
   // HANDLE FORM INPUT CHANGE
@@ -61,7 +52,7 @@ const SignIn = () => {
         variant='h6'
         className={layoutClasses.textTitle}
       >
-        Sign in to your Worx Account
+        Forgot Password
       </Typography>
 
       {/* COMPANY EMAIL FORM */}
@@ -88,47 +79,7 @@ const SignIn = () => {
         </FormHelperText>
       </FormControl>
 
-      {/* PASSWORD FORM */}
-      <FormControl 
-        variant='outlined' 
-        fullWidth
-        error={formHelperObject.password}
-        color='secondary'
-      >
-        <InputLabel>
-          Password
-        </InputLabel>
-        
-        <OutlinedInput
-          type={isPasswordShown ? 'text' : 'password'}
-          value={formObject.password}
-          onChange={(event) => handleFormObjectChange('password', event.target.value)}
-          label='Password'
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton onClick={() => setIsPasswordShown(current => !current)}>
-                {isPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-
-        <FormHelperText>
-          {formHelperObject.password}
-        </FormHelperText>
-      </FormControl>
-
-      {/* FORGOT PASSWORD LINK */}
-      <Link
-        variant='subtitle1'
-        className={layoutClasses.link}
-        underline='none'
-        href='/forgot-password'
-      >
-        Forgot Password?
-      </Link>
-
-      {/* SIGN IN BUTTON */}
+      {/* RESET MY PASSWORD BUTTON */}
       <Button
         variant='contained'
         fullWidth
@@ -137,22 +88,22 @@ const SignIn = () => {
         disableElevation
         type='submit'
       >
-        Sign In
+        Reset My Password
       </Button>
 
-      {/* SIGN UP TEXT */}
+      {/* SIGN IN TEXT */}
       <Typography variant='subtitle1'>
-        Don't have an account?&nbsp;
+        Already have an account?&nbsp;
         <Link
           underline='none'
-          href='/sign-up'
+          href='/sign-in'
           className={layoutClasses.linkInsideText}
         >
-          Sign Up
+          Sign In
         </Link>
       </Typography>
     </form>
   )
 }
 
-export default SignIn
+export default ForgotPassword
