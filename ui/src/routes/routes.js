@@ -2,6 +2,7 @@
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
+import ResetPasswordFinish from 'pages/ResetPasswordFinish/ResetPasswordFinish'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
 import SignUpFinish from 'pages/SignUpFinish/SignUpFinish'
@@ -19,6 +20,12 @@ const routes = [
     element: <ResetPassword/>,
     routeType: 'authentication',
     authenticationType: 'half',
+  },
+  {
+    path: '/reset-password-finish',
+    element: <ResetPasswordFinish/>,
+    routeType: 'authentication',
+    authenticationType: 'full',
   },
   {
     path: '/sign-in',
