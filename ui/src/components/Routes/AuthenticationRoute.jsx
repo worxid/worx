@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // LAYOUTS
-import AuthenticationHalf from 'layouts/AuthenticationHalf/AuthenticationHalf'
+import Authentication from 'layouts/Authentication/Authentication'
 
 // UTILITIES
 import { isObjectEmpty } from 'utilities/validation'
@@ -20,9 +20,9 @@ function AuthenticationRoute(props) {
 
   const getAuthenticationComponent = (inputType) => {
     if (inputType === 'half') return (
-      <AuthenticationHalf>
+      <Authentication>
         {children}
-      </AuthenticationHalf>
+      </Authentication>
     )
     else if (inputType === 'full') return children
   }
