@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // ASSETS
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
@@ -30,7 +31,13 @@ import useStyles from './drawerUseStyles'
 const Drawer = () => {
   const classes = useStyles()
 
+  const navigate = useNavigate()
+
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
+
+  const handleParentItemClick = (inputParentItem) => {
+    navigate(inputParentItem.path)
+  }
 
   return (
     <CustomDrawer 
@@ -64,7 +71,7 @@ const Drawer = () => {
           <ListItemButton
             key={parentIndex}
             className={classes.navigationItem}
-            href={parentItem.type === 'single' ? parentItem.path : ''}
+            onClick={() => handleParentItemClick(parentItem)}
           >
             {/* ICON */}
             <ListItemIcon>
