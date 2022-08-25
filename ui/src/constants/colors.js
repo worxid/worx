@@ -84,8 +84,8 @@ export const colors = {
     // DRAWER
     drawer: {
       background: '#1E1E1E',
-      inactive: '#A7A8BB',
-      active: white,
+      contentInactive: '#A7A8BB',
+      contentActive: white,
     },
   },
 }

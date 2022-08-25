@@ -15,8 +15,14 @@ const useStyles = makeStyles((theme) => ({
   navigationItem: {
     paddingLeft: 24,
   },
-  navigationItemInactive: {
-    color: theme.palette.additional.drawer.inactive,
+  navigationItemActive: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  navigationItemContentInactive: {
+    color: theme.palette.additional.drawer.contentInactive,
+  },
+  navigationItemContentActive: {
+    color: theme.palette.additional.drawer.contentActive,
   },
 }))
 

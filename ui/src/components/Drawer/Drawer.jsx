@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // ASSETS
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
@@ -32,8 +32,14 @@ const Drawer = () => {
   const classes = useStyles()
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
+
+  const isNavigationActive = (inputPath) => {
+    if (location.pathname.includes(inputPath)) return true
+    else return false
+  }
 
   const handleParentItemClick = (inputParentItem) => {
     navigate(inputParentItem.path)
@@ -70,19 +76,28 @@ const Drawer = () => {
         {drawerNavigationList.map((parentItem, parentIndex) => (
           <ListItemButton
             key={parentIndex}
-            className={classes.navigationItem}
+            className={isNavigationActive(parentItem.path)
+              ? `${classes.navigationItem} ${classes.navigationItemActive}`
+              : classes.navigationItem
+            }
             onClick={() => handleParentItemClick(parentItem)}
           >
             {/* ICON */}
             <ListItemIcon>
-              <parentItem.icon className={classes.navigationItemInactive}/>
+              <parentItem.icon className={isNavigationActive(parentItem.path)
+                ? classes.navigationItemContentActive
+                : classes.navigationItemContentInactive
+              }/>
             </ListItemIcon>
 
             {/* TEXT */}
             <ListItemText primary={
               <Typography
                 variant='inherit'
-                className={classes.navigationItemInactive}
+                className={isNavigationActive(parentItem.path)
+                  ? classes.navigationItemContentActive
+                  : classes.navigationItemContentInactive
+                }
               >
                 {parentItem.title}
               </Typography>
