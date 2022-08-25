@@ -16,7 +16,7 @@ import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutAuthenticationHalf'
+import useLayoutStyles from 'styles/layoutAuthentication'
 
 const SignIn = () => {
   const layoutClasses = useLayoutStyles()

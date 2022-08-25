@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // STYLES
-import useStyles from './authenticationHalfUseStyles'
+import useStyles from './authenticationUseStyles'
 
 const AuthenticationHalf = (props) => {
   const { children } = props
