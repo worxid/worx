@@ -1,10 +1,10 @@
 // PAGES
+import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
-import SignUpFinish from 'pages/SignUpFinish/SignUpFinish'
 
 const routes = [
   // AUTHENTICATION
@@ -33,8 +33,8 @@ const routes = [
     authenticationType: 'half',
   },
   {
-    path: '/sign-up-finish',
-    element: <SignUpFinish/>,
+    path: '/authentication-finish',
+    element: <AuthenticationFinish/>,
     routeType: 'authentication',
     authenticationType: 'full',
   },

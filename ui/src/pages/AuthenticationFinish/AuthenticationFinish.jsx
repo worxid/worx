@@ -8,10 +8,10 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutAuthenticationFull'
+import useStyles from './authenticationFinishUseStyles'
 
-const SignUpFinish = () => {
-  const layoutClasses = useLayoutStyles()
+const AuthenticationFinish = () => {
+  const classes = useStyles()
 
   return (
     <>
@@ -20,13 +20,13 @@ const SignUpFinish = () => {
         component='img'
         src={IconEmail}
         alt=''
-        className={layoutClasses.icon}
+        className={classes.icon}
       />
 
       {/* TITLE */}
       <Typography
         variant='h6'
-        className={layoutClasses.textTitle}
+        className={classes.textTitle}
       >
         Check Your Email
       </Typography>
@@ -42,7 +42,7 @@ const SignUpFinish = () => {
       <Button
         variant='contained'
         fullWidth
-        className={layoutClasses.buttonAction}
+        className={classes.buttonAction}
         disableElevation
         type='submit'
         href='/sign-in'
@@ -55,7 +55,7 @@ const SignUpFinish = () => {
         Didn’t receive the link?&nbsp;
         <Link
           underline='none'
-          className={layoutClasses.linkInsideText}
+          className={classes.linkInsideText}
         >
           Resend
         </Link>
@@ -64,4 +64,4 @@ const SignUpFinish = () => {
   )
 }
 
-export default SignUpFinish
+export default AuthenticationFinish
