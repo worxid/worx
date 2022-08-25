@@ -12,6 +12,12 @@ const useStyles = makeStyles((theme) => ({
   headerLogoProduct: {
     height: 28,
   },
+  navigationItem: {
+    paddingLeft: 24,
+  },
+  navigationItemInactive: {
+    color: theme.palette.additional.drawer.inactive,
+  },
 }))
 
 export default useStyles
