@@ -10,7 +10,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutAuthenticationHalf'
+import useLayoutStyles from 'styles/layoutAuthentication'
 
 const ForgotPassword = () => {
   const layoutClasses = useLayoutStyles()

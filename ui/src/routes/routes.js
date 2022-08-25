@@ -1,4 +1,5 @@
 // PAGES
+import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
@@ -30,6 +31,12 @@ const routes = [
     element: <SignUp/>,
     routeType: 'authentication',
     authenticationType: 'half',
+  },
+  {
+    path: '/authentication-finish',
+    element: <AuthenticationFinish/>,
+    routeType: 'authentication',
+    authenticationType: 'full',
   },
   // PRIVATE
   {
