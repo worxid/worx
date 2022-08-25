@@ -14,6 +14,7 @@ let customTheme = createTheme({
     warning: colors.warning,
     success: colors.success,
     text: colors.text,
+    additional: colors.additional,
   },
   typography: {
     fontFamily: values.fontFamilyDmMono,
