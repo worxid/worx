@@ -25,7 +25,7 @@ const AuthenticationHalf = (props) => {
       <Grid
         item
         xs={6}
-        className={`${classes.content} ${classes.contentSide}`}
+        className={`${classes.content} ${classes.contentSide} zoom`}
       >
         <Stack className={classes.containerText}>
           {/* TITLE */}

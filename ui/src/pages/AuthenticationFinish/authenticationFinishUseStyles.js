@@ -10,9 +10,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundImage: `url("${imageAuthenticationGrid}")`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    backgroundRepeat: 'repeat',
     minHeight: '100vh',
     height: '100vh',
     position: 'relative',

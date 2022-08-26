@@ -68,7 +68,7 @@ const AuthenticationFinish = () => {
       {/* CONTENT CONTAINER */}
       <Stack 
         alignItems='center'
-        className={classes.containerContent}
+        className={`${classes.containerContent} zoom`}
       >
         {/* EMAIL ICON */}
         <Box
