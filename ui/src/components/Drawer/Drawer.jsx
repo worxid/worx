@@ -49,7 +49,19 @@ const Drawer = () => {
   }
 
   const handleParentItemClick = (inputParentItem) => {
-    navigate(inputParentItem.path)
+    if (inputParentItem.type === 'single') {
+      navigate(inputParentItem.path, {
+        state: {
+          expandParent: null,
+          isDrawerExpanded,
+          lastClicked: 'parent',
+        },
+      })
+    }
+    else if(inputParentItem.type === 'collection' && isDrawerExpanded) {
+      if (expandParent === inputParentItem.title) setExpandParent(null)
+      else setExpandParent(inputParentItem.title)
+    }
   }
 
   return (
