@@ -19,13 +19,13 @@ const AuthenticationHalf = (props) => {
   return (
     <Grid 
       container
-      className={classes.root}
+      className={`${classes.root} no-zoom`}
     >
       {/* SIDE CONTENT */}
       <Grid
         item
         xs={6}
-        className={`${classes.content} ${classes.contentSide}`}
+        className={`${classes.content} ${classes.contentSide} zoom`}
       >
         <Stack className={classes.containerText}>
           {/* TITLE */}
@@ -58,7 +58,7 @@ const AuthenticationHalf = (props) => {
       <Grid
         item
         xs={6}
-        className={`${classes.content} ${classes.contentMain}`}
+        className={`${classes.content} ${classes.contentMain} zoom`}
       >
         {/* PRODUCT LOGO */}
         <Box
