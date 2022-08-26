@@ -55,7 +55,7 @@ const AuthenticationFinish = () => {
     <Stack
       justifyContent='center'
       alignItems='center'
-      className={classes.root}
+      className={`${classes.root} no-zoom`}
     >
       {/* PRODUCT LOGO */}
       <Box
