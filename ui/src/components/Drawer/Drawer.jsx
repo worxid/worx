@@ -45,6 +45,12 @@ const Drawer = () => {
     : null
   )
 
+  const getListItemButtonClassName = (inputPath) => {
+    return isNavigationActive(inputPath)
+      ? `${classes.navigationItem} ${classes.navigationItemActive}`
+      : classes.navigationItem
+  }
+
   const isNavigationActive = (inputPath) => {
     if (location.pathname.includes(inputPath)) return true
     else return false
@@ -98,10 +104,7 @@ const Drawer = () => {
           <Fragment key={parentIndex}>
             {/* PARENT */}
             <ListItemButton
-              className={isNavigationActive(parentItem.path)
-                ? `${classes.navigationItem} ${classes.navigationItemActive}`
-                : classes.navigationItem
-              }
+              className={getListItemButtonClassName(parentItem.path)}
               onClick={() => handleParentItemClick(parentItem)}
             >
               {/* ICON */}
@@ -142,10 +145,7 @@ const Drawer = () => {
               parentItem.children.map((childrenItem, childrenIndex) => (
                 <ListItemButton 
                   key={childrenIndex}
-                  className={isNavigationActive(childrenItem.path)
-                    ? `${classes.navigationItem} ${classes.navigationItemActive}`
-                    : classes.navigationItem
-                  }
+                  className={getListItemButtonClassName(childrenItem.path)}
                 >
                   {/* ICON */}
                   <ListItemIcon>
