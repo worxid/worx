@@ -55,6 +55,13 @@ customTheme = createTheme(customTheme, {
         },
       },
     },
+    MuiListItemText: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+        },
+      },
+    },
     MuiOutlinedInput: {
       defaultProps: {
         sx: {
