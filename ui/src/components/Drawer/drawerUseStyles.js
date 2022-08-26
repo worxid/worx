@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navigationItem: {
     paddingLeft: 24,
+    height: 48,
   },
   navigationItemActive: {
     backgroundColor: theme.palette.primary.main,

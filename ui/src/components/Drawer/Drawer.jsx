@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // ASSETS
@@ -23,6 +23,8 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconArrowDropDown from '@mui/icons-material/ArrowDropDown'
+import IconArrowDropUp from '@mui/icons-material/ArrowDropUp'
 import IconMenuOpen from '@mui/icons-material/MenuOpen'
 
 // STYLES
@@ -35,6 +37,11 @@ const Drawer = () => {
   const location = useLocation()
 
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
+
+  const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
+    ? location.state.expandParent
+    : null
+  )
 
   const isNavigationActive = (inputPath) => {
     if (location.pathname.includes(inputPath)) return true
@@ -93,7 +100,7 @@ const Drawer = () => {
             {/* TEXT */}
             <ListItemText primary={
               <Typography
-                variant='inherit'
+                variant='body2'
                 className={isNavigationActive(parentItem.path)
                   ? classes.navigationItemContentActive
                   : classes.navigationItemContentInactive
@@ -102,6 +109,13 @@ const Drawer = () => {
                 {parentItem.title}
               </Typography>
             }/>
+            
+            {/* EXPAND/COLLAPSE ICON */}
+            {(parentItem.type === 'collection' && isDrawerExpanded) &&
+            (expandParent === parentItem.text
+              ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
+              : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
+            )}
           </ListItemButton>
         ))}
       </List>
