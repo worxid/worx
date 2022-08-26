@@ -51,6 +51,12 @@ const Drawer = () => {
       : classes.navigationItem
   }
 
+  const getListItemTextClassName = (inputPath) => {
+    return isNavigationActive(inputPath)
+      ? classes.navigationItemContentActive
+      : classes.navigationItemContentInactive
+  }
+
   const isNavigationActive = (inputPath) => {
     if (location.pathname.includes(inputPath)) return true
     else return false
@@ -119,10 +125,7 @@ const Drawer = () => {
               <ListItemText primary={
                 <Typography
                   variant='inherit'
-                  className={isNavigationActive(parentItem.path)
-                    ? classes.navigationItemContentActive
-                    : classes.navigationItemContentInactive
-                  }
+                  className={getListItemTextClassName(parentItem.path)}
                 >
                   {parentItem.title}
                 </Typography>
@@ -159,10 +162,7 @@ const Drawer = () => {
                   <ListItemText primary={
                     <Typography
                       variant='inherit'
-                      className={isNavigationActive(childrenItem.path)
-                        ? classes.navigationItemContentActive
-                        : classes.navigationItemContentInactive
-                      }
+                      className={getListItemTextClassName(childrenItem.path)}
                     >
                       {childrenItem.title}
                     </Typography>
