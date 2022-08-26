@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { Fragment, useState, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // ASSETS
@@ -15,6 +15,7 @@ import { drawerNavigationList } from './drawerNavigationList'
 
 // MUIS
 import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -25,6 +26,7 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconArrowDropDown from '@mui/icons-material/ArrowDropDown'
 import IconArrowDropUp from '@mui/icons-material/ArrowDropUp'
+import IconCircle from '@mui/icons-material/Circle'
 import IconMenuOpen from '@mui/icons-material/MenuOpen'
 
 // STYLES
@@ -93,42 +95,82 @@ const Drawer = () => {
       {/* NAVIGATION LIST */}
       <List>
         {drawerNavigationList.map((parentItem, parentIndex) => (
-          <ListItemButton
-            key={parentIndex}
-            className={isNavigationActive(parentItem.path)
-              ? `${classes.navigationItem} ${classes.navigationItemActive}`
-              : classes.navigationItem
-            }
-            onClick={() => handleParentItemClick(parentItem)}
-          >
-            {/* ICON */}
-            <ListItemIcon>
-              <parentItem.icon className={isNavigationActive(parentItem.path)
-                ? classes.navigationItemContentActive
-                : classes.navigationItemContentInactive
-              }/>
-            </ListItemIcon>
-
-            {/* TEXT */}
-            <ListItemText primary={
-              <Typography
-                variant='body2'
-                className={isNavigationActive(parentItem.path)
+          <Fragment key={parentIndex}>
+            {/* PARENT */}
+            <ListItemButton
+              className={isNavigationActive(parentItem.path)
+                ? `${classes.navigationItem} ${classes.navigationItemActive}`
+                : classes.navigationItem
+              }
+              onClick={() => handleParentItemClick(parentItem)}
+            >
+              {/* ICON */}
+              <ListItemIcon>
+                <parentItem.icon className={isNavigationActive(parentItem.path)
                   ? classes.navigationItemContentActive
                   : classes.navigationItemContentInactive
-                }
-              >
-                {parentItem.title}
-              </Typography>
-            }/>
-            
-            {/* EXPAND/COLLAPSE ICON */}
-            {(parentItem.type === 'collection' && isDrawerExpanded) &&
-            (expandParent === parentItem.text
-              ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
-              : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
-            )}
-          </ListItemButton>
+                }/>
+              </ListItemIcon>
+
+              {/* TEXT */}
+              <ListItemText primary={
+                <Typography
+                  variant='inherit'
+                  className={isNavigationActive(parentItem.path)
+                    ? classes.navigationItemContentActive
+                    : classes.navigationItemContentInactive
+                  }
+                >
+                  {parentItem.title}
+                </Typography>
+              }/>
+              
+              {/* EXPAND/COLLAPSE ICON */}
+              {(parentItem.type === 'collection' && isDrawerExpanded) &&
+              (expandParent === parentItem.text
+                ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
+                : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
+              )}
+            </ListItemButton>
+
+            {/* CHILDREN */}
+            <Collapse 
+              in={(parentItem.children && expandParent === parentItem.title) && isDrawerExpanded} 
+              timeout='auto' 
+            >
+              {parentItem.children &&
+              parentItem.children.map((childrenItem, childrenIndex) => (
+                <ListItemButton 
+                  key={childrenIndex}
+                  className={isNavigationActive(childrenItem.path)
+                    ? `${classes.navigationItem} ${classes.navigationItemActive}`
+                    : classes.navigationItem
+                  }
+                >
+                  {/* ICON */}
+                  <ListItemIcon>
+                    <IconCircle className={isNavigationActive(childrenItem.path)
+                      ? `${classes.navigationChilrenIcon} ${classes.navigationItemContentActive}`
+                      : `${classes.navigationChilrenIcon} ${classes.navigationItemContentInactive}`
+                    }/>
+                  </ListItemIcon>
+
+                  {/* TEXT */}
+                  <ListItemText primary={
+                    <Typography
+                      variant='inherit'
+                      className={isNavigationActive(childrenItem.path)
+                        ? classes.navigationItemContentActive
+                        : classes.navigationItemContentInactive
+                      }
+                    >
+                      {childrenItem.title}
+                    </Typography>
+                  }/>
+                </ListItemButton>
+              ))}
+            </Collapse>
+          </Fragment>
         ))}
       </List>
     </CustomDrawer>

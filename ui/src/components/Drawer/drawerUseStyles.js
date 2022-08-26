@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   navigationItemContentActive: {
     color: theme.palette.additional.drawer.contentActive,
   },
+  navigationChilrenIcon: {
+    width: 8,
+    marginLeft: 8,
+  },
 }))
 
 export default useStyles

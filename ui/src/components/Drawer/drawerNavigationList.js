@@ -32,7 +32,7 @@ export const drawerNavigationList = [
     children: [
       {
         path: '/settings/groups',
-        title: 'Grpups',
+        title: 'Groups',
       },
     ],
   },
