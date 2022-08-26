@@ -1,3 +1,6 @@
+// ASSETS
+import imageAuthenticationGrid from 'assets/images/backgrounds/authentication-grid.svg'
+
 // CONSTANTS
 import { values } from 'constants/values'
 
@@ -15,8 +18,13 @@ const useStyles = makeStyles((theme) => ({
   },
   contentSide: {
     position: 'relative',
-    backgroundColor: theme.palette.primary.main,
+    backgroundImage: `url("${imageAuthenticationGrid}")`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     borderRight: `3px solid ${theme.palette.common.black}`,
+    maxHeight: '100vh',
+    overflowY: 'hidden',
   },
   containerText: {
     marginTop: 152,

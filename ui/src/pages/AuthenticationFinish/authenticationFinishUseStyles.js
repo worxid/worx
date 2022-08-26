@@ -1,3 +1,6 @@
+// ASSETS
+import imageAuthenticationGrid from 'assets/images/backgrounds/authentication-grid.svg'
+
 // CONSTANTS
 import { values } from 'constants/values'
 
@@ -6,6 +9,8 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    backgroundImage: `url("${imageAuthenticationGrid}")`,
+    backgroundRepeat: 'repeat',
     minHeight: '100vh',
     height: '100vh',
     position: 'relative',
