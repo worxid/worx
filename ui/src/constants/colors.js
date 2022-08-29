@@ -79,4 +79,13 @@ export const colors = {
     secondary: alpha(black, 0.54),
     disabled: alpha(black, 0.3),
   },
+  // ADDTIONAL COLLECTIONS
+  additional: {
+    // DRAWER
+    drawer: {
+      background: '#1E1E1E',
+      contentInactive: '#A7A8BB',
+      contentActive: white,
+    },
+  },
 }

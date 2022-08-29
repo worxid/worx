@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+import { PrivateLayoutContextProvider } from 'contexts/PrivateLayoutContext'
 
 // LAYOUT
 import Private from 'layouts/Private/Private'
@@ -21,9 +22,11 @@ function PrivateRoute(props) {
         replace 
         to='/sign-in'
       /> :
-      <Private>   
-        {children}
-      </Private> 
+      <PrivateLayoutContextProvider>
+        <Private>   
+          {children}
+        </Private> 
+      </PrivateLayoutContextProvider> 
   )
 }
 
