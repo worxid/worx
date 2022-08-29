@@ -1,3 +1,4 @@
+/** source: https://github.com/DannMolina/country-list-json/blob/master/index.js */
 export const countries = [
   { name: 'Afghanistan', dial_code: '+93', code: 'AF', flag: '🇦🇫' },
   { name: 'Åland Islands', dial_code: '+358', code: 'AX', flag: '🇦🇽' },
