@@ -28,6 +28,7 @@ import Typography from '@mui/material/Typography'
 import IconArrowDropDown from '@mui/icons-material/ArrowDropDown'
 import IconArrowDropUp from '@mui/icons-material/ArrowDropUp'
 import IconCircle from '@mui/icons-material/Circle'
+import IconContentCopy from '@mui/icons-material/ContentCopy'
 import IconMenuOpen from '@mui/icons-material/MenuOpen'
 
 // STYLES
@@ -45,10 +46,17 @@ const Drawer = () => {
   const { setAuth } = useContext(AllPagesContext)
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
 
+  const dummyId = 'Dummy Code'
+
   const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
     ? location.state.expandParent
     : null
   )
+
+  const handleIdButtonClick = () => {
+    navigator.clipboard.writeText(dummyId)
+    // TO DO: SHOW SNACKBAR OBJECT
+  }
 
   const getListItemButtonClassName = (inputPath) => {
     return isNavigationActive(inputPath)
@@ -122,6 +130,29 @@ const Drawer = () => {
         />}
       </DrawerHeader>
 
+      {/* ID BUTTON */}
+      <List disablePadding>
+        <ListItemButton 
+          className={classes.navigationItem}
+          onClick={handleIdButtonClick}
+        >
+          {/* ICON */}
+          <ListItemIcon>
+            <IconContentCopy className={classes.navigationItemContentInactive}/>
+          </ListItemIcon>
+
+          {/* TEXT */}
+          <ListItemText primary={
+            <Typography
+              variant='inherit'
+              className={classes.navigationItemContentInactive}
+            >
+              Code: {dummyId}
+            </Typography>
+          }/>
+        </ListItemButton>
+      </List>
+
       {/* NAVIGATION LIST */}
       <List>
         {drawerNavigationList.map((parentItem, parentIndex) => (
@@ -139,7 +170,6 @@ const Drawer = () => {
                 }/>
               </ListItemIcon>
 
-              {/* TEXT */}
               <ListItemText primary={
                 <Typography
                   variant='inherit'
