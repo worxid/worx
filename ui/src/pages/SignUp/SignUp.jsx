@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+// CONSTANTS
+import { countries } from 'constants/countryList'
+
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
@@ -23,17 +26,11 @@ import useLayoutStyles from 'styles/layoutAuthentication'
 const SignUp = () => {
   const layoutClasses = useLayoutStyles()
 
-  const dummyCountryList = [
-    { name: 'Indonesia' },
-    { name: 'Malaysia' },
-    { name: 'Singapore' },
-  ]
-
   const initialFormObject = {
     companyEmail: '',
     fullName: '',
     companyName: '',
-    country: dummyCountryList[0],
+    country: countries[0],
     phoneNumber: '',
     password: '',
   }
@@ -50,7 +47,7 @@ const SignUp = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
-  const [ countryInputValue, setCountryInputValue ] = useState(dummyCountryList[0].name)
+  const [ countryInputValue, setCountryInputValue ] = useState(countries[0].name)
   const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
 
   const handleFormObjectChange = (inputKey, inputNewValue) => {
@@ -155,7 +152,7 @@ const SignUp = () => {
         onChange={(event, newValue) => handleFormObjectChange('country', newValue)}
         inputValue={countryInputValue}
         onInputChange={(event, newInputValue) => setCountryInputValue(newInputValue)}
-        options={dummyCountryList}
+        options={countries}
         getOptionLabel={(option) => option.name}
         fullWidth
         renderInput={(params) => (
