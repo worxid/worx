@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
@@ -32,12 +33,16 @@ import IconMenuOpen from '@mui/icons-material/MenuOpen'
 // STYLES
 import useStyles from './drawerUseStyles'
 
+// UTILTIIES
+import { signOutUser } from 'utilities/authentication'
+
 const Drawer = () => {
   const classes = useStyles()
 
   const navigate = useNavigate()
   const location = useLocation()
 
+  const { setAuth } = useContext(AllPagesContext)
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
 
   const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
@@ -75,6 +80,19 @@ const Drawer = () => {
     else if(inputParentItem.type === 'collection' && isDrawerExpanded) {
       if (expandParent === inputParentItem.title) setExpandParent(null)
       else setExpandParent(inputParentItem.title)
+    }
+  }
+
+  const handleChildrenItemClick = (inputChildrenItem) => {
+    if (inputChildrenItem.title === 'Log Out') signOutUser(setAuth)
+    else {
+      navigate(inputChildrenItem.path, {
+        state: {
+          expandParent,
+          isDrawerExpanded, 
+          lastClicked: 'children',
+        },
+      })
     }
   }
 
@@ -149,6 +167,7 @@ const Drawer = () => {
                 <ListItemButton 
                   key={childrenIndex}
                   className={getListItemButtonClassName(childrenItem.path)}
+                  onClick={() => handleChildrenItemClick(childrenItem)}
                 >
                   {/* ICON */}
                   <ListItemIcon>
