@@ -37,6 +37,16 @@ const customButtonStyles = {
 customTheme = createTheme(customTheme, {
   components: {
     // SORTED ALPHABETICALLY
+    MuiAppBar:{
+      defaultProps: {
+        sx: {
+          backgroundColor: 'unset',
+          boxShadow: 'unset',
+          color: customTheme.palette.text.primary,
+          marginBottom: 24,
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         sx: {
@@ -106,6 +116,16 @@ customTheme = createTheme(customTheme, {
           },
           '& .MuiInputLabel-root': {
             fontSize: 14,
+          },
+        },
+      },
+    },
+    MuiToolbar: {
+      defaultProps: {
+        sx: {
+          '&.MuiToolbar-root': {
+            minHeight: 'unset',
+            padding: 0,
           },
         },
       },
