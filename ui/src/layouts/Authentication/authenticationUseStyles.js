@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     borderRight: `3px solid ${theme.palette.common.black}`,
-    maxHeight: '100vh',
     overflowY: 'hidden',
   },
   containerText: {
