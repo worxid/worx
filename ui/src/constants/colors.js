@@ -86,6 +86,7 @@ export const colors = {
       background: '#1E1E1E',
       contentInactive: '#A7A8BB',
       contentActive: white,
+      hover: '#282828',
     },
   },
 }
