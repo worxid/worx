@@ -75,7 +75,9 @@ const Drawer = () => {
     else return false
   }
 
-  const handleParentItemClick = (inputParentItem) => {
+  const handleParentItemClick = (inputEvent, inputParentItem) => {
+    inputEvent.preventDefault()
+
     if (inputParentItem.type === 'single') {
       navigate(inputParentItem.path, {
         state: {
@@ -91,7 +93,9 @@ const Drawer = () => {
     }
   }
 
-  const handleChildrenItemClick = (inputChildrenItem) => {
+  const handleChildrenItemClick = (inputEvent, inputChildrenItem) => {
+    inputEvent.preventDefault()
+
     if (inputChildrenItem.title === 'Log Out') signOutUser(setAuth)
     else {
       navigate(inputChildrenItem.path, {
@@ -159,8 +163,9 @@ const Drawer = () => {
           <Fragment key={parentIndex}>
             {/* PARENT */}
             <ListItemButton
+              href={parentItem.type === 'single' ? parentItem.path : null}
               className={getListItemButtonClassName(parentItem.path)}
-              onClick={() => handleParentItemClick(parentItem)}
+              onClick={(event) => handleParentItemClick(event, parentItem)}
             >
               {/* ICON */}
               <ListItemIcon>
@@ -196,8 +201,9 @@ const Drawer = () => {
               parentItem.children.map((childrenItem, childrenIndex) => (
                 <ListItemButton 
                   key={childrenIndex}
+                  href={childrenItem.title !== 'Log Out' ? childrenItem.path : null}
                   className={getListItemButtonClassName(childrenItem.path)}
-                  onClick={() => handleChildrenItemClick(childrenItem)}
+                  onClick={(event) => handleChildrenItemClick(event, childrenItem)}
                 >
                   {/* ICON */}
                   <ListItemIcon>

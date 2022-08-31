@@ -5,6 +5,7 @@ import { values } from 'constants/values'
 // MUIS
 import { createTheme, responsiveFontSizes } from '@mui/material'
 
+// COLOR AND TYPOGRAPHY STYLES
 let customTheme = createTheme({
   palette: {
     primary: colors.primary,
@@ -14,6 +15,7 @@ let customTheme = createTheme({
     warning: colors.warning,
     success: colors.success,
     text: colors.text,
+    background: colors.background,
     additional: colors.additional,
   },
   typography: {
@@ -21,22 +23,46 @@ let customTheme = createTheme({
   },
 })
 
+const customButtonStyles = {
+  height: 48,
+  border: `2px solid ${customTheme.palette.common.black}`,
+  borderRadius: 0,
+  boxShadow: `2px 2px 0px ${customTheme.palette.common.black}`,
+  '&:hover': {
+    boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
+      4px 4px 0px ${customTheme.palette.common.black}`,
+  },
+}
+
+// COMPONENT STYLES
 customTheme = createTheme(customTheme, {
   components: {
+    // SORTED ALPHABETICALLY
+    MuiAppBar:{
+      defaultProps: {
+        sx: {
+          backgroundColor: 'unset',
+          boxShadow: 'unset',
+          color: customTheme.palette.text.primary,
+          marginBottom: '24px',
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         sx: {
-          border: `2px solid ${customTheme.palette.common.black}`,
-          borderRadius: 0,
-          height: 48,
           fontFamily: values.fontFamilySpaceMono,
           fontWeight: 700,
           textTransform: 'none',
-          boxShadow: `2px 2px 0px ${customTheme.palette.common.black}`,
-          '&:hover': {
-            boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
-              4px 4px 0px ${customTheme.palette.common.black}`,
-          },
+          ...customButtonStyles,
+        },
+      },
+    },
+    MuiFab: {
+      defaultProps: {
+        sx: {
+          width: 48,
+          ...customButtonStyles,
         },
       },
     },
@@ -74,6 +100,14 @@ customTheme = createTheme(customTheme, {
         },
       },
     },
+    MuiPaper: {
+      defaultProps: {
+        sx: {
+          borderRadius: 0,
+          boxShadow: customTheme.shadows[3],
+        },
+      },
+    },
     MuiTextField: {
       defaultProps: {
         sx: {
@@ -83,6 +117,16 @@ customTheme = createTheme(customTheme, {
           },
           '& .MuiInputLabel-root': {
             fontSize: 14,
+          },
+        },
+      },
+    },
+    MuiToolbar: {
+      defaultProps: {
+        sx: {
+          '&.MuiToolbar-root': {
+            minHeight: 'unset',
+            padding: 0,
           },
         },
       },

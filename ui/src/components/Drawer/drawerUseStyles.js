@@ -15,9 +15,15 @@ const useStyles = makeStyles((theme) => ({
   navigationItem: {
     paddingLeft: 24,
     height: 48,
+    '&:hover': {
+      backgroundColor: theme.palette.additional.drawer.hover,
+    },
   },
   navigationItemActive: {
     backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+    },
   },
   navigationItemContentInactive: {
     color: theme.palette.additional.drawer.contentInactive,
