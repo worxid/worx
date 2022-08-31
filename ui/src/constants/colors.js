@@ -79,6 +79,11 @@ export const colors = {
     secondary: alpha(black, 0.54),
     disabled: alpha(black, 0.3),
   },
+  // BACKGROUND
+  background: {
+    paper: white,
+    default: '#EBEBEB',
+  },
   // ADDTIONAL COLLECTIONS
   additional: {
     // DRAWER

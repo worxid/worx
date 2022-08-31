@@ -15,6 +15,7 @@ let customTheme = createTheme({
     warning: colors.warning,
     success: colors.success,
     text: colors.text,
+    background: colors.background,
     additional: colors.additional,
   },
   typography: {
@@ -43,7 +44,7 @@ customTheme = createTheme(customTheme, {
           backgroundColor: 'unset',
           boxShadow: 'unset',
           color: customTheme.palette.text.primary,
-          marginBottom: 24,
+          marginBottom: '24px',
         },
       },
     },
