@@ -36,6 +36,7 @@ const customButtonStyles = {
 // COMPONENT STYLES
 customTheme = createTheme(customTheme, {
   components: {
+    // SORTED ALPHABETICALLY
     MuiButton: {
       defaultProps: {
         sx: {
@@ -85,6 +86,14 @@ customTheme = createTheme(customTheme, {
           '& fieldset': {
             border: `2px solid ${customTheme.palette.common.black}`,
           },
+        },
+      },
+    },
+    MuiPaper: {
+      defaultProps: {
+        sx: {
+          borderRadius: 0,
+          boxShadow: customTheme.shadows[3],
         },
       },
     },
