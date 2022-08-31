@@ -26,7 +26,7 @@ const DataGridFilters = (props) => {
     // COLUMN
     columns,
     selectedColumnList,
-    handleColumnsMenuItemClick,
+    setSelectedColumnList,
     // FILTER
     isFilterOn, 
     setIsFilterOn,
@@ -43,6 +43,12 @@ const DataGridFilters = (props) => {
   const classes = useStyles()
 
   const [ columnsMenuAnchor, setColumnsMenuAnchor ] = useState(null)
+
+  const handleColumnsMenuItemClick = (inputIndex) => {
+    let tempSelectedColumnList = [...selectedColumnList]
+    tempSelectedColumnList[inputIndex].hide = !tempSelectedColumnList[inputIndex].hide
+    setSelectedColumnList(tempSelectedColumnList)
+  }
 
   return (
     <Stack 
@@ -175,7 +181,7 @@ DataGridFilters.propTypes = {
   // COLUMN
   columns: PropTypes.array.isRequired,
   selectedColumnList: PropTypes.array.isRequired,
-  handleColumnsMenuItemClick: PropTypes.func.isRequired,
+  setSelectedColumnList: PropTypes.func.isRequired,
   // FILTER
   isFilterOn: PropTypes.bool.isRequired,
   setIsFilterOn: PropTypes.func.isRequired,
