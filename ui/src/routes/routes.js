@@ -1,6 +1,7 @@
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
+import Forms from 'pages/Forms/Forms'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
@@ -42,6 +43,11 @@ const routes = [
   {
     path: '/home',
     element: <Home/>,
+    routeType: 'private',
+  },
+  {
+    path: '/forms',
+    element: <Forms/>,
     routeType: 'private',
   },
 ]
