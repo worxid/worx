@@ -43,7 +43,7 @@ export const drawerNavigationList = [
     path: '/profile',
     children: [
       {
-        path: '/orofile/logout',
+        path: '/profile/logout',
         title: 'Log Out',
       },
     ],
