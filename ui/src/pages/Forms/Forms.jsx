@@ -1,6 +1,11 @@
+// COMPONENTS
+import AppBar from 'components/AppBar/AppBar'
+
 const Forms = () => {
   return (
-    <div>Forms</div>
+    <>
+      <AppBar/>
+    </>
   )
 }
 
