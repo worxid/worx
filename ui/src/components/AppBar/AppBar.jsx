@@ -2,10 +2,10 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 // CUSTOM COMPONENTS
-import CustomAppBar from 'components/Customs/CustomAppBar'
 import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // MUIS
+import MuiAppBar from '@mui/material/AppBar'
 import Fab from '@mui/material/Fab'
 import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
@@ -38,11 +38,11 @@ const AppBar = (props) => {
   const [ isSearchOpen, setIsSearchOpen ] = useState(false)
 
   return (
-    <CustomAppBar 
+    <MuiAppBar 
       position='relative' 
       className='zoom'
     >
-      <Toolbar className='padding0'>
+      <Toolbar>
         {/* FAB */}
         {hasFab &&
         <Fab 
@@ -94,7 +94,7 @@ const AppBar = (props) => {
           />
         </Stack>}
       </Toolbar>
-    </CustomAppBar>
+    </MuiAppBar>
   )
 }
 
