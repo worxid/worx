@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   fab: {
-    marginRight: 12,
+    marginRight: 24,
   },
   search: {
     overflow: 'hidden',

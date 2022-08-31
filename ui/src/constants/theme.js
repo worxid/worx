@@ -5,6 +5,7 @@ import { values } from 'constants/values'
 // MUIS
 import { createTheme, responsiveFontSizes } from '@mui/material'
 
+// COLOR AND TYPOGRAPHY STYLES
 let customTheme = createTheme({
   palette: {
     primary: colors.primary,
@@ -21,22 +22,35 @@ let customTheme = createTheme({
   },
 })
 
+const customButtonStyles = {
+  height: 48,
+  border: `2px solid ${customTheme.palette.common.black}`,
+  borderRadius: 0,
+  boxShadow: `2px 2px 0px ${customTheme.palette.common.black}`,
+  '&:hover': {
+    boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
+      4px 4px 0px ${customTheme.palette.common.black}`,
+  },
+}
+
+// COMPONENT STYLES
 customTheme = createTheme(customTheme, {
   components: {
     MuiButton: {
       defaultProps: {
         sx: {
-          border: `2px solid ${customTheme.palette.common.black}`,
-          borderRadius: 0,
-          height: 48,
           fontFamily: values.fontFamilySpaceMono,
           fontWeight: 700,
           textTransform: 'none',
-          boxShadow: `2px 2px 0px ${customTheme.palette.common.black}`,
-          '&:hover': {
-            boxShadow: `2px 2px 0px ${customTheme.palette.common.black},
-              4px 4px 0px ${customTheme.palette.common.black}`,
-          },
+          ...customButtonStyles,
+        },
+      },
+    },
+    MuiFab: {
+      defaultProps: {
+        sx: {
+          width: 48,
+          ...customButtonStyles,
         },
       },
     },
