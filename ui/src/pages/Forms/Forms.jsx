@@ -123,7 +123,7 @@ const Forms = () => {
           // TEXT
           contentTitle='Form List'
           // EDIT
-          isEditButtonEnabled={selectionModel.length > 0}
+          isEditButtonEnabled={selectionModel.length === 1}
           handleEditButtonClick={() => console.log('edit')}
           // EDIT
           isDeleteButtonEnabled={selectionModel.length > 0}
