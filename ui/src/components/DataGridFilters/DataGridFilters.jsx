@@ -13,6 +13,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconDelete from '@mui/icons-material/Delete'
+import IconEdit from '@mui/icons-material/Edit'
 import IconFilterAlt from '@mui/icons-material/FilterAlt'
 import IconSettings from '@mui/icons-material/Settings'
 
@@ -30,6 +32,12 @@ const DataGridFilters = (props) => {
     setIsFilterOn,
     // TEXT
     contentTitle,
+    // EDIT
+    isEditButtonEnabled,
+    handleEditButtonClick,
+    // DELETE
+    isDeleteButtonEnabled,
+    handleDeleteButtonClick,
   } = props
 
   const classes = useStyles()
@@ -49,6 +57,34 @@ const DataGridFilters = (props) => {
       >
         {contentTitle}
       </Typography>
+
+      {/* EDIT ROW ICON */}
+      {isEditButtonEnabled &&
+      <CustomTooltip 
+        title='Edit Row' 
+        placement='top'
+      >
+        <IconButton 
+          className={classes.iconButton}
+          onClick={handleEditButtonClick}
+        >
+          <IconEdit/>
+        </IconButton>
+      </CustomTooltip>}
+
+      {/* DELETE ROW ICON */}
+      {isDeleteButtonEnabled &&
+      <CustomTooltip 
+        title='Delete Row' 
+        placement='top'
+      >
+        <IconButton 
+          className={classes.iconButton}
+          onClick={handleDeleteButtonClick}
+        >
+          <IconDelete/>
+        </IconButton>
+      </CustomTooltip>}
 
       {/* FILTER ICON */}
       <CustomTooltip 
@@ -129,6 +165,10 @@ DataGridFilters.defaultProps = {
   isFilterOn: false,
   // TEXT
   contentTitle: '',
+  // EDIT
+  isEditButtonEnabled: false,
+  // DELETE
+  isDeleteButtonEnabled: false,
 }
 
 DataGridFilters.propTypes = {
@@ -141,6 +181,12 @@ DataGridFilters.propTypes = {
   setIsFilterOn: PropTypes.func.isRequired,
   // TEXT
   contentTitle: PropTypes.string.isRequired,
+  // EDIT
+  isEditButtonEnabled: PropTypes.bool.isRequired,
+  handleEditButtonClick: PropTypes.func.isRequired,
+  // DELETE
+  isDeleteButtonEnabled: PropTypes.bool.isRequired,
+  handleDeleteButtonClick: PropTypes.func.isRequired,
 }
 
 export default DataGridFilters
