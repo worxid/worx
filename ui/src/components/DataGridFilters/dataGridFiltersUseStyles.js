@@ -1,6 +1,3 @@
-// MUIS
-import { alpha } from '@mui/material/styles'
-
 // MUI STYELS
 import { makeStyles } from '@mui/styles'
 
@@ -16,11 +13,6 @@ const useStyles = makeStyles((theme) => ({
   },
   iconButton: {
     marginLeft: 8,
-    borderRadius: 8,
-    backgroundColor: theme.palette.primary.outlinedHoverBackground,
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.primary.main, 0.2),
-    },
   },
   columnsMenuRoot: {
     '& .MuiList-root': {

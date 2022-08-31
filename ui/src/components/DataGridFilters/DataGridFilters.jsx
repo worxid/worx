@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // MUIS
-import Badge from '@mui/material/Badge'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -14,8 +13,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconFilterAltRounded from '@mui/icons-material/FilterAltRounded'
-import IconViewColumnRounded from '@mui/icons-material/ViewColumnRounded'
+import IconFilterAlt from '@mui/icons-material/FilterAlt'
+import IconSettings from '@mui/icons-material/Settings'
 
 // STYLES
 import useStyles from './dataGridFiltersUseStyles'
@@ -59,15 +58,8 @@ const DataGridFilters = (props) => {
         <IconButton 
           className={classes.iconButton}
           onClick={() => setIsFilterOn(current => !current)}
-          color='primary'
-          size='small'
         >
-          <Badge 
-            color={isFilterOn ? 'secondary' : 'default'} 
-            variant='dot'
-          >
-            <IconFilterAltRounded fontSize='small'/>
-          </Badge>
+          <IconFilterAlt color={isFilterOn ? 'primary' : 'default'} />
         </IconButton>
       </CustomTooltip>
 
@@ -79,10 +71,8 @@ const DataGridFilters = (props) => {
         <IconButton 
           className={classes.iconButton}
           onClick={(event) => setColumnsMenuAnchor(event.currentTarget)}
-          color='primary'
-          size='small'
         >
-          <IconViewColumnRounded fontSize='small'/>
+          <IconSettings/>
         </IconButton>
       </CustomTooltip>
 
