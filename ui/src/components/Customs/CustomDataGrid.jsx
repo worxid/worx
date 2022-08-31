@@ -4,6 +4,8 @@ import { styled } from '@mui/material/styles'
 // MUI DATA GRID
 import { DataGrid } from '@mui/x-data-grid'
 
+const checkboxCellWidth = 64
+
 const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   <DataGrid
     checkboxSelection
@@ -58,41 +60,47 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   '& .MuiDataGrid-iconSeparator': {
     display: 'none',
   },
-
-  // COLUMN
-  '& .MuiDataGrid-pinnedColumns': {
-    boxShadow: 'none',
-    backgroundColor: 'unset',
-    '& .MuiDataGrid-cell': {
-      padding: 0,
-    },
-  },
-  '[data-field="actions"] > *': {
-    display: 'none',
-  },
-  '.MuiDataGrid-row.Mui-hovered [data-field="actions"] > *': {
-    display: 'flex',
+  '& .MuiDataGrid-columnHeaderCheckbox': {
+    minWidth: `${checkboxCellWidth}px !important`,
   },
 
-  // ROW
-  '& .MuiDataGrid-row:hover': {
-    backgroundColor: theme.palette.grey[100],
-  },
-  '& .MuiDataGrid-row.Mui-hovered': {
-    backgroundColor: theme.palette.grey[100],
-  },
-  '& .MuiDataGrid-row.Mui-selected': {
-    // NOTE: THIS MUST BE SET MANUALLY
-    backgroundColor: '#FFF3F1',
-  },
-  '& .MuiDataGrid-row.Mui-selected:hover': {
-    backgroundColor: theme.palette.grey[100],
-  },
-  '& .MuiDataGrid-row.Mui-selected.Mui-hovered': {
-    backgroundColor: theme.palette.grey[100],
-  },
+  // COLUMN (INTENTIONALLY COMMENTED)
+  // '& .MuiDataGrid-pinnedColumns': {
+  //   boxShadow: 'none',
+  //   backgroundColor: 'unset',
+  //   '& .MuiDataGrid-cell': {
+  //     padding: 0,
+  //   },
+  // },
+  // '[data-field="actions"] > *': {
+  //   display: 'none',
+  // },
+  // '.MuiDataGrid-row.Mui-hovered [data-field="actions"] > *': {
+  //   display: 'flex',
+  // },
+
+  // ROW (INTENTIONALLY COMMENTED)
+  // '& .MuiDataGrid-row:hover': {
+  //   backgroundColor: theme.palette.grey[100],
+  // },
+  // '& .MuiDataGrid-row.Mui-hovered': {
+  //   backgroundColor: theme.palette.grey[100],
+  // },
+  // '& .MuiDataGrid-row.Mui-selected': {
+  //   // NOTE: THIS MUST BE SET MANUALLY
+  //   backgroundColor: '#FFF3F1',
+  // },
+  // '& .MuiDataGrid-row.Mui-selected:hover': {
+  //   backgroundColor: theme.palette.grey[100],
+  // },
+  // '& .MuiDataGrid-row.Mui-selected.Mui-hovered': {
+  //   backgroundColor: theme.palette.grey[100],
+  // },
 
   // CELL
+  '& .MuiDataGrid-cellCheckbox': {
+    minWidth: `${checkboxCellWidth}px !important`,
+  },
   '& .MuiDataGrid-cell:focus': {
     outline: 'none',
   },
