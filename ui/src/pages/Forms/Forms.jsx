@@ -180,7 +180,7 @@ const Forms = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <FormFlyout/>
+          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
         </Flyout>
       </Stack>
     </>

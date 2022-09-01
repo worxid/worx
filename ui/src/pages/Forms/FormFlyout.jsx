@@ -2,21 +2,58 @@ import { useState } from 'react'
 
 // MUIS
 import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconCheckCircle from '@mui/icons-material/CheckCircle'
+import IconDateRange from '@mui/icons-material/DateRange'
+import IconEventNote from '@mui/icons-material/EventNote'
+import IconGroups from '@mui/icons-material/Groups'
 import IconKeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import IconKeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
+import IconNotes from '@mui/icons-material/Notes'
+import IconTextSnippet from '@mui/icons-material/TextSnippet'
+import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
 const FormFlyout = (props) => {
+  const { rows } = props
+
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
 
   const getExpandOrCollapseIcon = (inputState) => {
     if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
     else return <IconKeyboardArrowDown fontSize='small'/>
-  } 
-  
+  }
+
+  const mainMenuIconList = [
+    IconTextSnippet,
+    IconNotes,
+    IconEventNote,
+    IconDateRange,
+    IconGroups,
+    IconCheckCircle,
+    IconViewHeadline,
+    IconTextSnippet,
+  ]
+
+  let mainMenuList = []
+  if (rows.length === 1) {
+    mainMenuList = Object.keys(rows[0])
+      .filter(key => key !== 'id')
+      .map((key, index) => {
+        return {
+          title: key,
+          value: rows[0][key],
+          icon: mainMenuIconList[index],
+        }
+      })
+  }
+
   return (
     <>
       {/* MAIN MENU HEADER */}
@@ -41,6 +78,27 @@ const FormFlyout = (props) => {
           {getExpandOrCollapseIcon(isMainMenuExpanded)}
         </IconButton>
       </Stack>
+
+      {/* MAIN MENU LIST */}
+      <List>
+        {rows.length === 1 &&
+        mainMenuList.map((item, index) => (
+          <ListItem
+            key={index}
+          >
+            {/* ICON */}
+            <ListItemIcon>
+              <item.icon/>
+            </ListItemIcon>
+
+            {/* TEXT */}
+            <ListItemText
+              primary={item.title}
+              secondary={item.value}
+            />
+          </ListItem>
+        ))}
+      </List>
     </>
   )
 }
