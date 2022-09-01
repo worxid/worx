@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 
 // CUSTOM COMPONENTS
@@ -9,7 +9,6 @@ import FilterTextField from 'components/FilterTextField/FilterTextField'
 // MUIS
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import { useGridApiRef } from '@mui/x-data-grid'
 
 // MUI ICONS
 import IconArrowUpward from '@mui/icons-material/ArrowUpward'
@@ -33,7 +32,9 @@ const DataGridTable = (props) => {
     setPageSize,
     // ORDER
     setOrder,
+    order,
     setOrderBy,
+    orderBy,
     // FILTER
     setFilters,
     isFilterOn,
@@ -45,57 +46,68 @@ const DataGridTable = (props) => {
 
   const classes = useStyles()
 
-  const dataGridApiRef = useGridApiRef()
+  // REFS
+  const orderRef = useRef(order)
+  const orderByRef = useRef(orderBy)
 
   const [sortModel, setSortModel] = useState([])
 
   const getSortIcon = (field) => {
-    const currentSortModel = dataGridApiRef.current.getSortModel()
-
     let selectedIcon = <IconSort className={classes.columnUnsortedIconAsc}/>
 
-    if (currentSortModel[0]) {
-      if (currentSortModel[0].field === field) {
-        if (currentSortModel[0].sort === 'asc') selectedIcon = (
-          <IconArrowUpward
-            className={`${classes.columnUnsortedIconAsc} ${classes.columnSortedIconAsc}`}
-          />
-        )
-        else if (currentSortModel[0].sort === 'desc') selectedIcon = (
-          <IconArrowUpward
-            className={`${classes.columnUnsortedIconAsc} ${classes.columnSortedIconDesc}`}
-          />
-        )
-      } 
-      else {
-        if (currentSortModel[0].sort === 'asc') selectedIcon = (
-          <IconSort
-            className={`${classes.columnUnsortedIconAsc} ${classes.columnUnsortedIconAsc}`}
-          />
-        )
-        else if (currentSortModel[0].sort === 'desc') selectedIcon = (
-          <IconSort
-            className={`${classes.columnUnsortedIconAsc} ${classes.columnUnsortedIconDesc}`}
-          />
-        )
-      }
+    if (orderByRef.current === field) {
+      if (orderRef.current === 'asc') selectedIcon = (
+        <IconArrowUpward
+          className={`${classes.columnUnsortedIconAsc} ${classes.columnSortedIconAsc}`}
+        />
+      )
+      else if (orderRef.current === 'desc') selectedIcon = (
+        <IconArrowUpward
+          className={`${classes.columnUnsortedIconAsc} ${classes.columnSortedIconDesc}`}
+        />
+      )
+    } 
+    else {
+      if (orderRef.current === 'asc') selectedIcon = (
+        <IconSort
+          className={`${classes.columnUnsortedIconAsc} ${classes.columnUnsortedIconAsc}`}
+        />
+      )
+      else if (orderRef.current === 'desc') selectedIcon = (
+        <IconSort
+          className={`${classes.columnUnsortedIconAsc} ${classes.columnUnsortedIconDesc}`}
+        />
+      )
     }
 
     return selectedIcon
   }
 
   const handleSortIconClick = (field) => {
-    const currentSortModel = dataGridApiRef.current.getSortModel()
+    // CLEAR ORDER IF NOT ORDERBY NOT SIMILAR WITH FIELD
+    if(orderByRef.current !== field) orderRef.current = null
+
+    // UPDATE ORDERBY
+    orderByRef.current = field
 
     let newSortModel = []
-    if (currentSortModel[0]) {
-      if (currentSortModel[0].field === field) {
-        if (currentSortModel[0].sort === 'asc') newSortModel = [{ field, sort: 'desc' }]
-        else if (currentSortModel[0].sort === 'desc') newSortModel = []
-      } 
-      else newSortModel = [{ field, sort: 'asc' }]
-    } 
-    else if (!currentSortModel[0]) newSortModel = [{ field, sort: 'asc' }]
+    if (orderRef.current && orderByRef.current) {
+      if (orderByRef.current === field) {
+        if (orderRef.current === 'asc') {
+          orderRef.current = 'desc'
+          newSortModel = [{ field, sort: 'desc' }]
+        } else if (orderRef.current === 'desc') {
+          orderRef.current = null
+          newSortModel = []
+        }
+      } else {
+        orderRef.current = 'asc'
+        newSortModel = [{ field, sort: 'asc' }]
+      }
+    } else if (!orderRef.current && orderByRef.current) {
+      orderRef.current = 'asc'
+      newSortModel = [{ field, sort: 'asc' }]
+    }
 
     handleSortModelChange(newSortModel)
   }
@@ -237,9 +249,9 @@ const DataGridTable = (props) => {
         paginationMode='server'
         rowCount={total}
         // SORT
+        sortingMode='server'
         sortModel={sortModel}
         onSortModelChange={handleSortModelChange}
-        apiRef={dataGridApiRef}
         // SELECTION
         onCellClick={(params, event, details) => handleCellClick(params, event, details)}
         onColumnHeaderClick={(params, event, details) => handleColumnHeaderClick(params, event, details)}
