@@ -23,6 +23,9 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.cursorPointer': {
+          cursor: 'pointer !important',
+        },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
         },

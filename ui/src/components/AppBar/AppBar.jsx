@@ -99,8 +99,11 @@ const AppBar = (props) => {
 }
 
 AppBar.defaultProps = {
+  // FAB
   hasFab: true,
+  // TITLE
   pageTitle: '',
+  // SEARCH
   hasSearch: true,
   search: '',
 }
