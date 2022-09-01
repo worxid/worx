@@ -17,7 +17,7 @@ function PrivateRoute(props) {
   const { auth } = useContext(AllPagesContext)
 
   return (
-    isObjectEmpty(auth) ?
+    !auth ?
       <Navigate 
         replace 
         to='/sign-in'

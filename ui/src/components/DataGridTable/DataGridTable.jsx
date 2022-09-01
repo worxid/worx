@@ -124,7 +124,7 @@ const DataGridTable = (props) => {
                 size='small'
                 onClick={() => handleSortIconClick(item.field)}
               >
-                {getSortIcon(item.field, orderByRef.current, orderRef)}
+                {getSortIcon(item.field)}
               </IconButton>
             </CustomTooltip>
           </>
@@ -236,6 +236,7 @@ const DataGridTable = (props) => {
         paginationMode='server'
         rowCount={total}
         // SORT
+        sortingMode='server'
         sortModel={sortModel}
         onSortModelChange={handleSortModelChange}
         // SELECTION
