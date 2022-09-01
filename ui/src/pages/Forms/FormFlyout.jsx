@@ -21,8 +21,13 @@ import IconNotes from '@mui/icons-material/Notes'
 import IconTextSnippet from '@mui/icons-material/TextSnippet'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
+// STYLES
+import useLayoutStyles from 'styles/layoutPrivate'
+
 const FormFlyout = (props) => {
   const { rows } = props
+
+  const layoutClasses = useLayoutStyles()
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
 
@@ -91,16 +96,28 @@ const FormFlyout = (props) => {
           mainMenuList.map((item, index) => (
             <ListItem
               key={index}
+              disablePadding
             >
               {/* ICON */}
-              <ListItemIcon>
+              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
                 <item.icon/>
               </ListItemIcon>
 
               {/* TEXT */}
               <ListItemText
-                primary={item.title}
-                secondary={item.value}
+                primary={
+                  <Typography 
+                    variant='caption'
+                    className='colorTextSecondary'
+                  >
+                    {item.title}
+                  </Typography>
+                }
+                secondary={
+                  <Typography variant='body2'>
+                    {item.value}
+                  </Typography>
+                }
               />
             </ListItem>
           ))}

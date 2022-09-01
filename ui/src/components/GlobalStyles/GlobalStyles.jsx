@@ -23,6 +23,9 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.colorTextSecondary': {
+          color: theme.palette.text.secondary,
+        },
         '.cursorPointer': {
           cursor: 'pointer !important',
         },
