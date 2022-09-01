@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
+import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -12,49 +13,29 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconCheckCircle from '@mui/icons-material/CheckCircle'
-import IconDateRange from '@mui/icons-material/DateRange'
-import IconEventNote from '@mui/icons-material/EventNote'
-import IconGroups from '@mui/icons-material/Groups'
+import IconAssignment from '@mui/icons-material/Assignment'
 import IconKeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import IconKeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
-import IconNotes from '@mui/icons-material/Notes'
-import IconTextSnippet from '@mui/icons-material/TextSnippet'
-import IconViewHeadline from '@mui/icons-material/ViewHeadline'
+import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
-const MainMenu = (props) => {
-  const { rows } = props
-
+const Submissions = () => {
   const layoutClasses = useLayoutStyles()
 
-  const mainMenuIconList = [
-    IconTextSnippet,
-    IconNotes,
-    IconEventNote,
-    IconDateRange,
-    IconGroups,
-    IconCheckCircle,
-    IconViewHeadline,
-    IconTextSnippet,
+  const dummySubmissionList = [
+    {
+      title: 'Identifier',
+      value: 'Device 1 20-07-2022, 10:10 PM',
+    },
+    {
+      title: 'Identifier',
+      value: 'Device 1 20-07-2022, 10:10 PM',
+    },
   ]
 
-  let mainMenuList = []
-  if (rows.length === 1) {
-    mainMenuList = Object.keys(rows[0])
-      .filter(key => key !== 'id')
-      .map((key, index) => {
-        return {
-          title: key,
-          value: rows[0][key],
-          icon: mainMenuIconList[index],
-        }
-      })
-  }
-
-  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
+  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
 
   const getExpandOrCollapseIcon = (inputState) => {
     if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
@@ -75,34 +56,67 @@ const MainMenu = (props) => {
           variant='subtitle1'
           className='fontWeight500'
         >
-          Main Menu
+          Submissions
         </Typography>
 
-        {/* EXPAND/COLLAPSE ICON  */}
+        {/*EXPAND/COLLAPSE ICON  */}
         <IconButton 
           size='small'
-          onClick={() => setIsMainMenuExpanded(current => !current)}
+          onClick={() => setIsSubmissionsExpanded(current => !current)}
         >
-          {getExpandOrCollapseIcon(isMainMenuExpanded)}
+          {getExpandOrCollapseIcon(isSubmissionsExpanded)}
         </IconButton>
       </Stack>
 
       {/* LIST */}
       <Collapse 
-        in={isMainMenuExpanded} 
+        in={isSubmissionsExpanded} 
         timeout='auto' 
         unmountOnExit
       >
-        {rows.length === 1 &&
+        {/* TOTAL SUBMISSIONS */}
+        <ListItem disablePadding>
+          {/* ICON */}
+          <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
+            <IconAssignment/>
+          </ListItemIcon>
+
+          {/* TEXT */}
+          <ListItemText
+            primary={
+              <Typography 
+                variant='caption'
+                className='colorTextSecondary'
+              >
+                Total
+              </Typography>
+            }
+            secondary={
+              <Typography variant='body2'>
+                10
+              </Typography>
+            }
+          />
+
+          {/* ACTION */}
+          <Button
+            variant='contained'
+            className={layoutClasses.flyoutListItemActionButton}
+          >
+            View All
+          </Button>
+        </ListItem>
+
+        {/* LIST */}
         <List>
-          {mainMenuList.map((item, index) => (
-            <ListItem
+          {dummySubmissionList.map((item, index) => (
+            <ListItem 
               key={index}
               disablePadding
             >
               {/* ICON */}
               <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon/>
+                <IconPhoneIphone/>
               </ListItemIcon>
 
               {/* TEXT */}
@@ -123,19 +137,19 @@ const MainMenu = (props) => {
               />
 
               {/* ACTION */}
-              {item.title === 'formTitle' &&
-              <Button
-                variant='contained'
-                className={layoutClasses.flyoutListItemActionButton}
+              <Link
+                href=''
+                underline='none'
+                className={layoutClasses.flyoutListItemActionLink}
               >
-                View All
-              </Button>}
+                View
+              </Link>
             </ListItem>
           ))}
-        </List>}
+        </List>
       </Collapse>
     </>
   )
 }
 
-export default MainMenu
+export default Submissions
