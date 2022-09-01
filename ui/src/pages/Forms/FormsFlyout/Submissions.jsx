@@ -14,12 +14,13 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconAssignment from '@mui/icons-material/Assignment'
-import IconKeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import IconKeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
 import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+
+// UTILITIES
+import { getExpandOrCollapseIcon } from 'utilities/component'
 
 const Submissions = () => {
   const layoutClasses = useLayoutStyles()
@@ -36,11 +37,6 @@ const Submissions = () => {
   ]
 
   const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
-
-  const getExpandOrCollapseIcon = (inputState) => {
-    if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
-    else return <IconKeyboardArrowDown fontSize='small'/>
-  }
 
   return (
     <>
@@ -64,7 +60,7 @@ const Submissions = () => {
           size='small'
           onClick={() => setIsSubmissionsExpanded(current => !current)}
         >
-          {getExpandOrCollapseIcon(isSubmissionsExpanded)}
+          {getExpandOrCollapseIcon(isSubmissionsExpanded, 'small')}
         </IconButton>
       </Stack>
 

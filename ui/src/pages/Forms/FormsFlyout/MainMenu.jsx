@@ -16,14 +16,15 @@ import IconCheckCircle from '@mui/icons-material/CheckCircle'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconEventNote from '@mui/icons-material/EventNote'
 import IconGroups from '@mui/icons-material/Groups'
-import IconKeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import IconKeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
 import IconNotes from '@mui/icons-material/Notes'
 import IconTextSnippet from '@mui/icons-material/TextSnippet'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+
+// UTILITIES
+import { getExpandOrCollapseIcon } from 'utilities/component'
 
 const MainMenu = (props) => {
   const { rows } = props
@@ -56,11 +57,6 @@ const MainMenu = (props) => {
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
 
-  const getExpandOrCollapseIcon = (inputState) => {
-    if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
-    else return <IconKeyboardArrowDown fontSize='small'/>
-  }
-
   return (
     <>
       {/* HEADER */}
@@ -83,7 +79,7 @@ const MainMenu = (props) => {
           size='small'
           onClick={() => setIsMainMenuExpanded(current => !current)}
         >
-          {getExpandOrCollapseIcon(isMainMenuExpanded)}
+          {getExpandOrCollapseIcon(isMainMenuExpanded, 'small')}
         </IconButton>
       </Stack>
 
