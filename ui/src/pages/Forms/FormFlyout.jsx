@@ -67,8 +67,8 @@ const FormFlyout = (props) => {
     },
   ]
 
-  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
-  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(false)
+  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
+  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
 
   const getExpandOrCollapseIcon = (inputState) => {
     if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
@@ -82,6 +82,7 @@ const FormFlyout = (props) => {
         direction='row'
         justifyContent='space-between'
         alignItems='center'
+        marginBottom='8px'
       >
         {/* TITLE */}
         <Typography
@@ -106,9 +107,9 @@ const FormFlyout = (props) => {
         timeout='auto' 
         unmountOnExit
       >
+        {rows.length === 1 &&
         <List>
-          {rows.length === 1 &&
-          mainMenuList.map((item, index) => (
+          {mainMenuList.map((item, index) => (
             <ListItem
               key={index}
               disablePadding
@@ -145,7 +146,7 @@ const FormFlyout = (props) => {
               </Button>}
             </ListItem>
           ))}
-        </List>
+        </List>}
       </Collapse>
 
       {/* SUBMISSIONS HEADER */}
@@ -153,6 +154,7 @@ const FormFlyout = (props) => {
         direction='row'
         justifyContent='space-between'
         alignItems='center'
+        marginBottom='8px'
       >
         {/* TITLE */}
         <Typography

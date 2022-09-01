@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -106,6 +106,12 @@ const Forms = () => {
   const [ selectionModel, setSelectionModel ] = useState([])
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
+
+  useEffect(() => {
+    if (selectionModel.length === 1) {
+      setIsFlyoutShown(true)
+    }
+  }, [selectionModel])
 
   return (
     <>
