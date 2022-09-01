@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 // MUIS
+import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -80,25 +81,31 @@ const FormFlyout = (props) => {
       </Stack>
 
       {/* MAIN MENU LIST */}
-      <List>
-        {rows.length === 1 &&
-        mainMenuList.map((item, index) => (
-          <ListItem
-            key={index}
-          >
-            {/* ICON */}
-            <ListItemIcon>
-              <item.icon/>
-            </ListItemIcon>
+      <Collapse 
+        in={isMainMenuExpanded} 
+        timeout='auto' 
+        unmountOnExit
+      >
+        <List>
+          {rows.length === 1 &&
+          mainMenuList.map((item, index) => (
+            <ListItem
+              key={index}
+            >
+              {/* ICON */}
+              <ListItemIcon>
+                <item.icon/>
+              </ListItemIcon>
 
-            {/* TEXT */}
-            <ListItemText
-              primary={item.title}
-              secondary={item.value}
-            />
-          </ListItem>
-        ))}
-      </List>
+              {/* TEXT */}
+              <ListItemText
+                primary={item.title}
+                secondary={item.value}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Collapse>
     </>
   )
 }
