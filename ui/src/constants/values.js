@@ -6,4 +6,7 @@ export const values = {
   // DRAWER
   drawerWidth: 256,
   drawerWidthOnMinimized: 72,
+
+  // FLYOUT
+  flyoutWidth: 400,
 }

@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     padding: 24,
     overflowY: 'auto',
+    overflowX: 'hidden',
     position: 'relative',
   },
 }))
