@@ -84,19 +84,32 @@ const DataGridTable = (props) => {
   }
 
   const handleSortIconClick = (field) => {
+    // CLEAR ORDER IF NOT ORDERBY NOT SIMILAR WITH FIELD
+    if(orderByRef.current !== field) orderRef.current = null
+
     // UPDATE ORDERBY
     orderByRef.current = field
 
-    // UPDATE ORDER
-    if(orderRef.current === null) orderRef.current = 'desc'
-    else if(orderRef.current === 'desc') orderRef.current = 'asc'
-    else if(orderRef.current === 'asc') orderRef.current = null
+    let newSortModel = []
+    if (orderRef.current && orderByRef.current) {
+      if (orderByRef.current === field) {
+        if (orderRef.current === 'asc') {
+          orderRef.current = 'desc'
+          newSortModel = [{ field, sort: 'desc' }]
+        } else if (orderRef.current === 'desc') {
+          orderRef.current = null
+          newSortModel = []
+        }
+      } else {
+        orderRef.current = 'asc'
+        newSortModel = [{ field, sort: 'asc' }]
+      }
+    } else if (!orderRef.current && orderByRef.current) {
+      orderRef.current = 'asc'
+      newSortModel = [{ field, sort: 'asc' }]
+    }
 
-    if(orderRef.current) handleSortModelChange([{
-      field: orderByRef.current,
-      sort: orderRef.current
-    }])
-    else handleSortModelChange([])
+    handleSortModelChange(newSortModel)
   }
 
   const filterOnColumns = initialColumns.map((item) => {

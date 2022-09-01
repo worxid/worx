@@ -92,7 +92,7 @@ const Forms = () => {
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
   const [ order, setOrder ] = useState(null)
-  const [ orderBy, setOrderBy ] = useState('')
+  const [ orderBy, setOrderBy ] = useState(null)
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
