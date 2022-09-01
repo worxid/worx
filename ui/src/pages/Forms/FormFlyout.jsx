@@ -13,6 +13,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconAssignment from '@mui/icons-material/Assignment'
 import IconCheckCircle from '@mui/icons-material/CheckCircle'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconEventNote from '@mui/icons-material/EventNote'
@@ -179,6 +180,40 @@ const FormFlyout = (props) => {
         timeout='auto' 
         unmountOnExit
       >
+        {/* TOTAL SUBMISSIONS */}
+        <ListItem disablePadding>
+          {/* ICON */}
+          <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
+            <IconAssignment/>
+          </ListItemIcon>
+
+          {/* TEXT */}
+          <ListItemText
+            primary={
+              <Typography 
+                variant='caption'
+                className='colorTextSecondary'
+              >
+                Total
+              </Typography>
+            }
+            secondary={
+              <Typography variant='body2'>
+                10
+              </Typography>
+            }
+          />
+
+          {/* ACTION */}
+          <Button
+            variant='contained'
+            className={layoutClasses.flyoutListItemActionButton}
+          >
+            View All
+          </Button>
+        </ListItem>
+
+        {/* SUBMISSIONS LIST */}
         <List>
           {dummySubmissionList.map((item, index) => (
             <ListItem 
