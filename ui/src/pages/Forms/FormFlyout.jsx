@@ -31,6 +31,7 @@ const FormFlyout = (props) => {
   const layoutClasses = useLayoutStyles()
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
+  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(false)
 
   const getExpandOrCollapseIcon = (inputState) => {
     if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
@@ -133,6 +134,29 @@ const FormFlyout = (props) => {
           ))}
         </List>
       </Collapse>
+
+      {/* SUBMISSIONS HEADER */}
+      <Stack 
+        direction='row'
+        justifyContent='space-between'
+        alignItems='center'
+      >
+        {/* TITLE */}
+        <Typography
+          variant='subtitle1'
+          className='fontWeight500'
+        >
+          Submissions
+        </Typography>
+
+        {/*EXPAND/COLLAPSE ICON  */}
+        <IconButton 
+          size='small'
+          onClick={() => setIsSubmissionsExpanded(current => !current)}
+        >
+          {getExpandOrCollapseIcon(isSubmissionsExpanded)}
+        </IconButton>
+      </Stack>
     </>
   )
 }
