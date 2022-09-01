@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 // MUIS
+import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
@@ -119,6 +120,15 @@ const FormFlyout = (props) => {
                   </Typography>
                 }
               />
+
+              {/* ACTION */}
+              {item.title === 'formTitle' &&
+              <Button
+                variant='contained'
+                className={layoutClasses.flyoutListItemActionButton}
+              >
+                View All
+              </Button>}
             </ListItem>
           ))}
         </List>
