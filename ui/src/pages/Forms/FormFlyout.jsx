@@ -30,14 +30,6 @@ const FormFlyout = (props) => {
 
   const layoutClasses = useLayoutStyles()
 
-  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
-  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(false)
-
-  const getExpandOrCollapseIcon = (inputState) => {
-    if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
-    else return <IconKeyboardArrowDown fontSize='small'/>
-  }
-
   const mainMenuIconList = [
     IconTextSnippet,
     IconNotes,
@@ -60,6 +52,14 @@ const FormFlyout = (props) => {
           icon: mainMenuIconList[index],
         }
       })
+  }
+
+  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
+  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(false)
+
+  const getExpandOrCollapseIcon = (inputState) => {
+    if (inputState) return <IconKeyboardArrowUp fontSize='small'/>
+    else return <IconKeyboardArrowDown fontSize='small'/>
   }
 
   return (
