@@ -5,7 +5,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import Flyout from 'components/Flyout/Flyout'
-import FormFlyout from './FormFlyout'
+import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
