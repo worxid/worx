@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
+import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -19,6 +20,7 @@ import IconGroups from '@mui/icons-material/Groups'
 import IconKeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import IconKeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp'
 import IconNotes from '@mui/icons-material/Notes'
+import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
 import IconTextSnippet from '@mui/icons-material/TextSnippet'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
@@ -53,6 +55,17 @@ const FormFlyout = (props) => {
         }
       })
   }
+
+  const dummySubmissionList = [
+    {
+      title: 'Identifier',
+      value: 'Device 1 20-07-2022, 10:10 PM',
+    },
+    {
+      title: 'Identifier',
+      value: 'Device 1 20-07-2022, 10:10 PM',
+    },
+  ]
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(false)
   const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(false)
@@ -157,6 +170,53 @@ const FormFlyout = (props) => {
           {getExpandOrCollapseIcon(isSubmissionsExpanded)}
         </IconButton>
       </Stack>
+
+      {/* SUBMISSIONS LIST */}
+      <Collapse 
+        in={isSubmissionsExpanded} 
+        timeout='auto' 
+        unmountOnExit
+      >
+        <List>
+          {dummySubmissionList.map((item, index) => (
+            <ListItem 
+              key={index}
+              disablePadding
+            >
+              {/* ICON */}
+              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
+                <IconPhoneIphone/>
+              </ListItemIcon>
+
+              {/* TEXT */}
+              <ListItemText
+                primary={
+                  <Typography 
+                    variant='caption'
+                    className='colorTextSecondary'
+                  >
+                    {item.title}
+                  </Typography>
+                }
+                secondary={
+                  <Typography variant='body2'>
+                    {item.value}
+                  </Typography>
+                }
+              />
+
+              {/* ACTION */}
+              <Link
+                href=''
+                underline='none'
+                className={layoutClasses.flyoutListItemActionLink}
+              >
+                View
+              </Link>
+            </ListItem>
+          ))}
+        </List>
+      </Collapse>
     </>
   )
 }

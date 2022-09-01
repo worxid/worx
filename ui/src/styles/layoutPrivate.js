@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     fontWeight: 400,
   },
+  flyoutListItemActionLink: {
+    cursor: 'pointer',
+    fontSize: 12,
+    fontWeight: 500,
+  },
 }))
 
 export default useStyles
