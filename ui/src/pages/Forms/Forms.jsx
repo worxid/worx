@@ -91,8 +91,8 @@ const Forms = () => {
   const [ pageNumber, setPageNumber ] = useState(0)
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
-  const [ order, setOrder ] = useState('desc')
-  const [ orderBy, setOrderBy ] = useState('dateAndTime')
+  const [ order, setOrder ] = useState(null)
+  const [ orderBy, setOrderBy ] = useState('')
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
@@ -144,7 +144,9 @@ const Forms = () => {
           setPageSize={setPageSize}
           // ORDER
           setOrder={setOrder}
+          order={order}
           setOrderBy={setOrderBy}
+          orderBy={orderBy}
           // FILTER
           setFilters={setFilters}
           isFilterOn={isFilterOn}
