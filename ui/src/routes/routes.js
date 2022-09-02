@@ -2,6 +2,7 @@
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
+import FormsEdit from 'pages/FormsEdit/FormsEdit'
 import FormsSubmissions from 'pages/FormsSubmissions/FormsSubmissions'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
@@ -52,9 +53,13 @@ const routes = [
     routeType: 'private',
   },
   {
+    path: '/forms/:id/edit',
+    element: <FormsEdit/>,
+    routeType: 'private',
+  },
+  {
     path: '/forms/:id/submissions',
     element: <FormsSubmissions/>,
-    routeType: 'private',
   },
 ]
 
