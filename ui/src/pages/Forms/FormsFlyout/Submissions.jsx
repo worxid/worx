@@ -22,7 +22,9 @@ import useLayoutStyles from 'styles/layoutPrivate'
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
 
-const Submissions = () => {
+const Submissions = (props) => {
+  const { rows } = props
+
   const layoutClasses = useLayoutStyles()
 
   const dummySubmissionList = [
@@ -37,6 +39,12 @@ const Submissions = () => {
   ]
 
   const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
+
+  // GET SUBMISSIONS VIEW ALL URL
+  const getSubmissionsViewAllUrl = () => {
+    if(rows.length === 1) return `/forms/${rows[0].id}/submissions`
+    else return '#'
+  }
 
   return (
     <>
@@ -98,6 +106,7 @@ const Submissions = () => {
           <Button
             variant='contained'
             className={layoutClasses.flyoutListItemActionButton}
+            href={getSubmissionsViewAllUrl()}
           >
             View All
           </Button>
