@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotate(0deg)',
     transition: 'transform 0.25s ease-in-out',
   },
+  extraComponent: {
+    marginLeft: 8,
+  },
 }))
 
 export default useStyles

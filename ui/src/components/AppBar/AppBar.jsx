@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // MUIS
+import Box from '@mui/material/Box'
 import MuiAppBar from '@mui/material/AppBar'
 import Fab from '@mui/material/Fab'
 import IconButton from '@mui/material/IconButton'
@@ -42,6 +43,8 @@ const AppBar = (props) => {
     flyoutTitle,
     flyoutTitleMargin,
     onToggleFlyoutClick,
+    // EXTRA COMPONENT
+    extraComponent,
   } = props
 
   const classes = useStyles()
@@ -140,6 +143,9 @@ const AppBar = (props) => {
         >
           <IconKeyboardTab/>
         </IconButton>}
+
+        {/* EXTRA COMPONENT */}
+        {extraComponent}
       </Toolbar>
     </MuiAppBar>
   )
@@ -160,6 +166,8 @@ AppBar.defaultProps = {
   isFlyoutShown: false,
   flyoutTitle: '',
   flyoutTitleMargin: 0,
+  // EXTRA COMPONENT
+  extraComponent: null,
 }
 
 AppBar.propTypes = {
@@ -179,6 +187,8 @@ AppBar.propTypes = {
   flyoutTitle: PropTypes.string.isRequired,
   flyoutTitleMargin: PropTypes.number.isRequired,
   onToggleFlyoutClick: PropTypes.func,
+  // EXTRA COMPONENT
+  extraComponent: PropTypes.node,
 }
 
 export default AppBar
