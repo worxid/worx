@@ -2,7 +2,7 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  fab: {
+  leftAction: {
     marginRight: 24,
   },
   search: {
