@@ -21,26 +21,20 @@ const DataGridTable = (props) => {
   const {
     // BASE
     initialColumns,
-    selectedColumnList,
-    setSelectedColumnList,
+    selectedColumnList, setSelectedColumnList,
     rows,
     // PAGINATION
     total,
-    page,
-    pageSize,
-    setPage,
-    setPageSize,
+    page, setPage,
+    pageSize, setPageSize,
     // ORDER
-    setOrder,
-    order,
-    setOrderBy,
-    orderBy,
+    order, setOrder,
+    orderBy, setOrderBy,
     // FILTER
-    setFilters,
     isFilterOn,
+    setFilters,
     // SELECTION
-    selectionModel, 
-    setSelectionModel,
+    selectionModel, setSelectionModel,
     ...otherProps
   } = props
 
@@ -292,12 +286,14 @@ DataGridTable.propTypes = {
   // PAGINATION
   total: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
-  pageSize: PropTypes.number.isRequired,
-  // ORDER
-  setOrder: PropTypes.func.isRequired,
-  setOrderBy: PropTypes.func.isRequired,
   setPage: PropTypes.func.isRequired,
+  pageSize: PropTypes.number.isRequired,
   setPageSize: PropTypes.func.isRequired,
+  // ORDER
+  order: PropTypes.object,
+  setOrder: PropTypes.func.isRequired,
+  orderBy: PropTypes.object,
+  setOrderBy: PropTypes.func.isRequired,
   // FILTER
   setFilters: PropTypes.func.isRequired,
   isFilterOn: PropTypes.bool.isRequired,
