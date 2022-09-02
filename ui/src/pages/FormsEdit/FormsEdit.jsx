@@ -1,6 +1,32 @@
+// COMPONENTS
+import AppBar from 'components/AppBar/AppBar'
+
+// MUIS
+import Button from '@mui/material/Button'
+
+// STYLES
+import useStyles from './formsEditUseStyles'
+
 const FormsEdit = () => {
+  const classes = useStyles()
+
   return (
-    <div>FormsEdit</div>
+    <>
+      <AppBar
+        hasFab={false}
+        hasBack={true}
+        pageTitle='Edit Form'
+        hasSearch={false}
+        extraComponent={
+          <Button 
+            variant='contained'
+            className={classes.appBarExtraComponent}
+          >
+            Save
+          </Button>
+        }
+      />
+    </>
   )
 }
 
