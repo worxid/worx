@@ -9,7 +9,8 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: '100vh',
+    height: '100vh',
+    overflow: 'hidden'
   },
   content: {
     display: 'flex',
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: 'no-repeat',
     borderRight: `3px solid ${theme.palette.common.black}`,
     overflowY: 'hidden',
+    height: '100%'
   },
   containerText: {
     marginTop: 152,
