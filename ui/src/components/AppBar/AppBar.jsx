@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // MUIS
-import Box from '@mui/material/Box'
 import MuiAppBar from '@mui/material/AppBar'
 import Fab from '@mui/material/Fab'
 import IconButton from '@mui/material/IconButton'
