@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import LinkIcon from '@mui/icons-material/Link'
+import IconLink from '@mui/icons-material/Link'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
@@ -90,12 +90,6 @@ const FormsSubmissions = () => {
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
 
-  // SET URL TEXT FIELD
-  const setUrlTextfield = (url) => {
-    if(url.length <= 24) return url
-    else return `${url.slice(0, 24)}...`
-  }
-
   // HANDLE BUTTON COPY CLICK
   const handleButtonCopyClick = (event, url) => {
     navigator.clipboard.writeText(url)
@@ -160,15 +154,16 @@ const FormsSubmissions = () => {
                 alignItems='center'
                 justifyContent='center'
               >
-                <LinkIcon className={classes.iconCopy}/>
+                <IconLink className={classes.iconCopy}/>
               </Stack>
 
               <Typography
                 className={classes.fieldUrl}
                 color='text.secondary'
                 variant='caption'
+                noWrap
               >
-                {setUrlTextfield('http://www.worx.id/xform-submit')}
+                http://www.worx.id/xform-submit
               </Typography>
 
               <Button

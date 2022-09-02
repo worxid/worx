@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
   },
   headerRight: {
     border: `1px solid ${theme.palette.action.hover}`,
-    minWidth: 316,
     height: 36
   },
   headerTitle: {
@@ -25,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldUrl: {
     flex: 1,
+    maxWidth: 198,
     padding: '0 16px 0 8px',
   },
   buttonCopy: {
