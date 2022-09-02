@@ -98,6 +98,7 @@ const Submissions = () => {
           <Button
             variant='contained'
             className={layoutClasses.flyoutListItemActionButton}
+            href='/forms/1/submissions'
           >
             View All
           </Button>
