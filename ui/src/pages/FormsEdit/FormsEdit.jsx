@@ -15,6 +15,7 @@ const FormsEdit = () => {
       <AppBar
         hasFab={false}
         hasBack={true}
+        backLink='/forms'
         pageTitle='Edit Form'
         hasSearch={false}
         extraComponent={

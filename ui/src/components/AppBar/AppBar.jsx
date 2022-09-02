@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // CUSTOM COMPONENTS
@@ -31,6 +30,7 @@ const AppBar = (props) => {
     hasFab,
     // BACK
     hasBack,
+    backLink,
     // TITLE
     pageTitle,
     // SEARCH
@@ -47,8 +47,6 @@ const AppBar = (props) => {
   } = props
 
   const classes = useStyles()
-
-  const navigate = useNavigate()
 
   const [ isSearchOpen, setIsSearchOpen ] = useState(false)
 
@@ -70,7 +68,7 @@ const AppBar = (props) => {
         {/* BACK ICON BUTTON */}
         {hasBack &&
         <IconButton 
-          onClick={() => navigate(-1)}
+          href={backLink}
           className={classes.leftAction}
         >
           <IconArrowBack/>
