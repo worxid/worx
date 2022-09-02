@@ -23,8 +23,17 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.colorTextSecondary': {
+          color: theme.palette.text.secondary,
+        },
+        '.cursorPointer': {
+          cursor: 'pointer !important',
+        },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
+        },
+        '.fontWeight500': {
+          fontWeight: '500 !important',
         },
 
         // SCROLLBAR

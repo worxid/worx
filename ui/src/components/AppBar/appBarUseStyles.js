@@ -17,6 +17,21 @@ const useStyles = makeStyles((theme) => ({
     width: 0,
     transition: 'width 0.25s ease-in-out',
   },
+  flyoutTitle: {
+    display: 'none',
+  },
+  flyoutTitleShown: {
+    display: 'unset',
+    marginLeft: 24,
+  },
+  flyoutInitialToggle: {
+    transform: 'rotate(-180deg)',
+    transition: 'transform 0.25s ease-in-out',
+  },
+  flyoutRotateToggle: {
+    transform: 'rotate(0deg)',
+    transition: 'transform 0.25s ease-in-out',
+  },
 }))
 
 export default useStyles

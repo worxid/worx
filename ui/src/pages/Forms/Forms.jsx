@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import Flyout from 'components/Flyout/Flyout'
+import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
 import { dummyTableData } from './formsConstants'
+import { values } from 'constants/values'
+
+// MUIS
+import Stack from '@mui/material/Stack'
 
 const Forms = () => {  
   const initialColumns = [
@@ -98,6 +104,14 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // FLYOUT
+  const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
+
+  useEffect(() => {
+    if (selectionModel.length === 1) {
+      setIsFlyoutShown(true)
+    }
+  }, [selectionModel])
 
   return (
     <>
@@ -108,53 +122,75 @@ const Forms = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
+        hasFlyout={true}
+        isFlyoutShown={isFlyoutShown}
+        flyoutTitle='Information'
+        flyoutTitleMargin={232}
+        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
-      {/* CONTENT */}
-      <LoadingPaper isLoading={isDataGridLoading}>
-        <DataGridFilters
-          // COLUMN
-          columns={initialColumns}
-          selectedColumnList={selectedColumnList}
-          setSelectedColumnList={setSelectedColumnList}
-          // FILTER
-          isFilterOn={isFilterOn}
-          setIsFilterOn={setIsFilterOn}
-          // TEXT
-          contentTitle='Form List'
-          // EDIT
-          isEditButtonEnabled={selectionModel.length === 1}
-          handleEditButtonClick={() => console.log('edit')}
-          // EDIT
-          isDeleteButtonEnabled={selectionModel.length > 0}
-          handleDeleteButtonClick={() => console.log('delete')}
-        />
+      {/* CONTENTS */}
+      <Stack 
+        direction='row'
+        position='relative'
+        flex='1'
+        height='100%'
+        sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
+      >
+        {/* MAIN CONTENT */}
+        <LoadingPaper isLoading={isDataGridLoading}>
+          <DataGridFilters
+            // COLUMN
+            columns={initialColumns}
+            selectedColumnList={selectedColumnList}
+            setSelectedColumnList={setSelectedColumnList}
+            // FILTER
+            isFilterOn={isFilterOn}
+            setIsFilterOn={setIsFilterOn}
+            // TEXT
+            contentTitle='Form List'
+            // EDIT
+            isEditButtonEnabled={selectionModel.length === 1}
+            handleEditButtonClick={() => console.log('edit')}
+            // EDIT
+            isDeleteButtonEnabled={selectionModel.length > 0}
+            handleDeleteButtonClick={() => console.log('delete')}
+          />
 
-        <DataGridTable
-          // BASE
-          initialColumns={initialColumns}
-          selectedColumnList={selectedColumnList}
-          setSelectedColumnList={setSelectedColumnList}
-          rows={tableData}
-          // PAGINATION
-          total={totalRow}
-          page={pageNumber}
-          setPage={setPageNumber}
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          // ORDER
-          setOrder={setOrder}
-          order={order}
-          setOrderBy={setOrderBy}
-          orderBy={orderBy}
-          // FILTER
-          setFilters={setFilters}
-          isFilterOn={isFilterOn}
-          // SELECTION
-          selectionModel={selectionModel} 
-          setSelectionModel={setSelectionModel}
-        />
-      </LoadingPaper>
+          <DataGridTable
+            // BASE
+            initialColumns={initialColumns}
+            selectedColumnList={selectedColumnList}
+            setSelectedColumnList={setSelectedColumnList}
+            rows={tableData}
+            // PAGINATION
+            total={totalRow}
+            page={pageNumber}
+            setPage={setPageNumber}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            // ORDER
+            setOrder={setOrder}
+            order={order}
+            setOrderBy={setOrderBy}
+            orderBy={orderBy}
+            // FILTER
+            setFilters={setFilters}
+            isFilterOn={isFilterOn}
+            // SELECTION
+            selectionModel={selectionModel} 
+            setSelectionModel={setSelectionModel}
+          />
+        </LoadingPaper>
+
+        {/* SIDE CONTENT */}
+        <Flyout
+          isFlyoutShown={isFlyoutShown}
+          flyoutWidth={values.flyoutWidth}
+        >
+          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+        </Flyout>
+      </Stack>
     </>
   )
 }

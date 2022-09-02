@@ -3,17 +3,15 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    height: '100vh',
-    overflow: 'hidden',
-  },
-  contentContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
     height: '100%',
+    transition: 'all 0.25s ease-in-out',
     padding: 24,
     overflowY: 'auto',
-    overflowX: 'hidden',
-    position: 'relative',
+    backgroundColor: theme.palette.common.white,
+    boxShadow: theme.shadows[7],
   },
 }))
 
