@@ -2,7 +2,7 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  fab: {
+  leftAction: {
     marginRight: 24,
   },
   search: {
@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
   flyoutRotateToggle: {
     transform: 'rotate(0deg)',
     transition: 'transform 0.25s ease-in-out',
+  },
+  extraComponent: {
+    marginLeft: 8,
   },
 }))
 

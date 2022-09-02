@@ -35,6 +35,9 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
+        '.marginRightAuto': {
+          marginRight: 'auto !important',
+        },
 
         // SCROLLBAR
         '&::-webkit-scrollbar': {
