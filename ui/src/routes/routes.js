@@ -60,6 +60,7 @@ const routes = [
   {
     path: '/forms/:id/submissions',
     element: <FormsSubmissions/>,
+    routeType: 'private',
   },
 ]
 

@@ -106,6 +106,8 @@ const FormsSubmissions = () => {
       {/* APP BAR */}
       <AppBar
         hasFab={false}
+        hasBack={true}
+        backLink='/forms'
         pageTitle='Submissions'
         hasSearch={false}
         hasFlyout={false}
