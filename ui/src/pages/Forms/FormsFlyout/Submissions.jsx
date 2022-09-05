@@ -29,10 +29,12 @@ const Submissions = (props) => {
 
   const dummySubmissionList = [
     {
+      id: 1,
       title: 'Identifier',
       value: 'Device 1 20-07-2022, 10:10 PM',
     },
     {
+      id: 2,
       title: 'Identifier',
       value: 'Device 1 20-07-2022, 10:10 PM',
     },
@@ -143,7 +145,7 @@ const Submissions = (props) => {
 
               {/* ACTION */}
               <Link
-                href=''
+                href={`/forms/${item.id}/view`}
                 underline='none'
                 className={layoutClasses.flyoutListItemActionLink}
               >
