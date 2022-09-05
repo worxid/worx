@@ -99,11 +99,6 @@ const FormsSubmissions = () => {
     navigator.clipboard.writeText(url)
   }
 
-  // HANDLE CELL CLICK
-  const handleOnCellClick = (event, params, details) => {
-    navigate(`/forms/${event.row.id}/view`)
-  }
-
   return (
     <>
       {/* APP BAR */}
@@ -230,7 +225,7 @@ const FormsSubmissions = () => {
             // CLASSES
             className={classes.tableFormsSubmissions}
             // CELL
-            onCellClick={handleOnCellClick}
+            onCellClick={(event, params, details) => navigate(`/forms/${event.row.id}/view`)}
           />
         </LoadingPaper>
       </Stack>
