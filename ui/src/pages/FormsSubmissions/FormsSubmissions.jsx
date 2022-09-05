@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -24,6 +25,9 @@ import useStyles from './formsSubmissionsUseStyles'
 const FormsSubmissions = () => {
   // STYLES
   const classes = useStyles()
+
+  // NAVIGATE
+  const navigate = useNavigate()
 
   // INITS
   const initialColumns = [
@@ -220,6 +224,8 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
+            // CELL
+            onCellClick={(event, params, details) => navigate(`/forms/${event.row.id}/view`)}
           />
         </LoadingPaper>
       </Stack>

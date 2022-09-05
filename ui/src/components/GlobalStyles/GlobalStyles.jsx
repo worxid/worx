@@ -38,6 +38,12 @@ const GlobalStyles = () => {
         '.marginRightAuto': {
           marginRight: 'auto !important',
         },
+        '.overflowYauto': {
+          overflowY: 'auto'
+        },
+        '.padding0': {
+          padding: 0,
+        },
 
         // SCROLLBAR
         '&::-webkit-scrollbar': {
