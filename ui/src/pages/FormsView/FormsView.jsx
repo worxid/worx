@@ -13,7 +13,6 @@ import { dummyData } from './formsViewConstants'
 // MUIS
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 
 // STYLES
 import useStyles from './formsViewUseStyles'
@@ -35,39 +34,30 @@ const FormsView = () => {
         hasSearch={false}
       />
 
-      {/* CONTENTS */}
-      <Stack
-        direction='row'
-        position='relative'
-        flex='1'
-        height='100%'
-        className={classes.contents}
-      >
-        {/* MAIN CONTENT */}
-        <LoadingPaper isLoading={isDataGridLoading}>
-          {/* HEADER */}
-          <Header title='Valid Form'/>
+      {/* MAIN CONTENT */}
+      <LoadingPaper isLoading={isDataGridLoading} className={classes.contents}>
+        {/* HEADER */}
+        <Header title='Valid Form'/>
 
-          <Divider />
+        <Divider />
 
-          {/* CONTENT FORM */}
-          <Grid container spacing={0} className={classes.contentForms}>
-            {dummyData.value.fields.map((item, index) => (
-              <ItemGrid
-                label={item.label}
-                description={item.description}
-                key={index}
-                isSeparator={item.type === 'separator'}
-              >
-                <InputComponent
-                  type={item.type}
-                />
-              </ItemGrid>
-            ))}
-            {/* ITEM */}
-          </Grid>
-        </LoadingPaper>
-      </Stack>
+        {/* CONTENT FORM */}
+        <Grid container spacing={0} className={classes.contentForms}>
+          {dummyData.value.fields.map((item, index) => (
+            <ItemGrid
+              label={item.label}
+              description={item.description}
+              key={index}
+              isSeparator={item.type === 'separator'}
+            >
+              <InputComponent
+                type={item.type}
+              />
+            </ItemGrid>
+          ))}
+          {/* ITEM */}
+        </Grid>
+      </LoadingPaper>
     </>
   )
 }
