@@ -113,7 +113,7 @@ const InputComponent = (props) => {
 
       {/* LIST FILE */}
       {type === 'file' && (
-        <List className={classes.list}>
+        <List className='padding0'>
           <ListItem className={classes.listItem}>
             <ListItemAvatar className={classes.listFileAvatar}>
               <IconInsertDriveFile className={classes.listFileIcon}/>
@@ -142,7 +142,7 @@ const InputComponent = (props) => {
 
       {/* LIST IMAGE */}
       {type === 'photo' && (
-        <List className={classes.list}>
+        <List className='padding0'>
           <ListItem className={classes.listItem}>
             <ListItemAvatar className={classes.listFileAvatar}>
               <Box

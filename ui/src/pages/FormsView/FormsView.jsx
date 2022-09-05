@@ -35,7 +35,7 @@ const FormsView = () => {
       />
 
       {/* MAIN CONTENT */}
-      <LoadingPaper isLoading={isFormLoading} className={classes.contents}>
+      <LoadingPaper isLoading={isFormLoading} className='overflowYauto'>
         {/* HEADER */}
         <Header title='Valid Form'/>
 

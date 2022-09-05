@@ -9,9 +9,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
     flex: 1,
   },
-  contents: {
-    overflowY: 'auto',
-  },
   contentForms: {
     overflowY: 'auto',
     padding: 24,
@@ -32,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
   },
   textfieldDateAdornment: {
     color: 'rgba(0, 0, 0, 0.26)'
-  },
-  list: {
-    padding: 0,
   },
   listItem: {
     padding: 0,
