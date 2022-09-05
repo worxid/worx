@@ -27,7 +27,7 @@ import IconCalendarMonth from '@mui/icons-material/CalendarMonth'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
 // STYLES
-import useStyles from '../formsViewUseStyles'
+import useStyles from './formsViewUseStyles'
 
 const InputComponent = (props) => {
   const { type, defaultValue } = props

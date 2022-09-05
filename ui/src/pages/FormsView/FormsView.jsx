@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
-import Header from './Header/Header'
-import InputComponent from './InputComponent/InputComponent'
-import ItemGrid from './ItemGrid/ItemGrid'
+import Header from './Header'
+import InputComponent from './InputComponent'
+import ItemGrid from './ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
@@ -22,7 +22,7 @@ const FormsView = () => {
   const classes = useStyles()
 
   // CONTENT
-  const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ isFormLoading, setIsFormLoading ] = useState(false)
 
   return (
     <>
@@ -35,7 +35,7 @@ const FormsView = () => {
       />
 
       {/* MAIN CONTENT */}
-      <LoadingPaper isLoading={isDataGridLoading} className={classes.contents}>
+      <LoadingPaper isLoading={isFormLoading} className={classes.contents}>
         {/* HEADER */}
         <Header title='Valid Form'/>
 

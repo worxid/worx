@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import IconDownload from '@mui/icons-material/Download'
 
 // STYLES
-import useStyles from '../formsViewUseStyles'
+import useStyles from './formsViewUseStyles'
 
 const Header = (props) => {
   const { title } = props
