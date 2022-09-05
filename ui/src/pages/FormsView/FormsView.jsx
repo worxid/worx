@@ -3,6 +3,7 @@ import { useState } from 'react'
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import Header from './Header/Header'
+import InputComponent from './InputComponent/InputComponent'
 import ItemGrid from './ItemGrid/ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
@@ -16,7 +17,6 @@ import Stack from '@mui/material/Stack'
 
 // STYLES
 import useStyles from './formsViewUseStyles'
-import InputComponent from './InputComponent/InputComponent'
 
 const FormsView = () => {
   // STYLES
