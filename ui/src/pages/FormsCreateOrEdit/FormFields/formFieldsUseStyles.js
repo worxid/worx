@@ -1,12 +1,10 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: '20px 24px'
-  },
-  formFieldsTitle: {
-    backgroundColor: theme.palette.primary.main,
   },
   informationWrap: {
     width: 370,
@@ -56,6 +54,20 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     overflowY: 'auto',
     padding: '22px'
+  },
+  boxFormHeader: {
+    padding: '4px 16px',
+    '& .MuiAlert-message': {
+      padding: 0,
+    },
+    '& .MuiAlertTitle-root': {
+      margin: 0,
+      fontSize: 14,
+      lineHeight: 1.4
+    }
+  },
+  formDescription: {
+    color: alpha('#FFFFFF', 0.54)
   }
 }))
 

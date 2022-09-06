@@ -23,6 +23,9 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.backgroundColorPrimaryMain': {
+          backgroundColor: theme.palette.primary.main,
+        },
         '.colorTextPrimary': {
           color: theme.palette.text.primary,
         },
@@ -31,6 +34,9 @@ const GlobalStyles = () => {
         },
         '.cursorPointer': {
           cursor: 'pointer !important',
+        },
+        '.flexDirectionRow': {
+          flexDirection: 'row',
         },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,

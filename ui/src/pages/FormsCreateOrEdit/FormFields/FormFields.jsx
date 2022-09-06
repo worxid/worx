@@ -5,6 +5,7 @@ import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditCont
 
 // MUIS
 import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItem from '@mui/material/ListItem'
@@ -40,8 +41,17 @@ const FormFields = () => {
         <Typography variant='subtitle1'>Form Fields</Typography>
       </Box>
 
-      <Alert variant='filled' severity='error' className={classes.formFieldsTitle}>
-        Untitled Form
+      <Alert
+        variant='filled'
+        severity='error'
+        className={`${classes.boxFormHeader} backgroundColorPrimaryMain`}
+      >
+        <AlertTitle>Untitled Form</AlertTitle>
+
+        <Typography
+          className={classes.formDescription}
+          variant='caption'
+        >Ini adalah deskripsi</Typography>
       </Alert>
 
       {/* LIST FIELDS */}

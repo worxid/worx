@@ -45,7 +45,7 @@ const FormsCreateOrEdit = () => {
       {/* MAIN CONTENT */}
       <LoadingPaper
         isLoading={isFormLoading}
-        className={`${classes.loadingPaper} overflowYauto`}
+        className='flexDirectionRow overflowYauto'
       >
         {/* TOOLBOX */}
         <Toolbox />

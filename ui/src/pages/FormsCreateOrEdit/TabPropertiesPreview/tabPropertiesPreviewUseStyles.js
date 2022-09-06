@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px 24px',
   },
   formControl: {
+    marginBottom: 16,
     '& .MuiOutlinedInput-notchedOutline': {
       border: `2px solid ${theme.palette.action.selected}`
     }
