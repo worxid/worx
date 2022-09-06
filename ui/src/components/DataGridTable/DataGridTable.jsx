@@ -243,7 +243,7 @@ const DataGridTable = (props) => {
         paginationMode='server'
         rowCount={total}
         // SORT
-        sortingMode='server'
+        // sortingMode='server' "SERVER SIDE SORTING CAUSES ERROR ON GROUP BY ROW FEATURE"
         sortModel={sortModel}
         onSortModelChange={handleSortModelChange}
         // SELECTION

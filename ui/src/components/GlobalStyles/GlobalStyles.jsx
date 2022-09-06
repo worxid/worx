@@ -23,11 +23,20 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.backgroundColorPrimaryMain': {
+          backgroundColor: theme.palette.primary.main,
+        },
+        '.colorTextPrimary': {
+          color: theme.palette.text.primary,
+        },
         '.colorTextSecondary': {
           color: theme.palette.text.secondary,
         },
         '.cursorPointer': {
           cursor: 'pointer !important',
+        },
+        '.flexDirectionRow': {
+          flexDirection: 'row',
         },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
