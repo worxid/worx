@@ -13,6 +13,8 @@ import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
 
+import Devices from 'pages/Devices/Devices'
+
 const routes = [
   // AUTHENTICATION
   {
@@ -82,6 +84,11 @@ const routes = [
   {
     path: '/forms/:id/view',
     element: <FormsView/>,
+    routeType: 'private',
+  },
+  {
+    path: '/devices',
+    element: <Devices/>,
     routeType: 'private',
   },
 ]
