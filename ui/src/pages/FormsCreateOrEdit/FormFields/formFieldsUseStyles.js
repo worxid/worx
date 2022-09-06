@@ -37,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
     '&.Mui-selected': {
       boxShadow: `2px 2px 0px ${theme.palette.text.primary}`,
       backgroundColor: theme.palette.primary.main,
-      color: '#FFFFFF',
+      color: theme.palette.common.white,
       '& .MuiSvgIcon-root': {
-        color: '#FFFFFF'
+        color: theme.palette.common.white
       },
       '&:hover': {
         backgroundColor: theme.palette.primary.light
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   formDescription: {
-    color: alpha('#FFFFFF', 0.54)
+    color: alpha(theme.palette.common.white, 0.54)
   }
 }))
 

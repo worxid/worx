@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiButtonBase-root.MuiTab-root.Mui-selected': {
       color: theme.palette.text.primary,
-      backgroundColor: '#FFFFFF'
+      backgroundColor: theme.palette.common.white
     }
   },
   headerProperties: {

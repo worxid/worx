@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 24px 20px 24px',
   },
   listItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.palette.common.white,
     border: `2px solid ${theme.palette.action.selected}`,
     marginBottom: 12,
   },
