@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     backgroundColor: 'transparent',
     border: 'none',
-    padding: '8px 20px 8px 20px',
+    padding: '8px 0',
     '&:last-child': {
       paddingBottom: 0,
     }
