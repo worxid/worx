@@ -6,7 +6,8 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px 24px'
   },
   formFieldsTitle: {
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: theme.palette.primary.main,
+    padding: '12px 25px',
   },
   informationWrap: {
     width: 370,
