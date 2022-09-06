@@ -48,7 +48,7 @@ const FormFields = () => {
       <Stack className={classes.listFieldsWrap}>
         {/* SORTABLE */}
         <ReactSortable
-          style={{ minHeight: '100%', overflowY: 'auto', padding: '18px 0' }}
+          style={{ minHeight: '100%', overflowY: 'auto', padding: '18px 4px' }}
           animation={200}
           delayOnTouchStart={true}
           delay={2}
