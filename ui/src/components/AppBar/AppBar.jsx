@@ -153,7 +153,6 @@ const AppBar = (props) => {
 AppBar.defaultProps = {
   // FAB
   hasFab: true,
-  onFabClick: () => true,
   // BACK
   hasBack: false,
   // TITLE

@@ -117,8 +117,6 @@ const Forms = () => {
     }
   }, [selectionModel])
 
-  console.log({ selectionModel })
-
   return (
     <>
       {/* APP BAR */}
