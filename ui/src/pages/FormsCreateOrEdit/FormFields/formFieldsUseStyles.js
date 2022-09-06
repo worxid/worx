@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   listItemButton: {
-    padding: '14px 26px',
+    padding: '14px 18px',
     border: `1px solid ${theme.palette.text.primary}`,
     '&.Mui-selected': {
       boxShadow: `2px 2px 0px ${theme.palette.text.primary}`,
