@@ -23,6 +23,9 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.colorTextPrimary': {
+          color: theme.palette.text.primary,
+        },
         '.colorTextSecondary': {
           color: theme.palette.text.secondary,
         },

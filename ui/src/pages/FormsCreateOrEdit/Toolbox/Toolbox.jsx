@@ -37,12 +37,12 @@ const Toolbox = () => {
         className={classes.header}
       >
         {/* TITLE */}
-        <Typography variant='h6'>Toolbox</Typography>
+        <Typography variant='subtitle1'>Toolbox</Typography>
 
         {/* DESCRIPTION */}
         <Typography
           className={classes.headerDescription}
-          variant='subtitle1'
+          variant='caption'
         >
           (drag & drop)
         </Typography>
@@ -65,12 +65,12 @@ const Toolbox = () => {
         >
           {dataListComponents.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>
-              <ListItemButton className={classes.listItemButton}>
+              <ListItemButton>
                 <ListItemIcon className={classes.listItemIcon}>
-                  <item.Icon className={classes.icon}/>
+                  <item.Icon className='colorTextPrimary'/>
                 </ListItemIcon>
 
-                <ListItemText primary={item.label} />
+                <ListItemText primary={<Typography variant='body2'>{item.label}</Typography>} />
               </ListItemButton>
             </ListItem>
           ))}

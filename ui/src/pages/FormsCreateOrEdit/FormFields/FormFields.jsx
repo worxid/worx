@@ -14,7 +14,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import DragHandleIcon from '@mui/icons-material/DragHandle'
+import IconDragHandle from '@mui/icons-material/DragHandle'
 
 // SORTABLE JS
 import { ReactSortable } from 'react-sortablejs'
@@ -37,7 +37,7 @@ const FormFields = () => {
       {/* HEADER */}
       <Box className={classes.header}>
         {/* TITLE */}
-        <Typography variant='h6'>Form Fields</Typography>
+        <Typography variant='subtitle1'>Form Fields</Typography>
       </Box>
 
       <Alert variant='filled' severity='error' className={classes.formFieldsTitle}>
@@ -48,7 +48,7 @@ const FormFields = () => {
       <Stack className={classes.listFieldsWrap}>
         {/* SORTABLE */}
         <ReactSortable
-          style={{ minHeight: '100%', overflowY: 'auto', padding: '14px 24px 24px 24px' }}
+          className={classes.reactSortable}
           animation={200}
           delayOnTouchStart={true}
           delay={2}
@@ -69,12 +69,12 @@ const FormFields = () => {
                 selected={selectedFields === item.id}
               >
                 <ListItemIcon className={classes.listItemIcon}>
-                  <item.Icon className={classes.icon}/>
+                  <item.Icon className='colorTextPrimary'/>
                 </ListItemIcon>
 
-                <ListItemText primary={item.label} />
+                <ListItemText primary={<Typography variant='body'>{item.label}</Typography>} />
 
-                {selectedFields === item.id && (<DragHandleIcon />)}
+                {selectedFields === item.id && (<IconDragHandle />)}
               </ListItemButton>
             </ListItem>
           ))}

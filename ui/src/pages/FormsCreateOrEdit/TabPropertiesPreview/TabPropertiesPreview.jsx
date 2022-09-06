@@ -29,6 +29,7 @@ const TabPropertiesPreview = () => {
         value={tabPosition}
         onChange={(event, newValue) => setTabPosition(newValue)}
         className={classes.tabCustom}
+        variant='fullWidth'
       >
         <Tab icon={<IconSettingsSuggest />} iconPosition='start' label='Properties' />
         <Tab icon={<IconSmartphone />} iconPosition='start' label='Preview' />

@@ -19,16 +19,10 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.action.selected}`,
     marginBottom: 12,
   },
-  listItemButton: {
-    padding: '14px 26px'
-  },
   listItemIcon: {
     minWidth: 'auto',
     paddingRight: 16,
   },
-  icon: {
-    color: theme.palette.text.primary
-  }
 }))
 
 export default useStyles

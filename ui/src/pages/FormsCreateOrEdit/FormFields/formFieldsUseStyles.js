@@ -7,7 +7,6 @@ const useStyles = makeStyles((theme) => ({
   },
   formFieldsTitle: {
     backgroundColor: theme.palette.primary.main,
-    padding: '12px 25px',
   },
   informationWrap: {
     width: 370,
@@ -15,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    padding: '0 8px'
   },
   informationTitle: {
     marginBottom: 8,
@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     backgroundColor: 'transparent',
     border: 'none',
-    padding: '8px 0',
+    padding: 0,
+    marginBottom: 12,
     '&:last-child': {
-      paddingBottom: 0,
+      marginBottom: 0,
     }
   },
   listItemButton: {
-    padding: '14px 18px',
     border: `1px solid ${theme.palette.text.primary}`,
     '&.Mui-selected': {
       boxShadow: `2px 2px 0px ${theme.palette.text.primary}`,
@@ -52,8 +52,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 'auto',
     paddingRight: 16,
   },
-  icon: {
-    color: theme.palette.text.primary
+  reactSortable: {
+    minHeight: '100%',
+    overflowY: 'auto',
+    padding: '22px'
   }
 }))
 

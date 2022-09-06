@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   headerProperties: {
-    padding: '16px 24px'
+    padding: '14px 24px'
   },
   contentsProperties: {
     padding: '10px 24px',
