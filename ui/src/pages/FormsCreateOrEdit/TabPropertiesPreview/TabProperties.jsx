@@ -1,6 +1,5 @@
 // MUIS
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Stack from '@mui/material/Stack'
@@ -39,8 +38,6 @@ const TabProperties = () => {
             label='Form Name'
             defaultValue='Valid Form'
           />
-
-          <FormHelperText></FormHelperText>
         </FormControl>
 
         <FormControl
@@ -58,8 +55,6 @@ const TabProperties = () => {
             label='Description'
             defaultValue='Ini adalah deskripsi'
           />
-
-          <FormHelperText></FormHelperText>
         </FormControl>
       </Stack>
     </Stack>
