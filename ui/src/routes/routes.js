@@ -1,8 +1,11 @@
+// CONTEXTS
+import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOrEditContext'
+
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
-import FormsEdit from 'pages/FormsEdit/FormsEdit'
+import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
 import FormsSubmissions from 'pages/FormsSubmissions/FormsSubmissions'
 import FormsView from 'pages/FormsView/FormsView'
 import Home from 'pages/Home/Home'
@@ -54,8 +57,21 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/:id/edit',
-    element: <FormsEdit/>,
+    path: '/forms/create',
+    element: (
+      <PageFormsCreateOrEditContextProvider>
+        <FormsCreateOrEdit />
+      </PageFormsCreateOrEditContextProvider>
+    ),
+    routeType: 'private',
+  },
+  {
+    path: '/forms/edit/:id',
+    element: (
+      <PageFormsCreateOrEditContextProvider>
+        <FormsCreateOrEdit />
+      </PageFormsCreateOrEditContextProvider>
+    ),
     routeType: 'private',
   },
   {
