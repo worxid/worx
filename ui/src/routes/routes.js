@@ -3,6 +3,7 @@ import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOr
 
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
+import Devices from 'pages/Devices/Devices'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
 import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
@@ -12,6 +13,7 @@ import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
+
 
 const routes = [
   // AUTHENTICATION
@@ -82,6 +84,11 @@ const routes = [
   {
     path: '/forms/:id/view',
     element: <FormsView/>,
+    routeType: 'private',
+  },
+  {
+    path: '/devices',
+    element: <Devices/>,
     routeType: 'private',
   },
 ]

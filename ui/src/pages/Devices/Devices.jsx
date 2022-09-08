@@ -6,82 +6,74 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import Flyout from 'components/Flyout/Flyout'
-import FormFlyout from './FormsFlyout/FormsFlyout'
+import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData } from './formsConstants'
+import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
 
 // MUIS
 import Stack from '@mui/material/Stack'
 
-const Forms = () => {  
+const Devices = () => {  
   const initialColumns = [
     {
-      field: 'formTitle',
-      headerName: 'Form Title',
+      field: 'status',
+      headerName: 'Status',
+      flex: 1,
+      minWidth: 125,
+      hide: false,
+      areFilterAndSortShown: true,
+    },
+    {
+      field: 'label',
+      headerName: 'Label',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
     },
     {
-      field: 'description',
-      headerName: 'Description',
+      field: 'identifier',
+      headerName: 'Identifier',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
     },
     {
-      field: 'created',
-      headerName: 'Created',
+      field: 'deviceModel',
+      headerName: 'Device Model',
       flex: 1,
-      minWidth: 200,
+      minWidth: 150,
       hide: false,
       areFilterAndSortShown: true,
     },
     {
-      field: 'updated',
-      headerName: 'Updated',
+      field: 'deviceVersion',
+      headerName: 'Device Version',
       flex: 1,
-      minWidth: 200,
+      minWidth: 125,
+      hide: false,
+      areFilterAndSortShown: true,
+    },
+    {
+      field: 'deviceAppVersion',
+      headerName: 'Device App Version',
+      flex: 1,
+      minWidth: 150,
       hide: false,
       areFilterAndSortShown: true,
     },
     {
       field: 'groups',
-      headerName: 'Updated',
+      headerName: 'Groups',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissions',
-      headerName: 'Submissions',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'fields',
-      headerName: 'Fields',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'defaultForms',
-      headerName: 'Default Form',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
+    }
   ]
 
   const initialFilters = {}
@@ -121,9 +113,9 @@ const Forms = () => {
     <>
       {/* APP BAR */}
       <AppBar
-        hasFab={true}
+        hasFab={false}
         onFabClick={() => navigate('/forms/create')}
-        pageTitle='Forms'
+        pageTitle='Devices'
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
@@ -153,7 +145,7 @@ const Forms = () => {
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
             // TEXT
-            contentTitle='Form List'
+            contentTitle='Device List'
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
@@ -193,11 +185,11 @@ const Forms = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
         </Flyout>
       </Stack>
     </>
   )
 }
 
-export default Forms
+export default Devices
