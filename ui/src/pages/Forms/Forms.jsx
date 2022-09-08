@@ -157,7 +157,7 @@ const Forms = () => {
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
-            // EDIT
+            // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
             handleDeleteButtonClick={() => console.log('delete')}
           />

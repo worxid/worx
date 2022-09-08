@@ -16,18 +16,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     fontWeight: 500,
   },
-  flyoutRowActionButtons: {
-    flexDirection: 'row',
-  },
   flyoutListItemRejectButton: {
-    background: 'rgba(218, 54, 48, 0.1)',
-    color: '#DA3630',
+    backgroundColor: theme.palette.primary.outlinedHoverBackground,
+    color: theme.palette.primary.main,
     fontWeight: 500
   },
   flyoutListItemApproveButton: {
     marginLeft: '10px',
-    background: 'rgba(76, 175, 80, 0.1)',
-    color: '#4CAF50',
+    backgroundColor: theme.palette.success.background,
+    color: theme.palette.success.main,
     fontWeight: 500
   },
 }))

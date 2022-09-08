@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 // MUIS
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -107,9 +106,6 @@ const DevicesFlyout = (props) => {
                   <Typography 
                     variant='caption'
                     className='colorTextSecondary'
-                    sx={{
-                      textTransform: 'capitalize'
-                    }}
                   >
                     {item.title}
                   </Typography>
@@ -122,31 +118,36 @@ const DevicesFlyout = (props) => {
               />
 
               {/* ACTION */}
-              {item.title === 'status' ?
-                item.value === 'Pending' ?
-                  <Box className={layoutClasses.flyoutRowActionButtons}>
+              {item.title === 'status' &&
+                <>
+                  {
+                    item.value === 'Pending' &&
+                  (<Stack direction='row'>
                     <Button
                       variant='contained'
-                      className={[layoutClasses.flyoutListItemActionButton, layoutClasses.flyoutListItemRejectButton]}
+                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
                     >
                       Reject
                     </Button>
                     <Button
                       variant='contained'
-                      className={[layoutClasses.flyoutListItemActionButton, layoutClasses.flyoutListItemApproveButton]}
+                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
                     >
                       Approve
                     </Button>
-                  </Box>
-                  : item.value === 'Approved' || item.value === 'Rejected' ? <Box>
-                    <Button
-                      variant='contained'
-                      className={layoutClasses.flyoutListItemActionButton}
-                    >
-                      Change Group
-                    </Button></Box>
-                    : <Box></Box>
-                : <Box></Box>
+                  </Stack>)
+                  }
+                  {
+                    item.value === 'Approved' && (
+                      <Button
+                        variant='contained'
+                        className={layoutClasses.flyoutListItemActionButton}
+                      >
+                        Change Group
+                      </Button>
+                    )
+                  }
+                </>
               }
             </ListItem>
           ))}

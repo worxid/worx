@@ -41,7 +41,7 @@ export const dummyTableData = [
   },
   {
     'id': 5,
-    'status': 'Rejected',
+    'status': 'Approved',
     'label': 'Kato Farmer',
     'identifier': 'A0A02614BD1E92FE',
     'deviceModel': 'Xiaomi',

@@ -3,6 +3,7 @@ import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOr
 
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
+import Devices from 'pages/Devices/Devices'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
 import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
@@ -13,7 +14,6 @@ import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
 
-import Devices from 'pages/Devices/Devices'
 
 const routes = [
   // AUTHENTICATION
