@@ -14,23 +14,24 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     letterSpacing: '1%'
   },
-  dialogActions: {
-    padding: 0,
-  },
   dialogButton: {
     fontWeight: 400,
     border: 'none',
     boxShadow: 'none',
-    '&:hover': {
-      backgroundColor: 'transparent',
-      boxShadow: 'none',
-    },
   },
   cancelButton: {
     color: theme.palette.text.secondary,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.outlinedHoverBackground,
+      boxShadow: 'none',
+    },
   },
   deleteButton: {
     color: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+      boxShadow: 'none',
+    },
   },
 }))
 

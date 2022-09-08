@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 
 // CUSTOM COMPONENTS
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogActions from 'components/Customs/CustomDialogActions'
 import CustomDialogDelete from 'components/Customs/CustomDialogDelete'
 
 // MUIS
+import DialogActions from '@mui/material/DialogActions'
 import Typography from '@mui/material/Typography'
 
 // RAMDA
@@ -60,7 +60,7 @@ const DialogConfirmation = (props) => {
       </Typography>
 
       {/* DIALOG ACTIONS */}
-      <CustomDialogActions className={classes.dialogActions}>
+      <DialogActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
           className={`${classes.dialogButton} ${classes.cancelButton}`}
@@ -73,7 +73,7 @@ const DialogConfirmation = (props) => {
         <CustomDialogActionButton className={`${classes.dialogButton} ${classes.deleteButton}`} onClick={onContinueButtonClick}>
           {continueButtonText}
         </CustomDialogActionButton>
-      </CustomDialogActions>
+      </DialogActions>
     </CustomDialogDelete>
   )
 }
