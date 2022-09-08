@@ -1,5 +1,6 @@
 server:
   port: ${HTTP_BIND_PORT:8080}
+  forward-headers-strategy: framework
 
 # SQL DAO Configuration
 spring:
