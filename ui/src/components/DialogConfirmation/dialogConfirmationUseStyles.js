@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
   cancelButton: {
     color: theme.palette.text.secondary,
     '&:hover': {
-      backgroundColor: theme.palette.primary.outlinedHoverBackground,
+      backgroundColor: theme.palette.action.hover,
       boxShadow: 'none',
     },
   },
   deleteButton: {
     color: theme.palette.primary.main,
     '&:hover': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette.primary.outlinedHoverBackground,
       boxShadow: 'none',
     },
   },
