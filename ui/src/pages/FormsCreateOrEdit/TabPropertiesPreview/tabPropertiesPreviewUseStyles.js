@@ -22,6 +22,19 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 16,
     '& .MuiOutlinedInput-notchedOutline': {
       border: `2px solid ${theme.palette.action.selected}`
+    },
+    '& .MuiFormControlLabel-label': {
+      fontSize: 14,
+    }
+  },
+  buttonOutlinedPrimary: {
+    color: theme.palette.primary.main,
+    border: `2px solid ${theme.palette.primary.main}`,
+    boxShadow: 'none',
+    width: 160,
+    '&:hover': {
+      border: `2px solid ${theme.palette.primary.main}`,
+      boxShadow: 'none',
     }
   }
 }))

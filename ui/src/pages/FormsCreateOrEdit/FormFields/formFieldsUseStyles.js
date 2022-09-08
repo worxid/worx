@@ -56,7 +56,11 @@ const useStyles = makeStyles((theme) => ({
     padding: '22px'
   },
   boxFormHeader: {
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
     padding: '4px 16px',
+    color: theme.palette.text.primary,
+    cursor: 'pointer',
     '& .MuiAlert-message': {
       padding: 0,
     },
@@ -64,11 +68,14 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
       fontSize: 14,
       lineHeight: 1.4
+    },
+    '&.active': {
+      color: theme.palette.common.white,
+      '& .MuiTypography-caption': {
+        color: alpha(theme.palette.common.white, 0.54),
+      }
     }
   },
-  formDescription: {
-    color: alpha(theme.palette.common.white, 0.54)
-  }
 }))
 
 export default useStyles
