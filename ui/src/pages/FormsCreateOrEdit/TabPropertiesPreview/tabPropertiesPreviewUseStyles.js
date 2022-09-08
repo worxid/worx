@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     marginBottom: 16,
+    '&.formControlGrouped': {
+      marginBottom: 24,
+    },
     '& .MuiOutlinedInput-notchedOutline': {
       border: `2px solid ${theme.palette.action.selected}`
     },
@@ -36,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
       border: `2px solid ${theme.palette.primary.main}`,
       boxShadow: 'none',
     }
+  },
+  buttonRemoveOption: {
+    marginRight: 1,
   }
 }))
 

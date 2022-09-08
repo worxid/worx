@@ -21,14 +21,14 @@ const TabProperties = () => {
   const { selectedFieldsType } = useContext(PageFormsCreateOrEditContext)
 
   return (
-    <Stack flex={1} direction='column'>
+    <Stack flex={1} direction='column' className='overflowYauto'>
       {/* HEADER */}
       <Stack className={classes.headerProperties}>
         <Typography variant='subtitle1'>Fields Properties</Typography>
       </Stack>
 
       {/* CONTENTS */}
-      <Stack className={classes.contentsProperties}>
+      <Stack direction='column' className={`${classes.contentsProperties} overflowYauto`}>
         <FieldProperties type={selectedFieldsType} />
       </Stack>
     </Stack>

@@ -6,11 +6,14 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 
 // MUI ICONS
 import IconAdd from '@mui/icons-material/Add'
+import IconCancel from '@mui/icons-material/Cancel'
 
 // STYLES
 import useStyles from './tabPropertiesPreviewUseStyles'
@@ -29,12 +32,15 @@ const FieldProperties = (props) => {
   // OPTIONS
   const [tempListOptions, setTempListOptions] = useState([
     {
+      id: 1,
       label: 'Option #1'
     },
     {
+      id: 2,
       label: 'Option #2'
     },
     {
+      id: 3,
       label: 'Option #3'
     }
   ])
@@ -130,7 +136,7 @@ const FieldProperties = (props) => {
 
       {/* OPTION LIST */}
       {(type === 'checkboxGroup' || type === 'radioGroup' || type === 'dropdown') && (
-        <FormGroup className={classes.formControl}>
+        <FormGroup className={`${classes.formControl} formControlGrouped`}>
           {tempListOptions.map((item, index) => (
             <FormControl
               className={classes.formControl}
@@ -147,6 +153,18 @@ const FieldProperties = (props) => {
                 type='text'
                 label={`Option #${index+1}`}
                 placeholder={`Option #${index+1}`}
+                endAdornment={
+                  <InputAdornment position='end'>
+                    <IconButton
+                      className={classes.buttonRemoveOption}
+                      aria-label='remove'
+                      onClick={() => tempListOptions.length > 1 && setTempListOptions(tempListOptions.filter(itemFilter => itemFilter.id !== item.id))}
+                      edge='end'
+                    >
+                      <IconCancel />
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
             </FormControl>
           ))}
@@ -157,10 +175,54 @@ const FieldProperties = (props) => {
             variant='outlined'
             startIcon={<IconAdd />}
             onClick={() => setTempListOptions([...tempListOptions, {
-                
+              id: tempListOptions.length + 1,
+              label: `Option ${tempListOptions.length + 1}`
             }])}
-          >Add Options</Button>
+          >
+            Add Options
+          </Button>
         </FormGroup>
+      )}
+
+      {/* TYPE CHECKBOXGROUP */}
+      {type === 'checkboxGroup' && (
+        <>
+          {/* MIN CHECKED CHECKBOX */}
+          <FormControl
+            className={classes.formControl}
+            variant='outlined' 
+            fullWidth
+            color='secondary'
+          >
+            <InputLabel>
+              Min. Checked Positions
+            </InputLabel>
+        
+            <OutlinedInput
+              type='number'
+              label='Min. Checked Positions'
+              placeholder='1'
+            />
+          </FormControl>
+
+          {/* MAX CHECKED CHECKBOX */}
+          <FormControl
+            className={classes.formControl}
+            variant='outlined' 
+            fullWidth
+            color='secondary'
+          >
+            <InputLabel>
+              Max. Checked Positions
+            </InputLabel>
+        
+            <OutlinedInput
+              type='number'
+              label='Max. Checked Positions'
+              placeholder='3'
+            />
+          </FormControl>
+        </>
       )}
 
       {/* DEFAULT FIELD PROPERTIES */}
