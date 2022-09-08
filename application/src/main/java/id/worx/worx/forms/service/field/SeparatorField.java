@@ -1,20 +1,23 @@
 package id.worx.worx.forms.service.field;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import id.worx.worx.forms.service.value.SeparatorValue;
+import id.worx.worx.forms.service.value.Value;
+import lombok.experimental.SuperBuilder;
+
 @JsonIgnoreProperties({ "required" })
+@SuperBuilder
 public class SeparatorField extends Field {
 
     private static final long serialVersionUID = -3759320479136054037L;
 
     private String icon;
 
-    public SeparatorField() {
-        super(FieldType.SEPARATOR);
-    }
-
-    public SeparatorField(String id, String label, String description, Boolean required, String icon) {
-        super(id, label, description, FieldType.SEPARATOR, required);
+    @JsonCreator
+    public SeparatorField(String id, String label, String description, String icon) {
+        super(id, label, description, FieldType.SEPARATOR, false);
         this.icon = icon;
     }
 
@@ -22,8 +25,9 @@ public class SeparatorField extends Field {
         return icon;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    @Override
+    public boolean validate(Value value) {
+        return value instanceof SeparatorValue;
     }
 
 }
