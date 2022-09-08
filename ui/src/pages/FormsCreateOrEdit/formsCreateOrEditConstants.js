@@ -20,13 +20,13 @@ export const dataListComponents = [
   {
     id: 2,
     label: 'Checkbox',
-    type: 'checkbox_group',
+    type: 'checkboxGroup',
     Icon: IconCheckBox,
   },
   {
     id: 3,
     label: 'Radio Button',
-    type: 'radio_group',
+    type: 'radioGroup',
     Icon: IconRadioButtonChecked,
   },
   {
