@@ -438,6 +438,7 @@ FieldProperties.propTypes = {
   type: PropTypes.oneOf(['formHeader', 'text', 'checkboxGroup', 'radioGroup', 'dropdown', 'date', 'separator', 'rating', 'file', 'image', 'signature']),
   label: PropTypes.string,
   description: PropTypes.string,
+  required: PropTypes.bool,
   optionList: PropTypes.object,
   checkboxMinChecked: PropTypes.number,
   checkboxMaxChecked: PropTypes.number,
