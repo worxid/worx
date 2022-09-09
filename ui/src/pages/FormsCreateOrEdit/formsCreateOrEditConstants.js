@@ -20,13 +20,13 @@ export const dataListComponents = [
   {
     id: 2,
     label: 'Checkbox',
-    type: 'checkbox_group',
+    type: 'checkboxGroup',
     Icon: IconCheckBox,
   },
   {
     id: 3,
     label: 'Radio Button',
-    type: 'radio_group',
+    type: 'radioGroup',
     Icon: IconRadioButtonChecked,
   },
   {
@@ -71,4 +71,19 @@ export const dataListComponents = [
     type: 'signature',
     Icon: IconCreate,
   },
+]
+export const formatFiles = ['any', 'csv', 'doc', 'pdf', 'xls']
+export const formatSizeImages = [
+  {
+    label: 'Bytes',
+    value: 'BYTES'
+  },
+  {
+    label: 'Kb',
+    value: 'KB'
+  },
+  {
+    label: 'Mb',
+    value: 'MB'
+  }
 ]

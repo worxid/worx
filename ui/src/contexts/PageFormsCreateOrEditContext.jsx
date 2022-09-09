@@ -11,7 +11,8 @@ const PageFormsCreateOrEditContextProvider = (props) => {
   // DRAG AND DROP
   const [listFields, setListFields] = useState([])
   const [listToolbox, setListToolbox] = useState(dataListComponents)
-  const [selectedFields, setSelectedFields] = useState('')
+  const [selectedFieldsId, setSelectedFieldsId] = useState(0) // STRING | NUMBER
+  const [selectedFieldsType, setSelectedFieldsType] = useState('formHeader')
 
   return (
     <PageFormsCreateOrEditContext.Provider
@@ -21,7 +22,8 @@ const PageFormsCreateOrEditContextProvider = (props) => {
         // DRAG AND DROP
         listFields, setListFields,
         listToolbox, setListToolbox,
-        selectedFields, setSelectedFields
+        selectedFieldsId, setSelectedFieldsId,
+        selectedFieldsType, setSelectedFieldsType
       }}
     >
       {props.children}

@@ -30,8 +30,15 @@ const FormFields = () => {
   // CONTEXT
   const {
     listFields, setListFields,
-    selectedFields, setSelectedFields,
+    selectedFieldsId, setSelectedFieldsId,
+    setSelectedFieldsType
   } = useContext(PageFormsCreateOrEditContext)
+
+  // HANDLE SELECTED FIELD
+  const handleSelectedField = (type, id) => {
+    setSelectedFieldsId(id)
+    setSelectedFieldsType(type)
+  }
 
   return (
     <Stack flex={1}>
@@ -41,10 +48,12 @@ const FormFields = () => {
         <Typography variant='subtitle1'>Form Fields</Typography>
       </Box>
 
+      {/* ALERT ID = 0 */}
       <Alert
         variant='filled'
         severity='error'
-        className={`${classes.boxFormHeader} backgroundColorPrimaryMain`}
+        className={`${classes.boxFormHeader} ${selectedFieldsId === 0 && 'backgroundColorPrimaryMain active'}`}
+        onClick={() => handleSelectedField('formHeader', 0)}
       >
         <AlertTitle>Untitled Form</AlertTitle>
 
@@ -75,8 +84,8 @@ const FormFields = () => {
             <ListItem key={index} disablePadding className={classes.listItem}>
               <ListItemButton
                 className={classes.listItemButton}
-                onClick={() => setSelectedFields(item.id)}
-                selected={selectedFields === item.id}
+                onClick={() => handleSelectedField(item.type, item.id)}
+                selected={selectedFieldsId === item.id}
               >
                 <ListItemIcon className={classes.listItemIcon}>
                   <item.Icon className='colorTextPrimary'/>
@@ -84,7 +93,7 @@ const FormFields = () => {
 
                 <ListItemText primary={<Typography variant='body'>{item.label}</Typography>} />
 
-                {selectedFields === item.id && (<IconDragHandle />)}
+                {selectedFieldsId === item.id && (<IconDragHandle />)}
               </ListItemButton>
             </ListItem>
           ))}

@@ -26,6 +26,9 @@ const GlobalStyles = () => {
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,
         },
+        '.borderRadius0': {
+          borderRadius: 0,
+        },
         '.colorTextPrimary': {
           color: theme.palette.text.primary,
         },
@@ -43,6 +46,9 @@ const GlobalStyles = () => {
         },
         '.fontWeight500': {
           fontWeight: '500 !important',
+        },
+        '.marginBottom0': {
+          marginBottom: 0,
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
