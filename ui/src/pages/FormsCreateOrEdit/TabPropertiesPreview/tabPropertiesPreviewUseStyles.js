@@ -12,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.common.white
     }
   },
-  headerProperties: {
-    padding: '8px 24px'
-  },
   contentsProperties: {
     padding: '10px 24px',
   },

@@ -28,10 +28,16 @@ const TabProperties = () => {
   return (
     <Stack flex={1} direction='column' className='overflowYauto'>
       {/* HEADER */}
-      <Stack direction='row' alignItems='center' className={classes.headerProperties}>
+      <Stack
+        direction='row'
+        alignItems='center'
+        sx={{
+          padding: selectedFieldsType !== 'formHeader' ? '8px 24px' : '14px 24px',
+        }}
+      >
         <Typography flex={1} variant='subtitle1'>Fields Properties</Typography>
 
-        <Stack direction='row'>
+        {selectedFieldsType !== 'formHeader' && (<Stack direction='row'>
           {/* BUTTON DELETE */}
           <IconButton>
             <IconDelete />
@@ -41,7 +47,7 @@ const TabProperties = () => {
           <IconButton>
             <IconContentCopy />
           </IconButton>
-        </Stack>
+        </Stack>)}
       </Stack>
 
       {/* CONTENTS */}
