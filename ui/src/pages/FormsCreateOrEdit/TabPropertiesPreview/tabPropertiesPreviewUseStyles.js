@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   headerProperties: {
-    padding: '14px 24px'
+    padding: '8px 24px'
   },
   contentsProperties: {
     padding: '10px 24px',
@@ -40,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none',
     }
   },
-  buttonRemoveOption: {
-    marginRight: 1,
-  }
 }))
 
 export default useStyles

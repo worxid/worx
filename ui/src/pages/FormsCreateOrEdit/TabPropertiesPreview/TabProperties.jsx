@@ -1,14 +1,19 @@
 import { useContext } from 'react'
 
-// CONTEXT
-import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
-
 // COMPONENTS
 import FieldProperties from './FieldProperties'
 
+// CONTEXT
+import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
+
 // MUIS
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+// MUI ICONS
+import IconContentCopy from '@mui/icons-material/ContentCopy'
+import IconDelete from '@mui/icons-material/Delete'
 
 // STYLES
 import useStyles from './tabPropertiesPreviewUseStyles'
@@ -23,8 +28,20 @@ const TabProperties = () => {
   return (
     <Stack flex={1} direction='column' className='overflowYauto'>
       {/* HEADER */}
-      <Stack className={classes.headerProperties}>
-        <Typography variant='subtitle1'>Fields Properties</Typography>
+      <Stack direction='row' alignItems='center' className={classes.headerProperties}>
+        <Typography flex={1} variant='subtitle1'>Fields Properties</Typography>
+
+        <Stack direction='row'>
+          {/* BUTTON DELETE */}
+          <IconButton>
+            <IconDelete />
+          </IconButton>
+
+          {/* BUTTON COPY */}
+          <IconButton>
+            <IconContentCopy />
+          </IconButton>
+        </Stack>
       </Stack>
 
       {/* CONTENTS */}
