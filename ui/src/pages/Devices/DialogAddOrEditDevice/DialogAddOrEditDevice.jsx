@@ -26,10 +26,11 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
-const DialogAddOrEditDevice = () => {
+const DialogAddOrEditDevice = (props) => {
   const layoutClasses = useLayoutStyles()
-
-  const { setIsDialogAddOrEditOpen, dataDialogEdit, setDataDialogEdit } = useContext(PrivateLayoutContext)
+  
+  const { dataDialogEdit, setDataDialogEdit } = props
+  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
   const [ label, setLabel ] = useState('')
 

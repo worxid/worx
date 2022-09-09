@@ -81,7 +81,7 @@ const Devices = () => {
     }
   ]
 
-  const { setIsDialogAddOrEditOpen, setDataDialogEdit } = useContext(PrivateLayoutContext)
+  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
   const initialFilters = {}
 
@@ -112,6 +112,9 @@ const Devices = () => {
 
   // DELETE DIALOG
   const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
+
+  // DATA EDIT DEVICE
+  const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
 
   useEffect(() => {
     if (selectionModel.length === 1) {
@@ -206,7 +209,10 @@ const Devices = () => {
       </Stack>
 
       {/* DIALOG EDIT DEVICES */}
-      <DialogAddOrEditDevice />
+      <DialogAddOrEditDevice 
+        dataDialogEdit={dataDialogEdit}
+        setDataDialogEdit={setDataDialogEdit} 
+      />
 
       {/* DIALOG DELETE DEVICES */}
       <DialogConfirmation
