@@ -43,7 +43,7 @@ public class PhotoField extends Field {
     @Override
     public boolean validate(Value value) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
 }
