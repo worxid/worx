@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -103,6 +104,9 @@ const Devices = () => {
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
+  // DELETE DIALOG
+  const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
+
   useEffect(() => {
     if (selectionModel.length === 1) {
       setIsFlyoutShown(true)
@@ -114,7 +118,6 @@ const Devices = () => {
       {/* APP BAR */}
       <AppBar
         hasFab={false}
-        onFabClick={() => navigate('/forms/create')}
         pageTitle='Devices'
         hasSearch={true}
         search={pageSearch}
@@ -151,7 +154,7 @@ const Devices = () => {
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => console.log('delete')}
+            handleDeleteButtonClick={() => setDialogDeleteDevice({id: selectionModel})}
           />
 
           <DataGridTable
@@ -187,6 +190,19 @@ const Devices = () => {
         >
           <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
         </Flyout>
+
+        {/* DIALOG DELETE DEVICES */}
+        <DialogConfirmation
+          title='Delete Device'
+          caption='Are you sure you want to delete this device?'
+          dialogConfirmationObject={dialogDeleteDevice}
+          setDialogConfirmationObject={setDialogDeleteDevice}
+          cancelButtonText='Cancel'
+          continueButtonText='Delete'
+          onContinueButtonClick={() => setDialogDeleteDevice({})}
+          onCancelButtonClick={() => setDialogDeleteDevice({})}
+        />
+
       </Stack>
     </>
   )
