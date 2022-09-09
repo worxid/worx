@@ -41,6 +41,9 @@ const GlobalStyles = () => {
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
         },
+        '.fontSize22': {
+          fontSize: '22px !important',
+        },
         '.fontWeight500': {
           fontWeight: '500 !important',
         },

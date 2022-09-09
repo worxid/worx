@@ -14,9 +14,11 @@ import { isEmpty } from 'ramda'
 
 // STYLES
 import useStyles from './dialogConfirmationUseStyles'
+import useLayoutStyles from 'styles/layoutPrivate'
 
 const DialogConfirmation = (props) => {
   const classes = useStyles()
+  const layoutClasses = useLayoutStyles()
 
   const {
     title,
@@ -63,14 +65,14 @@ const DialogConfirmation = (props) => {
       <DialogActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
-          className={`${classes.dialogButton} ${classes.cancelButton}`}
+          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`}
           onClick={onCancelButtonClick}
         >
           {cancelButtonText}
         </CustomDialogActionButton>
 
         {/* DELETE BUTTON */}
-        <CustomDialogActionButton className={`${classes.dialogButton} ${classes.deleteButton}`} onClick={onContinueButtonClick}>
+        <CustomDialogActionButton className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`} onClick={onContinueButtonClick}>
           {continueButtonText}
         </CustomDialogActionButton>
       </DialogActions>
