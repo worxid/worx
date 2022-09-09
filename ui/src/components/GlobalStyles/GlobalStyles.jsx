@@ -41,9 +41,6 @@ const GlobalStyles = () => {
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
         },
-        '.fontSize22': {
-          fontSize: '22px !important',
-        },
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
@@ -55,6 +52,9 @@ const GlobalStyles = () => {
         },
         '.padding0': {
           padding: 0,
+        },
+        '.width100': {
+          width: '100%',
         },
 
         // SCROLLBAR

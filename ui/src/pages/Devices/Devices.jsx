@@ -81,7 +81,7 @@ const Devices = () => {
     }
   ]
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsDialogAddOrEditOpen, setDataDialogEdit } = useContext(PrivateLayoutContext)
 
   const initialFilters = {}
 
@@ -122,7 +122,8 @@ const Devices = () => {
   // HANDLE EDIT BUTTON CLICKED
   const handleEditButtonClick = () => {
     const editData = tableData.filter(item => item.id === selectionModel[0])
-    setIsDialogAddOrEditOpen(...editData)
+    setDataDialogEdit(...editData)
+    setIsDialogAddOrEditOpen(true)
   }
 
   return (

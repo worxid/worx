@@ -50,6 +50,18 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none',
     },
   },
+  dialogAddOrEditFormControlContainer: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    height: 65,
+    width: '100%',
+    flex: '0 0 65px',
+  },
+  dialogAddOrEditFormControlIcon: {
+    marginRight: 12,
+    marginBottom: 2,
+    color: theme.palette.text.secondary,
+  },
 }))
 
 export default useStyles

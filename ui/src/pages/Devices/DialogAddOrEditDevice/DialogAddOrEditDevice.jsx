@@ -24,27 +24,30 @@ import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // STYLES
-import useStyles from './devicesUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 const DialogAddOrEditDevice = () => {
-  const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
-  const { isDialogAddOrEditOpen, setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsDialogAddOrEditOpen, dataDialogEdit, setDataDialogEdit } = useContext(PrivateLayoutContext)
 
   const [ label, setLabel ] = useState('')
 
-  useEffect(() => {
-    setLabel(isDialogAddOrEditOpen?.label ?? '')
-  }, [isDialogAddOrEditOpen])
-
   const handleActionButtonClick = async (inputType) => {
-    setIsDialogAddOrEditOpen(false)
     if (inputType === 'save') {
     }
-    setLabel('')
+    handleClose()
   }
+  
+  const handleClose = () => {
+    setLabel('')
+    setDataDialogEdit(null)
+    setIsDialogAddOrEditOpen(false)
+  }
+
+  useEffect(() => {
+    setLabel(dataDialogEdit?.label ?? '')
+  }, [dataDialogEdit])
 
   return (
     <DialogAddOrEdit>
@@ -54,11 +57,11 @@ const DialogAddOrEditDevice = () => {
           {/* CLOSE ICON */}
           <IconClose
             className={layoutClasses.dialogAddOrEditIconClose}
-            onClick={() => setIsDialogAddOrEditOpen(false)}
+            onClick={handleClose}
           />
 
           {/* TITLE */}
-          <Typography className='fontWeight500 fontSize22'>
+          <Typography variant='h6' className='fontWeight500'>
             Edit Device
           </Typography>
         </Stack>
@@ -66,16 +69,16 @@ const DialogAddOrEditDevice = () => {
 
       {/* DIALOG CONTENT */}
       <CustomDialogContent>
-        <Typography variant='h6'>
+        <Typography variant='subtitle1'>
           Main Information
         </Typography>
 
         {/* LABEL INPUT */}
-        <Stack direction='row' className={classes.iconAndFormControlContainer}>
-          <IconFormatColorText className={classes.iconFormControl}/>
+        <Stack direction='row' className={layoutClasses.dialogAddOrEditFormControlContainer}>
+          <IconFormatColorText className={layoutClasses.dialogAddOrEditFormControlIcon}/>
           <FormControl 
             variant='standard' 
-            className={classes.formControl}
+            className='width100'
           >
             <InputLabel>
               Label
