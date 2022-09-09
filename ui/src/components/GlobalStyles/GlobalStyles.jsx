@@ -47,17 +47,11 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
-        '.gap8': {
-          gap: 8,
-        },
         '.marginBottom0': {
           marginBottom: 0,
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
-        },
-        '.marginRight1': {
-          marginRight: 1,
         },
         '.overflowYauto': {
           overflowY: 'auto'

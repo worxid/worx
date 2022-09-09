@@ -174,7 +174,6 @@ const FieldProperties = (props) => {
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton
-                      className='marginRight1'
                       onClick={() => tempListOptions.length > 1 && setTempListOptions(tempListOptions.filter(itemFilter => itemFilter.id !== item.id))}
                       edge='end'
                     >
@@ -321,7 +320,7 @@ const FieldProperties = (props) => {
               )}
               input={<OutlinedInput label='Format File' placeholder='Any'/>}
               renderValue={(selected) => (
-                <Stack direction='row' flexWrap='wrap' className='gap8'>
+                <Stack direction='row' flexWrap='wrap' columnGap={'8px'}>
                   {selected.map((value) => (
                     <Chip key={value} label={value} className='borderRadius0'/>
                   ))}
