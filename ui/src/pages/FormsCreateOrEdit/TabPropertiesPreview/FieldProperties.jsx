@@ -253,7 +253,7 @@ const FieldProperties = (props) => {
         <>
           {/* STARS */}
           <FormControl className={classes.formControl}>
-            <Rating name='text-feedback' value={getValueStarsCount()} max={getValueStarsCount()} size='large' readOnly/>
+            <Rating value={getValueStarsCount()} max={getValueStarsCount()} size='large' readOnly/>
           </FormControl>
 
           {/* START COUNT */}
