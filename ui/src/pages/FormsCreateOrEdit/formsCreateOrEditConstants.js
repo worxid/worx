@@ -72,3 +72,18 @@ export const dataListComponents = [
     Icon: IconCreate,
   },
 ]
+export const formatFiles = ['any', 'csv', 'doc', 'pdf', 'xls']
+export const formatSizeImages = [
+  {
+    label: 'Bytes',
+    value: 'BYTES'
+  },
+  {
+    label: 'Kb',
+    value: 'KB'
+  },
+  {
+    label: 'Mb',
+    value: 'MB'
+  }
+]
