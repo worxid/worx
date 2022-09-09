@@ -59,6 +59,9 @@ const GlobalStyles = () => {
         '.padding0': {
           padding: 0,
         },
+        '.width100': {
+          width: '100%',
+        },
 
         // SCROLLBAR
         '&::-webkit-scrollbar': {
