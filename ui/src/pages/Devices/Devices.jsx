@@ -6,6 +6,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
+import DialogChangeGroup from './DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
@@ -110,8 +111,11 @@ const Devices = () => {
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
+  // SELECTED GROUP DATA
+  const [ groupData, setGroupData ] = useState([])
+
   // DELETE DIALOG
-  const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
+  const [ dialogDeleteDevice, setDialogDeleteDevice ] = useState({})
 
   // DATA EDIT DEVICE
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
@@ -204,10 +208,13 @@ const Devices = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData} />
         </Flyout>
       </Stack>
 
+      {/* DIALOG CHANGE GROUP */}
+      <DialogChangeGroup data={groupData} />
+      
       {/* DIALOG EDIT DEVICES */}
       <DialogAddOrEditDevice 
         dataDialogEdit={dataDialogEdit}

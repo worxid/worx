@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
     marginBottom: 2,
     color: theme.palette.text.secondary,
-  },
+  }
 }))
 
 export default useStyles

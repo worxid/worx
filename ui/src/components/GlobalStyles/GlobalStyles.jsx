@@ -57,7 +57,7 @@ const GlobalStyles = () => {
           overflowY: 'auto !important'
         },
         '.padding0': {
-          padding: 0,
+          padding: '0 !important',
         },
         '.width100': {
           width: '100%',
