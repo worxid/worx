@@ -7,7 +7,7 @@ export const dummyTableData = [
     'deviceModel': 'Samsung',
     'deviceVersion': 30,
     'deviceAppVersion': '1.0',
-    'groups': ['red, yellow, orange, violet']
+    'groups': ['Default', 'Medical', 'Group 3', 'Group 6']
   },
   {
     'id': 2,
@@ -17,7 +17,7 @@ export const dummyTableData = [
     'deviceModel': 'Oppo',
     'deviceVersion': 30,
     'deviceAppVersion': '1.0',
-    'groups': ['violet']
+    'groups': ['Group 2']
   },
   {
     'id': 3,
@@ -27,7 +27,7 @@ export const dummyTableData = [
     'deviceModel': 'Xiaomi',
     'deviceVersion': 31,
     'deviceAppVersion': '1.0',
-    'groups': ['indigo']
+    'groups': ['Default']
   },
   {
     'id': 4,
@@ -37,7 +37,7 @@ export const dummyTableData = [
     'deviceModel': 'Xiaomi',
     'deviceVersion': 31,
     'deviceAppVersion': '1.0',
-    'groups': ['violet, orange']
+    'groups': ['Medical', 'Group 1']
   },
   {
     'id': 5,
@@ -47,6 +47,6 @@ export const dummyTableData = [
     'deviceModel': 'Xiaomi',
     'deviceVersion': 30,
     'deviceAppVersion': '1.0',
-    'groups': ['green, yellow, indigo']
+    'groups': ['Group 1', 'Group 3', 'Group 5']
   }
 ]
