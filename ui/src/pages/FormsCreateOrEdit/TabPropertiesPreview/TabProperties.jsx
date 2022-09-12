@@ -79,7 +79,7 @@ const TabProperties = () => {
 
       {/* CONTENTS */}
       <Stack direction='column' className={`${classes.contentsProperties} overflowYauto`}>
-        <FieldProperties type={selectedFieldsType} />
+        <FieldProperties />
       </Stack>
     </Stack>
   )
