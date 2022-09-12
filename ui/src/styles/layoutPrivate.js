@@ -61,18 +61,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
     marginBottom: 2,
     color: theme.palette.text.secondary,
-  },
-  groupItem: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  menuSearchBox: {
-    height: 52,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 24px',
-    borderTop: `1px solid ${theme.palette.divider}`,
-    borderBottom: `1px solid ${theme.palette.divider}`,
   }
 }))
 

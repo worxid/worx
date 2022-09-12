@@ -6,9 +6,6 @@ import DialogForm from 'components/DialogForm/DialogForm'
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
-// CUSTOM COMPONENTS
-import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-
 // MUIS
 import Input from '@mui/material/Input'
 import Stack from '@mui/material/Stack'
@@ -23,7 +20,7 @@ import IconClear from '@mui/icons-material/Clear'
 import IconSearch from '@mui/icons-material/Search'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
+import useLayoutStyles from './dialogChangeGroupUseStyles'
 
 const DialogChangeGroup = (props) => {
   const layoutClasses = useLayoutStyles()
