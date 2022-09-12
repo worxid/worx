@@ -39,7 +39,7 @@ const GlobalStyles = () => {
           cursor: 'pointer !important',
         },
         '.flexDirectionRow': {
-          flexDirection: 'row',
+          flexDirection: 'row !important',
         },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
@@ -54,7 +54,7 @@ const GlobalStyles = () => {
           marginRight: 'auto !important',
         },
         '.overflowYauto': {
-          overflowY: 'auto'
+          overflowY: 'auto !important'
         },
         '.padding0': {
           padding: 0,
