@@ -1,9 +1,11 @@
 import { useContext } from 'react'
-import React from 'react'
 import PropTypes from 'prop-types'
 
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
+
+// CUSTOM COMPONENTS
+import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
 
 // MUIS
 import Dialog from '@mui/material/Dialog'
@@ -13,29 +15,29 @@ import DialogTitle from '@mui/material/DialogTitle'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from './dialogFormUseStyles'
 
 const DialogForm = (props) => {
   const layoutClasses = useLayoutStyles()
+  const classes = useStyles()
 
   const {
     title,
     children,
-    dialogAction,
+    handleActionButtonClick,
     classNames
   } = props
 
   const { isDialogFormOpen, setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
-  const handleDialogClose = () => setIsDialogFormOpen(false)
-
   return (
     <Dialog
       open={isDialogFormOpen}
-      onClose={handleDialogClose}
-      className={`${layoutClasses.dialogForm} ${classNames}`}
+      onClose={() => setIsDialogFormOpen(false)}
+      className={`${classes.dialogForm} ${classNames}`}
     >
       {/* TITLE */}
-      <DialogTitle className={layoutClasses.dialogFormTitle}>
+      <DialogTitle className={classes.dialogFormTitle}>
         {title}
       </DialogTitle>
 
@@ -45,8 +47,20 @@ const DialogForm = (props) => {
       </DialogContent>
 
       {/* DIALOG ACTIONS */}
-      <DialogActions className={layoutClasses.dialogFormActions}>
-        {dialogAction}
+      <DialogActions className={classes.dialogFormActions}>
+        <CustomDialogActionButton 
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
+          onClick={() => handleActionButtonClick('cancel')}
+        >
+          Cancel
+        </CustomDialogActionButton>
+
+        <CustomDialogActionButton
+          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
+          onClick={() => handleActionButtonClick('save')}
+        >
+          Save
+        </CustomDialogActionButton>
       </DialogActions>
     </Dialog>
   )
@@ -59,7 +73,7 @@ DialogForm.defaultProps = {
 DialogForm.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
-  dialogAction: PropTypes.node.isRequired,
+  handleActionButtonClick: PropTypes.func.isRequired,
 }
 
 export default DialogForm

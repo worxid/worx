@@ -66,26 +66,10 @@ const DialogChangeGroup = (props) => {
   return (
     <DialogForm 
       title={'Select Group'} 
-      dialogAction={
-        <>
-          <CustomDialogActionButton 
-            className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
-            onClick={() => handleActionButtonClick('cancel')}
-          >
-            Cancel
-          </CustomDialogActionButton>
-
-          <CustomDialogActionButton
-            className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
-            onClick={() => handleActionButtonClick('save')}
-          >
-            Save
-          </CustomDialogActionButton>
-        </>}
+      handleActionButtonClick={handleActionButtonClick}
       classNames='dialogChangeGroup'
     >
       {/* CONTENT */}
-      
       <Stack direction='row' className={layoutClasses.menuSearchBox}>
         {/* INPUT */}
         <Input
@@ -98,9 +82,9 @@ const DialogChangeGroup = (props) => {
 
         {/* ICON */}
         {search === '' 
-          ? <IconSearch className={layoutClasses.menuSearchIcon} /> 
+          ? <IconSearch className={'cursorPointer'} /> 
           : <IconClear
-            className={layoutClasses.menuSearchIcon}
+            className={'cursorPointer'}
             onClick={() => setSearch('')}
           />
         }
@@ -110,7 +94,7 @@ const DialogChangeGroup = (props) => {
           <ListItemButton 
             key={index}
             className={layoutClasses.groupItem}
-            // onClick={() => setSelectedGroup(item)}
+            dense
           >
             {/* RADIO */}
             <ListItemIcon>

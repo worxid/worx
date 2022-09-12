@@ -62,35 +62,17 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 2,
     color: theme.palette.text.secondary,
   },
-  dialogForm: {
-    '& .MuiDialog-paper': {
-      width: 400,
-      height: '550px !important',
-      border: `3px solid ${theme.palette.text.primary}`
-    }
-  },
-  dialogFormTitle: {
-    fontSize: 18
-  },
-  dialogFormActions: {
-    borderTop: `3px solid ${theme.palette.text.primary}`,
-    width: '100%',
-    padding: 10
-  },
   groupItem: {
-    borderBottom: '1px solid #EFEFEF',
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   menuSearchBox: {
-    height: 56,
+    height: 52,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '0 25px',
-    borderTop: '1px solid #EFEFEF',
-    borderBottom: '1px solid #EFEFEF',
-  },
-  menuSearchIcon: {
-    cursor: 'pointer'
+    padding: '0 24px',
+    borderTop: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
   }
 }))
 
