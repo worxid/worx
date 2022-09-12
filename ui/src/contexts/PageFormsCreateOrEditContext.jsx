@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 
 // CONSTANTS
-import { dataListComponents } from 'pages/FormsCreateOrEdit/formsCreateOrEditConstants'
+import { dataListComponents, initObjectForm } from 'pages/FormsCreateOrEdit/formsCreateOrEditConstants'
 
 const PageFormsCreateOrEditContext = createContext()
 
@@ -13,6 +13,8 @@ const PageFormsCreateOrEditContextProvider = (props) => {
   const [listToolbox, setListToolbox] = useState(dataListComponents)
   const [selectedFieldsId, setSelectedFieldsId] = useState(0) // STRING | NUMBER
   const [selectedFieldsType, setSelectedFieldsType] = useState('formHeader')
+  // FORM
+  const [formObject, setFormObject] = useState(initObjectForm)
 
   return (
     <PageFormsCreateOrEditContext.Provider
@@ -23,7 +25,9 @@ const PageFormsCreateOrEditContextProvider = (props) => {
         listFields, setListFields,
         listToolbox, setListToolbox,
         selectedFieldsId, setSelectedFieldsId,
-        selectedFieldsType, setSelectedFieldsType
+        selectedFieldsType, setSelectedFieldsType,
+        // FORM
+        formObject, setFormObject,
       }}
     >
       {props.children}

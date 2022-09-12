@@ -25,6 +25,19 @@ const Toolbox = () => {
   // STYLES
   const classes = useStyles()
 
+  // INITS
+  const initOptionList = [
+    {
+      label: ''
+    },
+    {
+      label: ''
+    },
+    {
+      label: ''
+    }
+  ]
+
   // CONTEXT
   const { listToolbox, setListToolbox } = useContext(PageFormsCreateOrEditContext)
 
@@ -61,7 +74,12 @@ const Toolbox = () => {
             pull: 'clone',
             put: false
           }}
-          clone={(item) => ({ ...item, id: uuid() })}
+          clone={(item) => {
+            if(item.type === 'checkboxGroup' || item.type === 'radioGroup' || item.type === 'dropdown') {
+              // INIT NEW OPTION LIST
+              return { ...item, id: uuid(), optionList: initOptionList, } 
+            } else return { ...item, id: uuid() }
+          }}
         >
           {dataListComponents.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>
@@ -70,7 +88,7 @@ const Toolbox = () => {
                   <item.Icon className='colorTextPrimary'/>
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body2'>{item.label}</Typography>} />
+                <ListItemText primary={<Typography variant='body2'>{item.title}</Typography>} />
               </ListItemButton>
             </ListItem>
           ))}

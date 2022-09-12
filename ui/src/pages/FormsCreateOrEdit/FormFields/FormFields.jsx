@@ -29,7 +29,7 @@ const FormFields = () => {
 
   // CONTEXT
   const {
-    listFields, setListFields,
+    formObject, listFields, setListFields,
     selectedFieldsId, setSelectedFieldsId,
     setSelectedFieldsType
   } = useContext(PageFormsCreateOrEditContext)
@@ -55,12 +55,14 @@ const FormFields = () => {
         className={`${classes.boxFormHeader} ${selectedFieldsId === 0 && 'backgroundColorPrimaryMain active'}`}
         onClick={() => handleSelectedField('formHeader', 0)}
       >
-        <AlertTitle>Untitled Form</AlertTitle>
+        <Stack direction='column' justifyContent='center'>
+          <AlertTitle>{formObject.label}</AlertTitle>
 
-        <Typography
-          className={classes.formDescription}
-          variant='caption'
-        >Ini adalah deskripsi</Typography>
+          {formObject.description && (<Typography
+            className={classes.formDescription}
+            variant='caption'
+          >{formObject.description}</Typography>)}
+        </Stack>
       </Alert>
 
       {/* LIST FIELDS */}
@@ -91,7 +93,7 @@ const FormFields = () => {
                   <item.Icon className='colorTextPrimary'/>
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body'>{item.label}</Typography>} />
+                <ListItemText primary={<Typography variant='body'>{item?.label || item.title}</Typography>} />
 
                 {selectedFieldsId === item.id && (<IconDragHandle />)}
               </ListItemButton>
