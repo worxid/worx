@@ -56,9 +56,9 @@ const FormFields = () => {
         onClick={() => handleSelectedField('formHeader', 0)}
       >
         <Stack direction='column' justifyContent='center'>
-          <AlertTitle>{formObject?.label}</AlertTitle>
+          <AlertTitle>{formObject.label}</AlertTitle>
 
-          {formObject?.description && (<Typography
+          {formObject.description && (<Typography
             className={classes.formDescription}
             variant='caption'
           >{formObject.description}</Typography>)}
