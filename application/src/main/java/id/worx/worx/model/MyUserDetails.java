@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyUserDetails  implements UserDetails {
+public class MyUserDetails implements UserDetails {
 
     private Long id;
     private String userName;

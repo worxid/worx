@@ -10,6 +10,7 @@ import id.worx.worx.model.request.users.UserRequest;
 import id.worx.worx.model.response.auth.JwtResponse;
 import id.worx.worx.model.response.users.UserResponse;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,12 +73,9 @@ public class UsersServiceImpl implements UsersService {
             .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                 loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        MyUserDetails userDetails = (MyUserDetails) authenticate.getPrincipal();
         String accessToken = jwtUtil.generateToken((UserDetails) authenticate.getPrincipal());
-        String refreshToken = createRefreshToken(userDetails.getId()).getToken();
         return JwtResponse.builder()
             .accessToken(accessToken)
-            .refreshToken(refreshToken)
             .email(loginRequest.getEmail())
             .build();
     }
