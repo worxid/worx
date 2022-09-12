@@ -11,16 +11,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
 
 // MUIS
-import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 
-// STYLES
-import useStyles from './formsCreateOrEditUseStyles'
-
 const FormsCreateOrEdit = () => {
-  // STYLES
-  const classes = useStyles()
-
   // CONTEXT
   const { isFormLoading, setIsFormLoading } = useContext(PageFormsCreateOrEditContext)
 
@@ -32,14 +25,6 @@ const FormsCreateOrEdit = () => {
         backLink='/forms'
         pageTitle='Add New Form'
         hasSearch={false}
-        extraComponent={
-          <Button 
-            variant='contained'
-            className={classes.appBarExtraComponent}
-          >
-            Save
-          </Button>
-        }
       />
 
       {/* MAIN CONTENT */}
