@@ -56,6 +56,9 @@ public class MyUserDetails implements UserDetails {
         return true;
     }
 
+    @Override
+    public boolean isEnabled(){return true;}
+
     public Long getId() {
         return id;
     }
