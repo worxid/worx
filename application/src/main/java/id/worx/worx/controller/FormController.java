@@ -26,18 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FormController {
 
-    private final FormTemplateService formTemplateService;
-
     // demo/form/list
     @GetMapping("list")
-    public ResponseEntity<?> list() {
-
-        List<Field> fields = formTemplateService.getSampleFieldList();
-        Map<String, Value> values = formTemplateService.getSampleValueMap();
-
+    public ResponseEntity<FormResponse> list() {
         FormResponse response = FormResponse.builder()
-                .fields(fields)
-                .values(values)
+                .fields(null)
+                .values(null)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -46,7 +40,7 @@ public class FormController {
 
     // demo/form/submit
     @PostMapping("submit")
-    public ResponseEntity<?> submit(@RequestBody SubmitRequest request) {
+    public ResponseEntity<String> submit(@RequestBody SubmitRequest request) {
 
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();

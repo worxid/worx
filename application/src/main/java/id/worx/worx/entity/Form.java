@@ -39,7 +39,7 @@ public class Form extends BaseEntity {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String fields;
 
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(name = "form_values", columnDefinition = "MEDIUMTEXT")
     private String values;
 
     private Boolean submitInZone;
