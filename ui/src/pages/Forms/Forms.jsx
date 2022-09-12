@@ -74,14 +74,6 @@ const Forms = () => {
       hide: false,
       areFilterAndSortShown: true,
     },
-    {
-      field: 'defaultForms',
-      headerName: 'Default Form',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
   ]
 
   const initialFilters = {}
