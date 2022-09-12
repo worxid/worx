@@ -23,17 +23,32 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
+        '.backgroundColorPrimaryMain': {
+          backgroundColor: theme.palette.primary.main,
+        },
+        '.borderRadius0': {
+          borderRadius: 0,
+        },
+        '.colorTextPrimary': {
+          color: theme.palette.text.primary,
+        },
         '.colorTextSecondary': {
           color: theme.palette.text.secondary,
         },
         '.cursorPointer': {
           cursor: 'pointer !important',
         },
+        '.flexDirectionRow': {
+          flexDirection: 'row',
+        },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
         },
         '.fontWeight500': {
           fontWeight: '500 !important',
+        },
+        '.marginBottom0': {
+          marginBottom: 0,
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
@@ -43,6 +58,9 @@ const GlobalStyles = () => {
         },
         '.padding0': {
           padding: 0,
+        },
+        '.width100': {
+          width: '100%',
         },
 
         // SCROLLBAR

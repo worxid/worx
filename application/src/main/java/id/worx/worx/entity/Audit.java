@@ -1,5 +1,12 @@
 package id.worx.worx.entity;
 
+import java.io.Serializable;
+import java.time.Instant;
+
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +16,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class Audit implements Serializable {
 
     @CreatedDate
     @Column(name = "created_on", nullable = false)
-    private LocalDateTime createdOn;
+    private Instant createdOn;
 
     @LastModifiedBy
     @Column(name = "modified_by", length = 100, nullable = false)
@@ -39,6 +40,6 @@ public class Audit implements Serializable {
 
     @LastModifiedDate
     @Column(name = "modified_on", nullable = false)
-    private LocalDateTime modifiedOn;
+    private Instant modifiedOn;
 
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -85,6 +86,9 @@ const Forms = () => {
 
   const initialFilters = {}
 
+  // NAVIGATE
+  const navigate = useNavigate()
+
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
@@ -118,6 +122,7 @@ const Forms = () => {
       {/* APP BAR */}
       <AppBar
         hasFab={true}
+        onFabClick={() => navigate('/forms/create')}
         pageTitle='Forms'
         hasSearch={true}
         search={pageSearch}
@@ -151,8 +156,8 @@ const Forms = () => {
             contentTitle='Form List'
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={() => console.log('edit')}
-            // EDIT
+            handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
+            // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
             handleDeleteButtonClick={() => console.log('delete')}
           />

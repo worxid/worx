@@ -28,6 +28,7 @@ const AppBar = (props) => {
   const {
     // FAB
     hasFab,
+    onFabClick,
     // BACK
     hasBack,
     backLink,
@@ -61,6 +62,7 @@ const AppBar = (props) => {
         <Fab 
           color='primary'
           className={classes.leftAction}
+          onClick={onFabClick}
         >
           <IconAdd/>
         </Fab>}
@@ -170,6 +172,7 @@ AppBar.defaultProps = {
 AppBar.propTypes = {
   // FAB
   hasFab: PropTypes.bool.isRequired,
+  onFabClick: PropTypes.func,
   // BACK
   hasBack: PropTypes.bool.isRequired,
   // TITLE
