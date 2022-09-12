@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
@@ -13,6 +14,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 // CONSTANTS
 import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
 import Stack from '@mui/material/Stack'
@@ -77,6 +81,8 @@ const Devices = () => {
     }
   ]
 
+  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+
   const initialFilters = {}
 
   // NAVIGATE
@@ -107,11 +113,21 @@ const Devices = () => {
   // DELETE DIALOG
   const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
 
+  // DATA EDIT DEVICE
+  const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
+
   useEffect(() => {
     if (selectionModel.length === 1) {
       setIsFlyoutShown(true)
     }
   }, [selectionModel])
+
+  // HANDLE EDIT BUTTON CLICKED
+  const handleEditButtonClick = () => {
+    const editData = tableData.filter(item => item.id === selectionModel[0])
+    setDataDialogEdit(...editData)
+    setIsDialogAddOrEditOpen(true)
+  }
 
   return (
     <>
@@ -151,7 +167,7 @@ const Devices = () => {
             contentTitle='Device List'
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
+            handleEditButtonClick={handleEditButtonClick}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
             handleDeleteButtonClick={() => setDialogDeleteDevice({id: selectionModel})}
@@ -190,20 +206,25 @@ const Devices = () => {
         >
           <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
         </Flyout>
-
-        {/* DIALOG DELETE DEVICES */}
-        <DialogConfirmation
-          title='Delete Device'
-          caption='Are you sure you want to delete this device?'
-          dialogConfirmationObject={dialogDeleteDevice}
-          setDialogConfirmationObject={setDialogDeleteDevice}
-          cancelButtonText='Cancel'
-          continueButtonText='Delete'
-          onContinueButtonClick={() => setDialogDeleteDevice({})}
-          onCancelButtonClick={() => setDialogDeleteDevice({})}
-        />
-
       </Stack>
+
+      {/* DIALOG EDIT DEVICES */}
+      <DialogAddOrEditDevice 
+        dataDialogEdit={dataDialogEdit}
+        setDataDialogEdit={setDataDialogEdit} 
+      />
+
+      {/* DIALOG DELETE DEVICES */}
+      <DialogConfirmation
+        title='Delete Device'
+        caption='Are you sure you want to delete this device?'
+        dialogConfirmationObject={dialogDeleteDevice}
+        setDialogConfirmationObject={setDialogDeleteDevice}
+        cancelButtonText='Cancel'
+        continueButtonText='Delete'
+        onContinueButtonClick={() => setDialogDeleteDevice({})}
+        onCancelButtonClick={() => setDialogDeleteDevice({})}
+      />
     </>
   )
 }
