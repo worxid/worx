@@ -11,6 +11,7 @@ import FormsSubmissions from 'pages/FormsSubmissions/FormsSubmissions'
 import FormsView from 'pages/FormsView/FormsView'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
+import SettingsGroup from 'pages/SettingsGroup/SettingsGroup'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
 
@@ -89,6 +90,11 @@ const routes = [
   {
     path: '/devices',
     element: <Devices/>,
+    routeType: 'private',
+  },
+  {
+    path: '/settings/groups',
+    element: <SettingsGroup/>,
     routeType: 'private',
   },
 ]

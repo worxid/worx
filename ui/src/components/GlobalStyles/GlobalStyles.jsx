@@ -62,6 +62,18 @@ const GlobalStyles = () => {
         '.width100': {
           width: '100%',
         },
+        '.colorWrap': {
+          width: '198px',
+          padding: '6px 0 0 6px',
+          display: 'flex',
+          flexWrap: 'wrap',
+        },
+        '.itemColor': {
+          width: '18px',
+          height: '18px',
+          marginRight: '6px',
+          marginBottom: '6px'
+        },
 
         // SCROLLBAR
         '&::-webkit-scrollbar': {
