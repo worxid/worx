@@ -67,7 +67,7 @@ const MobilePreview = (props) => {
                 key={index}
                 control={<Checkbox size='small'/>}
                 label={(
-                  <Typography variant='caption' className='displayBlock' noWrap>{itemOption.label || `Option #${index + 1}`}</Typography>
+                  <Typography variant='caption' className='displayBlock'>{itemOption.label || `Option #${index + 1}`}</Typography>
                 )}
               />
             ))}
@@ -83,7 +83,7 @@ const MobilePreview = (props) => {
                 value={itemOption.label || `Option #${index + 1}`}
                 control={<Radio size='small' readOnly/>}
                 label={(
-                  <Typography variant='caption' className='displayBlock' noWrap>{itemOption.label || `Option #${index + 1}`}</Typography>
+                  <Typography variant='caption' className='displayBlock'>{itemOption.label || `Option #${index + 1}`}</Typography>
                 )}
               />
             ))}
