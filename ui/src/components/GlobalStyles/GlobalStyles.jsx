@@ -44,6 +44,9 @@ const GlobalStyles = () => {
         '.cursorPointer': {
           cursor: 'pointer !important',
         },
+        '.displayBlock': {
+          display: 'block'
+        },
         '.flexDirectionRow': {
           flexDirection: 'row !important',
         },
@@ -55,6 +58,9 @@ const GlobalStyles = () => {
         },
         '.height16': {
           height: 16,
+        },
+        '.heightFitContent': {
+          height: 'fit-content'
         },
         '.marginBottom0': {
           marginBottom: 0,
@@ -80,11 +86,18 @@ const GlobalStyles = () => {
         '.opacity0-5': {
           opacity: 0.5,
         },
+        '.overflowXhidden': {
+          overflowX: 'hidden !important'
+        },
         '.overflowYauto': {
           overflowY: 'auto !important'
         },
         '.padding0': {
           padding: '0 !important',
+        },
+        '.paddingX8': {
+          paddingLeft: 8,
+          paddingRight: 8,
         },
         '.paddingX16': {
           paddingLeft: 16,
