@@ -1,5 +1,7 @@
 package id.worx.worx.entity;
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,5 +45,12 @@ public class Form extends BaseEntity {
     private String values;
 
     private Boolean submitInZone;
+    private Instant submitDate;
+    private String submitAddress;
+
+    @Column(columnDefinition = "decimal(16,10)")
+    private Double submitLat;
+    @Column(columnDefinition = "decimal(16,10)")
+    private Double submitLng;
 
 }
