@@ -1,5 +1,8 @@
 import { createContext, useState } from 'react'
 
+// CONSTANTS
+import { values } from 'constants/values'
+
 // MUIS
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -26,6 +29,9 @@ const AllPagesContextProvider = (props) => {
   isLgScreen && (breakpointType = 'lg')
   isXlScreen && (breakpointType = 'xl')
 
+  // SNACKBAR
+  const [ snackbarObject, setSnackbarObject ] = useState(values.initialSnackbarObject)
+
   return (
     <AllPagesContext.Provider
       value={{
@@ -33,6 +39,8 @@ const AllPagesContextProvider = (props) => {
         auth, setAuth,
         // BREAKPOINT
         breakpointType,
+        // SNACKBAR
+        snackbarObject, setSnackbarObject,
       }}
     >
       {props.children}
