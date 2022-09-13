@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   lcdSmartphone: {
     background: theme.palette.common.white,
     border: `4px solid ${theme.palette.common.black}`,
-    borderRadius: 8,
+    borderRadius: 12,
     width: '100%',
     overflowY: 'auto',
   },
