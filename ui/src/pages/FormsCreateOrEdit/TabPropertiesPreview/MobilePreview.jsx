@@ -1,6 +1,3 @@
-// ASSETS
-import IconSignature from 'assets/images/icons/icon-input-signature.svg'
-
 // MUIS
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -25,6 +22,7 @@ import Typography from '@mui/material/Typography'
 import IconAttachFile from '@mui/icons-material/AttachFile'
 import IconCameraAlt from '@mui/icons-material/CameraAlt'
 import IconCancel from '@mui/icons-material/Cancel'
+import IconCreate from '@mui/icons-material/Create'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconImage from '@mui/icons-material/Image'
 import IconStar from '@mui/icons-material/Star'
@@ -172,8 +170,7 @@ const MobilePreview = (props) => {
         {/* SIGNATURE */}
         {item.type === 'signature' && (
           <FormControl className={`${classes.formControlMobile} marginTop8`}>
-            <Button size='small' className={`${classes.buttonRedPrimary} marginRight20 heightFitContent`}>
-              <Box component='img' src={IconSignature} className='marginRight8'/>
+            <Button size='small' className={`${classes.buttonRedPrimary} marginRight20 heightFitContent`} startIcon={<IconCreate fontSize='small'/>}>
               Add Signature
             </Button>
           </FormControl>
