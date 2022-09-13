@@ -32,9 +32,11 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from './dialogAddOrEditGroupUseStyles'
 
 const DialogAddOrEditGroup = (props) => {
   const layoutClasses = useLayoutStyles()
+  const classes = useStyles()
   
   const { dialogType, dataDialogEdit, setDataDialogEdit } = props
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
@@ -57,14 +59,9 @@ const DialogAddOrEditGroup = (props) => {
   const openPicker = Boolean(anchorEl)
   const id = openPicker ? 'simple-popover' : undefined
 
-  const pickerStyle = {
-    width: '18px',
-    height: '18px',
-    cursor: 'pointer',
-  }
-
   const onSelectColor = (color) => {
     setGroupColor(color)
+    setAnchorEl(null)
     handleClosePopOver()
   }
 
@@ -91,6 +88,7 @@ const DialogAddOrEditGroup = (props) => {
   }
   
   const handleClose = () => {
+    setAnchorEl(null)
     setGroupName('')
     setGroupColor('#000')
     setDataDialogEdit(null)
@@ -144,7 +142,8 @@ const DialogAddOrEditGroup = (props) => {
               endAdornment={
                 <InputAdornment position='end'>
                   <Stack
-                    style={{ ...pickerStyle, backgroundColor: groupColor }}
+                    className={classes.pickerStyle}
+                    style={{ backgroundColor: groupColor }}
                     onClick={handleClick}
                   />
                 </InputAdornment>
@@ -186,18 +185,16 @@ const DialogAddOrEditGroup = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        sx={{
-          mt: 1.5,
-        }}
+        className={classes.popOverDialog}
       >
-        <Box className='colorWrap'>
+        <Box className={classes.colorWrap}>
           {values?.colorsCst?.map((item, index) => {
             return (
               <Stack
                 key={index}
-                className='itemColor cursorPointer'
+                className={classes.itemColor}
                 onClick={() => onSelectColor(item)}
-                style={{ backgroundColor: item }}
+                sx={{ backgroundColor: item }}
               />
             )
           })}
