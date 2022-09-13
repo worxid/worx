@@ -81,6 +81,7 @@ const MobilePreview = (props) => {
           <RadioGroup className={`${classes.formControlMobile} marginTop8`}>
             {item.optionList.map((itemOption, index) => (
               <FormControlLabel
+                key={index}
                 value={itemOption.label || `Option #${index + 1}`}
                 control={<Radio size='small' readOnly/>}
                 label={(
