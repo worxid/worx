@@ -82,7 +82,7 @@ const SettingsGroup = () => {
   // DIALOG TYPE
   const [ dialogType, setDialogType ] = useState('')
 
-  // DATA EDIT DEVICE
+  // DATA EDIT GROUP
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
 
   // HANDLE ADD BUTTON CLICKED
