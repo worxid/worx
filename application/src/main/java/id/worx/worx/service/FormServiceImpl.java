@@ -53,10 +53,6 @@ public class FormServiceImpl implements FormService {
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();
 
-        for (Field field : fields) {
-            Value value = values.get(field.getId());
-        }
-
         List<Boolean> validations = fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
@@ -65,7 +61,9 @@ public class FormServiceImpl implements FormService {
                 .collect(Collectors.toList());
 
         if (validations.stream().anyMatch(e -> e.equals(Boolean.FALSE))) {
-            log.info("The submission is invalid");
+            throw new WorxException(
+                    "The submission is invalid",
+                    HttpStatus.BAD_REQUEST.value());
         }
 
         String fieldsString = "[]";
