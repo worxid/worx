@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -27,9 +30,11 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import { getExpandOrCollapseIcon } from 'utilities/component'
 
 const DevicesFlyout = (props) => {
-  const { rows } = props
+  const { rows, setGroupData } = props
 
   const layoutClasses = useLayoutStyles()
+
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   const mainMenuIconList = [
     IconAdjust,
@@ -56,6 +61,10 @@ const DevicesFlyout = (props) => {
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
 
+  const handleChangeGroup = () => {
+    setGroupData(rows[0].groups)
+    setIsDialogFormOpen(true)
+  }
   return (
     <>
       {/* HEADER */}
@@ -142,6 +151,7 @@ const DevicesFlyout = (props) => {
                       <Button
                         variant='contained'
                         className={layoutClasses.flyoutListItemActionButton}
+                        onClick={handleChangeGroup}
                       >
                         Change Group
                       </Button>

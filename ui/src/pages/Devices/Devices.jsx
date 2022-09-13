@@ -6,6 +6,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
+import DialogChangeGroup from './DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
@@ -16,6 +17,7 @@ import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
@@ -83,6 +85,8 @@ const Devices = () => {
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const initialFilters = {}
 
   // NAVIGATE
@@ -110,8 +114,11 @@ const Devices = () => {
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
+  // SELECTED GROUP DATA
+  const [ groupData, setGroupData ] = useState([])
+
   // DELETE DIALOG
-  const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
+  const [ dialogDeleteDevice, setDialogDeleteDevice ] = useState({})
 
   // DATA EDIT DEVICE
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
@@ -204,10 +211,13 @@ const Devices = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData} />
         </Flyout>
       </Stack>
 
+      {/* DIALOG CHANGE GROUP */}
+      <DialogChangeGroup data={groupData} />
+      
       {/* DIALOG EDIT DEVICES */}
       <DialogAddOrEditDevice 
         dataDialogEdit={dataDialogEdit}
@@ -222,7 +232,15 @@ const Devices = () => {
         setDialogConfirmationObject={setDialogDeleteDevice}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => setDialogDeleteDevice({})}
+        onContinueButtonClick={() => {
+          setDialogDeleteDevice({})
+          setSnackbarObject({
+            open: true,
+            severity:'success',
+            title:'',
+            message:'Device deleted successfully'
+          })
+        }}
         onCancelButtonClick={() => setDialogDeleteDevice({})}
       />
     </>

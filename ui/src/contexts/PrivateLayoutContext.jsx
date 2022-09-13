@@ -6,7 +6,10 @@ const PrivateLayoutContextProvider = (props) => {
   // DIALOG ADD OR EDIT
   const pageRef = useRef()
   const [ isDialogAddOrEditOpen, setIsDialogAddOrEditOpen ] = useState(false)
-      
+  
+  // DIALOG FORM
+  const [ isDialogFormOpen, setIsDialogFormOpen ] = useState(false)
+
   // DRAWER
   const [ isDrawerExpanded, setIsDrawerExpanded ] = useState(true) // BOOLEAN
 
@@ -17,6 +20,8 @@ const PrivateLayoutContextProvider = (props) => {
         isDialogAddOrEditOpen, setIsDialogAddOrEditOpen,
         // DRAWER
         isDrawerExpanded, setIsDrawerExpanded,
+        // DIALOG FORM
+        isDialogFormOpen, setIsDialogFormOpen,
         // LAYOUT
         pageRef,
       }}

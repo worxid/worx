@@ -84,7 +84,7 @@ const GlobalStyles = () => {
           overflowY: 'auto !important'
         },
         '.padding0': {
-          padding: 0,
+          padding: '0 !important',
         },
         '.paddingX16': {
           paddingLeft: 16,
