@@ -9,4 +9,12 @@ export const values = {
 
   // FLYOUT
   flyoutWidth: 400,
+
+  // SNACKBAR
+  initialSnackbarObject: {
+    open: false,
+    severity: 'success',
+    title: '',
+    message: '',
+  },
 }
