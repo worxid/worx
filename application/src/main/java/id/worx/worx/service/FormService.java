@@ -1,8 +1,17 @@
 package id.worx.worx.service;
 
-import id.worx.worx.data.request.SubmitRequest;
+import java.util.List;
+
+import id.worx.worx.data.dto.FormDTO;
+import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.entity.Form;
 
 public interface FormService {
 
-    void submit(SubmitRequest request);
+    Form submit(FormSubmitRequest request);
+
+    List<Form> list();
+
+    FormDTO toDTO(Form form);
+
 }

@@ -18,6 +18,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FormRequest implements Serializable {
 
+    private static final long serialVersionUID = 5126428518517212539L;
+
     private List<Field> fields;
 
 }
