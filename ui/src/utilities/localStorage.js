@@ -9,7 +9,7 @@ export const setUserProfileToLocalStorage = (inputUserObject) => {
 export const readUserProfileFromLocalStorage = () => {
   return localStorage.getItem(keyUserProfile)
     ? JSON.parse(localStorage.getItem(keyUserProfile))
-    : {}
+    : {a: 'a'}
 }
 
 export const removeUserProfileFromLocalStorage = () => {
