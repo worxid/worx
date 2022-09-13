@@ -17,6 +17,7 @@ import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
@@ -83,6 +84,8 @@ const Devices = () => {
   ]
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFilters = {}
 
@@ -229,7 +232,15 @@ const Devices = () => {
         setDialogConfirmationObject={setDialogDeleteDevice}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => setDialogDeleteDevice({})}
+        onContinueButtonClick={() => {
+          setDialogDeleteDevice({})
+          setSnackbarObject({
+            open: true,
+            severity:'success',
+            title:'',
+            message:'Device deleted successfully'
+          })
+        }}
         onCancelButtonClick={() => setDialogDeleteDevice({})}
       />
     </>

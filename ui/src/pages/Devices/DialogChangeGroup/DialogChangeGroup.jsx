@@ -4,6 +4,7 @@ import { useState, useContext, useEffect } from 'react'
 import DialogForm from 'components/DialogForm/DialogForm'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
@@ -29,12 +30,20 @@ const DialogChangeGroup = (props) => {
 
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const [ search, setSearch ] = useState('')
   const groupList = ['Default', 'Medical', 'Group 1', 'Group 2', 'Group 3', 'Group 4', 'Group 5', 'Group 6', 'Group 7', 'Group 8']
   const [groupLists, setGroupLists] = useState(groupList)
 
   const handleActionButtonClick = async (inputType) => {
     if (inputType === 'save') {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title:'',
+        message:'Change group success'
+      })
     }
     handleClose()
   }

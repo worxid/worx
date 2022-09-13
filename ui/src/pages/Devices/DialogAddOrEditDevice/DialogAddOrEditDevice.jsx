@@ -4,6 +4,7 @@ import { useState, useContext, useEffect } from 'react'
 import DialogAddOrEdit from 'components/DialogAddOrEdit/DialogAddOrEdit'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
@@ -32,10 +33,19 @@ const DialogAddOrEditDevice = (props) => {
   const { dataDialogEdit, setDataDialogEdit } = props
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const [ label, setLabel ] = useState('')
 
   const handleActionButtonClick = async (inputType) => {
     if (inputType === 'save') {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title:'',
+        message:'Successfully change device'
+      })
+      handleClose()
     }
     handleClose()
   }
