@@ -187,6 +187,8 @@ const FormsSubmissions = () => {
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
+            // DOWNLOAD
+            isDownloadButtonEnabled={true}
             // TEXT
             //contentTitle=''
             // EDIT
