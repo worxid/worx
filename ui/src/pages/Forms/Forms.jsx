@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
+import DataGridRenderCell from 'components/DataGridRenderCell/DataGridRenderCell'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
@@ -14,9 +15,15 @@ import { dummyTableData } from './formsConstants'
 import { values } from 'constants/values'
 
 // MUIS
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
-const Forms = () => {  
+// STYLES
+import useLayoutStyles from 'styles/layoutPrivate'
+
+const Forms = () => {
+  const layoutClasses = useLayoutStyles()
+
   const initialColumns = [
     {
       field: 'formTitle',
@@ -52,11 +59,15 @@ const Forms = () => {
     },
     {
       field: 'groups',
-      headerName: 'Updated',
+      headerName: 'Groups',
       flex: 1,
-      minWidth: 200,
+      minWidth: 315,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <DataGridRenderCell dataValue={params.value} />
+        ),
     },
     {
       field: 'submissions',
@@ -65,6 +76,15 @@ const Forms = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <Link 
+            href={`/forms/${params.id}/submissions`} 
+            className={layoutClasses.muiLinks}
+          >
+            {params.value}
+          </Link>
+        )
     },
     {
       field: 'fields',

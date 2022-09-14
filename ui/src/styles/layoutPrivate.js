@@ -61,6 +61,16 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
     marginBottom: 2,
     color: theme.palette.text.secondary,
+  },
+  avatar: {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
+    fontSize: 12,
+    width: 23,
+    height: 23
+  },
+  muiLinks: {
+    color: theme.palette.primary.main
   }
 }))
 
