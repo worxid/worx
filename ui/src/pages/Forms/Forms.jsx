@@ -79,7 +79,7 @@ const Forms = () => {
       renderCell: (params) =>
         params.value && (
           <Link 
-            href={`/forms/${params.id}/submissions`} 
+            href={`/forms/${params.row.id}/submissions`} 
             className={layoutClasses.muiLinks}
           >
             {params.value}

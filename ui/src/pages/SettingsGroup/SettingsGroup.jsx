@@ -18,8 +18,13 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
-const SettingsGroup = () => {  
+// MUI ICONS
+import IconCircle from '@mui/icons-material/Circle'
+
+
+const SettingsGroup = () => {
   const initialColumns = [
     {
       field: 'groupName',
@@ -28,6 +33,18 @@ const SettingsGroup = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <Stack direction={'row'} alignItems='center'>
+            <IconCircle 
+              sx={{ color: params.row.groupColor, width: 13 }} 
+            />
+            &nbsp;
+            <Typography variant='inherit'>
+              {params.value}
+            </Typography>
+          </Stack>
+        ),
     },
     {
       field: 'totalDevices',
