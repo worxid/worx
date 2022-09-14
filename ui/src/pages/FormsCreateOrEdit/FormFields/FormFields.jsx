@@ -59,7 +59,7 @@ const FormFields = () => {
           <AlertTitle>{formObject.label}</AlertTitle>
 
           {formObject.description && (<Typography
-            className={classes.formDescription}
+            className={`${classes.formDescription} displayBlock`}
             variant='caption'
           >{formObject.description}</Typography>)}
         </Stack>

@@ -38,6 +38,9 @@ const GlobalStyles = () => {
         '.cursorPointer': {
           cursor: 'pointer !important',
         },
+        '.displayBlock': {
+          display: 'block'
+        },
         '.flexDirectionRow': {
           flexDirection: 'row !important',
         },
@@ -47,11 +50,17 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
+        '.heightFitContent': {
+          height: 'fit-content'
+        },
         '.marginBottom0': {
           marginBottom: 0,
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
+        },
+        '.overflowXhidden': {
+          overflowX: 'hidden !important'
         },
         '.overflowYauto': {
           overflowY: 'auto !important'

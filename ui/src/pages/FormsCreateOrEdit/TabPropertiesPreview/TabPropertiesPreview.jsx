@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
 // COMPONENTS
+import TabMobilePreview from './TabMobilePreview'
 import TabProperties from './TabProperties'
 
 // MUIS
 import Stack from '@mui/material/Stack'
-import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 
 // MUI ICONS
 import IconSettingsSuggest from '@mui/icons-material/SettingsSuggest'
@@ -38,6 +39,11 @@ const TabPropertiesPreview = () => {
       {/* TAB PROPERTIES */}
       {tabPosition === 0 && (
         <TabProperties />
+      )}
+
+      {/* TAB PREVIEW */}
+      {tabPosition === 1 && (
+        <TabMobilePreview />
       )}
     </Stack>
   )
