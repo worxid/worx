@@ -122,6 +122,20 @@ const useStyles = makeStyles((theme) => ({
   },
   opacityHalf: {
     opacity: 0.5,
+  },
+  mobilePreview: {
+    padding: '0 16px',
+    marginBottom: 12,
+  },
+  buttonSubmitWrapper: {
+    padding: '0 16px',
+  },
+  labelHeaderForm: {
+    padding: '0 8px',
+    textAlign: 'center',
+  },
+  dividerInput: {
+    marginBottom: 12,
   }
 }))
 

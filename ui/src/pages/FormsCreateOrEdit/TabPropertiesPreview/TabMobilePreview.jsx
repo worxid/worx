@@ -58,7 +58,7 @@ const TabMobilePreview = () => {
               <Stack direction='row' flexWrap='nowrap' alignItems='center' className={classes.headerForm}>
                 <IconArrowBack fontSize='small'/>
 
-                <Typography flex={1} variant='caption' className='textCenter displayBlock paddingX8' noWrap>{formObject?.label}</Typography>
+                <Typography flex={1} variant='caption' className={`${classes.labelHeaderForm} displayBlock`} noWrap>{formObject?.label}</Typography>
 
                 <IconRadioButtonUnchecked className={classes.iconCircle} fontSize='small'/>
               </Stack>
@@ -76,7 +76,7 @@ const TabMobilePreview = () => {
                 <MobilePreview key={index} item={item}/>
               ))}
 
-              <Stack flex={1} className='paddingX16'>
+              <Stack flex={1} className={classes.buttonSubmitWrapper}>
                 <Stack flex={1}></Stack>
                 <Button size='small' variant='contained' className='heightFitContent'>Submit</Button>
               </Stack>

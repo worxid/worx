@@ -56,9 +56,6 @@ const GlobalStyles = () => {
         '.marginBottom0': {
           marginBottom: 0,
         },
-        '.marginBottom12': {
-          marginBottom: 12,
-        },
         '.marginRightAuto': {
           marginRight: 'auto !important',
         },
@@ -70,17 +67,6 @@ const GlobalStyles = () => {
         },
         '.padding0': {
           padding: '0 !important',
-        },
-        '.paddingX8': {
-          paddingLeft: 8,
-          paddingRight: 8,
-        },
-        '.paddingX16': {
-          paddingLeft: 16,
-          paddingRight: 16,
-        },
-        '.textCenter': {
-          textAlign: 'center'
         },
         '.width100': {
           width: '100%',

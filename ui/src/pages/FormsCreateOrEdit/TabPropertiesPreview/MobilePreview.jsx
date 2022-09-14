@@ -42,7 +42,7 @@ const MobilePreview = (props) => {
       {/* SEPARATOR */}
       {item.type === 'separator' && <Divider className={classes.separatorType}/>}
 
-      <Box className='paddingX16 marginBottom12'>
+      <Box className={classes.mobilePreview}>
         {/* LABEL & DESCRIPTION */}
         <Box>
           <Typography variant='caption' className='displayBlock' noWrap>{item.label}</Typography>
@@ -174,7 +174,7 @@ const MobilePreview = (props) => {
         )}
       </Box>
 
-      <Divider className='marginBottom12'/>
+      <Divider className={classes.dividerInput}/>
     </>
   )
 }
