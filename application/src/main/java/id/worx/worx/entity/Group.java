@@ -1,10 +1,15 @@
 package id.worx.worx.entity;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -37,5 +42,8 @@ public class Group extends BaseEntity {
     private String name;
     @Column(name = "group_color", nullable = false, length = 10)
     private String color;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private Set<FormTemplateGroup> templates;
 
 }
