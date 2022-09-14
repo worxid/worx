@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogShareLink from './DialogShareLink/DialogShareLink'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
 import { dummyTableData } from './FormsSubmissionsConstants'
@@ -16,13 +20,13 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-// MUI ICONS
-import IconLink from '@mui/icons-material/Link'
-
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
 
 const FormsSubmissions = () => {
+  // CONTEXT
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+
   // STYLES
   const classes = useStyles()
 
@@ -94,11 +98,6 @@ const FormsSubmissions = () => {
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
 
-  // HANDLE BUTTON COPY CLICK
-  const handleButtonCopyClick = (event, url) => {
-    navigator.clipboard.writeText(url)
-  }
-
   return (
     <>
       {/* APP BAR */}
@@ -153,33 +152,17 @@ const FormsSubmissions = () => {
               direction='row'
               flexWrap='nowrap'
             >
-              <Stack
-                className={classes.iconCopyWrap}
-                alignItems='center'
-                justifyContent='center'
-              >
-                <IconLink className={classes.iconCopy}/>
-              </Stack>
-
-              <Typography
-                className={classes.fieldUrl}
-                color='text.secondary'
-                variant='caption'
-                noWrap
-              >
-                http://www.worx.id/xform-submit
-              </Typography>
-
               <Button
-                className={classes.buttonCopy}
-                onClick={(event) => handleButtonCopyClick(event, 'http://www.worx.id/xform-submit')}
-              >
-                Copy
-              </Button>
+                size='small'
+                variant='contained'
+                className={`${classes.buttonRedPrimary} heightFitContent`}
+                onClick={() => setIsDialogFormOpen(true)}
+              >Share</Button>
             </Stack>
           </Stack>
 
           <DataGridFilters
+            contentTitle='Submission List'
             // COLUMN
             columns={initialColumns}
             selectedColumnList={selectedColumnList}
@@ -231,6 +214,9 @@ const FormsSubmissions = () => {
           />
         </LoadingPaper>
       </Stack>
+
+      {/* DIALOG SHARE LINK */}
+      <DialogShareLink />
     </>
   )
 }

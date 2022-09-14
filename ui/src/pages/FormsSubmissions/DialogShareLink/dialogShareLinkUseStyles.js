@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonRedPrimary: {
     boxShadow: 'none',
+    fontWeight: 400,
+    fontSize: 12,
     '&:hover': {
       boxShadow: 'none'
     }
@@ -21,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
   buttonRedLight: {
     backgroundColor: theme.palette.primary.outlinedHoverBackground,
     color: theme.palette.primary.main,
+    fontWeight: 400,
+    fontSize: 12,
     boxShadow: 'none',
     '&:hover': {
       backgroundColor: theme.palette.primary.outlinedHoverBackground,
@@ -28,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputEmailAutocomplete: {
-    maxWidth: 340,
+    maxWidth: 344,
     flex: 1,
     '& .MuiInputBase-input': {
       fontSize: 12,
@@ -54,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   boxLink: {
     border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
     padding: '8px 16px',
-    maxWidth: 340,
+    maxWidth: 344,
   },
   iconLink: {
     color: theme.palette.text.secondary,
