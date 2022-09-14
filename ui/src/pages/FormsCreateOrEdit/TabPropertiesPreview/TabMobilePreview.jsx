@@ -46,11 +46,11 @@ const TabMobilePreview = () => {
                 <Typography flex={1} variant='caption'>12:30</Typography>
 
                 <Stack direction='row'>
-                  <IconSignalWifi4Bar className='height16 widthAuto'/>
+                  <IconSignalWifi4Bar className={classes.iconBar}/>
                 
-                  <IconSignalCellular4Bar className='height16 widthAuto'/>
+                  <IconSignalCellular4Bar className={classes.iconBar}/>
   
-                  <IconBatteryFull className='height16 widthAuto'/>
+                  <IconBatteryFull className={classes.iconBar}/>
                 </Stack>
               </Stack>
 

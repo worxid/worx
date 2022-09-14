@@ -88,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '12px 0',
   },
   formControlMobile: {
+    marginTop: 8,
     '& .MuiFormControlLabel-label': {
       fontSize: 12,
     },
@@ -99,10 +100,28 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     color: theme.palette.primary.main,
     fontWeight: 400,
+    '&.buttonCamera': {
+      marginRight: 20,
+    },
+    '&.buttonDateRange': {
+      marginLeft: 12,
+    },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
       boxShadow: 'none'
     }
+  },
+  iconBar: {
+    height: 16,
+    width: 'auto'
+  },
+  separatorType: {
+    borderWidth: 4,
+    marginBottom: 12,
+    backgroundColor: theme.palette.background.default,
+  },
+  opacityHalf: {
+    opacity: 0.5,
   }
 }))
 

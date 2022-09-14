@@ -23,17 +23,11 @@ const GlobalStyles = () => {
         },
 
         // GENERAL
-        '.backgroundColorDefault': {
-          backgroundColor: theme.palette.background.default
-        },
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,
         },
         '.borderRadius0': {
           borderRadius: 0,
-        },
-        '.borderWidth4': {
-          borderWidth: 4,
         },
         '.colorTextPrimary': {
           color: theme.palette.text.primary,
@@ -56,9 +50,6 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
-        '.height16': {
-          height: 16,
-        },
         '.heightFitContent': {
           height: 'fit-content'
         },
@@ -68,23 +59,8 @@ const GlobalStyles = () => {
         '.marginBottom12': {
           marginBottom: 12,
         },
-        '.marginLeft12': {
-          marginLeft: 12,
-        },
-        '.marginRight8': {
-          marginRight: 8,
-        },
-        '.marginRight20': {
-          marginRight: 20,
-        },
         '.marginRightAuto': {
           marginRight: 'auto !important',
-        },
-        '.marginTop8': {
-          marginTop: 8,
-        },
-        '.opacity0-5': {
-          opacity: 0.5,
         },
         '.overflowXhidden': {
           overflowX: 'hidden !important'
@@ -108,9 +84,6 @@ const GlobalStyles = () => {
         },
         '.width100': {
           width: '100%',
-        },
-        '.widthAuto': {
-          width: 'auto'
         },
 
         // SCROLLBAR

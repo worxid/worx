@@ -40,11 +40,8 @@ const MobilePreview = (props) => {
   return (
     <>
       {/* SEPARATOR */}
-      {item.type === 'separator' && (
-        <>
-          <Divider className='borderWidth4 marginBottom12 backgroundColorDefault'/>
-        </> 
-      )}
+      {item.type === 'separator' && <Divider className={classes.separatorType}/>}
+
       <Box className='paddingX16 marginBottom12'>
         {/* LABEL & DESCRIPTION */}
         <Box>
@@ -54,14 +51,14 @@ const MobilePreview = (props) => {
 
         {/* TEXTFIELD */}
         {item.type === 'text' && (
-          <FormControl fullWidth className='marginTop8'>
+          <FormControl fullWidth className={classes.formControlMobile}>
             <TextField label='Answer' variant='filled' size='small' className='heightFitContent'/>
           </FormControl>
         )}
 
         {/* CHECKBOX */}
         {item.type === 'checkboxGroup' && (
-          <FormGroup className={`${classes.formControlMobile} marginTop8`}>
+          <FormGroup className={classes.formControlMobile}>
             {item.optionList.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
@@ -76,7 +73,7 @@ const MobilePreview = (props) => {
 
         {/* RADIO */}
         {item.type === 'radioGroup' && (
-          <RadioGroup className={`${classes.formControlMobile} marginTop8`}>
+          <RadioGroup className={classes.formControlMobile}>
             {item.optionList.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
@@ -92,7 +89,7 @@ const MobilePreview = (props) => {
 
         {/* DROPDOWN */}
         {item.type === 'dropdown' && (
-          <FormControl variant='filled' fullWidth className='marginTop8'>
+          <FormControl variant='filled' fullWidth className={classes.formControlMobile}>
             <InputLabel>Answer</InputLabel>
             <Select label={item.label} size='small' className='heightFitContent'>
               {item.optionList.map((item, index) => (
@@ -106,7 +103,7 @@ const MobilePreview = (props) => {
 
         {/* DATE */}
         {item.type === 'date' && (
-          <FormControl fullWidth className='marginTop8'>
+          <FormControl fullWidth className={classes.formControlMobile}>
             <Stack direction='row' alignItems='center'>
               <TextField
                 label='Answer'
@@ -122,7 +119,7 @@ const MobilePreview = (props) => {
                 className='heightFitContent'
               />
 
-              <IconButton size='large' className={`${classes.buttonRedPrimary} marginLeft12 heightFitContent`}>
+              <IconButton size='large' className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}>
                 <IconDateRange fontSize='small'/>
               </IconButton>
             </Stack>
@@ -131,19 +128,19 @@ const MobilePreview = (props) => {
 
         {/* RATING */}
         {item.type === 'rating' && (
-          <FormControl className={`${classes.formControlMobile} marginTop8`}>
+          <FormControl className={classes.formControlMobile}>
             <Rating
               value={0}
               max={item.ratingStarsCount}
               readOnly
-              emptyIcon={<IconStar fontSize='small' className='opacity0-5'/>}
+              emptyIcon={<IconStar fontSize='small' className={classes.opacityHalf}/>}
             />
           </FormControl>
         )}
 
         {/* FILE */}
         {item.type === 'file' && (
-          <FormControl className={`${classes.formControlMobile} marginTop8`}>
+          <FormControl className={classes.formControlMobile}>
             <Button size='small' className={`${classes.buttonRedPrimary} heightFitContent`} startIcon={<IconAttachFile fontSize='small'/>}>
               Add File
             </Button>
@@ -152,9 +149,9 @@ const MobilePreview = (props) => {
 
         {/* IMAGE */}
         {item.type === 'image' && (
-          <FormControl className={`${classes.formControlMobile} marginTop8`}>
+          <FormControl className={classes.formControlMobile}>
             <Stack direction='row'>
-              <Button size='small' className={`${classes.buttonRedPrimary} marginRight20 heightFitContent`} startIcon={<IconCameraAlt fontSize='small'/>}>
+              <Button size='small' className={`${classes.buttonRedPrimary} buttonCamera heightFitContent`} startIcon={<IconCameraAlt fontSize='small'/>}>
                 Camera
               </Button>
 
@@ -169,8 +166,8 @@ const MobilePreview = (props) => {
 
         {/* SIGNATURE */}
         {item.type === 'signature' && (
-          <FormControl className={`${classes.formControlMobile} marginTop8`}>
-            <Button size='small' className={`${classes.buttonRedPrimary} marginRight20 heightFitContent`} startIcon={<IconCreate fontSize='small'/>}>
+          <FormControl className={classes.formControlMobile}>
+            <Button size='small' className={`${classes.buttonRedPrimary} heightFitContent`} startIcon={<IconCreate fontSize='small'/>}>
               Add Signature
             </Button>
           </FormControl>

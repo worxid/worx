@@ -23,6 +23,18 @@ const themeMobilePreview = createTheme(customTheme, {
         },
       },
     },
+    MuiFormControlLabel: {
+      defaultProps: {
+        sx: {
+          '& .MuiTypography-root': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            width: 216,
+          }
+        }
+      }
+    },
     MuiPaper: {
       defaultProps: {
         sx: {
