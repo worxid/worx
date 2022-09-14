@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
-import DataGridRenderCell from 'components/DataGridRenderCell/DataGridRenderCell'
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
@@ -66,7 +66,7 @@ const Forms = () => {
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
-          <DataGridRenderCell dataValue={params.value} />
+          <CellGroups dataValue={params.value} />
         ),
     },
     {
@@ -80,7 +80,8 @@ const Forms = () => {
         params.value && (
           <Link 
             href={`/forms/${params.row.id}/submissions`} 
-            className={layoutClasses.muiLinks}
+            // className={layoutClasses.muiLinks}
+            color='primary'
           >
             {params.value}
           </Link>

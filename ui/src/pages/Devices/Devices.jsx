@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DataGridRenderCell from 'components/DataGridRenderCell/DataGridRenderCell'
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
 import DialogChangeGroup from './DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
@@ -47,15 +47,12 @@ const Devices = () => {
           <Stack direction={'row'} alignItems='center'>
             {
               params.value === 'Pending' 
-                ? <IconWarning className={`${classes.iconStatusSize} ${classes.colorWarningMain}`} /> 
-                : <IconVerified className={`${classes.iconStatusSize} ${classes.colorSuccessMain}`} />
+                ? <IconWarning className={classes.iconStatusSize} color='warning' /> 
+                : <IconVerified className={classes.iconStatusSize} color='success' />
             }&nbsp;
             <Typography 
               variant='inherit'
-              className={
-                params.value === 'Pending' 
-                  ? `${classes.colorWarningMain}`
-                  : `${classes.colorSuccessMain}`}
+              color={params.value === 'Pending' ? 'warning.main' : 'success.main'}
             >
               {params.value}
             </Typography>
@@ -111,7 +108,7 @@ const Devices = () => {
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
-          <DataGridRenderCell dataValue={params.value} />
+          <CellGroups dataValue={params.value} />
         ),
     }
   ]

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
-const DataGridRenderCell = (props) => {
+const CellGroups = (props) => {
   const { dataValue } = props
 
   const layoutClasses = useLayoutStyles()
@@ -29,12 +29,12 @@ const DataGridRenderCell = (props) => {
   )
 }
 
-DataGridRenderCell.defaultProps = {
+CellGroups.defaultProps = {
   dataValue: [],
 }
 
-DataGridRenderCell.propTypes = {
+CellGroups.propTypes = {
   dataValue: PropTypes.array.isRequired,
 }
 
-export default DataGridRenderCell
+export default CellGroups

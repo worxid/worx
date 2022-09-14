@@ -37,7 +37,7 @@ const SettingsGroup = () => {
         params.value && (
           <Stack direction={'row'} alignItems='center'>
             <IconCircle 
-              sx={{ color: params.row.groupColor, width: 13 }} 
+              sx={{ color: params.row.groupColor, width: 12 }} 
             />
             &nbsp;
             <Typography variant='inherit'>

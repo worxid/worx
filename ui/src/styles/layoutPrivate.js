@@ -66,12 +66,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
     fontSize: 12,
-    width: 23,
-    height: 23
+    width: 24,
+    height: 24
   },
-  muiLinks: {
-    color: theme.palette.primary.main
-  }
 }))
 
 export default useStyles
