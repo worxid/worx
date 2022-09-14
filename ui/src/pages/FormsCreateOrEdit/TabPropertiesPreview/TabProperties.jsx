@@ -64,7 +64,7 @@ const TabProperties = () => {
       >
         <Typography flex={1} variant='subtitle1'>Fields Properties</Typography>
 
-        {selectedFieldsType !== 'formHeader' && (<Stack direction='row'>
+        {(selectedFieldsType !== 'formHeader' && selectedFieldsId) && (<Stack direction='row'>
           {/* BUTTON DELETE */}
           <IconButton onClick={() => handleDeleteItemFieldClick(selectedFieldsId)}>
             <IconDelete />

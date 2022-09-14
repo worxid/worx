@@ -24,7 +24,7 @@ const TabPropertiesPreview = () => {
   const [tabPosition, setTabPosition] = useState(0)
   
   return (
-    <Stack flex={1}>
+    <Stack flex={1} width={'50%'}>
       {/* TABS */}
       <Tabs
         value={tabPosition}
