@@ -12,7 +12,7 @@ import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditCont
 
 // MUIS
 import Divider from '@mui/material/Divider'
-import { Stack } from '@mui/system'
+import Stack from '@mui/material/Stack'
 
 const FormsCreateOrEdit = () => {
   // CONTEXT
