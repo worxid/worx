@@ -1,48 +1,47 @@
 package id.worx.worx.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormRequest;
-import id.worx.worx.data.request.FormTemplateCreationDTO;
+import id.worx.worx.data.request.FormTemplateRequest;
+import id.worx.worx.data.response.BaseListResponse;
+import id.worx.worx.data.response.BaseResponse;
+import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.forms.service.field.SeparatorField;
 import id.worx.worx.forms.service.field.TextField;
 import id.worx.worx.service.FormTemplateService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO Remove from demo path
-
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("form/template")
 @RequiredArgsConstructor
 public class FormTemplateController {
 
-    private final FormTemplateService formTemplateService;
+    private final FormTemplateService templateService;
 
-    // form/template
-
-    // form/template/list
-    @GetMapping("demo/form/template/list")
-    public ResponseEntity<?> list() {
-        List<Field> fields = formTemplateService.getSampleFieldList();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(fields);
-    }
-
-    @PostMapping("demo/form/template/search")
-    public ResponseEntity<?> search(@RequestBody FormRequest request) {
+    @PostMapping("search")
+    public ResponseEntity<List<Field>> search(@RequestBody FormRequest request) {
 
         List<Field> fields = request.getFields();
         Field field = fields.get(0);
@@ -59,30 +58,65 @@ public class FormTemplateController {
                 .body(fields);
     }
 
-    // form/template/create
-    @PostMapping("form/template")
-    public ResponseEntity<?> create(FormTemplateCreationDTO request) {
-        FormTemplate formTemplate = formTemplateService.create(request);
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Form Template is created.")
+    })
+    @PostMapping
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> create(
+            @RequestBody @Valid FormTemplateRequest request) {
+        FormTemplate template = templateService.create(request);
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseListResponse<FormTemplateDTO>> list() {
+        List<FormTemplate> templates = templateService.list();
+        List<FormTemplateDTO> list = templates.stream()
+                .map(templateService::toDTO)
+                .collect(Collectors.toList());
+        BaseListResponse<FormTemplateDTO> response = BaseListResponse.<FormTemplateDTO>builder()
+                .list(list)
+                .build();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(formTemplate);
+                .body(response);
     }
 
-    // form/template/read
-    public ResponseEntity<?> read() {
-
-        return null;
+    @GetMapping("{id}")
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> read(@PathVariable("id") Long id) {
+        FormTemplate template = templateService.read(id);
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
-    // form/template/update
-    public ResponseEntity<?> update() {
-
-        return null;
+    @PutMapping("{id}")
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(@PathVariable("id") Long id,
+            @RequestBody @Valid FormTemplateRequest request) {
+        FormTemplate template = templateService.update(id, request);
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
-    // form/template/delete
-    public ResponseEntity<?> delete() {
-
-        return null;
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Form Template is deleted.")
+    })
+    @DeleteMapping("{id}")
+    public ResponseEntity<BaseResponse> delete(@PathVariable("id") Long id) {
+        templateService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(BaseResponse.builder().build());
     }
 
 }

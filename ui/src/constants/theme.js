@@ -84,7 +84,9 @@ customTheme = createTheme(customTheme, {
     MuiListItemText: {
       defaultProps: {
         sx: {
-          fontSize: 14,
+          '& .MuiTypography-root': {
+            fontSize: 14,
+          },
         },
       },
     },

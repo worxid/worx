@@ -2,8 +2,9 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  appBarExtraComponent: {
-    height: 36,
+  iconStatusSize: {
+    height: 12,
+    width: 12
   },
 }))
 

@@ -1,7 +1,6 @@
 package id.worx.worx.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -12,64 +11,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.data.request.SubmitRequest;
-import id.worx.worx.data.response.FormResponse;
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.value.Value;
-import id.worx.worx.service.FormTemplateService;
+import id.worx.worx.data.dto.FormDTO;
+import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.data.response.BaseListResponse;
+import id.worx.worx.data.response.BaseValueResponse;
+import id.worx.worx.entity.Form;
+import id.worx.worx.service.FormService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("demo/form")
+@RequestMapping("form")
 @RequiredArgsConstructor
 public class FormController {
 
-    private final FormTemplateService formTemplateService;
+    private final FormService formService;
 
     // demo/form/list
     @GetMapping("list")
-    public ResponseEntity<?> list() {
+    public ResponseEntity<BaseListResponse<FormDTO>> list() {
 
-        List<Field> fields = formTemplateService.getSampleFieldList();
-        Map<String, Value> values = formTemplateService.getSampleValueMap();
-
-        FormResponse response = FormResponse.builder()
-                .fields(fields)
-                .values(values)
+        List<Form> forms = formService.list();
+        List<FormDTO> dtos = forms.stream()
+                .map(formService::toDTO)
+                .collect(Collectors.toList());
+        BaseListResponse<FormDTO> response = BaseListResponse.<FormDTO>builder()
+                .list(dtos)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }
 
-    // demo/form/submit
     @PostMapping("submit")
-    public ResponseEntity<?> submit(@RequestBody SubmitRequest request) {
+    public ResponseEntity<BaseValueResponse<FormDTO>> submit(@RequestBody FormSubmitRequest request) {
+        Form form = formService.submit(request);
+        FormDTO dto = formService.toDTO(form);
+        BaseValueResponse<FormDTO> response = BaseValueResponse.<FormDTO>builder()
+                .value(dto)
+                .build();
 
-        List<Field> fields = request.getFields();
-        Map<String, Value> values = request.getValues();
-
-        for (Field field : fields) {
-            Value value = values.get(field.getId());
-            log.debug("validate field >>> " + field.getType().getText());
-            log.debug("result >>> " + field.validate(value));
-        }
-        List<Boolean> validations = fields.stream()
-                .map(field -> {
-                    Value value = values.get(field.getId());
-                    return field.validate(value);
-                })
-                .collect(Collectors.toList());
-
-        if (validations.stream().anyMatch(e -> e.equals(Boolean.FALSE))) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("The submission is invalid");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("The submission is OK");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
 }

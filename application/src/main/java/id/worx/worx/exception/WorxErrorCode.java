@@ -5,7 +5,12 @@ public enum WorxErrorCode {
     /**
      * {@code 1 Database error}
      */
-    DATABASE_ERROR(1, "Database error");
+    DATABASE_ERROR(1, "Database error"),
+
+    /**
+     * {@code 2 Form Validation error}
+     */
+    FORM_VALIDATION_ERROR(202, "There were errors during content validation");
 
     private final int errorCode;
 

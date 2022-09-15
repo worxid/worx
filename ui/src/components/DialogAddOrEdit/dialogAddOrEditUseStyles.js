@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: alpha(theme.palette.common.black, 0.4),
-    zIndex: theme.zIndex.modal + 1,
+    zIndex: theme.zIndex.modal - 1,
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',

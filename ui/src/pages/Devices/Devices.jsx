@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
+import DialogChangeGroup from './DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
@@ -16,12 +18,22 @@ import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
-const Devices = () => {  
+// MUI ICONS
+import IconWarning from '@mui/icons-material/Warning'
+import IconVerified from '@mui/icons-material/Verified'
+
+// STYLES
+import useLayoutStyles from './devicesUseStyles'
+
+const Devices = () => { 
+  const classes = useLayoutStyles()
   const initialColumns = [
     {
       field: 'status',
@@ -30,6 +42,22 @@ const Devices = () => {
       minWidth: 125,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <Stack direction={'row'} alignItems='center'>
+            {
+              params.value === 'Pending' 
+                ? <IconWarning className={classes.iconStatusSize} color='warning' /> 
+                : <IconVerified className={classes.iconStatusSize} color='success' />
+            }&nbsp;
+            <Typography 
+              variant='inherit'
+              color={params.value === 'Pending' ? 'warning.main' : 'success.main'}
+            >
+              {params.value}
+            </Typography>
+          </Stack>
+        ),
     },
     {
       field: 'label',
@@ -78,10 +106,16 @@ const Devices = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <CellGroups dataValue={params.value} />
+        ),
     }
   ]
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFilters = {}
 
@@ -110,8 +144,11 @@ const Devices = () => {
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
+  // SELECTED GROUP DATA
+  const [ groupData, setGroupData ] = useState([])
+
   // DELETE DIALOG
-  const [dialogDeleteDevice, setDialogDeleteDevice] = useState({})
+  const [ dialogDeleteDevice, setDialogDeleteDevice ] = useState({})
 
   // DATA EDIT DEVICE
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
@@ -204,10 +241,13 @@ const Devices = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData} />
         </Flyout>
       </Stack>
 
+      {/* DIALOG CHANGE GROUP */}
+      <DialogChangeGroup data={groupData} />
+      
       {/* DIALOG EDIT DEVICES */}
       <DialogAddOrEditDevice 
         dataDialogEdit={dataDialogEdit}
@@ -222,7 +262,15 @@ const Devices = () => {
         setDialogConfirmationObject={setDialogDeleteDevice}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => setDialogDeleteDevice({})}
+        onContinueButtonClick={() => {
+          setDialogDeleteDevice({})
+          setSnackbarObject({
+            open: true,
+            severity:'success',
+            title:'',
+            message:'Device deleted successfully'
+          })
+        }}
         onCancelButtonClick={() => setDialogDeleteDevice({})}
       />
     </>

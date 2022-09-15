@@ -38,8 +38,11 @@ const GlobalStyles = () => {
         '.cursorPointer': {
           cursor: 'pointer !important',
         },
+        '.displayBlock': {
+          display: 'block'
+        },
         '.flexDirectionRow': {
-          flexDirection: 'row',
+          flexDirection: 'row !important',
         },
         '.fontFamilySpaceMono': {
           fontFamily: `${values.fontFamilySpaceMono} !important`,
@@ -47,17 +50,23 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
+        '.heightFitContent': {
+          height: 'fit-content'
+        },
         '.marginBottom0': {
           marginBottom: 0,
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
         },
+        '.overflowXhidden': {
+          overflowX: 'hidden !important'
+        },
         '.overflowYauto': {
-          overflowY: 'auto'
+          overflowY: 'auto !important'
         },
         '.padding0': {
-          padding: 0,
+          padding: '0 !important',
         },
         '.width100': {
           width: '100%',

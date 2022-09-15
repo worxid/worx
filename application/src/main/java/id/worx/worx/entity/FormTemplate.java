@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +19,8 @@ import lombok.Builder.Default;
 
 @Entity
 @Table(name = "form_templates")
+@SQLDelete(sql = "UPDATE form_templates SET deleted = true WHERE id=?")
+@Where(clause = "deleted = false")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

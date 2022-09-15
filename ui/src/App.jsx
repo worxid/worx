@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 // ASSETS
@@ -7,11 +7,17 @@ import LogoProductLogoOnly from 'assets/images/logos/product-logo-only.svg'
 // COMPONENTS
 import AuthenticationRoute from 'components/Routes/AuthenticationRoute'
 import PrivateRoute from 'components/Routes/PrivateRoute'
+import Snackbar from 'components/Snackbar/Snackbar'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // ROUTES
 import routes from 'routes/routes'
 
 const App = () => {
+  const { snackbarObject, setSnackbarObject } = useContext(AllPagesContext)
+
   const getRouteComponent = (inputItem) => {
     if (inputItem.routeType === 'authentication') {
       return (
@@ -37,15 +43,26 @@ const App = () => {
   }, [])
 
   return (
-    <Routes>
-      {routes.map((item, index) => (
-        <Route 
-          key={index}
-          path={item.path} 
-          element={getRouteComponent(item)}
-        />
-      ))}
-    </Routes>
+    <>
+      <Routes>
+        {routes.map((item, index) => (
+          <Route 
+            key={index}
+            path={item.path} 
+            element={getRouteComponent(item)}
+          />
+        ))}
+      </Routes>
+
+      {/* SNACKBAR */}
+      <Snackbar
+        open={snackbarObject.open}
+        setToast={setSnackbarObject}
+        severity={snackbarObject.severity}
+        title={snackbarObject.title}
+        message={snackbarObject.message}
+      />
+    </>
   )
 }
 

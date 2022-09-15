@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
 import FieldProperties from './FieldProperties'
@@ -23,7 +24,33 @@ const TabProperties = () => {
   const classes = useStyles()
 
   // CONTEXT
-  const { selectedFieldsType } = useContext(PageFormsCreateOrEditContext)
+  const {
+    selectedFieldsType, setSelectedFieldsType,
+    selectedFieldsId, setSelectedFieldsId,
+    listFields, setListFields
+  } = useContext(PageFormsCreateOrEditContext)
+
+  // HANDLE DELETE ITEM FIELD CLICK
+  const handleDeleteItemFieldClick = (fieldId) => {
+    setListFields(listFields.filter(item => item.id !== fieldId))
+    setSelectedFieldsId('')
+    setSelectedFieldsType('')
+  }
+
+  // HANDLE COPY ITEM FIELD CLICK
+  const handleCopyItemFieldClick = (fieldId) => {
+    const findItem = listFields.find(item => item.id === fieldId)
+    const totalDuplicate = listFields.filter(item => item.duplicateFrom === fieldId)
+
+    let tempListFields = listFields
+    tempListFields.push({
+      ...findItem,
+      id: uuid(),
+      label: `${findItem.label} copy ${totalDuplicate.length + 1}`,
+      duplicateFrom: fieldId,
+    })
+    setListFields([...tempListFields])
+  }
 
   return (
     <Stack flex={1} direction='column' className='overflowYauto'>
@@ -39,12 +66,12 @@ const TabProperties = () => {
 
         {selectedFieldsType !== 'formHeader' && (<Stack direction='row'>
           {/* BUTTON DELETE */}
-          <IconButton>
+          <IconButton onClick={() => handleDeleteItemFieldClick(selectedFieldsId)}>
             <IconDelete />
           </IconButton>
 
           {/* BUTTON COPY */}
-          <IconButton>
+          <IconButton onClick={() => handleCopyItemFieldClick(selectedFieldsId)}>
             <IconContentCopy />
           </IconButton>
         </Stack>)}
@@ -52,7 +79,7 @@ const TabProperties = () => {
 
       {/* CONTENTS */}
       <Stack direction='column' className={`${classes.contentsProperties} overflowYauto`}>
-        <FieldProperties type={selectedFieldsType} />
+        <FieldProperties />
       </Stack>
     </Stack>
   )

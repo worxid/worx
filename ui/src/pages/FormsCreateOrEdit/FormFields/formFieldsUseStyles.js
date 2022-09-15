@@ -60,9 +60,13 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     padding: '4px 16px',
     color: theme.palette.text.primary,
+    maxHeight: 48,
+    height: '100%',
     cursor: 'pointer',
     '& .MuiAlert-message': {
       padding: 0,
+      display: 'flex',
+      overflow: 'unset'
     },
     '& .MuiAlertTitle-root': {
       margin: 0,
