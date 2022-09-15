@@ -2,6 +2,8 @@ package id.worx.worx.data.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +22,11 @@ public class GroupDTO implements Serializable {
     private Long id;
     private String name;
     private String color;
+
+    @JsonProperty("form_count")
+    private Integer formCount;
+
+    @JsonProperty("device_count")
+    private Integer deviceCount;
 
 }

@@ -15,10 +15,12 @@ public interface GroupMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "templates", ignore = true)
     Group fromRequest(GroupRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "templates", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "createdBy", ignore = true)

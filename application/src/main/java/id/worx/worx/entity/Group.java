@@ -48,4 +48,8 @@ public class Group extends BaseEntity {
     })
     private Set<FormTemplate> templates;
 
+    public int getFormCount() {
+        return templates.size();
+    }
+
 }
