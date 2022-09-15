@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
@@ -18,11 +19,17 @@ import { values } from 'constants/values'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+
+// STYLES
+import useLayoutStyles from 'styles/layoutPrivate'
 
 const Forms = () => {
   // CONTEXT
   const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const layoutClasses = useLayoutStyles()
 
   const initialColumns = [
     {
@@ -59,11 +66,15 @@ const Forms = () => {
     },
     {
       field: 'groups',
-      headerName: 'Updated',
+      headerName: 'Groups',
       flex: 1,
-      minWidth: 200,
+      minWidth: 315,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <CellGroups dataValue={params.value} />
+        ),
     },
     {
       field: 'submissions',
@@ -72,6 +83,16 @@ const Forms = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      renderCell: (params) =>
+        params.value && (
+          <Link 
+            href={`/forms/${params.row.id}/submissions`} 
+            // className={layoutClasses.muiLinks}
+            color='primary'
+          >
+            {params.value}
+          </Link>
+        )
     },
     {
       field: 'fields',

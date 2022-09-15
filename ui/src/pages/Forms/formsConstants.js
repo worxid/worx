@@ -5,7 +5,7 @@ export const dummyTableData = [
     'description': 'Olivia Simpson',
     'created': 'Sat, Dec 24th, 2022',
     'updated': 'Fri, Jul 8th, 2022',
-    'groups': 'Advertising',
+    'groups': ['Advertising'],
     'submissions': 16,
     'fields': 28,
     'defaultForms': 19
@@ -16,7 +16,7 @@ export const dummyTableData = [
     'description': 'Azalia Aguirre',
     'created': 'Sat, Apr 29th, 2023',
     'updated': 'Sat, Dec 11th, 2021',
-    'groups': 'Asset Management, Tech Support',
+    'groups': ['Asset Management', 'Tech Support'],
     'submissions': 46,
     'fields': 20,
     'defaultForms': 97
@@ -27,7 +27,7 @@ export const dummyTableData = [
     'description': 'Alexis House',
     'created': 'Sat, Dec 25th, 2021',
     'updated': 'Mon, Jun 13th, 2022',
-    'groups': 'Media Relations, Quality Assurance, Customer Service, Tech Support, Public Relations',
+    'groups': ['Media Relations', 'Quality Assurance', 'Customer Service', 'Tech Support', 'Public Relations'],
     'submissions': 14,
     'fields': 99,
     'defaultForms': 26
@@ -38,7 +38,7 @@ export const dummyTableData = [
     'description': 'Isabella Reyes',
     'created': 'Wed, Jul 12th, 2023',
     'updated': 'Sat, Oct 16th, 2021',
-    'groups': 'Media Relations, Payroll',
+    'groups': ['Media Relations', 'Payroll'],
     'submissions': 6,
     'fields': 1,
     'defaultForms': 25
@@ -49,7 +49,7 @@ export const dummyTableData = [
     'description': 'Denise Cantrell',
     'created': 'Mon, Dec 5th, 2022',
     'updated': 'Mon, Oct 31st, 2022',
-    'groups': 'Customer Service',
+    'groups': ['Customer Service'],
     'submissions': 28,
     'fields': 1,
     'defaultForms': 6
@@ -60,7 +60,7 @@ export const dummyTableData = [
     'description': 'Avye Randolph',
     'created': 'Sat, Aug 6th, 2022',
     'updated': 'Sat, Nov 5th, 2022',
-    'groups': 'Sales and Marketing, Asset Management, Accounting',
+    'groups':['Sales and Marketing', 'Asset Management', 'Accounting'],
     'submissions': 98,
     'fields': 82,
     'defaultForms': 22
@@ -71,7 +71,7 @@ export const dummyTableData = [
     'description': 'Cody Kaufman',
     'created': 'Sat, Feb 11th, 2023',
     'updated': 'Wed, Apr 26th, 2023',
-    'groups': 'Public Relations, Legal Department',
+    'groups': ['Public Relations', 'Legal Department'],
     'submissions': 65,
     'fields': 32,
     'defaultForms': 68
@@ -82,7 +82,7 @@ export const dummyTableData = [
     'description': 'Bree Stafford',
     'created': 'Mon, Mar 28th, 2022',
     'updated': 'Fri, Nov 19th, 2021',
-    'groups': 'Finances, Human Resources',
+    'groups': ['Finances', 'Human Resources'],
     'submissions': 32,
     'fields': 80,
     'defaultForms': 95
@@ -93,7 +93,7 @@ export const dummyTableData = [
     'description': 'Igor Reeves',
     'created': 'Mon, Oct 18th, 2021',
     'updated': 'Thu, Sep 8th, 2022',
-    'groups': '',
+    'groups': [''],
     'submissions': 93,
     'fields': 66,
     'defaultForms': 94
@@ -104,7 +104,7 @@ export const dummyTableData = [
     'description': 'Zeus Heath',
     'created': 'Sun, Jan 22nd, 2023',
     'updated': 'Thu, Jan 6th, 2022',
-    'groups': 'Tech Support',
+    'groups': ['Tech Support'],
     'submissions': 98,
     'fields': 43,
     'defaultForms': 1
@@ -115,7 +115,7 @@ export const dummyTableData = [
     'description': 'Jillian Love',
     'created': 'Tue, May 2nd, 2023',
     'updated': 'Mon, Sep 26th, 2022',
-    'groups': 'Public Relations, Finances, Sales and Marketing',
+    'groups': ['Public Relations', 'Finances', 'Sales and Marketing'],
     'submissions': 24,
     'fields': 63,
     'defaultForms': 9
@@ -126,7 +126,7 @@ export const dummyTableData = [
     'description': 'Malik Alvarez',
     'created': 'Sun, May 28th, 2023',
     'updated': 'Thu, Sep 2nd, 2021',
-    'groups': 'Customer Service, Customer Relations, Advertising',
+    'groups': ['Customer Service', 'Customer Relations', 'Advertising'],
     'submissions': 10,
     'fields': 73,
     'defaultForms': 89
@@ -137,7 +137,7 @@ export const dummyTableData = [
     'description': 'Tatiana Mayo',
     'created': 'Mon, Mar 6th, 2023',
     'updated': 'Tue, Oct 11th, 2022',
-    'groups': 'Customer Service, Sales and Marketing',
+    'groups': ['Customer Service', 'Sales and Marketing'],
     'submissions': 53,
     'fields': 96,
     'defaultForms': 47
@@ -148,7 +148,7 @@ export const dummyTableData = [
     'description': 'Mariko Hartman',
     'created': 'Sat, Sep 10th, 2022',
     'updated': 'Mon, Nov 22nd, 2021',
-    'groups': 'Tech Support, Legal Department, Quality Assurance',
+    'groups': ['Tech Support', 'Legal Department', 'Quality Assurance'],
     'submissions': 70,
     'fields': 69,
     'defaultForms': 58
@@ -159,7 +159,7 @@ export const dummyTableData = [
     'description': 'Leila Howard',
     'created': 'Sun, Mar 27th, 2022',
     'updated': 'Tue, Jan 10th, 2023',
-    'groups': 'Legal Department',
+    'groups': ['Legal Department'],
     'submissions': 84,
     'fields': 64,
     'defaultForms': 54
@@ -170,7 +170,7 @@ export const dummyTableData = [
     'description': 'Nita Noel',
     'created': 'Fri, Apr 7th, 2023',
     'updated': 'Fri, Apr 22nd, 2022',
-    'groups': 'Asset Management, Media Relations',
+    'groups': ['Asset Management', 'Media Relations'],
     'submissions': 52,
     'fields': 17,
     'defaultForms': 85
@@ -181,7 +181,7 @@ export const dummyTableData = [
     'description': 'Alice Crawford',
     'created': 'Sat, Feb 26th, 2022',
     'updated': 'Sat, Feb 19th, 2022',
-    'groups': 'Finances, Payroll',
+    'groups': ['Finances', 'Payroll'],
     'submissions': 79,
     'fields': 99,
     'defaultForms': 43
@@ -192,7 +192,7 @@ export const dummyTableData = [
     'description': 'Demetrius Farrell',
     'created': 'Mon, Jul 17th, 2023',
     'updated': 'Sat, Jul 30th, 2022',
-    'groups': 'Quality Assurance, Advertising',
+    'groups': ['Quality Assurance', 'Advertising'],
     'submissions': 97,
     'fields': 49,
     'defaultForms': 50
@@ -203,7 +203,7 @@ export const dummyTableData = [
     'description': 'Mariko Strickland',
     'created': 'Sun, Feb 13th, 2022',
     'updated': 'Tue, Oct 25th, 2022',
-    'groups': 'Tech Support, Asset Management, Public Relations, Finances, Quality Assurance',
+    'groups': ['Tech Support', 'Asset Management', 'Public Relations', 'Finances', 'Quality Assurance'],
     'submissions': 86,
     'fields': 97,
     'defaultForms': 59
@@ -214,7 +214,7 @@ export const dummyTableData = [
     'description': 'Gretchen Mcneil',
     'created': 'Sat, May 7th, 2022',
     'updated': 'Tue, Jun 20th, 2023',
-    'groups': 'Tech Support, Human Resources, Asset Management',
+    'groups': ['Tech Support', 'Human Resources', 'Asset Management'],
     'submissions': 3,
     'fields': 56,
     'defaultForms': 38

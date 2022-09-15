@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 // MUIS
+import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -112,9 +113,22 @@ const MainMenu = (props) => {
                   </Typography>
                 }
                 secondary={
-                  <Typography variant='body2'>
-                    {item.value}
-                  </Typography>
+                  item.title === 'groups' 
+                    ? <Stack direction={'row'} alignItems='center'>
+                      <Typography variant='body2' className='colorTextPrimary'>
+                        {item.value[0]}&nbsp;
+                      </Typography>
+                      {
+                        item.value.length > 1 && (
+                          <Avatar className={layoutClasses.avatar} variant='square'>
+                            +{item.value.length - 1}
+                          </Avatar>
+                        )
+                      }
+                    </Stack>
+                    : (<Typography variant='body2'>
+                      {item.value}
+                    </Typography>)
                 }
               />
 
