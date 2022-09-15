@@ -1,6 +1,5 @@
 package id.worx.worx.entity;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,15 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder.Default;
 
 @Entity
 @Table(name = "worx_groups")
@@ -43,7 +42,10 @@ public class Group extends BaseEntity {
     @Column(name = "group_color", nullable = false, length = 10)
     private String color;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private Set<FormTemplateGroup> templates;
+    @ManyToMany(mappedBy = "assignedGroups", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    private Set<FormTemplate> templates;
 
 }

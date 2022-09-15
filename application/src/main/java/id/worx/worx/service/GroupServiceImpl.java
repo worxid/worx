@@ -2,16 +2,17 @@ package id.worx.worx.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.data.dto.GroupDTO;
 import id.worx.worx.data.request.GroupRequest;
+import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
-import id.worx.worx.repository.FormTemplateGroupRepository;
 import id.worx.worx.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final FormTemplateGroupRepository templateGroupRepository;
 
     private final GroupMapper groupMapper;
 
@@ -52,6 +52,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Long id) {
         Group group = this.findByIdorElseThrowNotFound(id);
+        Set<FormTemplate> templates = group.getTemplates();
+        for (FormTemplate template : templates) {
+            template.getAssignedGroups().remove(group);
+        }
         groupRepository.delete(group);
     }
 

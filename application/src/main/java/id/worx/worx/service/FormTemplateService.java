@@ -20,4 +20,6 @@ public interface FormTemplateService {
 
     FormTemplateDTO toDTO(FormTemplate template);
 
+    FormTemplate assignGroup(Long id, List<Long> groupIds);
+
 }
