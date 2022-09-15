@@ -16,36 +16,25 @@ const useStyles = makeStyles((theme) => ({
   headerTitle: {
     fontWeight: 500,
   },
-  iconCopyWrap: {
-    borderRight: `1px solid ${theme.palette.action.hover}`,
-    color: theme.palette.text.secondary,
-    height: 36,
-    width: 36,
-  },
-  fieldUrl: {
-    flex: 1,
-    maxWidth: 198,
-    padding: '0 16px 0 8px',
-  },
-  buttonCopy: {
-    backgroundColor: theme.palette.primary.outlinedHoverBackground,
-    border: 'none',
-    boxShadow: 'none',
-    fontSize: 12,
-    fontWeight: 400,
-    height: 36,
-    padding: '0',
-    '&:hover': {
-      boxShadow: 'none',
-    }
-  },
-  iconCopy: {
-    width: 16
-  },
   tableFormsSubmissions: {
     '& .cell-source-custom': {
-      paddingLeft: 24
+      paddingLeft: 24,
+      textTransform: 'capitalize',
     }
+  },
+  buttonRedPrimary: {
+    boxShadow: 'none',
+    fontWeight: 400,
+    fontSize: 12,
+    '&:hover': {
+      boxShadow: 'none'
+    }
+  },
+  downloadMenu: {
+    '& .MuiList-root': {
+      padding: 0,
+      width: 92,
+    },
   }
 }))
 

@@ -1,28 +1,37 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogShareLink from './DialogShareLink/DialogShareLink'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
 import { dummyTableData } from './FormsSubmissionsConstants'
 
+// LIBRARY
+import * as XLSX from 'xlsx'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
-// MUI ICONS
-import IconLink from '@mui/icons-material/Link'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
 
 const FormsSubmissions = () => {
+  // CONTEXT
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+
   // STYLES
   const classes = useStyles()
 
@@ -30,50 +39,18 @@ const FormsSubmissions = () => {
   const navigate = useNavigate()
 
   // INITS
-  const initialColumns = [
-    {
-      field: 'source',
-      headerName: 'Source',
+  let initialColumns = Object.keys(dummyTableData[0])
+    .filter(item => item !== 'id')
+    .map(item => ({
+      field: item,
+      headerName: item.replace(/[A-Z]/g, ' $&').trim(),
+      flex: 1,
+      hide: false,
+      areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      flex: 0,
-      width: 140,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      flex: 0,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionAddress',
-      headerName: 'Submission Address',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionPlaces',
-      headerName: 'Submission Places',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'form',
-      headerName: 'Form',
-      flex: 0,
-      minWidth: 180,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-  ]
+    }))
+    
   const initialFilters = {}
 
   // CONTENT
@@ -93,10 +70,30 @@ const FormsSubmissions = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // DOWNLOAD
+  const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
 
-  // HANDLE BUTTON COPY CLICK
-  const handleButtonCopyClick = (event, url) => {
-    navigator.clipboard.writeText(url)
+  // HANDLE DOWNLOAD DATA TABLE
+  const handleDownloadTable = (listData, listSelectedColumns, formatFile) => {
+    // FILTER SELECTED COLUMN WITH HIDE FALSE
+    const filterSelectedColumns = listSelectedColumns.filter(item => !item.hide)
+
+    // FILTER DATA WITH SELECTED COLUMN
+    const filterListData = listData.map(item => {
+      const tempItemObj = {}
+      filterSelectedColumns.forEach(itemCol => {
+        tempItemObj[itemCol.headerName] = item[itemCol.field]
+      })
+      return tempItemObj
+    })
+
+    // CREATE SHEET
+    const sheetFormSubmissions = XLSX.utils.json_to_sheet(filterListData)
+    const workBook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workBook, sheetFormSubmissions, 'Form Submissions')
+    XLSX.writeFile(workBook, `Form Submissions.${formatFile}`, {
+      bookType: formatFile
+    })
   }
 
   return (
@@ -153,33 +150,17 @@ const FormsSubmissions = () => {
               direction='row'
               flexWrap='nowrap'
             >
-              <Stack
-                className={classes.iconCopyWrap}
-                alignItems='center'
-                justifyContent='center'
-              >
-                <IconLink className={classes.iconCopy}/>
-              </Stack>
-
-              <Typography
-                className={classes.fieldUrl}
-                color='text.secondary'
-                variant='caption'
-                noWrap
-              >
-                http://www.worx.id/xform-submit
-              </Typography>
-
               <Button
-                className={classes.buttonCopy}
-                onClick={(event) => handleButtonCopyClick(event, 'http://www.worx.id/xform-submit')}
-              >
-                Copy
-              </Button>
+                size='small'
+                variant='contained'
+                className={`${classes.buttonRedPrimary} heightFitContent`}
+                onClick={() => setIsDialogFormOpen(true)}
+              >Share</Button>
             </Stack>
           </Stack>
 
           <DataGridFilters
+            contentTitle='Submission List'
             // COLUMN
             columns={initialColumns}
             selectedColumnList={selectedColumnList}
@@ -187,6 +168,9 @@ const FormsSubmissions = () => {
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
+            // DOWNLOAD
+            isDownloadButtonEnabled={true}
+            handleDownloadButtonClick={(event) => setDownloadMenuAnchor(event.currentTarget)}
             // TEXT
             //contentTitle=''
             // EDIT
@@ -229,6 +213,32 @@ const FormsSubmissions = () => {
           />
         </LoadingPaper>
       </Stack>
+
+      {/* DIALOG SHARE LINK */}
+      <DialogShareLink />
+
+      {/* DOWNLOAD MENU */}
+      <Menu
+        anchorEl={downloadMenuAnchor}
+        open={Boolean(downloadMenuAnchor)}
+        onClose={() => setDownloadMenuAnchor(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        className={classes.downloadMenu}
+      >
+        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
+          <Typography variant='caption'>Excel</Typography>
+        </MenuItem>
+        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
+          <Typography variant='caption'>CSV</Typography>
+        </MenuItem>
+      </Menu>
     </>
   )
 }
