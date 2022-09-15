@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -13,10 +14,16 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 import { dummyTableData } from './formsConstants'
 import { values } from 'constants/values'
 
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
 // MUIS
 import Stack from '@mui/material/Stack'
 
-const Forms = () => {  
+const Forms = () => {
+  // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const initialColumns = [
     {
       field: 'formTitle',
@@ -100,6 +107,8 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // DELETE DIALOG
+  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
@@ -151,7 +160,7 @@ const Forms = () => {
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => console.log('delete')}
+            handleDeleteButtonClick={() => setDialogDeleteForms({id: selectionModel})}
           />
 
           <DataGridTable
@@ -188,6 +197,26 @@ const Forms = () => {
           <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
         </Flyout>
       </Stack>
+
+      {/* DIALOG DELETE FORMS */}
+      <DialogConfirmation
+        title='Delete Form'
+        caption='Are you sure you want to delete this form?'
+        dialogConfirmationObject={dialogDeleteForms}
+        setDialogConfirmationObject={setDialogDeleteForms}
+        cancelButtonText='Cancel'
+        continueButtonText='Delete'
+        onContinueButtonClick={() => {
+          setDialogDeleteForms({})
+          setSnackbarObject({
+            open: true,
+            severity:'success',
+            title:'',
+            message:'Form deleted successfully'
+          })
+        }}
+        onCancelButtonClick={() => setDialogDeleteForms({})}
+      />
     </>
   )
 }
