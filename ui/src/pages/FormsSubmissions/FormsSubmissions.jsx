@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
+import { Menu, MenuItem } from '@mui/material'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -97,6 +98,8 @@ const FormsSubmissions = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // DOWNLOAD
+  const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
 
   return (
     <>
@@ -172,6 +175,7 @@ const FormsSubmissions = () => {
             setIsFilterOn={setIsFilterOn}
             // DOWNLOAD
             isDownloadButtonEnabled={true}
+            handleDownloadButtonClick={(event) => setDownloadMenuAnchor(event.currentTarget)}
             // TEXT
             //contentTitle=''
             // EDIT
@@ -217,6 +221,29 @@ const FormsSubmissions = () => {
 
       {/* DIALOG SHARE LINK */}
       <DialogShareLink />
+
+      {/* DOWNLOAD MENU */}
+      <Menu
+        anchorEl={downloadMenuAnchor}
+        open={Boolean(downloadMenuAnchor)}
+        onClose={() => setDownloadMenuAnchor(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        className={classes.downloadMenu}
+      >
+        <MenuItem>
+          <Typography variant='caption'>Excel</Typography>
+        </MenuItem>
+        <MenuItem>
+          <Typography variant='caption'>CSV</Typography>
+        </MenuItem>
+      </Menu>
     </>
   )
 }

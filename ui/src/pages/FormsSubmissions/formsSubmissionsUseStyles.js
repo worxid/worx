@@ -29,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none'
     }
   },
+  downloadMenu: {
+    '& .MuiList-root': {
+      padding: 0,
+      width: 92,
+    },
+  }
 }))
 
 export default useStyles
