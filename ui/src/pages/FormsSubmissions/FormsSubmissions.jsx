@@ -20,12 +20,13 @@ import * as XLSX from 'xlsx'
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
-import { Menu, MenuItem } from '@mui/material'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -38,50 +39,18 @@ const FormsSubmissions = () => {
   const navigate = useNavigate()
 
   // INITS
-  const initialColumns = [
-    {
-      field: 'source',
-      headerName: 'Source',
+  let initialColumns = Object.keys(dummyTableData[0])
+    .filter(item => item !== 'id')
+    .map(item => ({
+      field: item,
+      headerName: item.replace(/[A-Z]/g, ' $&').trim(),
+      flex: 1,
+      hide: false,
+      areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      flex: 0,
-      width: 140,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionDate',
-      headerName: 'Submission Date',
-      flex: 0,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionAddress',
-      headerName: 'Submission Address',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'submissionPlaces',
-      headerName: 'Submission Places',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-    {
-      field: 'form',
-      headerName: 'Form',
-      flex: 0,
-      minWidth: 180,
-      hide: false,
-      areFilterAndSortShown: true,
-    },
-  ]
+    }))
+    
   const initialFilters = {}
 
   // CONTENT
@@ -138,7 +107,7 @@ const FormsSubmissions = () => {
         hasSearch={false}
         hasFlyout={false}
       />
-      
+
       {/* CONTENTS */}
       <Stack 
         direction='row'

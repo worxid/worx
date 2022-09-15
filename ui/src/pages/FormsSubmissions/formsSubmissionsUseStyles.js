@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableFormsSubmissions: {
     '& .cell-source-custom': {
-      paddingLeft: 24
+      paddingLeft: 24,
+      textTransform: 'capitalize',
     }
   },
   buttonRedPrimary: {
