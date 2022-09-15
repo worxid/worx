@@ -48,8 +48,12 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 12,
       }
     },
+    '& .MuiFormLabel-root': {
+      fontSize: 12,
+    },
     '& .MuiOutlinedInput-notchedOutline': {
-      border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`
+      border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
+      fontSize: 12,
     }
   },
   dividerContent: {

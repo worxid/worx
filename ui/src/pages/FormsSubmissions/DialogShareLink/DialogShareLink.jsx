@@ -108,7 +108,7 @@ const DialogShareLink = () => {
               />
             )}
           />
-          
+    
           {/* BUTTON SEND FORM */}
           <Stack paddingLeft={'12px'}>
             <Button
