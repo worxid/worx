@@ -14,6 +14,9 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 // CONSTANTS
 import { dummyTableData } from './FormsSubmissionsConstants'
 
+// LIBRARY
+import * as XLSX from 'xlsx'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -101,6 +104,29 @@ const FormsSubmissions = () => {
   // DOWNLOAD
   const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
 
+  // HANDLE DOWNLOAD DATA TABLE
+  const handleDownloadTable = (listData, listSelectedColumns, formatFile) => {
+    // FILTER SELECTED COLUMN WITH HIDE FALSE
+    const filterSelectedColumns = listSelectedColumns.filter(item => !item.hide)
+
+    // FILTER DATA WITH SELECTED COLUMN
+    const filterListData = listData.map(item => {
+      const tempItemObj = {}
+      filterSelectedColumns.forEach(itemCol => {
+        tempItemObj[itemCol.headerName] = item[itemCol.field]
+      })
+      return tempItemObj
+    })
+
+    // CREATE SHEET
+    const sheetFormSubmissions = XLSX.utils.json_to_sheet(filterListData)
+    const workBook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workBook, sheetFormSubmissions, 'Form Submissions')
+    XLSX.writeFile(workBook, `Form Submissions.${formatFile}`, {
+      bookType: formatFile
+    })
+  }
+
   return (
     <>
       {/* APP BAR */}
@@ -112,7 +138,7 @@ const FormsSubmissions = () => {
         hasSearch={false}
         hasFlyout={false}
       />
-
+      
       {/* CONTENTS */}
       <Stack 
         direction='row'
@@ -237,10 +263,10 @@ const FormsSubmissions = () => {
         }}
         className={classes.downloadMenu}
       >
-        <MenuItem>
+        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
           <Typography variant='caption'>Excel</Typography>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
           <Typography variant='caption'>CSV</Typography>
         </MenuItem>
       </Menu>
