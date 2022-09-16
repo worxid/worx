@@ -95,7 +95,7 @@ const FormsSubmissions = () => {
     .forEach(item => {
       initialColumns.push({
         field: item,
-        headerName: item.replace(/[A-Z]/g, ' $&').trim(),
+        headerName: item,
         flex: 1,
         minWidth: 150,
         hide: false,
