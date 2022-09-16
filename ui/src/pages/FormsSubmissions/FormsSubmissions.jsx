@@ -39,17 +39,72 @@ const FormsSubmissions = () => {
   const navigate = useNavigate()
 
   // INITS
-  let initialColumns = Object.keys(dummyTableData[0])
-    .filter(item => item !== 'id')
-    .map(item => ({
-      field: item,
-      headerName: item.replace(/[A-Z]/g, ' $&').trim(),
-      flex: 1,
+  let initialColumns = [
+    {
+      field: 'source',
+      headerName: 'Source',
+      headerClassName: 'cell-source-custom',
+      cellClassName: 'cell-source-custom',
+      flex: 0,
+      width: 140,
+      hide: false,
+      areFilterAndSortShown: true,
+    },
+    {
+      field: 'submissionDate',
+      headerName: 'Submission Date',
+      flex: 0,
+      minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-    }))
+    },
+    {
+      field: 'submissionAddress',
+      headerName: 'Submission Address',
+      flex: 1,
+      minWidth: 200,
+      hide: false,
+      areFilterAndSortShown: true,
+      headerClassName: 'cell-source-custom',
+      cellClassName: 'cell-source-custom',
+    },
+    {
+      field: 'submissionPlaces',
+      headerName: 'Submission Places',
+      flex: 1,
+      minWidth: 200,
+      hide: false,
+      areFilterAndSortShown: true,
+      headerClassName: 'cell-source-custom',
+      cellClassName: 'cell-source-custom',
+    },
+    {
+      field: 'form',
+      headerName: 'Form',
+      flex: 0,
+      minWidth: 180,
+      hide: false,
+      areFilterAndSortShown: true,
+      headerClassName: 'cell-source-custom',
+      cellClassName: 'cell-source-custom',
+    },
+  ]
+  Object.keys(dummyTableData[0].dynamicFields)
+    .forEach(item => {
+      initialColumns.push({
+        field: item,
+        headerName: item,
+        flex: 1,
+        minWidth: 150,
+        hide: false,
+        areFilterAndSortShown: true,
+        headerClassName: 'cell-source-custom',
+        cellClassName: 'cell-source-custom',
+        valueGetter: (params) => params.row.dynamicFields[item]
+      })
+    })
     
   const initialFilters = {}
 
@@ -82,7 +137,7 @@ const FormsSubmissions = () => {
     const filterListData = listData.map(item => {
       const tempItemObj = {}
       filterSelectedColumns.forEach(itemCol => {
-        tempItemObj[itemCol.headerName] = item[itemCol.field]
+        tempItemObj[itemCol.headerName] = item[itemCol.field] || item.dynamicFields[itemCol.field]
       })
       return tempItemObj
     })
