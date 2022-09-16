@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormRequest;
+import id.worx.worx.data.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseResponse;
@@ -117,6 +118,19 @@ public class FormTemplateController {
         templateService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(BaseResponse.builder().build());
+    }
+
+    @PutMapping("{id}/assign")
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> assignGroup(@PathVariable("id") Long id,
+            @RequestBody @Valid FormTemplateAssignGroupRequest request) {
+
+        FormTemplate template = templateService.assignGroup(id, request.getAssignedGroups());
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
 }

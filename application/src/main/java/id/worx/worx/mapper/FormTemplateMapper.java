@@ -25,12 +25,12 @@ public abstract class FormTemplateMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
-    @Mapping(target = "groupId", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "modifiedOn", ignore = true)
     @Mapping(target = "modifiedBy", ignore = true)
+    @Mapping(target = "assignedGroups", ignore = true)
     @Mapping(source = "fields", target = "fields", qualifiedByName = "toString")
     public abstract void update(@MappingTarget FormTemplate template, FormTemplateRequest request);
 
@@ -39,7 +39,7 @@ public abstract class FormTemplateMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
-    @Mapping(target = "groupId", ignore = true)
+    @Mapping(target = "assignedGroups", ignore = true)
     @Mapping(source = "fields", target = "fields", qualifiedByName = "toString")
     public abstract FormTemplate fromDTO(FormTemplateRequest request);
 
