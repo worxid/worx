@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
+import IconDownload from '@mui/icons-material/Download'
 import IconEdit from '@mui/icons-material/Edit'
 import IconFilterAlt from '@mui/icons-material/FilterAlt'
 import IconSettings from '@mui/icons-material/Settings'
@@ -38,6 +39,9 @@ const DataGridFilters = (props) => {
     // DELETE
     isDeleteButtonEnabled,
     handleDeleteButtonClick,
+    // DOWNLOAD
+    isDownloadButtonEnabled,
+    handleDownloadButtonClick,
   } = props
 
   const classes = useStyles()
@@ -63,6 +67,20 @@ const DataGridFilters = (props) => {
       >
         {contentTitle}
       </Typography>
+
+      {/* DOWNLOAD ROW ICON */}
+      {isDownloadButtonEnabled &&
+      <CustomTooltip 
+        title='Download' 
+        placement='top'
+      >
+        <IconButton 
+          className={classes.iconButton}
+          onClick={handleDownloadButtonClick}
+        >
+          <IconDownload/>
+        </IconButton>
+      </CustomTooltip>}
 
       {/* EDIT ROW ICON */}
       {isEditButtonEnabled &&
@@ -175,6 +193,8 @@ DataGridFilters.defaultProps = {
   isEditButtonEnabled: false,
   // DELETE
   isDeleteButtonEnabled: false,
+  // DOWNLOAD
+  isDownloadButtonEnabled: false,
 }
 
 DataGridFilters.propTypes = {
@@ -188,11 +208,14 @@ DataGridFilters.propTypes = {
   // TEXT
   contentTitle: PropTypes.string.isRequired,
   // EDIT
-  isEditButtonEnabled: PropTypes.bool.isRequired,
-  handleEditButtonClick: PropTypes.func.isRequired,
+  isEditButtonEnabled: PropTypes.bool,
+  handleEditButtonClick: PropTypes.func,
   // DELETE
-  isDeleteButtonEnabled: PropTypes.bool.isRequired,
-  handleDeleteButtonClick: PropTypes.func.isRequired,
+  isDeleteButtonEnabled: PropTypes.bool,
+  handleDeleteButtonClick: PropTypes.func,
+  // DOWNLOAD
+  isDownloadButtonEnabled: PropTypes.bool,
+  handleDownloadButtonClick: PropTypes.func,
 }
 
 export default DataGridFilters

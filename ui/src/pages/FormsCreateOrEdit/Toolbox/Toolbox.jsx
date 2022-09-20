@@ -42,7 +42,7 @@ const Toolbox = () => {
   const { listToolbox, setListToolbox } = useContext(PageFormsCreateOrEditContext)
 
   return (
-    <Stack direction='column' className={classes.root}>
+    <Stack direction='column' className={classes.root} flex={0} flexShrink={0} flexBasis={304}>
       {/* HEADER */}
       <Stack
         alignItems='baseline'

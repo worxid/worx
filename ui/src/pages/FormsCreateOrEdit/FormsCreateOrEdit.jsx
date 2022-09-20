@@ -12,6 +12,7 @@ import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditCont
 
 // MUIS
 import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
 
 const FormsCreateOrEdit = () => {
   // CONTEXT
@@ -37,13 +38,15 @@ const FormsCreateOrEdit = () => {
 
         <Divider orientation='vertical' />
 
-        {/* FORM FIELDS */}
-        <FormFields />
+        <Stack direction='row' flex={1} className='overflowYauto'>
+          {/* FORM FIELDS */}
+          <FormFields />
 
-        <Divider orientation='vertical' />
+          <Divider orientation='vertical' />
 
-        {/* TAB */}
-        <TabPropertiesPreview />
+          {/* TAB */}
+          <TabPropertiesPreview />
+        </Stack>
       </LoadingPaper>
     </>
   )

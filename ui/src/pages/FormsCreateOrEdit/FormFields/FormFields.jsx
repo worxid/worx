@@ -41,7 +41,7 @@ const FormFields = () => {
   }
 
   return (
-    <Stack flex={1}>
+    <Stack flex={1} width='50%'>
       {/* HEADER */}
       <Box className={classes.header}>
         {/* TITLE */}
@@ -55,12 +55,13 @@ const FormFields = () => {
         className={`${classes.boxFormHeader} ${selectedFieldsId === 0 && 'backgroundColorPrimaryMain active'}`}
         onClick={() => handleSelectedField('formHeader', 0)}
       >
-        <Stack direction='column' justifyContent='center'>
+        <Stack direction='column' justifyContent='center' maxWidth='100%'>
           <AlertTitle>{formObject.label}</AlertTitle>
 
           {formObject.description && (<Typography
             className={`${classes.formDescription} displayBlock`}
             variant='caption'
+            noWrap
           >{formObject.description}</Typography>)}
         </Stack>
       </Alert>
@@ -93,7 +94,7 @@ const FormFields = () => {
                   <item.Icon className='colorTextPrimary'/>
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body'>{item?.label || item.title}</Typography>} />
+                <ListItemText primary={<Typography variant='body' className='displayBlock' noWrap>{item?.label || item.title}</Typography>} />
 
                 {selectedFieldsId === item.id && (<IconDragHandle />)}
               </ListItemButton>

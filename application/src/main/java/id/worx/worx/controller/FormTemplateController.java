@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormRequest;
+import id.worx.worx.data.request.FormShareRequest;
+import id.worx.worx.data.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseResponse;
@@ -97,6 +100,17 @@ public class FormTemplateController {
                 .body(response);
     }
 
+    @GetMapping("read")
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> read(@RequestParam String code) {
+        FormTemplate template = templateService.read(code);
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(@PathVariable("id") Long id,
             @RequestBody @Valid FormTemplateRequest request) {
@@ -116,6 +130,29 @@ public class FormTemplateController {
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") Long id) {
         templateService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(BaseResponse.builder().build());
+    }
+
+    @PutMapping("{id}/assign")
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> assignGroup(@PathVariable("id") Long id,
+            @RequestBody @Valid FormTemplateAssignGroupRequest request) {
+
+        FormTemplate template = templateService.assignGroup(id, request.getAssignedGroups());
+        FormTemplateDTO dto = templateService.toDTO(template);
+        BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
+                .value(dto)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @PostMapping("{id}/share")
+    public ResponseEntity<BaseResponse> shareFormToEmail(@PathVariable("id") Long id,
+            @RequestBody @Valid FormShareRequest request) {
+
+        FormTemplate template = templateService.read(id);
+        templateService.share(template, request.getRecipients());
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(BaseResponse.builder().build());
     }
 

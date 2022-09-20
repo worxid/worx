@@ -25,7 +25,8 @@ const DialogForm = (props) => {
     title,
     children,
     handleActionButtonClick,
-    classNames
+    classNames,
+    areActionsAvailable,
   } = props
 
   const { isDialogFormOpen, setIsDialogFormOpen } = useContext(PrivateLayoutContext)
@@ -47,33 +48,37 @@ const DialogForm = (props) => {
       </DialogContent>
 
       {/* DIALOG ACTIONS */}
-      <DialogActions className={classes.dialogFormActions}>
-        <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
-          onClick={() => handleActionButtonClick('cancel')}
-        >
-          Cancel
-        </CustomDialogActionButton>
+      {areActionsAvailable && (
+        <DialogActions className={classes.dialogFormActions}>
+          <CustomDialogActionButton 
+            className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
+            onClick={() => handleActionButtonClick('cancel')}
+          >
+            Cancel
+          </CustomDialogActionButton>
 
-        <CustomDialogActionButton
-          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
-          onClick={() => handleActionButtonClick('save')}
-        >
-          Save
-        </CustomDialogActionButton>
-      </DialogActions>
+          <CustomDialogActionButton
+            className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
+            onClick={() => handleActionButtonClick('save')}
+          >
+            Save
+          </CustomDialogActionButton>
+        </DialogActions>
+      )}
     </Dialog>
   )
 }
 
 DialogForm.defaultProps = {
   title: '',
+  areActionsAvailable: true,
 }
 
 DialogForm.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   children: PropTypes.node.isRequired,
-  handleActionButtonClick: PropTypes.func.isRequired,
+  handleActionButtonClick: PropTypes.func,
+  areActionsAvailable: PropTypes.bool,
 }
 
 export default DialogForm

@@ -7,7 +7,8 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px 24px'
   },
   informationWrap: {
-    width: 370,
+    maxWidth: 370,
+    width: '100%',
     textAlign: 'center',
     position: 'absolute',
     top: '50%',
@@ -66,12 +67,15 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiAlert-message': {
       padding: 0,
       display: 'flex',
-      overflow: 'unset'
+      overflow: 'hidden',
     },
     '& .MuiAlertTitle-root': {
       margin: 0,
       fontSize: 14,
-      lineHeight: 1.4
+      lineHeight: 1.4,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
     '&.active': {
       color: theme.palette.common.white,

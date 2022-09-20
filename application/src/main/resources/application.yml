@@ -11,3 +11,24 @@ spring:
     driver-class-name: ${SPRING_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
     hikari:
       maximum-pool-size: ${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}
+
+  mail:
+    host: ${WORX_EMAIL_SMTP_HOST}
+    username: ${WORX_EMAIL_SMTP_USERNAME}
+    password: ${WORX_EMAIL_SMTP_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: ${WORX_EMAIL_SMTP_PORT}
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Application Properties
+worx:
+  mail:
+    from-address: ${WORX_EMAIL_FROM_ADDRESS}
+    from-name: ${WORX_EMAIL_FROM_NAME}

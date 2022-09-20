@@ -18,9 +18,7 @@ import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping("form")
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class FormController {
 
     private final FormService formService;
 
-    // demo/form/list
     @GetMapping("list")
     public ResponseEntity<BaseListResponse<FormDTO>> list() {
 

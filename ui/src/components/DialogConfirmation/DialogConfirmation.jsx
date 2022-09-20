@@ -65,14 +65,14 @@ const DialogConfirmation = (props) => {
       <DialogActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`}
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
           onClick={onCancelButtonClick}
         >
           {cancelButtonText}
         </CustomDialogActionButton>
 
         {/* DELETE BUTTON */}
-        <CustomDialogActionButton className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`} onClick={onContinueButtonClick}>
+        <CustomDialogActionButton className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} onClick={onContinueButtonClick}>
           {continueButtonText}
         </CustomDialogActionButton>
       </DialogActions>
