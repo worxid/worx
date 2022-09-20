@@ -75,7 +75,7 @@ const FillForm = () => {
           <Box
             component='img'
             src={logoWorx}
-            maxWidth={88}
+            className={classes.footerLogo}
           />
         </Stack>
 

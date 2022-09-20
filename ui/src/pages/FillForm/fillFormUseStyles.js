@@ -196,6 +196,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       display: 'none'
     }
+  },
+  footerLogo: {
+    maxWidth: 88,
+    [theme.breakpoints.down('md')]: {
+      maxWidth: 60,
+    }
   }
 }))
 
