@@ -2,11 +2,17 @@ package id.worx.worx.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import id.worx.worx.data.dto.FormTemplateDTO;
+import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 
 public interface FormTemplateService {
+
+    Page<FormTemplateSearchDTO> search(Pageable pageable);
 
     List<FormTemplate> list();
 

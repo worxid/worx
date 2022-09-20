@@ -1,10 +1,13 @@
-package id.worx.worx.controller;
+package id.worx.worx.web.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.request.FormRequest;
+import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormShareRequest;
 import id.worx.worx.data.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.data.request.FormTemplateRequest;
@@ -26,9 +29,6 @@ import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseResponse;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.field.SeparatorField;
-import id.worx.worx.forms.service.field.TextField;
 import id.worx.worx.service.FormTemplateService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -44,21 +44,10 @@ public class FormTemplateController {
     private final FormTemplateService templateService;
 
     @PostMapping("search")
-    public ResponseEntity<List<Field>> search(@RequestBody FormRequest request) {
-
-        List<Field> fields = request.getFields();
-        Field field = fields.get(0);
-
-        if (field instanceof TextField) {
-            log.info("this marker is Textfield");
-        }
-
-        if (field instanceof SeparatorField) {
-            log.info("this marker is CheckboxGroupField");
-        }
-
+    public ResponseEntity<?> search(Pageable pageable) {
+        Page<FormTemplateSearchDTO> templates = templateService.search(pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(fields);
+                .body(templates);
     }
 
     @ApiResponses(value = {

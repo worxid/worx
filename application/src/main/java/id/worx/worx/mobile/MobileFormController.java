@@ -1,48 +1,33 @@
-package id.worx.worx.controller;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package id.worx.worx.mobile;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.data.dto.FormDTO;
 import id.worx.worx.data.request.FormSubmitRequest;
-import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
+import id.worx.worx.service.FormTemplateService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("form")
+@RequestMapping("mobile/forms")
 @RequiredArgsConstructor
-public class FormController {
+public class MobileFormController {
 
     private final FormService formService;
-
-    @GetMapping("list")
-    public ResponseEntity<BaseListResponse<FormDTO>> list() {
-
-        List<Form> forms = formService.list();
-        List<FormDTO> dtos = forms.stream()
-                .map(formService::toDTO)
-                .collect(Collectors.toList());
-        BaseListResponse<FormDTO> response = BaseListResponse.<FormDTO>builder()
-                .list(dtos)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(response);
-    }
+    private final FormTemplateService templateService;
 
     @PostMapping("submit")
-    public ResponseEntity<BaseValueResponse<FormDTO>> submit(@RequestBody FormSubmitRequest request) {
+    public ResponseEntity<BaseValueResponse<FormDTO>> submit(
+            @RequestHeader(value = "device-code", required = false) String deviceCode,
+            @RequestBody FormSubmitRequest request) {
         Form form = formService.submit(request);
         FormDTO dto = formService.toDTO(form);
         BaseValueResponse<FormDTO> response = BaseValueResponse.<FormDTO>builder()

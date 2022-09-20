@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
+import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
@@ -21,6 +25,7 @@ import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.util.UrlUtils;
+import id.worx.worx.web.pageable.SimplePage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +40,15 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     private final GroupRepository groupRepository;
 
     private final FormTemplateMapper templateMapper;
+
+    @Override
+    public Page<FormTemplateSearchDTO> search(Pageable pageable) {
+        Page<FormTemplate> templates = templateRepository.findAll(pageable);
+        List<FormTemplateSearchDTO> dtos = templates.stream()
+                .map(templateMapper::toSearchDTO)
+                .collect(Collectors.toList());
+        return new SimplePage<>(dtos, templates.getPageable(), templates.getTotalElements());
+    }
 
     @Override
     public List<FormTemplate> list() {
