@@ -56,6 +56,7 @@ public class FormServiceImpl implements FormService {
         List<Boolean> validations = fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
+                    log.info("{} is {}", field.getId(), field.validate(value));
                     return field.validate(value);
                 })
                 .collect(Collectors.toList());
