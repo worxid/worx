@@ -14,6 +14,8 @@ public interface FormTemplateService {
 
     FormTemplate read(Long id);
 
+    FormTemplate read(String code);
+
     FormTemplate update(Long id, FormTemplateRequest request);
 
     void delete(Long id);
@@ -21,5 +23,7 @@ public interface FormTemplateService {
     FormTemplateDTO toDTO(FormTemplate template);
 
     FormTemplate assignGroup(Long id, List<Long> groupIds);
+
+    void share(FormTemplate template, List<String> recipients);
 
 }

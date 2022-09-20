@@ -56,6 +56,8 @@ public class FormTemplate extends BaseEntity {
 
     private Boolean isDefaultForm;
 
+    private String urlCode;
+
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
