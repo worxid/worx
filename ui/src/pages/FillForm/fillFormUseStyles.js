@@ -175,6 +175,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 328,
     marginTop: 32,
     fontWeight: 400,
+    [theme.breakpoints.down('md')]: {
+      marginTop: 12,
+    }
   },
   actionCalendar: {
     '& .MuiButton-root': {
