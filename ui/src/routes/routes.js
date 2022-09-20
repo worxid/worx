@@ -1,9 +1,11 @@
 // CONTEXTS
 import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOrEditContext'
+import { PrivateLayoutContextProvider } from 'contexts/PrivateLayoutContext'
 
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import Devices from 'pages/Devices/Devices'
+import FillForm from 'pages/FillForm/FillForm'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
 import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
@@ -97,6 +99,16 @@ const routes = [
     element: <SettingsGroup/>,
     routeType: 'private',
   },
+  // FREE
+  {
+    path: '/fill-form',
+    element: (
+      <PrivateLayoutContextProvider>
+        <FillForm />
+      </PrivateLayoutContextProvider>
+    ),
+    routeType: 'free'
+  }
 ]
 
 export default routes
