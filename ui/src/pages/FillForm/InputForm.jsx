@@ -71,7 +71,7 @@ const InputForm = (props) => {
     if (inputType === 'save') {
       handleInputChange(item.id, item.label, signatureRef?.toDataURL())
     } else {
-      
+
     }
 
     setIsDialogFormOpen(false)
@@ -284,7 +284,6 @@ const InputForm = (props) => {
               open={isDatePickerOpen}
               value={formObject[item.id]?.value}
               componentsProps={{
-                // pass props `actions={['clear']}` to the actionBar slot
                 actionBar: { className: classes.actionCalendar },
               }}
             />
@@ -431,7 +430,6 @@ const InputForm = (props) => {
                   ref={(ref) => {
                     setSignatureRef(ref)
                   }}
-                  onEnd={() => handleInputChange(item.id, item.label, signatureRef?.toDataURL())}
                 />
               </Stack>
             </Stack>
