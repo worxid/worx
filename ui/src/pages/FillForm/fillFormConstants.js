@@ -7,7 +7,6 @@ export const dummyData = {
   'listFields': [
     {
       'id': '1',
-      'title': 'Textfield',
       'label': 'Nama',
       'description': 'isi nama lengkap anda',
       'required': true,
@@ -15,7 +14,6 @@ export const dummyData = {
     },
     {
       'id': '84834727238',
-      'title': 'Textfield',
       'label': 'Email',
       'description': 'isi email anda',
       'required': true,
@@ -23,7 +21,6 @@ export const dummyData = {
     },
     {
       'id': '2',
-      'title': 'Checkbox',
       'label': 'Status',
       'description': 'silahkan pilih status anda',
       'required': true,
@@ -44,7 +41,6 @@ export const dummyData = {
     },
     {
       'id': '3',
-      'title': 'Radio Button',
       'label': 'Experiences',
       'description': 'pengalaman kerja anda',
       'required': true,
@@ -63,7 +59,6 @@ export const dummyData = {
     },
     {
       'id': '4',
-      'title': 'Dropdown',
       'label': 'Negara',
       'description': 'pilih negara asal anda',
       'required': true,
@@ -79,7 +74,6 @@ export const dummyData = {
     },
     {
       'id': '5',
-      'title': 'Date',
       'label': 'DoB',
       'description': 'tanggal lahir anda',
       'required': true,
@@ -89,14 +83,12 @@ export const dummyData = {
     },
     {
       'id': '6',
-      'title': 'Separator',
       'label': 'Silahkan pilih',
       'description': 'dari 1 - 10',
       'type': 'separator',
     },
     {
       'id': '7',
-      'title': 'Rating',
       'label': 'Frontend',
       'description': 'penguasaan anda dibidang frontend',
       'required': true,
@@ -105,14 +97,12 @@ export const dummyData = {
     },
     {
       'id': '6c99c837-c532-43b2-8201-638014ffa742',
-      'title': 'Separator',
       'label': 'Dokumen',
       'description': '',
       'type': 'separator',
     },
     {
       'id': '8',
-      'title': 'File',
       'label': 'NPWP',
       'description': 'silahkan scan NPWP anda dalam format PDF',
       'required': true,
@@ -128,7 +118,6 @@ export const dummyData = {
     },
     {
       'id': '9',
-      'title': 'Image',
       'label': 'KTP',
       'description': 'silahkan scan KTP anda',
       'required': true,
@@ -138,7 +127,6 @@ export const dummyData = {
     },
     {
       'id': '10',
-      'title': 'Signature',
       'label': 'Tanda Tangan',
       'description': 'silahkan gambar tanda tangan anda',
       'required': true,
