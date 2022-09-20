@@ -15,16 +15,25 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 740,
     width: '100%',
     backgroundColor: theme.palette.common.white,
-    padding: '24px 0'
+    padding: '24px 0',
+    [theme.breakpoints.down('md')]: {
+      padding: '12px 0',
+    }
   },
   header: {
     padding: '8px 12px',
     margin: '0 32px 24px 32px',
-    borderLeft: `2px solid ${theme.palette.primary.main}`
+    borderLeft: `2px solid ${theme.palette.primary.main}`,
+    [theme.breakpoints.down('md')]: {
+      margin: '0 8px 12px 8px',
+    }
   },
   form: {
     padding: '0 32px',
     height: '100%',
+    [theme.breakpoints.down('md')]: {
+      padding: '0 8px',
+    }
   },
   formLabelWrap: {
     marginBottom: 8,
@@ -46,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   dividerFormControl: {
     marginTop: 32,
+    [theme.breakpoints.down('md')]: {
+      marginTop: 12,
+    }
   },
   separatorType: {
     borderWidth: 4,
@@ -53,6 +65,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -32,
     marginRight: -32,
     backgroundColor: theme.palette.background.default,
+    [theme.breakpoints.down('md')]: {
+      marginBottom: 12,
+      marginLeft: -8,
+      marginRight: -8,
+    }
   },
   datePicker: {
     '& .MuiButton-root': {

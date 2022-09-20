@@ -45,7 +45,7 @@ const FillForm = () => {
       <LoadingPaper className={classes.content}>
         {/* HEADER */}
         <Stack className={classes.header}>
-          <Typography variant='h5' className='fontWeight500'>Valid Forms</Typography>
+          <Typography variant='h5' className='fontWeight500'>{dummyData.label}</Typography>
         </Stack>
 
         <Divider />

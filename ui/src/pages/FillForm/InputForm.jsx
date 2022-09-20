@@ -127,7 +127,10 @@ const InputForm = (props) => {
   return (
     <Stack
       sx={{
-        marginTop: item.type === 'separator' ? 0 : '32px',
+        marginTop: {
+          xs: item.type === 'separator' ? 0 : '12px',
+          md: item.type === 'separator' ? 0 : '32px'
+        },
       }}
     >
       {/* SEPARATOR */}
