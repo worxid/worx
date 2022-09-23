@@ -141,7 +141,7 @@ const DataGridFilters = (props) => {
         anchorEl={columnsMenuAnchor}
         open={Boolean(columnsMenuAnchor)}
         onClose={() => setColumnsMenuAnchor(null)}
-        className={classes.columnsMenuRoot}
+        className={`${classes.columnsMenuRoot} no-zoom`}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',
@@ -151,31 +151,33 @@ const DataGridFilters = (props) => {
           horizontal: 'right',
         }}
       >
-        {/* TITLE */}
-        <Typography
-          variant='subtitle2'
-          className={classes.columnsMenuTitle}
-        >
-          Columns
-        </Typography>
-
-        {/* COLUMN ITEMS */}
-        {columns.map((item, index) => (
-          (item.field !== 'actions') &&
-          <MenuItem 
-            key={index}
-            className={classes.columnsMenuItem}
-            onClick={() => handleColumnsMenuItemClick(index)}
+        <Stack className='zoom'>
+          {/* TITLE */}
+          <Typography
+            variant='subtitle2'
+            className={classes.columnsMenuTitle}
           >
-            <Checkbox checked={!selectedColumnList[index].hide}/>
-            <Typography
-              variant='subtitle2'
-              className={classes.columnsMenuText}
+            Columns
+          </Typography>
+
+          {/* COLUMN ITEMS */}
+          {columns.map((item, index) => (
+            (item.field !== 'actions') &&
+            <MenuItem 
+              key={index}
+              className={classes.columnsMenuItem}
+              onClick={() => handleColumnsMenuItemClick(index)}
             >
-              {item.headerName}
-            </Typography>
-          </MenuItem>
-        ))}
+              <Checkbox checked={!selectedColumnList[index].hide}/>
+              <Typography
+                variant='subtitle2'
+                className={classes.columnsMenuText}
+              >
+                {item.headerName}
+              </Typography>
+            </MenuItem>
+          ))}
+        </Stack>
       </Menu>
     </Stack>
   )
