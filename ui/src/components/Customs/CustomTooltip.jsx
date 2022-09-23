@@ -27,16 +27,7 @@ const StyledTooltip = styled(({ className, ...props }) => (
 
 const CustomTooltip = (props) => {
   return (
-    <Stack
-      className='no-zoom'
-      sx={{
-        '@media only screen and (max-height: 820px)': {
-          '& .MuiIconButton-root .MuiSvgIcon-root': {
-            zoom: values.zoomValue,
-          }
-        }
-      }}
-    >
+    <Stack className='neutralize-zoom-tooptip'>
       <StyledTooltip className='no-zoom' {...props}/>
     </Stack>
   )

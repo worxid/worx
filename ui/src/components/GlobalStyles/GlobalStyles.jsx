@@ -98,6 +98,12 @@ const GlobalStyles = () => {
               zoom: values.zoomValue,
             }
           },
+          '.neutralize-zoom-tooptip': {
+            zoom: 1 / values.zoomValue,
+            '& .MuiIconButton-root .MuiSvgIcon-root': {
+              zoom: values.zoomValue,
+            }
+          },
           '.zoom': {
             zoom: values.zoomValue,
           },
