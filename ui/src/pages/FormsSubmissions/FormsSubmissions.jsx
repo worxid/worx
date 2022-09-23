@@ -285,12 +285,12 @@ const FormsSubmissions = () => {
           vertical: 'top',
           horizontal: 'right',
         }}
-        className={classes.downloadMenu}
+        className={`${classes.downloadMenu} no-zoom`}
       >
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
+        <MenuItem className='zoom' onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
           <Typography variant='caption'>Excel</Typography>
         </MenuItem>
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
+        <MenuItem className='zoom' onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
           <Typography variant='caption'>CSV</Typography>
         </MenuItem>
       </Menu>
