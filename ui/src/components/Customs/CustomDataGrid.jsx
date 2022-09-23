@@ -29,7 +29,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
               },
               '@media only screen and (max-height: 820px)': {
                 '& .MuiPaper-root': {
-                  zoom: values.zoomValue,
+                  zoom: 1 / values.zoomValue,
                 },
                 '& .MuiList-root': {
                   zoom: values.zoomValue, // zoom
