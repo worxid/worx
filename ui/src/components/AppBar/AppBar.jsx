@@ -88,7 +88,7 @@ const AppBar = (props) => {
         {hasSearch &&
         <Stack 
           direction='row'
-          className={classes.search}
+          className={`${classes.search} no-zoom`}
         >
           {/* SEARCH ICON */}
           <CustomTooltip
@@ -102,7 +102,7 @@ const AppBar = (props) => {
 
           {/* SEARCH INPUT */}
           <Input 
-            className={isSearchOpen ? classes.searchInputWide : classes.searchInputNarrow}
+            className={`${isSearchOpen ? classes.searchInputWide : classes.searchInputNarrow} zoom`}
             placeholder='Search'
             value={search}
             onChange={(event) => setSearch(event.target.value)}

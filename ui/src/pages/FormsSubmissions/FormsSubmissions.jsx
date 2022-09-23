@@ -285,7 +285,7 @@ const FormsSubmissions = () => {
           vertical: 'top',
           horizontal: 'right',
         }}
-        className={classes.downloadMenu}
+        className={`${classes.downloadMenu} neutralize-zoom-menu`}
       >
         <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
           <Typography variant='caption'>Excel</Typography>
