@@ -5,8 +5,10 @@ import id.worx.worx.exception.TokenException;
 import id.worx.worx.model.request.auth.ChangePasswordRequest;
 import id.worx.worx.model.request.auth.LoginRequest;
 import id.worx.worx.model.request.auth.ResetPasswordRequest;
+import id.worx.worx.model.request.auth.TokenRefreshRequest;
 import id.worx.worx.model.request.users.UserRequest;
 import id.worx.worx.model.response.auth.JwtResponse;
+import id.worx.worx.model.response.auth.TokenRefreshResponse;
 import id.worx.worx.model.response.users.UserResponse;
 import id.worx.worx.service.users.UsersService;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,10 @@ public class UsersController {
         return usersService.login(loginRequest);
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenRefreshResponse> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+        return ResponseEntity.ok(usersService.refreshAccessToken(request));
+    }
 //    @CrossOrigin
 //    @PostMapping("/reset-password")
 //    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest)
@@ -58,12 +64,12 @@ public class UsersController {
 //        usersService.updatePassword(updatePasswordRequest);
 //        return ResponseEntity.status(HttpStatus.OK).body("Update Password Success");
 //    }
-//
-//    @PostMapping("/logout")
-//    public ResponseEntity<String> logout(@Valid @RequestBody TokenRefreshRequest request) {
-//        usersService.logout(request);
-//        return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
-//    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody TokenRefreshRequest request) {
+        usersService.logout(request);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
+    }
 
 
 }
