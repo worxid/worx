@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springdoc.api.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
-import id.worx.worx.web.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,7 +33,6 @@ public class FormController {
 
     @GetMapping("list")
     public ResponseEntity<BaseListResponse<FormDTO>> list() {
-
         List<Form> forms = formService.list();
         List<FormDTO> dtos = forms.stream()
                 .map(formService::toDTO)

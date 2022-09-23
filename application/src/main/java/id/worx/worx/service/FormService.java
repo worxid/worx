@@ -9,7 +9,7 @@ import id.worx.worx.data.dto.FormDTO;
 import id.worx.worx.data.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
-import id.worx.worx.web.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.FormSubmissionSearchRequest;
 
 public interface FormService {
 

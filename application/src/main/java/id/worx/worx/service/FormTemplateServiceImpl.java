@@ -23,7 +23,7 @@ import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
 import id.worx.worx.util.UrlUtils;
-import id.worx.worx.web.request.FormTemplateSearchRequest;
+import id.worx.worx.web.model.FormTemplateSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service

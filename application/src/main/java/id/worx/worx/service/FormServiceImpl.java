@@ -27,7 +27,7 @@ import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
-import id.worx.worx.web.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

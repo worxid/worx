@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.web.request.FormTemplateSearchRequest;
+import id.worx.worx.web.model.FormTemplateSearchRequest;
 
 public interface FormTemplateService {
 

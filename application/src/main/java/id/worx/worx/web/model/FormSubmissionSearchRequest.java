@@ -1,4 +1,4 @@
-package id.worx.worx.web.request;
+package id.worx.worx.web.model;
 
 public class FormSubmissionSearchRequest {
 
