@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                 .antMatchers("/form/**",
                         "/groups/**")
                 .permitAll()
+                .antMatchers("/mobile/**").permitAll()
                 .anyRequest()
                 .authenticated();
         return http.build();

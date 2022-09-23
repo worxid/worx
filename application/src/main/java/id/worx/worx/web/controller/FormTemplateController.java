@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormShareRequest;
 import id.worx.worx.data.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.data.request.FormTemplateRequest;
@@ -30,12 +29,12 @@ import id.worx.worx.data.response.BaseResponse;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.service.FormTemplateService;
+import id.worx.worx.web.pageable.SimplePage;
+import id.worx.worx.web.request.FormTemplateSearchRequest;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping("form/template")
 @RequiredArgsConstructor
@@ -44,10 +43,16 @@ public class FormTemplateController {
     private final FormTemplateService templateService;
 
     @PostMapping("search")
-    public ResponseEntity<?> search(Pageable pageable) {
-        Page<FormTemplateSearchDTO> templates = templateService.search(pageable);
+    public ResponseEntity<Page<FormTemplateDTO>> search(
+            @RequestBody @Valid FormTemplateSearchRequest request,
+            @ParameterObject Pageable pageable) {
+        Page<FormTemplate> templates = templateService.search(request, pageable);
+        List<FormTemplateDTO> dtos = templates.stream()
+                .map(templateService::toDTO)
+                .collect(Collectors.toList());
+        Page<FormTemplateDTO> page = new SimplePage<>(dtos, templates.getPageable(), templates.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(templates);
+                .body(page);
     }
 
     @ApiResponses(value = {

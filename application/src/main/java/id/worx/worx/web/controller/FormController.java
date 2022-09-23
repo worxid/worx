@@ -3,6 +3,11 @@ package id.worx.worx.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +22,7 @@ import id.worx.worx.data.response.BaseListResponse;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
+import id.worx.worx.web.request.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -39,6 +45,15 @@ public class FormController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @PostMapping("search")
+    public ResponseEntity<?> search(
+            @RequestBody @Valid FormSubmissionSearchRequest request,
+            @ParameterObject Pageable pageable) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(null);
     }
 
     @PostMapping("submit")

@@ -6,13 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
+import id.worx.worx.web.request.FormTemplateSearchRequest;
 
 public interface FormTemplateService {
 
-    Page<FormTemplateSearchDTO> search(Pageable pageable);
+    Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable);
 
     List<FormTemplate> list();
 

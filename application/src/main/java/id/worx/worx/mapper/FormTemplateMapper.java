@@ -13,10 +13,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.dto.FormTemplateSearchDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.forms.service.field.Field;
+import id.worx.worx.mobile.model.MobileFormTemplateDTO;
 
 @Mapper(componentModel = "spring", uses = { GroupMapper.class })
 public abstract class FormTemplateMapper {
@@ -40,7 +40,7 @@ public abstract class FormTemplateMapper {
     public abstract FormTemplateDTO toDto(FormTemplate template);
 
     @Mapping(source = "fields", target = "fields", qualifiedByName = "fromString")
-    public abstract FormTemplateSearchDTO toSearchDTO(FormTemplate template);
+    public abstract MobileFormTemplateDTO toMobileDTO(FormTemplate template);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)

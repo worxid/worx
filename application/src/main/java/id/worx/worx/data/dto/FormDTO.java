@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.forms.service.value.Value;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class FormDTO implements Serializable {
 
     private static final long serialVersionUID = -3930933140756873248L;

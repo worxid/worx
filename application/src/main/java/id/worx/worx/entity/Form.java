@@ -4,6 +4,8 @@ import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +34,16 @@ public class Form extends BaseEntity {
 
     @Column(nullable = false)
     private Long templateId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "respondent_type")
+    private RespondentType respondentType;
+    @Column(name = "respondent_label")
+    private String respondentLabel;
+    @Column(name = "respondent_device_code")
+    private String respondentDeviceCode;
+    @Column(name = "respondent_ip_address")
+    private String respondentIP;
 
     private String label;
 
