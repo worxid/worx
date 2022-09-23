@@ -6,8 +6,6 @@ import MuiGlobalStyles from '@mui/material/GlobalStyles'
 import { alpha } from '@mui/material/styles'
 
 const GlobalStyles = () => {
-  const zoomValue = 0.85
-
   return (
     <MuiGlobalStyles
       styles={(theme) => ({
@@ -90,13 +88,13 @@ const GlobalStyles = () => {
         // ZOOM
         '@media only screen and (max-height: 820px)': {
           'body': {
-            zoom: zoomValue,
+            zoom: values.zoomValue,
           },
           '.zoom': {
-            zoom: zoomValue,
+            zoom: values.zoomValue,
           },
           '.no-zoom': {
-            zoom: 1 / zoomValue,
+            zoom: 1 / values.zoomValue,
           },
         },
       })}
