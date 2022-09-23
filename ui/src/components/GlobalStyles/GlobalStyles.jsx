@@ -90,6 +90,14 @@ const GlobalStyles = () => {
           'body': {
             zoom: values.zoomValue,
           },
+          '.neutralize-zoom-menu': {
+            '& .MuiPaper-root': {
+              zoom: 1 / values.zoomValue,
+            },
+            '& .MuiList-root': {
+              zoom: values.zoomValue,
+            }
+          },
           '.zoom': {
             zoom: values.zoomValue,
           },

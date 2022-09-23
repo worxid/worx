@@ -141,7 +141,7 @@ const DataGridFilters = (props) => {
         anchorEl={columnsMenuAnchor}
         open={Boolean(columnsMenuAnchor)}
         onClose={() => setColumnsMenuAnchor(null)}
-        className={`${classes.columnsMenuRoot} no-zoom`}
+        className={`${classes.columnsMenuRoot} neutralize-zoom-menu`}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',
@@ -151,18 +151,17 @@ const DataGridFilters = (props) => {
           horizontal: 'right',
         }}
       >
-        <Stack className='zoom'>
-          {/* TITLE */}
-          <Typography
-            variant='subtitle2'
-            className={classes.columnsMenuTitle}
-          >
-            Columns
-          </Typography>
+        {/* TITLE */}
+        <Typography
+          variant='subtitle2'
+          className={classes.columnsMenuTitle}
+        >
+          Columns
+        </Typography>
 
-          {/* COLUMN ITEMS */}
-          {columns.map((item, index) => (
-            (item.field !== 'actions') &&
+        {/* COLUMN ITEMS */}
+        {columns.map((item, index) => (
+          (item.field !== 'actions') &&
             <MenuItem 
               key={index}
               className={classes.columnsMenuItem}
@@ -176,8 +175,7 @@ const DataGridFilters = (props) => {
                 {item.headerName}
               </Typography>
             </MenuItem>
-          ))}
-        </Stack>
+        ))}
       </Menu>
     </Stack>
   )
