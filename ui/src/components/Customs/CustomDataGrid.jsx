@@ -1,3 +1,6 @@
+// CONSTANTS
+import { values } from 'constants/values'
+
 // MUIS
 import { styled } from '@mui/material/styles'
 
@@ -24,6 +27,14 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
               '& .MuiMenuItem-root': {
                 fontSize: 12,
               },
+              '@media only screen and (max-height: 820px)': {
+                '& .MuiPaper-root': {
+                  zoom: 1/0.85, // no zoom
+                },
+                '& .MuiList-root': {
+                  zoom: 0.85, // zoom
+                },
+              }
             },
           },
         },
@@ -121,6 +132,35 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   '& .MuiIconButton-root': {
     padding: 8,
   },
+
+  // ZOOM EFFECT
+  '@media only screen and (max-height: 820px)': {
+    '& .MuiToolbar-root': {
+      zoom: 1 / values.zoomValue,
+    },
+    '& .MuiTablePagination-selectLabel': {
+      zoom: values.zoomValue,
+    },
+    '& .MuiTablePagination-displayedRows': {
+      zoom: values.zoomValue,
+    },
+    '& .MuiTablePagination-actions': {
+      zoom: values.zoomValue,
+    },
+    '& .MuiDataGrid-footerContainer .MuiInputBase-root': {
+      zoom: 1 / values.zoomValue,
+    },
+    '& .MuiDataGrid-footerContainer .MuiTablePagination-select': {
+      zoom: values.zoomValue,
+      fontSize: 10,
+    },
+    '& .MuiDataGrid-footerContainer .MuiSelect-nativeInput': {
+      zoom: values.zoomValue,
+    },
+    '& .MuiDataGrid-footerContainer .MuiSvgIcon-root': {
+      zoom: values.zoomValue,
+    }
+  }
 }))
 
 export default CustomDataGrid
