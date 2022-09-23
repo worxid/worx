@@ -141,7 +141,7 @@ const DataGridFilters = (props) => {
         anchorEl={columnsMenuAnchor}
         open={Boolean(columnsMenuAnchor)}
         onClose={() => setColumnsMenuAnchor(null)}
-        className={classes.columnsMenuRoot}
+        className={`${classes.columnsMenuRoot} neutralize-zoom-menu`}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',
@@ -162,19 +162,19 @@ const DataGridFilters = (props) => {
         {/* COLUMN ITEMS */}
         {columns.map((item, index) => (
           (item.field !== 'actions') &&
-          <MenuItem 
-            key={index}
-            className={classes.columnsMenuItem}
-            onClick={() => handleColumnsMenuItemClick(index)}
-          >
-            <Checkbox checked={!selectedColumnList[index].hide}/>
-            <Typography
-              variant='subtitle2'
-              className={classes.columnsMenuText}
+            <MenuItem 
+              key={index}
+              className={classes.columnsMenuItem}
+              onClick={() => handleColumnsMenuItemClick(index)}
             >
-              {item.headerName}
-            </Typography>
-          </MenuItem>
+              <Checkbox checked={!selectedColumnList[index].hide}/>
+              <Typography
+                variant='subtitle2'
+                className={classes.columnsMenuText}
+              >
+                {item.headerName}
+              </Typography>
+            </MenuItem>
         ))}
       </Menu>
     </Stack>
