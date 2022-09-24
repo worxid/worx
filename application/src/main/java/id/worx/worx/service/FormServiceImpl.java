@@ -46,7 +46,7 @@ public class FormServiceImpl implements FormService {
         Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
 
         if (optTemplate.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException("Not Found");
         }
 
         // validate field value

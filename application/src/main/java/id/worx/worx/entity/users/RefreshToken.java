@@ -21,7 +21,7 @@ public class RefreshToken extends Audit {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "ID", referencedColumnName = "id")
     private Users user;
 
     @Column(nullable = false, unique = true)

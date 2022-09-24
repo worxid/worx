@@ -17,6 +17,8 @@ import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,22 +33,14 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@Transactional
 public class UsersServiceImpl implements UsersService {
-
     private final UsersRepository usersRepository;
-    public final PasswordEncoder passwordEncoder;
-    private final UsersMapper usersMapper;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, UsersMapper usersMapper, AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository) {
+    public UsersServiceImpl(UsersRepository usersRepository, RefreshTokenRepository refreshTokenRepository) {
         this.usersRepository = usersRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.usersMapper = usersMapper;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -55,12 +49,12 @@ public class UsersServiceImpl implements UsersService {
 
         Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
         if (getByUsername.isPresent()) {
-            throw new WorxException("User with username " + userRequest.getUsername() + " is already exist.");
+            throw new WorxException("User with username " + userRequest.getUsername() + " is already exist.", HttpStatus.NOT_FOUND.value());
         }
 
         Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
         if (getByEmail.isPresent()) {
-            throw new WorxException("User with email " + userRequest.getEmail() + " is already exist.");
+            throw new WorxException("User with email " + userRequest.getEmail() + " is already exist.", HttpStatus.NOT_FOUND.value());
         }
 
         Users users = new Users();
@@ -68,39 +62,26 @@ public class UsersServiceImpl implements UsersService {
         users.setUsername(userRequest.getUsername());
         users.setPhone(userRequest.getPhoneNo());
         users.setStatus(UserStatus.ACTIVE);
-        users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        users.setPassword("");
 
         usersRepository.save(users);
 
-        return usersMapper.toDto(users);
+        return null;
     }
 
     public JwtResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-                loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String accessToken = jwtUtil.generateToken((UserDetails) authenticate.getPrincipal());
-        return JwtResponse.builder()
-            .accessToken(accessToken)
-            .email(loginRequest.getEmail())
-            .build();
+
+        Optional<Users> users = usersRepository.findByEmail(loginRequest.getEmail());
+        if(!users.isPresent()){
+
+        }
+
+        return null;
     }
 
     public TokenRefreshResponse refreshAccessToken(TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-        return this.findByToken(requestRefreshToken)
-            .map(this::verifyExpiration)
-            .map(RefreshToken::getUser)
-            .map(user -> {
-                String accessToken = jwtUtil.generateToken(user.getEmail());
-                return TokenRefreshResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(requestRefreshToken)
-                    .build();
-            })
-            .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                "Refresh token is not in database!"));
+
+        return null;
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {

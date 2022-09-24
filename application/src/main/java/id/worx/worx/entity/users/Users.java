@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Table(name = "USERS")
@@ -19,7 +21,7 @@ public class Users extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_NO", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
     @Column(name = "USERNAME", nullable = false)
@@ -37,4 +39,8 @@ public class Users extends Audit {
     @Column(name = "STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
 }

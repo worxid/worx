@@ -26,4 +26,9 @@ public class WorxException extends RuntimeException {
         super(message);
         this.statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
     }
+
+    public WorxException(String message, int statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
 }
