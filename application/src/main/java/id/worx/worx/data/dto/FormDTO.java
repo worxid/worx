@@ -28,6 +28,14 @@ public class FormDTO implements Serializable {
     private String description;
     private List<Field> fields;
     private Map<String, Value> values;
+
+    @JsonProperty("created_on")
+    private String createdOn;
+    @JsonProperty("modified_on")
+    private String modifiedOn;
+
+    @JsonProperty("submit_date")
+    private String submitDate;
     @JsonProperty("submit_in_zone")
     private Boolean submitInZone;
     @JsonProperty("submit_location")

@@ -3,9 +3,11 @@ package id.worx.worx.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
 import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.pageable.SimplePage;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -46,16 +49,22 @@ public class FormController {
     }
 
     @PostMapping("search")
-    public ResponseEntity<?> search(
+    public ResponseEntity<Page<FormDTO>> search(
             @RequestBody @Valid FormSubmissionSearchRequest request,
             @ParameterObject Pageable pageable) {
-
+        Page<Form> forms = formService.search(request, pageable);
+        List<FormDTO> dtos = forms.stream()
+                .map(formService::toDTO)
+                .collect(Collectors.toList());
+        Page<FormDTO> page = new SimplePage<>(dtos, forms.getPageable(), forms.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(null);
+                .body(page);
     }
 
     @PostMapping("submit")
-    public ResponseEntity<BaseValueResponse<FormDTO>> submit(@RequestBody FormSubmitRequest request) {
+    public ResponseEntity<BaseValueResponse<FormDTO>> submit(
+            HttpServletRequest httpServletRequest,
+            @RequestBody FormSubmitRequest request) {
         Form form = formService.submit(request);
         FormDTO dto = formService.toDTO(form);
         BaseValueResponse<FormDTO> response = BaseValueResponse.<FormDTO>builder()
