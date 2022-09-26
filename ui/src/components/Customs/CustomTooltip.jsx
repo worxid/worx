@@ -27,7 +27,7 @@ const StyledTooltip = styled(({ className, ...props }) => (
 
 const CustomTooltip = (props) => {
   return (
-    <Stack className='neutralize-zoom-tooptip'>
+    <Stack className='neutralize-zoom-tooltip'>
       <StyledTooltip className='no-zoom' {...props}/>
     </Stack>
   )
