@@ -91,7 +91,12 @@ const MobilePreview = (props) => {
         {item.type === 'dropdown' && (
           <FormControl variant='filled' fullWidth className={classes.formControlMobile}>
             <InputLabel>Answer</InputLabel>
-            <Select label={item.label} size='small' className='heightFitContent'>
+            <Select
+              label={item.label}
+              size='small'
+              className='neutralize-zoom-select heightFitContent'
+              MenuProps={{ className: 'neutralize-zoom-select-menu' }}
+            >
               {item.optionList.map((item, index) => (
                 <MenuItem key={index} value={item.label}>
                   <Typography variant='caption' className='displayBlock' noWrap>{item.label || `Option #${index + 1}`}</Typography>
