@@ -407,6 +407,8 @@ const FieldProperties = () => {
                   ))}
                 </Stack>
               )}
+              className='neutralize-zoom-select'
+              MenuProps={{ className: 'neutralize-zoom-select-menu' }}
             >
               {formatFiles.map((format) => (
                 <MenuItem key={format} value={format}>

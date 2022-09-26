@@ -147,24 +147,27 @@ const SignUp = () => {
       </FormControl>
 
       {/* COUNTRY AUTOCOMPLETE */}
-      <Autocomplete
-        value={formObject.country}
-        onChange={(event, newValue) => handleFormObjectChange('country', newValue)}
-        inputValue={countryInputValue}
-        onInputChange={(event, newInputValue) => setCountryInputValue(newInputValue)}
-        options={countries}
-        getOptionLabel={(option) => option.name}
-        fullWidth
-        renderInput={(params) => (
-          <TextField 
-            {...params} 
-            label='Country'
-            color='secondary'
-            error={formHelperObject.country}
-            helperText={formHelperObject.country ?? ' '}
-          />
-        )}
-      />
+      <FormControl className='no-zoom' fullWidth>
+        <Autocomplete
+          value={formObject.country}
+          onChange={(event, newValue) => handleFormObjectChange('country', newValue)}
+          inputValue={countryInputValue}
+          onInputChange={(event, newInputValue) => setCountryInputValue(newInputValue)}
+          options={countries}
+          getOptionLabel={(option) => option.name}
+          fullWidth
+          renderInput={(params) => (
+            <TextField 
+              {...params} 
+              label='Country'
+              color='secondary'
+              error={formHelperObject.country}
+              helperText={formHelperObject.country ?? ' '}
+            />
+          )}
+          className='neutralize-zoom-autocomplete'
+        />
+      </FormControl>
 
       {/* PHONE NUMBER FORM */}
       <FormControl 

@@ -416,7 +416,7 @@ const InputForm = (props) => {
           </Button>)}
 
           <DialogForm
-            classNames={classes.dialogSignature}
+            classNames={`${classes.dialogSignature} neutralize-dialog-form`}
             title='Create Signature'
             handleActionButtonClick={handleSignatureActionButtonClick}
           >

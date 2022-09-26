@@ -70,7 +70,7 @@ const FormFields = () => {
       <Stack className={classes.listFieldsWrap}>
         {/* SORTABLE */}
         <ReactSortable
-          className={classes.reactSortable}
+          className={`${classes.reactSortable} neutralize-zoom-sortable`}
           animation={200}
           delayOnTouchStart={true}
           delay={2}
@@ -86,7 +86,7 @@ const FormFields = () => {
           {listFields.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>
               <ListItemButton
-                className={classes.listItemButton}
+                className={`${classes.listItemButton} zoom`}
                 onClick={() => handleSelectedField(item.type, item.id)}
                 selected={selectedFieldsId === item.id}
               >
