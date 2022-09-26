@@ -40,6 +40,8 @@ const FormFields = () => {
     setSelectedFieldsType(type)
   }
 
+  console.log({ listFields })
+
   return (
     <Stack flex={1} width='50%'>
       {/* HEADER */}

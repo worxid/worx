@@ -16,6 +16,8 @@ export const dataListComponents = [
     title: 'Textfield',
     label: '',
     description: '',
+    minLength: 0,
+    maxLength: 24,
     required: false,
     type: 'text',
     Icon: IconStop,
@@ -27,9 +29,9 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    checkboxMinChecked: 1,
-    checkboxMaxChecked: 3,
-    optionList: [
+    minChecked: 1,
+    maxChecked: 3,
+    group: [
       {
         label: ''
       },
@@ -50,7 +52,7 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    optionList: [
+    options: [
       {
         label: ''
       },
@@ -71,7 +73,7 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    optionList: [
+    options: [
       {
         label: ''
       },
@@ -92,8 +94,8 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    dateDisableFuture: false,
-    dateDisablePast: false,
+    disableFuture: false,
+    disablePast: false,
     type: 'date',
     Icon: IconDateRange,
     duplicateFrom: null,
@@ -113,7 +115,7 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    ratingStarsCount: 5,
+    maxStars: 5,
     type: 'rating',
     Icon: IconStar,
     duplicateFrom: null,
@@ -124,12 +126,12 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    fileMaxNumber: 6,
-    fileMaxSize: 128,
-    fileMinSize: 1,
+    maxFiles: 6,
+    maxFileSize: 10485760,
+    minFileSize: 128,
     fileMinSizeType: 'MB',
     fileMaxSizeType: 'BYTES',
-    fileFormat: ['any'], // [format, format]
+    allowedExtensions: ['any'], // [format, format]
     type: 'file',
     Icon: IconFileCopy,
     duplicateFrom: null,
@@ -140,8 +142,8 @@ export const dataListComponents = [
     label: '',
     description: '',
     required: false,
-    imageMaxNumber: 6,
-    imageAllowGallery: false,
+    maxFiles: 6,
+    allowGalleryUpload: true,
     type: 'image',
     Icon: IconPhotoCamera,
     duplicateFrom: null,
