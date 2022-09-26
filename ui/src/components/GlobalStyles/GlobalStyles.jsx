@@ -90,6 +90,62 @@ const GlobalStyles = () => {
           'body': {
             zoom: values.zoomValue,
           },
+          // AUTOCOMPLETE PURE
+          '.neutralize-zoom-autocomplete': {
+            '& .MuiInputBase-root': {
+              height: '44px !important',
+            },
+            '& .MuiInputBase-input': {
+              zoom: values.zoomValue,
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderWidth: 1.5,
+            },
+            '& .MuiFormLabel-root': {
+              zoom: values.zoomValue,
+            },
+            '& legend': {
+              zoom: values.zoomValue,
+            },
+            '& .MuiButtonBase-root': {
+              zoom: values.zoomValue,
+            }
+          },
+          '.MuiAutocomplete-popper': {
+            zoom: 1 / values.zoomValue,
+          },
+          '.MuiAutocomplete-popper ul': {
+            zoom: values.zoomValue,
+          },
+          '.MuiAutocomplete-popper li': {
+            zoom: values.zoomValue,
+          },
+          '.neutralize-zoom-select': {
+            '& .MuiSelect-select': {
+              zoom: 1 / values.zoomValue,
+            },
+            '& .MuiChip-root': {
+              zoom: values.zoomValue,
+            }
+          },
+          '.neutralize-zoom-select-menu': {
+            '& .MuiPaper-root': {
+              zoom: 1 / values.zoomValue,
+              width: 'auto',
+            },
+            '& .MuiList-root': {
+              zoom: values.zoomValue,
+            },
+            '& .MuiList-root li': {
+              zoom: values.zoomValue,
+            }
+          },
+          '.neutralize-zoom-sortable': {
+            zoom: 1 / values.zoomValue,
+            '& .sortable-ghost': {
+              zoom: values.zoomValue,
+            },
+          },
           '.neutralize-zoom-menu': {
             '& .MuiPaper-root': {
               zoom: 1 / values.zoomValue,
@@ -98,7 +154,7 @@ const GlobalStyles = () => {
               zoom: values.zoomValue,
             }
           },
-          '.neutralize-zoom-tooptip': {
+          '.neutralize-zoom-tooltip': {
             zoom: 1 / values.zoomValue,
             '& .MuiIconButton-root .MuiSvgIcon-root': {
               zoom: values.zoomValue,
