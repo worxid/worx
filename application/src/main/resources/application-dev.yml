@@ -7,4 +7,4 @@ logging:
   level:
     org:
       hibernate:
-        SQL: FALSE
+        SQL: DEBUG

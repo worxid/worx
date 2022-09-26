@@ -26,6 +26,7 @@ public abstract class FormMapper {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    @Mapping(source = "template.id", target = "templateId")
     @Mapping(source = "fields", target = "fields", qualifiedByName = "readFieldfromString")
     @Mapping(source = "values", target = "values", qualifiedByName = "readValuefromString")
     @Mapping(source = "submitLat", target = "submitLocation.lat")
@@ -33,6 +34,7 @@ public abstract class FormMapper {
     @Mapping(source = "submitAddress", target = "submitLocation.address")
     public abstract FormDTO toDTO(Form form);
 
+    @Mapping(source = "template.id", target = "templateId")
     @Mapping(source = "fields", target = "fields", qualifiedByName = "readFieldfromString")
     @Mapping(source = "values", target = "values", qualifiedByName = "readValuefromString")
     @Mapping(source = "submitLat", target = "submitLocation.lat")
@@ -46,6 +48,7 @@ public abstract class FormMapper {
     @Mapping(source = "fields", target = "fields", qualifiedByName = "writeFieldAsString")
     @Mapping(source = "values", target = "values", qualifiedByName = "writeValueAsString")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "template", ignore = true)
     @Mapping(target = "respondentType", ignore = true)
     @Mapping(target = "respondentLabel", ignore = true)
     @Mapping(target = "respondentDeviceCode", ignore = true)

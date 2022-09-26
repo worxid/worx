@@ -85,7 +85,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public FormTemplateDTO toDTO(FormTemplate template) {
-        return templateMapper.toDto(template);
+        return templateMapper.toDTO(template);
     }
 
     @Transactional

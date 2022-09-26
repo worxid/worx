@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
@@ -58,11 +59,18 @@ public class FormTemplate extends BaseEntity {
 
     private String urlCode;
 
+    @OneToMany(mappedBy = "template")
+    private Set<Form> forms;
+
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(name = "template_groups", joinColumns = @JoinColumn(name = "template_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> assignedGroups;
+
+    public int getSubmissionCount() {
+        return forms.size();
+    }
 
 }

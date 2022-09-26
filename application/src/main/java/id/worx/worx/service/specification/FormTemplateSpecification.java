@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
@@ -41,11 +42,21 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
     public Specification<FormTemplate> submissionCountEqualTo(Integer submissionCount) {
         return (root, query, cb) -> {
             Root<FormTemplate> template = root;
-            Subquery<Form> subquery = query.subquery(Form.class);
-            Root<Form> form = subquery.from(Form.class);
-            subquery.select(form)
-                    .where(cb.equal(form.get(Form_.TEMPLATE_ID), template.get(FormTemplate_.ID)));
-            return cb.equal(cb.count(subquery), submissionCount);
+            Subquery<FormTemplate> subquery = query.subquery(FormTemplate.class);
+            Root<FormTemplate> subroot = subquery.from(FormTemplate.class);
+            Join<Form, FormTemplate> formSubmission = subroot.join(FormTemplate_.FORMS);
+            subquery.select(formSubmission.get(Form_.TEMPLATE).get(FormTemplate_.ID))
+                    .groupBy(formSubmission.get(Form_.TEMPLATE).get(FormTemplate_.ID));
+
+            if (submissionCount.equals(0)) {
+                return cb.in(template.get(FormTemplate_.ID)).value(subquery).not();
+            }
+
+            subquery.having(
+                    cb.equal(
+                            cb.count(formSubmission.get(Form_.TEMPLATE).get(FormTemplate_.ID)),
+                            submissionCount));
+            return cb.in(template.get(FormTemplate_.ID)).value(subquery);
         };
     }
 

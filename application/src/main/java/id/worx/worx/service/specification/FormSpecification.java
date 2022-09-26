@@ -17,7 +17,7 @@ public class FormSpecification implements BaseSpecification<Form> {
         Specification<Form> spec = Specification.where(null);
 
         if (Objects.nonNull(request.getTemplateId())) {
-            spec = spec.and(equalTo(Form_.TEMPLATE_ID, request.getTemplateId()));
+            spec = spec.and(equalTo(Form_.TEMPLATE, request.getTemplateId()));
         }
 
         if (Objects.nonNull(request.getLabel())) {

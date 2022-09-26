@@ -49,12 +49,6 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Form submit(FormSubmitRequest request) {
-        Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
-
-        if (optTemplate.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
-        }
-
         Form form = this.submitOrElseThrowInvalid(request);
         form.setRespondentType(RespondentType.WEB_BROWSER);
         form.setRespondentLabel(RespondentType.WEB_BROWSER.getName());
@@ -68,13 +62,6 @@ public class FormServiceImpl implements FormService {
     @Override
     public Form submit(MobileFormSubmitRequest request) {
         // TODO validate device code
-
-        Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
-
-        if (optTemplate.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
-        }
-
         Form form = this.submitOrElseThrowInvalid(request);
         // TODO set respondent label with device label
         form.setRespondentType(RespondentType.MOBILE_APP);
@@ -101,6 +88,13 @@ public class FormServiceImpl implements FormService {
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
+        Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
+
+        if (optTemplate.isEmpty()) {
+            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+        }
+
+        FormTemplate template = optTemplate.get();
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();
 
@@ -112,6 +106,7 @@ public class FormServiceImpl implements FormService {
         }
 
         Form form = formMapper.fromSubmitRequest(request);
+        form.setTemplate(template);
         form.setSubmitDate(Instant.now());
         return form;
     }

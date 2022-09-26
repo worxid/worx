@@ -37,7 +37,7 @@ public abstract class FormTemplateMapper {
     public abstract void update(@MappingTarget FormTemplate template, FormTemplateRequest request);
 
     @Mapping(source = "fields", target = "fields", qualifiedByName = "fromString")
-    public abstract FormTemplateDTO toDto(FormTemplate template);
+    public abstract FormTemplateDTO toDTO(FormTemplate template);
 
     @Mapping(source = "fields", target = "fields", qualifiedByName = "fromString")
     public abstract MobileFormTemplateDTO toMobileDTO(FormTemplate template);

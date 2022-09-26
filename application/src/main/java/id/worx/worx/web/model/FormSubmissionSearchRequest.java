@@ -20,6 +20,7 @@ public class FormSubmissionSearchRequest implements Serializable {
 
     private static final long serialVersionUID = 1068729504805818697L;
 
+    @JsonProperty("template_id")
     private Long templateId;
 
     private String label;
