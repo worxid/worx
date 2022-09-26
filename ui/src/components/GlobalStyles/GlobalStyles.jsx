@@ -120,6 +120,15 @@ const GlobalStyles = () => {
           '.MuiAutocomplete-popper li': {
             zoom: values.zoomValue,
           },
+          '.neutralize-dialog-form': {
+            zoom: 1 / values.zoomValue,
+            '& .MuiDialogTitle-root': {
+              zoom: values.zoomValue,
+            },
+            '& .MuiDialogActions-root': {
+              zoom: values.zoomValue,
+            }
+          },
           '.neutralize-zoom-select': {
             '& .MuiSelect-select': {
               zoom: 1 / values.zoomValue,
