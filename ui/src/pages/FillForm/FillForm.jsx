@@ -14,6 +14,7 @@ import { dummyData } from './fillFormConstants'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -42,7 +43,7 @@ const FillForm = () => {
   return (
     <Stack direction='column' alignItems='center' className={`${classes.root} no-zoom`}>
       {/* CONTENT */}
-      <LoadingPaper className={classes.content}>
+      <LoadingPaper className={`${classes.content} zoom`}>
         {/* HEADER */}
         <Stack className={classes.header}>
           <Typography variant='h5' className='fontWeight500'>{dummyData.label}</Typography>
@@ -70,13 +71,15 @@ const FillForm = () => {
       </LoadingPaper>
 
       {/* FOOTER */}
-      <Stack className={classes.footer} direction='row' alignItems='center'>
+      <Stack className={`${classes.footer} zoom`} direction='row' alignItems='center'>
         <Stack flex={1}>
-          <Box
-            component='img'
-            src={logoWorx}
-            className={classes.footerLogo}
-          />
+          <Link href='/'>
+            <Box
+              component='img'
+              src={logoWorx}
+              className={classes.footerLogo}
+            />
+          </Link>
         </Stack>
 
         <Typography

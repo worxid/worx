@@ -1,4 +1,4 @@
-package id.worx.worx.controller;
+package id.worx.worx.web.controller;
 
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.TokenException;

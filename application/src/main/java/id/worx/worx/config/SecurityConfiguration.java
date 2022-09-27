@@ -32,6 +32,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     JWTokenFilter jwTokenFilter;
+//
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf().disable()
+//                .exceptionHandling()
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/resources/**",
+//                        "/v3/api-docs/**",
+//                        "/swagger-ui.html",
+//                        "/swagger-ui/**")
+//                .permitAll()
+//                .antMatchers("/form/**",
+//                        "/groups/**")
+//                .permitAll()
+//                .antMatchers("/mobile/**").permitAll()
+//                .anyRequest()
+//                .authenticated();
+//        return http.build();
+//    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -55,6 +75,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 ,"/api/form/**"
                 )
             .permitAll()
+            .antMatchers("/mobile/**").permitAll()
             .anyRequest()
             .authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

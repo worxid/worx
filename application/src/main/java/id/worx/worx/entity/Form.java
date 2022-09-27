@@ -4,9 +4,13 @@ import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,8 +34,19 @@ public class Form extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long templateId;
+    @ManyToOne
+    @JoinColumn(name = "template_id", nullable = false)
+    private FormTemplate template;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "respondent_type")
+    private RespondentType respondentType;
+    @Column(name = "respondent_label")
+    private String respondentLabel;
+    @Column(name = "respondent_device_code")
+    private String respondentDeviceCode;
+    @Column(name = "respondent_ip_address")
+    private String respondentIP;
 
     private String label;
 

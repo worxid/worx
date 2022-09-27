@@ -1,5 +1,6 @@
 package id.worx.worx.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,7 +47,8 @@ public class Group extends BaseEntity {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    private Set<FormTemplate> templates;
+    @Default
+    private Set<FormTemplate> templates = new HashSet<>();
 
     public int getFormCount() {
         return templates.size();
