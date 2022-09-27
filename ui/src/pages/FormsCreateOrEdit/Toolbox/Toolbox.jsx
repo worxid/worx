@@ -75,9 +75,9 @@ const Toolbox = () => {
             put: false
           }}
           clone={(item) => {
-            if(item.type === 'checkboxGroup' || item.type === 'radioGroup' || item.type === 'dropdown') {
+            if(item.type === 'checkbox_group' || item.type === 'radio_group' || item.type === 'dropdown') {
               // INIT NEW OPTION LIST
-              return { ...item, id: uuid(), optionList: initOptionList, } 
+              return { ...item, id: uuid(), optionList: initOptionList } 
             } else return { ...item, id: uuid() }
           }}
         >

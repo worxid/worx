@@ -57,7 +57,7 @@ const MobilePreview = (props) => {
         )}
 
         {/* CHECKBOX */}
-        {item.type === 'checkboxGroup' && (
+        {item.type === 'checkbox_group' && (
           <FormGroup className={classes.formControlMobile}>
             {item.group.map((itemOption, index) => (
               <FormControlLabel
@@ -72,7 +72,7 @@ const MobilePreview = (props) => {
         )}
 
         {/* RADIO */}
-        {item.type === 'radioGroup' && (
+        {item.type === 'radio_group' && (
           <RadioGroup className={classes.formControlMobile}>
             {item.options.map((itemOption, index) => (
               <FormControlLabel
@@ -153,7 +153,7 @@ const MobilePreview = (props) => {
         )}
 
         {/* IMAGE */}
-        {item.type === 'image' && (
+        {item.type === 'photo' && (
           <FormControl className={classes.formControlMobile}>
             <Stack direction='row'>
               <Button size='small' className={`${classes.buttonRedPrimary} buttonCamera heightFitContent`} startIcon={<IconCameraAlt fontSize='small'/>}>

@@ -60,7 +60,7 @@ const FieldProperties = () => {
 
   // HANDLE UPDATE OPTIONLIST
   const handleUpdateOptionList = (fieldId, indexOption, value) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     const indexOfId = listFields.findIndex(item => item.id === fieldId)
     let tempListFields = listFields
 
@@ -71,7 +71,7 @@ const FieldProperties = () => {
 
   // HANDLE ADD OPTION LIST CLICK
   const handleAddOptionListClick = (fieldId) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     let tempOptionList = getFieldPropertiesValueById(fieldId, optionKey)
     tempOptionList.push({
       label: ''
@@ -81,7 +81,7 @@ const FieldProperties = () => {
 
   // HANDLE DELETE OPTION LIST CLICK
   const handleDeleteOptionListClick = (fieldId, indexOption) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     let tempOptionList = getFieldPropertiesValueById(fieldId, optionKey)
       .filter((item, index) => index !== indexOption)
 
@@ -197,9 +197,9 @@ const FieldProperties = () => {
       )}
 
       {/* OPTION LIST */}
-      {(selectedFieldsType === 'checkboxGroup' || selectedFieldsType === 'radioGroup' || selectedFieldsType === 'dropdown') && (
+      {(selectedFieldsType === 'checkbox_group' || selectedFieldsType === 'radio_group' || selectedFieldsType === 'dropdown') && (
         <FormGroup className={`${classes.formControl} formControlGrouped`}>
-          {getFieldPropertiesValueById(selectedFieldsId, selectedFieldsType === 'checkboxGroup' ? 'group' : 'options').map((item, index) => (
+          {getFieldPropertiesValueById(selectedFieldsId, selectedFieldsType === 'checkbox_group' ? 'group' : 'options').map((item, index) => (
             <FormControl
               key={`${selectedFieldsId}${index}`}
               className={classes.formControl}
@@ -241,7 +241,7 @@ const FieldProperties = () => {
       )}
 
       {/* TYPE CHECKBOXGROUP */}
-      {selectedFieldsType === 'checkboxGroup' && (
+      {selectedFieldsType === 'checkbox_group' && (
         <>
           {/* MIN CHECKED CHECKBOX */}
           <FormControl
@@ -354,7 +354,7 @@ const FieldProperties = () => {
       )}
 
       {/* DEFAULT UPLOAD FIELD PROPERTIES */}
-      {(selectedFieldsType === 'image' || selectedFieldsType === 'file') && (
+      {(selectedFieldsType === 'photo' || selectedFieldsType === 'file') && (
         <>
           {/* MAX NUMBER OF FILE/IMAGE */}
           <FormControl
@@ -526,7 +526,7 @@ const FieldProperties = () => {
       )}
 
       {/* TYPE IMAGE */}
-      {selectedFieldsType === 'image' && (
+      {selectedFieldsType === 'photo' && (
         <FormGroup className={`${classes.formControl} marginBottom0`}>
           <FormControlLabel
             control={(<Checkbox

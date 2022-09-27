@@ -42,7 +42,7 @@ export const dataListComponents = [
         label: ''
       }
     ],
-    type: 'checkboxGroup',
+    type: 'checkbox_group',
     Icon: IconCheckBox,
     duplicateFrom: null,
   },
@@ -63,7 +63,7 @@ export const dataListComponents = [
         label: ''
       }
     ],
-    type: 'radioGroup',
+    type: 'radio_group',
     Icon: IconRadioButtonChecked,
     duplicateFrom: null,
   },
@@ -144,7 +144,7 @@ export const dataListComponents = [
     required: false,
     maxFiles: 6,
     allowGalleryUpload: true,
-    type: 'image',
+    type: 'photo',
     Icon: IconPhotoCamera,
     duplicateFrom: null,
   },
