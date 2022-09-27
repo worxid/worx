@@ -97,7 +97,7 @@ const MobilePreview = (props) => {
               className='neutralize-zoom-select heightFitContent'
               MenuProps={{ className: 'neutralize-zoom-select-menu' }}
             >
-              {item.optionList.map((item, index) => (
+              {item[item.type === 'checkboxGroup' ? 'group' : 'options'].map((item, index) => (
                 <MenuItem key={index} value={item.label}>
                   <Typography variant='caption' className='displayBlock' noWrap>{item.label || `Option #${index + 1}`}</Typography>
                 </MenuItem>
