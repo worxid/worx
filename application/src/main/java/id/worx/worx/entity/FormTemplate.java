@@ -1,5 +1,6 @@
 package id.worx.worx.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -60,14 +61,16 @@ public class FormTemplate extends BaseEntity {
     private String urlCode;
 
     @OneToMany(mappedBy = "template")
-    private Set<Form> forms;
+    @Default
+    private Set<Form> forms = new HashSet<>();
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(name = "template_groups", joinColumns = @JoinColumn(name = "template_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private Set<Group> assignedGroups;
+    @Default
+    private Set<Group> assignedGroups = new HashSet<>();
 
     public int getSubmissionCount() {
         return forms.size();
