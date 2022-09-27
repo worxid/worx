@@ -59,7 +59,7 @@ const MobilePreview = (props) => {
         {/* CHECKBOX */}
         {item.type === 'checkboxGroup' && (
           <FormGroup className={classes.formControlMobile}>
-            {item.optionList.map((itemOption, index) => (
+            {item.group.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
                 control={<Checkbox size='small'/>}
@@ -74,7 +74,7 @@ const MobilePreview = (props) => {
         {/* RADIO */}
         {item.type === 'radioGroup' && (
           <RadioGroup className={classes.formControlMobile}>
-            {item.optionList.map((itemOption, index) => (
+            {item.options.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
                 value={itemOption.label || `Option #${index + 1}`}
@@ -97,7 +97,7 @@ const MobilePreview = (props) => {
               className='neutralize-zoom-select heightFitContent'
               MenuProps={{ className: 'neutralize-zoom-select-menu' }}
             >
-              {item.optionList.map((item, index) => (
+              {item.options.map((item, index) => (
                 <MenuItem key={index} value={item.label}>
                   <Typography variant='caption' className='displayBlock' noWrap>{item.label || `Option #${index + 1}`}</Typography>
                 </MenuItem>
@@ -136,7 +136,7 @@ const MobilePreview = (props) => {
           <FormControl className={classes.formControlMobile}>
             <Rating
               value={0}
-              max={item.ratingStarsCount}
+              max={item.maxStars}
               readOnly
               emptyIcon={<IconStar fontSize='small' className={classes.opacityHalf}/>}
             />
@@ -160,7 +160,7 @@ const MobilePreview = (props) => {
                 Camera
               </Button>
 
-              {item.imageAllowGallery && (
+              {item.allowGalleryUpload && (
                 <Button size='small' className={`${classes.buttonRedPrimary} heightFitContent`} startIcon={<IconImage fontSize='small'/>}>
                   Gallery
                 </Button>
