@@ -460,6 +460,10 @@ const FieldProperties = () => {
                   onChange={(event) => handleUpdateFieldPropertiesById(
                     selectedFieldsId, 'fileMinSizeType', event.target.value
                   )}
+                  className='neutralize-zoom-select'
+                  MenuProps={{
+                    className: 'neutralize-zoom-select-menu'
+                  }}
                 >
                   {formatSizeImages.map((item, index) => (
                     <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
@@ -506,6 +510,10 @@ const FieldProperties = () => {
                   onChange={(event) => handleUpdateFieldPropertiesById(
                     selectedFieldsId, 'fileMaxSizeType', event.target.value
                   )}
+                  className='neutralize-zoom-select'
+                  MenuProps={{
+                    className: 'neutralize-zoom-select-menu'
+                  }}
                 >
                   {formatSizeImages.map((item, index) => (
                     <MenuItem key={index} value={item.value}>{item.label}</MenuItem>
