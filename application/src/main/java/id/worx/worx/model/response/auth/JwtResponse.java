@@ -1,14 +1,20 @@
 package id.worx.worx.model.response.auth;
 
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@Setter
 public class JwtResponse {
-    private String accessToken;
-    @Builder.Default
-    private String type = "Bearer";
-    private String refreshToken;
-    private String email;
+    private Integer status;
+    private Object data;
+    private Object error;
+
+    public JwtResponse() {
+        this.status = HttpStatus.OK.value();
+        this.data = data;
+        this.error = error;
+    }
 }

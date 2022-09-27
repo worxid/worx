@@ -1,8 +1,7 @@
 package id.worx.worx.service.users;
 
 import id.worx.worx.entity.users.Users;
-import id.worx.worx.model.request.auth.LoginRequest;
-import id.worx.worx.model.request.auth.TokenRefreshRequest;
+import id.worx.worx.model.request.auth.*;
 import id.worx.worx.model.request.users.UserRequest;
 import id.worx.worx.model.response.auth.JwtResponse;
 import id.worx.worx.model.response.auth.TokenRefreshResponse;
@@ -14,9 +13,9 @@ public interface UsersService {
     UserResponse createUser(UserRequest userRequest);
 
 
-    JwtResponse login(LoginRequest loginRequest);
+    String changePassword(ChangePasswordRequest updatePasswordRequest);
 
-    TokenRefreshResponse refreshAccessToken(TokenRefreshRequest tokenRefreshRequest);
+    String resetPassword(String email);
 
-    void logout(TokenRefreshRequest tokenRefreshRequest);
+    void verifyPasswordResetToken(ChangePasswordToken changePasswordToken);
 }
