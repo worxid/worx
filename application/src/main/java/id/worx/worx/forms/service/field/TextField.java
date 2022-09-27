@@ -34,20 +34,30 @@ public class TextField extends Field {
             Integer maxLength) {
         super(id, label, description, FieldType.TEXT, required);
 
-        if (minLength < MINIMUM_ALLOWED_MIN_LENGTH || minLength > MAXIMUM_ALLOWED_MIN_LENGTH) {
+        Integer tempMinLength = minLength;
+        Integer tempMaxLength = maxLength;
+        if (Objects.isNull(tempMinLength)) {
+            tempMinLength = 1;
+        }
+
+        if (Objects.isNull(tempMaxLength)) {
+            tempMaxLength = 1000;
+        }
+
+        if (tempMinLength < MINIMUM_ALLOWED_MIN_LENGTH || tempMinLength > MAXIMUM_ALLOWED_MIN_LENGTH) {
             throw new InvalidParameterException("Allowed minimum length is from 0 to 1024");
         }
 
-        if (maxLength < MINIMUM_ALLOWED_MAX_LENGTH || maxLength > MAXIMUM_ALLOWED_MAX_LENGTH) {
+        if (tempMaxLength < MINIMUM_ALLOWED_MAX_LENGTH || tempMaxLength > MAXIMUM_ALLOWED_MAX_LENGTH) {
             throw new InvalidParameterException("Allowed maximum length is from 1 to 1024");
         }
 
-        if (required.equals(Boolean.TRUE) && minLength == 0) {
+        if (required.equals(Boolean.TRUE) && tempMinLength == 0) {
             throw new InvalidParameterException("Combination required: true, min_length: 0 is not allowed");
         }
 
-        this.minLength = minLength;
-        this.maxLength = maxLength;
+        this.minLength = tempMinLength;
+        this.maxLength = tempMaxLength;
     }
 
     public Integer getMinLength() {

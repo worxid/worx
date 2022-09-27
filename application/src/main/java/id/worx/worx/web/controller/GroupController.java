@@ -1,4 +1,4 @@
-package id.worx.worx.controller;
+package id.worx.worx.web.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
