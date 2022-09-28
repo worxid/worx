@@ -30,9 +30,7 @@ import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.web.model.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FormServiceImpl implements FormService {
@@ -117,7 +115,6 @@ public class FormServiceImpl implements FormService {
         details.addAll(fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
-                    log.info("{} is {}", field.getId(), field.validate(value));
                     return field.validate(value);
                 })
                 .flatMap(Collection::stream)
