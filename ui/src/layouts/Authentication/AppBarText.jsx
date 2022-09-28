@@ -27,7 +27,9 @@ const AppBarText = () => {
   )
   else if (
     location.pathname === '/sign-in' ||
-    location.pathname.includes('/reset-password')
+    location.pathname.includes('/reset-password') ||
+    (location.pathname === '/authentication-finish' && 
+    location.search === '?type=reset-password')
   ) return (
     <Typography 
       variant='body2'
@@ -40,6 +42,26 @@ const AppBarText = () => {
         className='fontFamilySpaceMono fontWeight700'
       >
         Sign Up
+      </Link>
+    </Typography>
+  )
+  else if (
+    (location.pathname === '/authentication-finish' && 
+    location.search === '?type=sign-up') ||
+    (location.pathname === '/authentication-finish' && 
+    location.search === '?type=forgot-password')
+  ) return (
+    <Typography 
+      variant='body2'
+      className='fontFamilySpaceMono'
+    >
+      Didn’t receive the link?&nbsp;
+      <Link 
+        href='#'
+        underline='none'
+        className='fontFamilySpaceMono fontWeight700'
+      >
+        Resend
       </Link>
     </Typography>
   )
