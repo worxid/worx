@@ -1,13 +1,15 @@
 // ASSETS
 import LogoProductWithText from 'assets/images/logos/product-logo-with-text.svg'
 
+// COMPONENTS
+import AppBarText from './AppBarText'
+
 // MUIS
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 
 // STYLES
 import useStyles from './authenticationUseStyles'
@@ -34,13 +36,8 @@ const AuthenticationHalf = (props) => {
             />
           </Link>
 
-          {/* TEXT AND LINK */}
-          <Typography 
-            variant='body2'
-            className='fontFamilySpaceMono'
-          >
-            Already have an account? Sign In
-          </Typography>
+          {/* APP BAR TEXT */}
+          <AppBarText/>
         </Toolbar>
       </AppBar>
 
