@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
+import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
@@ -138,6 +139,8 @@ const Forms = () => {
   const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
+  // SELECTED GROUP DATA
+  const [ groupData, setGroupData ] = useState([])
 
   // HANDLE FAB CLICK
   const handleFabClick = async () => {
@@ -241,7 +244,7 @@ const Forms = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData}/>
         </Flyout>
       </Stack>
 
@@ -264,6 +267,9 @@ const Forms = () => {
         }}
         onCancelButtonClick={() => setDialogDeleteForms({})}
       />
+
+      {/* DIALOG GROUP */}
+      <DialogChangeGroup data={groupData} />
     </>
   )
 }
