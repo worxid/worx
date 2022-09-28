@@ -1,4 +1,5 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -21,8 +22,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontWeight: 500,
     '&:hover': {
-      backgroundColor: theme.palette.primary.outlinedHoverBackground,
-      filter: 'brightness(80%)'
+      backgroundColor: alpha(theme.palette.primary.main, 0.2),
     }
   },
   flyoutListItemApproveButton: {
@@ -30,8 +30,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main,
     fontWeight: 500,
     '&:hover': {
-      backgroundColor: theme.palette.success.background,
-      filter: 'brightness(80%)'
+      backgroundColor: alpha(theme.palette.success.main, 0.2),
     }
   },
   dialogAddOrEditIconClose: {
