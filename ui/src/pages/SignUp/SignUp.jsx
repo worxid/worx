@@ -44,6 +44,8 @@ const SignUp = () => {
     password: null,
   }
 
+  const ladingPageBaseUrl = process.env.REACT_APP_LANDING_PAGE_BASE_URL
+
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
@@ -242,7 +244,7 @@ const SignUp = () => {
       >
         Signing up for a Worx account means you agree to the&nbsp;
         <Link 
-          href='/'
+          href={`${ladingPageBaseUrl}/privacy-policy`}
           color='text.secondary'
           className='fontWeight500'
         >
@@ -250,7 +252,7 @@ const SignUp = () => {
         </Link>
         &nbsp;and&nbsp;
         <Link 
-          href='/'
+          href={`${ladingPageBaseUrl}/terms-of-service`}
           color='text.secondary'
           className='fontWeight500'
         >
