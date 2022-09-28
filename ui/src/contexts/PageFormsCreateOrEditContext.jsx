@@ -7,7 +7,8 @@ const PageFormsCreateOrEditContext = createContext()
 
 const PageFormsCreateOrEditContextProvider = (props) => {
   // BOOLEAN
-  const [isFormLoading, setIsFormLoading] = useState(false)
+  const [isFormLoading, setIsFormLoading] = useState(true)
+  const [isFormHaveChange, setIsFormHaveChange] = useState(false)
   // DRAG AND DROP
   const [listFields, setListFields] = useState([])
   const [listToolbox, setListToolbox] = useState(dataListComponents)
@@ -21,6 +22,7 @@ const PageFormsCreateOrEditContextProvider = (props) => {
       value={{
         // BOOLEAN
         isFormLoading, setIsFormLoading,
+        isFormHaveChange, setIsFormHaveChange,
         // DRAG AND DROP
         listFields, setListFields,
         listToolbox, setListToolbox,
