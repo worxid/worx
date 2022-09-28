@@ -1,3 +1,6 @@
+// LIBRARY
+import { v4 as uuid } from 'uuid'
+
 // MUI ICONS
 import IconCheckBox from '@mui/icons-material/CheckBox'
 import IconContentCut from '@mui/icons-material/ContentCut'
@@ -12,25 +15,22 @@ import IconStop from '@mui/icons-material/Stop'
 
 export const dataListComponents = [
   {
-    id: '1',
-    title: 'Textfield',
+    id: uuid(),
     label: '',
     description: '',
-    minLength: 0,
-    maxLength: 24,
+    min_length: 1,
+    max_length: 24,
     required: false,
     type: 'text',
-    Icon: IconStop,
     duplicateFrom: null,
   },
   {
-    id: '2',
-    title: 'Checkbox',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
-    minChecked: 1,
-    maxChecked: 3,
+    min_checked: 1,
+    max_checked: 3,
     group: [
       {
         label: ''
@@ -43,12 +43,10 @@ export const dataListComponents = [
       }
     ],
     type: 'checkbox_group',
-    Icon: IconCheckBox,
     duplicateFrom: null,
   },
   {
-    id: '3',
-    title: 'Radio Button',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
@@ -64,12 +62,10 @@ export const dataListComponents = [
       }
     ],
     type: 'radio_group',
-    Icon: IconRadioButtonChecked,
     duplicateFrom: null,
   },
   {
-    id: '4',
-    title: 'Dropdown',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
@@ -85,77 +81,64 @@ export const dataListComponents = [
       }
     ],
     type: 'dropdown',
-    Icon: IconPlaylistAddCheck,
     duplicateFrom: null,
   },
   {
-    id: '5',
-    title: 'Date',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
-    disableFuture: false,
-    disablePast: false,
+    disable_future: false,
+    disable_past: false,
     type: 'date',
-    Icon: IconDateRange,
     duplicateFrom: null,
   },
   {
-    id: '6',
-    title: 'Separator',
+    id: uuid(),
     label: '',
     description: '',
     type: 'separator',
-    Icon: IconContentCut,
     duplicateFrom: null,
   },
   {
-    id: '7',
-    title: 'Rating',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
-    maxStars: 5,
+    max_stars: 5,
     type: 'rating',
-    Icon: IconStar,
     duplicateFrom: null,
   },
   {
-    id: '8',
-    title: 'File',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
-    maxFiles: 6,
-    maxFileSize: 10485760,
-    minFileSize: 128,
-    fileMinSizeType: 'MB',
-    fileMaxSizeType: 'BYTES',
-    allowedExtensions: ['any'], // [format, format]
+    max_files: 6,
+    max_file_size: 10485760,
+    min_file_size: 128,
+    file_min_size_type: 'MB',
+    file_max_size_type: 'BYTES',
+    allowed_extensions: ['any'], // [format, format]
     type: 'file',
-    Icon: IconFileCopy,
     duplicateFrom: null,
   },
   {
-    id: '9',
-    title: 'Image',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
-    maxFiles: 6,
-    allowGalleryUpload: true,
+    max_files: 6,
+    allow_gallery_upload: true,
     type: 'photo',
-    Icon: IconPhotoCamera,
     duplicateFrom: null,
   },
   {
-    id: '10',
-    title: 'Signature',
+    id: uuid(),
     label: '',
     description: '',
     required: false,
     type: 'signature',
-    Icon: IconCreate,
     duplicateFrom: null,
   },
 ]
@@ -174,6 +157,30 @@ export const formatSizeImages = [
     value: 'MB'
   }
 ]
+export const getTypeIconComponent = (type) => {
+  if(type === 'text') return <IconStop className='colorTextPrimary'/>
+  else if(type === 'checkbox_group') return <IconCheckBox className='colorTextPrimary'/>
+  else if(type === 'radio_group') return <IconRadioButtonChecked className='colorTextPrimary'/>
+  else if(type === 'dropdown') return <IconPlaylistAddCheck className='colorTextPrimary'/>
+  else if(type === 'date') return <IconDateRange className='colorTextPrimary'/>
+  else if(type === 'separator') return <IconContentCut className='colorTextPrimary'/>
+  else if(type === 'rating') return <IconStar className='colorTextPrimary'/>
+  else if(type === 'file') return <IconFileCopy className='colorTextPrimary'/>
+  else if(type === 'photo') return <IconPhotoCamera className='colorTextPrimary'/>
+  else if(type === 'signature') return <IconCreate className='colorTextPrimary'/>
+}
+export const getTypeTitle = (type) => {
+  if(type === 'text') return 'Textfield'
+  else if(type === 'checkbox_group') return 'Checkbox'
+  else if(type === 'radio_group') return 'Radio Group'
+  else if(type === 'dropdown') return 'Dropdown'
+  else if(type === 'date') return 'Date'
+  else if(type === 'separator') return 'Separator'
+  else if(type === 'rating') return 'Rating'
+  else if(type === 'file') return 'File'
+  else if(type === 'photo') return 'Photo'
+  else if(type === 'signature') return 'Signature'
+}
 export const initObjectForm = {
   id: null,
   label: 'Valid Form',
