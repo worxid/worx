@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.data.dto.GroupDTO;
 import id.worx.worx.data.request.GroupRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
+import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
@@ -68,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
         Optional<Group> group = groupRepository.findById(id);
 
         if (group.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
         return group.get();

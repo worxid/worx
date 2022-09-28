@@ -1,6 +1,8 @@
 package id.worx.worx.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.data.dto.FormDTO;
@@ -17,7 +18,9 @@ import id.worx.worx.data.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.RespondentType;
+import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.exception.detail.ErrorDetail;
 import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.forms.service.value.Value;
 import id.worx.worx.mapper.FormMapper;
@@ -91,18 +94,16 @@ public class FormServiceImpl implements FormService {
         Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
 
         if (optTemplate.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
         FormTemplate template = optTemplate.get();
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();
 
-        List<Boolean> validations = validate(fields, values);
-        if (validations.stream().anyMatch(e -> e.equals(Boolean.FALSE))) {
-            throw new WorxException(
-                    "The submission is invalid",
-                    HttpStatus.BAD_REQUEST.value());
+        List<ErrorDetail> validations = validate(fields, values);
+        if (!validations.isEmpty()) {
+            throw new WorxException(WorxErrorCode.FORM_VALIDATION_ERROR, validations);
         }
 
         Form form = formMapper.fromSubmitRequest(request);
@@ -111,14 +112,17 @@ public class FormServiceImpl implements FormService {
         return form;
     }
 
-    private List<Boolean> validate(List<Field> fields, Map<String, Value> values) {
-        return fields.stream()
+    private List<ErrorDetail> validate(List<Field> fields, Map<String, Value> values) {
+        List<ErrorDetail> details = new ArrayList<>();
+        details.addAll(fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
                     log.info("{} is {}", field.getId(), field.validate(value));
                     return field.validate(value);
                 })
-                .collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()));
+        return details;
     }
 
 }

@@ -1,11 +1,16 @@
 package id.worx.worx.forms.service.field;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.forms.exception.FormValidationErrorDetail;
+import id.worx.worx.forms.exception.FormValidationReason;
 import id.worx.worx.forms.service.value.DateValue;
 import id.worx.worx.forms.service.value.Value;
 import lombok.experimental.SuperBuilder;
@@ -37,29 +42,40 @@ public class DateField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
+        List<ErrorDetail> details = new ArrayList<>();
 
         if (Objects.isNull(value)) {
-            return this.getRequired().equals(Boolean.FALSE);
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
         }
 
         if (!(value instanceof DateValue)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
         }
 
         DateValue dateValue = (DateValue) value;
         LocalDate now = LocalDate.now();
         LocalDate localDate = dateValue.getValue();
 
+        if (Objects.isNull(localDate)) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
+            return details;
+        }
+
         if (this.disableFuture.equals(Boolean.TRUE) && localDate.isAfter(now)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.FUTURE_DATE_DISABLED, this.getId()));
         }
 
         if (this.disablePast.equals(Boolean.TRUE) && localDate.isBefore(now)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.PAST_DATE_DISABLE, this.getId()));
         }
 
-        return true;
+        return details;
     }
 
 }

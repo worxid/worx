@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.exception.detail.ErrorDetail;
 import id.worx.worx.forms.service.value.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -49,9 +50,9 @@ public class FileField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
         // TODO Auto-generated method stub
-        return true;
+        return List.of();
     }
 
 }
