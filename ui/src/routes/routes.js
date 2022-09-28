@@ -62,16 +62,7 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/create',
-    element: (
-      <PageFormsCreateOrEditContextProvider>
-        <FormsCreateOrEdit />
-      </PageFormsCreateOrEditContextProvider>
-    ),
-    routeType: 'private',
-  },
-  {
-    path: '/forms/edit/:id',
+    path: '/forms/edit/:formTemplateId',
     element: (
       <PageFormsCreateOrEditContextProvider>
         <FormsCreateOrEdit />
