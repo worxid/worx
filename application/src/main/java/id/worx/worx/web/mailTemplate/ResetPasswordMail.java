@@ -1,4 +1,4 @@
-package id.worx.worx.mailTemplate;
+package id.worx.worx.web.mailTemplate;
 
 public class ResetPasswordMail {
 

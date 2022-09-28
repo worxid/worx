@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -25,4 +26,6 @@ public class TokenHistory extends Audit {
     private String token;
     private String email;
     private String status;
+    private String type;
+    private ZonedDateTime expiredToken;
 }

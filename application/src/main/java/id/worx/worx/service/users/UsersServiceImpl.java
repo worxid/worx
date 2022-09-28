@@ -1,16 +1,14 @@
 package id.worx.worx.service.users;
 
-import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.TokenHistory;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.enums.UserStatus;
-import id.worx.worx.exception.TokenRefreshException;
 import id.worx.worx.exception.WorxException;
-import id.worx.worx.mailTemplate.ResetPasswordMail;
+import id.worx.worx.web.mailTemplate.EmailVerification;
+import id.worx.worx.web.mailTemplate.ResetPasswordMail;
 import id.worx.worx.model.request.auth.*;
 import id.worx.worx.model.request.users.UserRequest;
 import id.worx.worx.model.response.auth.JwtResponse;
-import id.worx.worx.model.response.auth.TokenRefreshResponse;
 import id.worx.worx.model.response.users.UserResponse;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.TokenHistoryRepository;
@@ -21,10 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +30,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,8 +73,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         return new User(users.get().getUsername(), users.get().getPassword(), authotities);
     }
     @Transactional
-    public UserResponse createUser(UserRequest userRequest){
-
+    public UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
         String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
@@ -84,29 +82,53 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if (!matcher.matches()) {
             throw new WorxException("Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]");
         }
+        try{
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String random = UUID.randomUUID().toString().replace("-", "");
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
+            if (getByUsername.isPresent()) {
+                throw new WorxException("User with username " + userRequest.getUsername() + " is already exist.", HttpStatus.BAD_REQUEST.value());
+            }
 
-        Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
-        if (getByUsername.isPresent()) {
-            throw new WorxException("User with username " + userRequest.getUsername() + " is already exist.", HttpStatus.BAD_REQUEST.value());
+            Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
+            if (getByEmail.isPresent()) {
+                throw new WorxException("User with email " + userRequest.getEmail() + " is already exist.", HttpStatus.BAD_REQUEST.value());
+            }
+
+            Users users = new Users();
+            users.setEmail(userRequest.getEmail());
+            users.setUsername(userRequest.getUsername());
+            users.setPhone(userRequest.getPhoneNo());
+            users.setStatus(UserStatus.INACTIVE);
+            users.setOrganizationName(userRequest.getOrganizationName());
+            users.setCountry(userRequest.getCountry());
+            users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            users.setOrganizationCode(organizationCode());
+            usersRepository.save(users);
+
+            TokenHistory tokenHistory = new TokenHistory();
+            tokenHistory.setToken(random);
+            tokenHistory.setStatus("UNUSED");
+            tokenHistory.setEmail(userRequest.getEmail());
+            tokenHistory.setType("NEWACC");
+            tokenHistory.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            tokenHistoryRepository.save(tokenHistory);
+
+            String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
+            String subject = "WORX - Email Confirmation";
+            String mailBody = EmailVerification.EmailVerify(url);
+
+            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,false,true);
+
+
+        }catch (Exception e){
+            throw new WorxException("Please check your request data", HttpStatus.BAD_REQUEST.value());
         }
-
-        Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
-        if (getByEmail.isPresent()) {
-            throw new WorxException("User with email " + userRequest.getEmail() + " is already exist.", HttpStatus.BAD_REQUEST.value());
-        }
-
-        Users users = new Users();
-        users.setEmail(userRequest.getEmail());
-        users.setUsername(userRequest.getUsername());
-        users.setPhone(userRequest.getPhoneNo());
-        users.setStatus(UserStatus.ACTIVE);
-        users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
-        usersRepository.save(users);
 
         return null;
+
+
     }
 
     public JwtResponse login(LoginRequest loginRequest) {
@@ -200,8 +222,10 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             TokenHistory tokenHistory = new TokenHistory();
             tokenHistory.setToken(random);
-            tokenHistory.setStatus("ACTIVE");
+            tokenHistory.setStatus("UNUSED");
             tokenHistory.setEmail(email);
+            tokenHistory.setType("RESETPWD");
+            tokenHistory.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
             tokenHistoryRepository.save(tokenHistory);
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
@@ -228,9 +252,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException("Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]");
         }
 
-        Optional<TokenHistory> checkData = tokenHistoryRepository.findByTokenAndEmailAndStatus(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE");
+        Optional<TokenHistory> checkData = tokenHistoryRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
 
-        if(checkData.isPresent()){
+        if(!checkData.isPresent()){
+            throw new WorxException("Invalid validation token and email", HttpStatus.BAD_REQUEST.value());
+        }
+
+        if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
 
             Optional<Users> users = usersRepository.findByEmail(changePasswordToken.getEmail());
             Users updateUsers = users.get();
@@ -246,8 +274,49 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             tokenHistoryRepository.save(updateData);
 
         }else{
-            throw new WorxException("Invalid validation token and email", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException("Token Expired", HttpStatus.BAD_REQUEST.value());
         }
+
     }
 
+    @Override
+    public void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException {
+
+        Optional<TokenHistory> checkToken = tokenHistoryRepository.findByTokenAndTypeAndStatus(code,"NEWACC","UNUSED");
+
+        if(!checkToken.isPresent()){
+            throw new WorxException("Invalid Token", HttpStatus.BAD_REQUEST.value());
+        }
+
+        //check expired
+        if(checkToken.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
+            TokenHistory updateData = checkToken.get();
+            updateData.setStatus("USED");
+            tokenHistoryRepository.save(updateData);
+
+            httpServletResponse.sendRedirect("https://dev.worx.id/sign-in");
+        }else{
+            throw new WorxException("Token Expired", HttpStatus.BAD_REQUEST.value());
+        }
+
+    }
+    public String organizationCode(){
+
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        int length = 5;
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(alphabet.length());
+            char randomChar = alphabet.charAt(index);
+            sb.append(randomChar);
+        }
+
+        return "WX"+sb;
+    }
+
+    public String defaultUrl(HttpServletRequest httpServletRequest){
+
+        return httpServletRequest.getRequestURL().toString();
+    }
 }

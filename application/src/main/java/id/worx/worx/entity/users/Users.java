@@ -43,6 +43,15 @@ public class Users extends Audit implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @Column(name = "ORGANIZATION_NAME", nullable = false)
+    private String organizationName;
+
+    @Column(name = "ORGANIZATION_CODE", nullable = false)
+    private String organizationCode;
+
+    @Column(name = "COUNTRY", nullable = false)
+    private String country;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 

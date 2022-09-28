@@ -20,7 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -40,9 +43,9 @@ public class UsersController {
     JwtUtils jwtUtils;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest){
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(usersService.createUser(userRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(usersService.createUser(userRequest,httpServletRequest));
     }
 
     @PostMapping("/login")
@@ -105,4 +108,9 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.OK).body("Update Password Success");
     }
 
+    @GetMapping("/register/account-confirmation")
+    public void verifyAccount(@RequestParam String code, HttpServletResponse httpServletResponse) throws IOException {
+
+        usersService.verifyAccount(code,httpServletResponse);
+    }
 }

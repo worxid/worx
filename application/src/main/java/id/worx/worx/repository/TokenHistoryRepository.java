@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface TokenHistoryRepository extends BaseRepository<TokenHistory, Long>{
 
-    Optional<TokenHistory> findByTokenAndEmailAndStatus(String token, String email, String status);
+    Optional<TokenHistory> findByTokenAndEmailAndStatusAndType(String token, String email, String status, String type);
+    Optional<TokenHistory> findByTokenAndTypeAndStatus(String token, String type, String status);
 }
