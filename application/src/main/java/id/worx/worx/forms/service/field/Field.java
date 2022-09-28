@@ -1,11 +1,13 @@
 package id.worx.worx.forms.service.field;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
+import id.worx.worx.exception.detail.ErrorDetail;
 import id.worx.worx.forms.service.value.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -61,6 +63,6 @@ public abstract class Field implements Serializable {
         return required;
     }
 
-    public abstract boolean validate(Value value);
+    public abstract List<ErrorDetail> validate(Value value);
 
 }

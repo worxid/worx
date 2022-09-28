@@ -3,6 +3,7 @@ package id.worx.worx.service.users;
 import id.worx.worx.entity.users.TokenHistory;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.enums.UserStatus;
+import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.web.mailTemplate.EmailVerification;
 import id.worx.worx.web.mailTemplate.ResetPasswordMail;
@@ -62,7 +63,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Optional<Users> users = usersRepository.findByUsername(username);
 
         if(users == null){
-            throw new WorxException("User with username " + username + " is already exist.", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.USERNAME_EXIST);
         }else{
             log.info("User found in the database : {} ", username);
         }
@@ -80,7 +81,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
         if (!matcher.matches()) {
-            throw new WorxException("Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]");
+            throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
         try{
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -88,12 +89,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
             if (getByUsername.isPresent()) {
-                throw new WorxException("User with username " + userRequest.getUsername() + " is already exist.", HttpStatus.BAD_REQUEST.value());
+                throw new WorxException(WorxErrorCode.USERNAME_EXIST);
             }
 
             Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
             if (getByEmail.isPresent()) {
-                throw new WorxException("User with email " + userRequest.getEmail() + " is already exist.", HttpStatus.BAD_REQUEST.value());
+                throw new WorxException(WorxErrorCode.EMAIL_EXIST);
             }
 
             Users users = new Users();
@@ -123,7 +124,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
 
         }catch (Exception e){
-            throw new WorxException("Please check your request data", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException(WorxErrorCode.REQUEST_DATA);
         }
 
         return null;
@@ -180,7 +181,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Matcher matcher = pattern.matcher(updatePasswordRequest.getNewPassword());
 
         if (!matcher.matches()) {
-            throw new WorxException("Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]");
+            throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
         Optional<Users> optionalUsers = usersRepository.findByEmail(updatePasswordRequest.getEmail());
@@ -202,10 +203,10 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
                 return message;
             }else{
-                throw new WorxException("Password doesnt match", HttpStatus.BAD_REQUEST.value());
+                throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
             }
         }else{
-            throw new WorxException("Email not found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
     }
 
@@ -216,7 +217,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             Optional<Users> checkEmail = usersRepository.findByEmail(email);
             if(!checkEmail.isPresent()){
-                throw new WorxException("email not found");
+                throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
             }
             String random = UUID.randomUUID().toString().replace("-", "");
 
@@ -236,7 +237,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             return "Reset Password Request Success, Please check your email";
         }catch (Exception e){
-            throw new WorxException("Failed send email cause : "+ e.getMessage());
+            throw new WorxException(WorxErrorCode.FAILED_SEND_EMAIL);
         }
     }
 
@@ -249,13 +250,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
 
         if (!matcher.matches()) {
-            throw new WorxException("Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]");
+            throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
         Optional<TokenHistory> checkData = tokenHistoryRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
 
         if(!checkData.isPresent()){
-            throw new WorxException("Invalid validation token and email", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
         }
 
         if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
@@ -274,7 +275,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             tokenHistoryRepository.save(updateData);
 
         }else{
-            throw new WorxException("Token Expired", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
         }
 
     }
@@ -285,7 +286,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Optional<TokenHistory> checkToken = tokenHistoryRepository.findByTokenAndTypeAndStatus(code,"NEWACC","UNUSED");
 
         if(!checkToken.isPresent()){
-            throw new WorxException("Invalid Token", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException(WorxErrorCode.TOKEN_INVALID_ERROR);
         }
 
         //check expired
@@ -296,7 +297,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             httpServletResponse.sendRedirect("https://dev.worx.id/sign-in");
         }else{
-            throw new WorxException("Token Expired", HttpStatus.BAD_REQUEST.value());
+            throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
         }
 
     }
