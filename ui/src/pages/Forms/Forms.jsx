@@ -12,7 +12,7 @@ import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData } from './formsConstants'
+import { dummyTableData, paramsCreateForm } from './formsConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
@@ -21,6 +21,9 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 // MUIS
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+
+// SERVICES
+import { postCreateFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -106,6 +109,9 @@ const Forms = () => {
 
   const initialFilters = {}
 
+  // ABORT CONTROLLER
+  const abortController = new AbortController()
+
   // NAVIGATE
   const navigate = useNavigate()
 
@@ -133,18 +139,38 @@ const Forms = () => {
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
+  // HANDLE FAB CLICK
+  const handleFabClick = async () => {
+    const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm)
+    if(response?.data?.success) {
+      navigate(`/forms/edit/${response.data.value.id}`)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title:'',
+        message:'Something gone wrong'
+      })
+    }
+  }
+
   useEffect(() => {
     if (selectionModel.length === 1) {
       setIsFlyoutShown(true)
     }
   }, [selectionModel])
 
+  // SIDE EFFECT ABORT CONTROLLER
+  useEffect(() => {
+    return () => abortController.abort()
+  }, [])
+
   return (
     <>
       {/* APP BAR */}
       <AppBar
         hasFab={true}
-        onFabClick={() => navigate('/forms/create')}
+        onFabClick={() => handleFabClick()}
         pageTitle='Forms'
         hasSearch={true}
         search={pageSearch}

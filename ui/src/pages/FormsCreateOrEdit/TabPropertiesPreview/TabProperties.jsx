@@ -27,11 +27,12 @@ const TabProperties = () => {
   const {
     selectedFieldsType, setSelectedFieldsType,
     selectedFieldsId, setSelectedFieldsId,
-    listFields, setListFields
+    listFields, setListFields, setIsFormHaveChange
   } = useContext(PageFormsCreateOrEditContext)
 
   // HANDLE DELETE ITEM FIELD CLICK
   const handleDeleteItemFieldClick = (fieldId) => {
+    setIsFormHaveChange(true)
     setListFields(listFields.filter(item => item.id !== fieldId))
     setSelectedFieldsId('')
     setSelectedFieldsType('')
@@ -49,6 +50,7 @@ const TabProperties = () => {
       label: `${findItem.label} copy ${totalDuplicate.length + 1}`,
       duplicateFrom: fieldId,
     })
+    setIsFormHaveChange(true)
     setListFields([...tempListFields])
   }
 
