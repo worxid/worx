@@ -1,11 +1,12 @@
 // ASSETS
 import LogoProductWithText from 'assets/images/logos/product-logo-with-text.svg'
-import PictureComplementary from 'assets/images/pictures/authentication-complementary.svg'
 
 // MUIS
+import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
 // STYLES
@@ -17,65 +18,44 @@ const AuthenticationHalf = (props) => {
   const classes = useStyles()
 
   return (
-    <Grid 
-      container
-      className={`${classes.root} no-zoom`}
-    >
-      {/* SIDE CONTENT */}
-      <Grid
-        item
-        xs={6}
-        className={`${classes.content} ${classes.contentSide} zoom`}
+    <Stack className={`${classes.root} no-zoom`}>
+      {/* APP BAR */}
+      <AppBar 
+        className={`${classes.appBar} zoom`}
+        position='sticky'
       >
-        <Stack className={classes.containerText}>
-          {/* TITLE */}
-          <Typography
-            variant='h5'
-            className={`${classes.text} ${classes.textTitle}`}
+        <Toolbar className={classes.toolbar}>
+          {/* PRODUCT LOGO */}
+          <Link href='/'>
+            <Box
+              component='img'
+              src={LogoProductWithText}
+              alt=''
+            />
+          </Link>
+
+          {/* TEXT AND LINK */}
+          <Typography 
+            variant='body2'
+            className='fontFamilySpaceMono'
           >
-            Mobile Form System For Professional Field Workers
+            Already have an account? Sign In
           </Typography>
+        </Toolbar>
+      </AppBar>
 
-          {/* CAPTION */}
-          <Typography
-            variant='subtitle1'
-            className={classes.text}
-          >
-            A hassle-free mobile data collection and workforce management for any business and professional teams.
-          </Typography>
-        </Stack>
-
-        {/* COMPLEMENTARY IMAGE */}
-        <Box
-          component='img'
-          src={PictureComplementary}
-          alt=''
-          className={classes.pictureComplementary}
-        />
-      </Grid>
-
-      {/* MAIN CONTENT */}
-      <Grid
-        item
-        xs={6}
-        className={`${classes.content} ${classes.contentMain} zoom`}
+      {/* CHILDREN CONTAINER */}
+      <Stack 
+        className='zoom'
+        justifyContent='center'
+        alignItems='center'
+        flex='1'
       >
-        {/* PRODUCT LOGO */}
-        <Box
-          component='img'
-          src={LogoProductWithText}
-          alt=''
-        />
-
-        {/* CHILDREN CONTAINER */}
-        <Stack className={classes.containerChildren}>
+        <Stack className={classes.content}>
           {children}
         </Stack>
-
-        {/* EMPTY BOX */}
-        <Box/>
-      </Grid>
-    </Grid>
+      </Stack>
+    </Stack>
   )
 }
 
