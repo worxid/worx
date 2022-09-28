@@ -27,18 +27,18 @@ const SignUp = () => {
   const layoutClasses = useLayoutStyles()
 
   const initialFormObject = {
-    companyEmail: '',
+    email: '',
     fullName: '',
-    companyName: '',
-    country: countries[0],
+    organizationName: '',
+    country: null,
     phoneNumber: '',
     password: '',
   }
 
   const initialFormHelperObject = {
-    companyEmail: null,
+    email: null,
     fullName: null,
-    companyName: null,
+    organizationName: null,
     country: null,
     phoneNumber: null,
     password: null,
@@ -73,32 +73,8 @@ const SignUp = () => {
         variant='h6'
         className={layoutClasses.textTitle}
       >
-        Let's Get Started
+        Get Started For Free
       </Typography>
-
-      {/* COMPANY EMAIL FORM */}
-      <FormControl 
-        variant='outlined' 
-        fullWidth
-        error={formHelperObject.companyEmail}
-        color='secondary'
-      >
-        <InputLabel>
-          Company Email
-        </InputLabel>
-        
-        <OutlinedInput
-          autoFocus
-          type='email'
-          value={formObject.companyEmail}
-          onChange={(event) => handleFormObjectChange('companyEmail', event.target.value)}
-          label='Company Email'
-        />
-
-        <FormHelperText>
-          {formHelperObject.companyEmail}
-        </FormHelperText>
-      </FormControl>
 
       {/* FULL NAME FORM */}
       <FormControl 
@@ -112,6 +88,7 @@ const SignUp = () => {
         </InputLabel>
         
         <OutlinedInput
+          autoFocus
           type='text'
           value={formObject.fullName}
           onChange={(event) => handleFormObjectChange('fullName', event.target.value)}
@@ -123,26 +100,79 @@ const SignUp = () => {
         </FormHelperText>
       </FormControl>
 
-      {/* COMPANY NAME FORM */}
+      {/* EMAIL FORM */}
       <FormControl 
         variant='outlined' 
         fullWidth
-        error={formHelperObject.companyName}
+        error={formHelperObject.email}
         color='secondary'
       >
         <InputLabel>
-          Company Name
+          Email
+        </InputLabel>
+        
+        <OutlinedInput
+          type='email'
+          value={formObject.email}
+          onChange={(event) => handleFormObjectChange('email', event.target.value)}
+          label='Email'
+        />
+
+        <FormHelperText>
+          {formHelperObject.email}
+        </FormHelperText>
+      </FormControl>
+
+      {/* PASSWORD FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+        error={formHelperObject.password}
+        color='secondary'
+      >
+        <InputLabel>
+          Password
+        </InputLabel>
+        
+        <OutlinedInput
+          type={isPasswordShown ? 'text' : 'password'}
+          value={formObject.password}
+          onChange={(event) => handleFormObjectChange('password', event.target.value)}
+          label='Password'
+          endAdornment={
+            <InputAdornment position='end'>
+              <IconButton onClick={() => setIsPasswordShown(current => !current)}>
+                {isPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+
+        <FormHelperText>
+          {formHelperObject.password}
+        </FormHelperText>
+      </FormControl>
+
+      {/* ORGANIZATION NAME FORM */}
+      <FormControl 
+        variant='outlined' 
+        fullWidth
+        error={formHelperObject.organizationName}
+        color='secondary'
+      >
+        <InputLabel>
+          Organization Name
         </InputLabel>
         
         <OutlinedInput
           type='text'
-          value={formObject.companyName}
-          onChange={(event) => handleFormObjectChange('companyName', event.target.value)}
-          label='Company Name'
+          value={formObject.organizationName}
+          onChange={(event) => handleFormObjectChange('organizationName', event.target.value)}
+          label='Organization Name'
         />
 
         <FormHelperText>
-          {formHelperObject.companyName}
+          {formHelperObject.organizationName}
         </FormHelperText>
       </FormControl>
 
@@ -192,36 +222,6 @@ const SignUp = () => {
         </FormHelperText>
       </FormControl>
 
-      {/* PASSWORD FORM */}
-      <FormControl 
-        variant='outlined' 
-        fullWidth
-        error={formHelperObject.password}
-        color='secondary'
-      >
-        <InputLabel>
-          Password
-        </InputLabel>
-        
-        <OutlinedInput
-          type={isPasswordShown ? 'text' : 'password'}
-          value={formObject.password}
-          onChange={(event) => handleFormObjectChange('password', event.target.value)}
-          label='Password'
-          endAdornment={
-            <InputAdornment position='end'>
-              <IconButton onClick={() => setIsPasswordShown(current => !current)}>
-                {isPasswordShown ? <IconVisibilityOff/> : <IconVisibility/>}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-
-        <FormHelperText>
-          {formHelperObject.password}
-        </FormHelperText>
-      </FormControl>
-
       {/* SIGN UP BUTTON */}
       <Button
         variant='contained'
@@ -234,15 +234,27 @@ const SignUp = () => {
         Sign Up
       </Button>
 
-      {/* SIGN IN TEXT */}
-      <Typography variant='subtitle1'>
-        Already have an account?&nbsp;
-        <Link
-          underline='none'
-          href='/sign-in'
-          className={layoutClasses.linkInsideText}
+      {/* AGREEMENT TEXT */}
+      <Typography 
+        variant='body2'
+        className='colorTextSecondary'
+        textAlign='center'
+      >
+        Signing up for a Worx account means you agree to the&nbsp;
+        <Link 
+          href='/'
+          color='text.secondary'
+          className='fontWeight500'
         >
-          Sign In
+          Privacy Policy
+        </Link>
+        &nbsp;and&nbsp;
+        <Link 
+          href='/'
+          color='text.secondary'
+          className='fontWeight500'
+        >
+          Terms of Service
         </Link>
       </Typography>
     </form>
