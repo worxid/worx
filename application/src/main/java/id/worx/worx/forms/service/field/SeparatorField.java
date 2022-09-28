@@ -1,9 +1,11 @@
 package id.worx.worx.forms.service.field;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import id.worx.worx.forms.service.value.SeparatorValue;
+import id.worx.worx.exception.detail.ErrorDetail;
 import id.worx.worx.forms.service.value.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -26,8 +28,8 @@ public class SeparatorField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
-        return value instanceof SeparatorValue;
+    public List<ErrorDetail> validate(Value value) {
+        return List.of();
     }
 
 }

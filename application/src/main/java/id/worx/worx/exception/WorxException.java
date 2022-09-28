@@ -1,18 +1,21 @@
 package id.worx.worx.exception;
 
 import lombok.Getter;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+
+import id.worx.worx.exception.detail.ErrorDetail;
 
 @Getter
 public class WorxException extends RuntimeException {
 
     private static final long serialVersionUID = 3938892930867633897L;
 
-    private final int statusCode;
+    private final WorxErrorCode errorCode;
 
-    protected HttpStatus getHttpStatus() {
-        return HttpStatus.valueOf(this.statusCode);
-    }
+    private final List<ErrorDetail> details;
 
     /**
      * Constructs a new runtime exception with the specified detail message.
@@ -22,14 +25,37 @@ public class WorxException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public WorxException(String message) {
-        super(message);
-        this.statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+
+    public WorxException(WorxErrorCode errorCode) {
+        super(errorCode.getReasonPhrase());
+        this.errorCode = errorCode;
+        this.details = List.of();
     }
 
-    public WorxException(String message, int statusCode) {
+    public WorxException(WorxErrorCode errorCode, List<ErrorDetail> details) {
+        super(errorCode.getReasonPhrase());
+        this.errorCode = errorCode;
+        this.details = details;
+    }
+
+    public WorxException(String message, WorxErrorCode errorCode) {
         super(message);
-        this.statusCode = statusCode;
+        this.errorCode = errorCode;
+        this.details = List.of();
+    }
+
+    public WorxException(String message, WorxErrorCode errorCode, List<ErrorDetail> details) {
+        super(message);
+        this.errorCode = errorCode;
+        this.details = details;
+    }
+
+    protected HttpStatus getHttpStatus() {
+        return this.errorCode.getHttpStatus();
+    }
+
+    protected int getHttpStatusValue() {
+        return this.errorCode.getHttpStatus().value();
     }
 
 }

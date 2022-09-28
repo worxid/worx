@@ -1,10 +1,14 @@
 package id.worx.worx.forms.service.field;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.forms.exception.FormValidationErrorDetail;
+import id.worx.worx.forms.exception.FormValidationReason;
 import id.worx.worx.forms.service.value.RadioGroupValue;
 import id.worx.worx.forms.service.value.Value;
 import lombok.experimental.SuperBuilder;
@@ -28,24 +32,34 @@ public class RadioGroupField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
+        List<ErrorDetail> details = new ArrayList<>();
+
         if (Objects.isNull(value)) {
-            return this.getRequired().equals(Boolean.FALSE);
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
         }
 
         if (!(value instanceof RadioGroupValue)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
         }
 
         RadioGroupValue radioGroupValue = (RadioGroupValue) value;
         Integer valueIndex = radioGroupValue.getValueIndex();
 
-        if (valueIndex < 0 || valueIndex >= this.options.size()) {
-            // value index out of bound
-            return false;
+        if (Objects.isNull(valueIndex) && this.getRequired().equals(Boolean.TRUE)) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
         }
 
-        return true;
+        if (valueIndex < 0 || valueIndex >= this.options.size()) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_INDEX_OUT_OF_BOUND, this.getId()));
+        }
+
+        return details;
     }
 
 }
