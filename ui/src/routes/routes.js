@@ -24,31 +24,26 @@ const routes = [
     path: '/forgot-password',
     element: <ForgotPassword/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/reset-password',
     element: <ResetPassword/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/sign-in',
     element: <SignIn/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/sign-up',
     element: <SignUp/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/authentication-finish',
     element: <AuthenticationFinish/>,
     routeType: 'authentication',
-    authenticationType: 'full',
   },
   // PRIVATE
   {

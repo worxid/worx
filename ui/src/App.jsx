@@ -21,7 +21,7 @@ const App = () => {
   const getRouteComponent = (inputItem) => {
     if (inputItem.routeType === 'authentication') {
       return (
-        <AuthenticationRoute type={inputItem.authenticationType}>
+        <AuthenticationRoute>
           {inputItem.element}
         </AuthenticationRoute>
       )
