@@ -136,7 +136,7 @@ const MobilePreview = (props) => {
           <FormControl className={classes.formControlMobile}>
             <Rating
               value={0}
-              max={item.maxStars}
+              max={item.max_stars}
               readOnly
               emptyIcon={<IconStar fontSize='small' className={classes.opacityHalf}/>}
             />
@@ -160,7 +160,7 @@ const MobilePreview = (props) => {
                 Camera
               </Button>
 
-              {item.allowGalleryUpload && (
+              {item.allow_gallery_upload && (
                 <Button size='small' className={`${classes.buttonRedPrimary} heightFitContent`} startIcon={<IconImage fontSize='small'/>}>
                   Gallery
                 </Button>

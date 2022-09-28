@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 // CONSTANTS
-import { dataListComponents } from '../formsCreateOrEditConstants'
+import { dataListComponents, getTypeIconComponent, getTypeTitle } from '../formsCreateOrEditConstants'
 
 // CONTEXT
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
@@ -85,10 +85,10 @@ const Toolbox = () => {
             <ListItem key={index} disablePadding className={classes.listItem}>
               <ListItemButton>
                 <ListItemIcon className={classes.listItemIcon}>
-                  <item.Icon className='colorTextPrimary'/>
+                  {getTypeIconComponent(item.type)}
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body2'>{item.title}</Typography>} />
+                <ListItemText primary={<Typography variant='body2'>{getTypeTitle(item.type)}</Typography>} />
               </ListItemButton>
             </ListItem>
           ))}
