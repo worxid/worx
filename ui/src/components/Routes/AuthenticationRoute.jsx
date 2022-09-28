@@ -11,25 +11,15 @@ import Authentication from 'layouts/Authentication/Authentication'
 import { isObjectEmpty } from 'utilities/validation'
 
 function AuthenticationRoute(props) {
-  const { 
-    children, 
-    type,
-  } = props
+  const { children } = props
 
   const { auth } = useContext(AllPagesContext)
 
-  const getAuthenticationComponent = (inputType) => {
-    if (inputType === 'half') return (
-      <Authentication>
-        {children}
-      </Authentication>
-    )
-    else if (inputType === 'full') return children
-  }
-
   return (
     isObjectEmpty(auth) ? 
-      getAuthenticationComponent(type) :
+      <Authentication>
+        {children}
+      </Authentication> :
       <Navigate 
         replace 
         to='/home'
