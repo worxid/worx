@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 // CONSTANTS
-import { dataListComponents } from '../formsCreateOrEditConstants'
+import { dataListComponents, getTypeIconComponent, getTypeTitle } from '../formsCreateOrEditConstants'
 
 // CONTEXT
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
@@ -75,9 +75,9 @@ const Toolbox = () => {
             put: false
           }}
           clone={(item) => {
-            if(item.type === 'checkboxGroup' || item.type === 'radioGroup' || item.type === 'dropdown') {
+            if(item.type === 'checkbox_group' || item.type === 'radio_group' || item.type === 'dropdown') {
               // INIT NEW OPTION LIST
-              return { ...item, id: uuid(), optionList: initOptionList, } 
+              return { ...item, id: uuid(), optionList: initOptionList } 
             } else return { ...item, id: uuid() }
           }}
         >
@@ -85,10 +85,10 @@ const Toolbox = () => {
             <ListItem key={index} disablePadding className={classes.listItem}>
               <ListItemButton>
                 <ListItemIcon className={classes.listItemIcon}>
-                  <item.Icon className='colorTextPrimary'/>
+                  {getTypeIconComponent(item.type)}
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body2'>{item.title}</Typography>} />
+                <ListItemText primary={<Typography variant='body2'>{getTypeTitle(item.type)}</Typography>} />
               </ListItemButton>
             </ListItem>
           ))}

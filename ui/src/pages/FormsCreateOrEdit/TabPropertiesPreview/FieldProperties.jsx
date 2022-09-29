@@ -37,9 +37,8 @@ const FieldProperties = () => {
 
   // CONTEXT
   const {
-    formObject, setFormObject,
-    listFields, setListFields,
-    selectedFieldsType, selectedFieldsId,
+    formObject, setFormObject, listFields, setListFields,
+    selectedFieldsType, selectedFieldsId, setHasFormChanged,
   } = useContext(PageFormsCreateOrEditContext)
 
   // HANDLE UPDATE FIELD PROPERTIES BY FIELD ID
@@ -49,29 +48,31 @@ const FieldProperties = () => {
 
     // UPDATE
     tempListFields[indexOfId][name] = value
+    setHasFormChanged(true)
     setListFields([...tempListFields])
   }
 
   // GET FIELD PROPERTIES VALUE BY FIELD ID
   const getFieldPropertiesValueById = (fieldId, name) => {
     const indexOfId = listFields.findIndex(item => item.id === fieldId)
-    return listFields[indexOfId][name]
+    return listFields[indexOfId][name] ? listFields[indexOfId][name] : ''
   }
 
   // HANDLE UPDATE OPTIONLIST
   const handleUpdateOptionList = (fieldId, indexOption, value) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     const indexOfId = listFields.findIndex(item => item.id === fieldId)
     let tempListFields = listFields
 
     // UPDATE
     tempListFields[indexOfId][optionKey][indexOption].label = value
+    setHasFormChanged(true)
     setListFields([...tempListFields])
   }
 
   // HANDLE ADD OPTION LIST CLICK
   const handleAddOptionListClick = (fieldId) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     let tempOptionList = getFieldPropertiesValueById(fieldId, optionKey)
     tempOptionList.push({
       label: ''
@@ -81,17 +82,16 @@ const FieldProperties = () => {
 
   // HANDLE DELETE OPTION LIST CLICK
   const handleDeleteOptionListClick = (fieldId, indexOption) => {
-    const optionKey = selectedFieldsType === 'checkboxGroup' ? 'group' : 'options'
+    const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     let tempOptionList = getFieldPropertiesValueById(fieldId, optionKey)
       .filter((item, index) => index !== indexOption)
-
 
     handleUpdateFieldPropertiesById(fieldId, optionKey, tempOptionList)
   }
 
   // GET VALUE STARS COUNT
   const getValueStarsCount = (fieldId) => {
-    const maxStars = getFieldPropertiesValueById(fieldId, 'maxStars')
+    const maxStars = getFieldPropertiesValueById(fieldId, 'max_stars')
     if(maxStars <= 1) return 1
     else if(maxStars >= 10) return 10
     else return Number(maxStars)
@@ -99,6 +99,7 @@ const FieldProperties = () => {
 
   // HANDLE OBJECT FORM
   const handleObjectForm = (name, value) => {
+    setHasFormChanged(true)
     setFormObject({
       ...formObject,
       [name]: value,
@@ -169,7 +170,7 @@ const FieldProperties = () => {
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId, 'label', event.target.value
               )}
-              value={getFieldPropertiesValueById(selectedFieldsId, 'label')}
+              value={getFieldPropertiesValueById(selectedFieldsId, 'label') || ''}
             />
           </FormControl>
 
@@ -189,7 +190,7 @@ const FieldProperties = () => {
               placeholder='Description'
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId, 'description', event.target.value
-              )}
+              ) }
               value={getFieldPropertiesValueById(selectedFieldsId, 'description')}
             />
           </FormControl>
@@ -197,9 +198,9 @@ const FieldProperties = () => {
       )}
 
       {/* OPTION LIST */}
-      {(selectedFieldsType === 'checkboxGroup' || selectedFieldsType === 'radioGroup' || selectedFieldsType === 'dropdown') && (
+      {(selectedFieldsType === 'checkbox_group' || selectedFieldsType === 'radio_group' || selectedFieldsType === 'dropdown') && (
         <FormGroup className={`${classes.formControl} formControlGrouped`}>
-          {getFieldPropertiesValueById(selectedFieldsId, selectedFieldsType === 'checkboxGroup' ? 'group' : 'options').map((item, index) => (
+          {getFieldPropertiesValueById(selectedFieldsId, selectedFieldsType === 'checkbox_group' ? 'group' : 'options').map((item, index) => (
             <FormControl
               key={`${selectedFieldsId}${index}`}
               className={classes.formControl}
@@ -241,7 +242,7 @@ const FieldProperties = () => {
       )}
 
       {/* TYPE CHECKBOXGROUP */}
-      {selectedFieldsType === 'checkboxGroup' && (
+      {selectedFieldsType === 'checkbox_group' && (
         <>
           {/* MIN CHECKED CHECKBOX */}
           <FormControl
@@ -256,9 +257,9 @@ const FieldProperties = () => {
               type='number'
               label='Min. Checked Positions'
               placeholder='1'
-              value={getFieldPropertiesValueById(selectedFieldsId, 'minChecked')}
+              value={getFieldPropertiesValueById(selectedFieldsId, 'min_checked')}
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'minChecked', Number(event.target.value)
+                selectedFieldsId, 'min_checked', Number(event.target.value)
               )}
             />
           </FormControl>
@@ -276,9 +277,9 @@ const FieldProperties = () => {
               type='number'
               label='Max. Checked Positions'
               placeholder='3'
-              value={getFieldPropertiesValueById(selectedFieldsId, 'maxChecked')}
+              value={getFieldPropertiesValueById(selectedFieldsId, 'max_checked')}
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'maxChecked', Number(event.target.value)
+                selectedFieldsId, 'max_checked', Number(event.target.value)
               )}
             />
           </FormControl>
@@ -292,9 +293,9 @@ const FieldProperties = () => {
           <FormControlLabel
             control={(<Checkbox
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'disableFuture', Boolean(event.target.checked)
+                selectedFieldsId, 'disable_future', Boolean(event.target.checked)
               )}
-              checked={getFieldPropertiesValueById(selectedFieldsId, 'disableFuture')}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'disable_future'))}
             />)}
             label='Disable date selection in the future'
           />
@@ -303,9 +304,9 @@ const FieldProperties = () => {
           <FormControlLabel
             control={(<Checkbox
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'disablePast', Boolean(event.target.checked)
+                selectedFieldsId, 'disable_past', Boolean(event.target.checked)
               )}
-              checked={getFieldPropertiesValueById(selectedFieldsId, 'disablePast')}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'disable_past'))}
             />)}
             label='Disable date selection in the past'
           />
@@ -340,7 +341,7 @@ const FieldProperties = () => {
               placeholder='5'
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId,
-                'maxStars',
+                'max_stars',
                 Number(event.target.value) >= 10 ? 10 : Number(event.target.value)
               )}
               value={getValueStarsCount(selectedFieldsId)}
@@ -354,7 +355,7 @@ const FieldProperties = () => {
       )}
 
       {/* DEFAULT UPLOAD FIELD PROPERTIES */}
-      {(selectedFieldsType === 'image' || selectedFieldsType === 'file') && (
+      {(selectedFieldsType === 'photo' || selectedFieldsType === 'file') && (
         <>
           {/* MAX NUMBER OF FILE/IMAGE */}
           <FormControl
@@ -369,10 +370,10 @@ const FieldProperties = () => {
               type='number'
               label={`Max. Number of ${selectedFieldsType === 'file' ? 'Files' : 'Images'}`}
               placeholder='6'
-              value={getFieldPropertiesValueById(selectedFieldsId, 'maxFiles')}
+              value={getFieldPropertiesValueById(selectedFieldsId, 'max_files')}
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId,
-                'maxFiles',
+                'max_files',
                 Number(event.target.value)
               )}
               inputProps={{
@@ -393,10 +394,10 @@ const FieldProperties = () => {
 
             <Select
               multiple
-              value={getFieldPropertiesValueById(selectedFieldsId, 'allowedExtensions')}
+              value={getFieldPropertiesValueById(selectedFieldsId, 'allowed_extensions')}
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId,
-                'allowedExtensions',
+                'allowed_extensions',
                 typeof event.target.value === 'string'
                   ? event.target.value.split(',')
                   : event.target.value
@@ -414,7 +415,7 @@ const FieldProperties = () => {
             >
               {formatFiles.map((format) => (
                 <MenuItem key={format} value={format}>
-                  <Checkbox checked={getFieldPropertiesValueById(selectedFieldsId, 'allowedExtensions').indexOf(format) > -1} />
+                  <Checkbox checked={getFieldPropertiesValueById(selectedFieldsId, 'allowed_extensions').indexOf(format) > -1} />
                   <ListItemText primary={format}/>
                 </MenuItem>
               ))}
@@ -436,9 +437,9 @@ const FieldProperties = () => {
                   type='number'
                   label='Min. File Size'
                   placeholder='128'
-                  value={getFieldPropertiesValueById(selectedFieldsId, 'minFileSize')}
+                  value={getFieldPropertiesValueById(selectedFieldsId, 'min_file_size')}
                   onChange={(event) => handleUpdateFieldPropertiesById(
-                    selectedFieldsId, 'minFileSize', Number(event.target.value)
+                    selectedFieldsId, 'min_file_size', Number(event.target.value)
                   )}
                 />
               </FormControl>
@@ -456,9 +457,9 @@ const FieldProperties = () => {
             
                 <Select
                   label='Min. File Size'
-                  value={getFieldPropertiesValueById(selectedFieldsId, 'fileMinSizeType')}
+                  value={getFieldPropertiesValueById(selectedFieldsId, 'file_min_size_type')}
                   onChange={(event) => handleUpdateFieldPropertiesById(
-                    selectedFieldsId, 'fileMinSizeType', event.target.value
+                    selectedFieldsId, 'file_min_size_type', event.target.value
                   )}
                   className='neutralize-zoom-select'
                   MenuProps={{
@@ -486,9 +487,9 @@ const FieldProperties = () => {
                   type='number'
                   label='Max. File Size'
                   placeholder='16'
-                  value={getFieldPropertiesValueById(selectedFieldsId, 'maxFileSize')}
+                  value={getFieldPropertiesValueById(selectedFieldsId, 'max_file_size')}
                   onChange={(event) => handleUpdateFieldPropertiesById(
-                    selectedFieldsId, 'maxFileSize', Number(event.target.value)
+                    selectedFieldsId, 'max_file_size', Number(event.target.value)
                   )}
                 />
               </FormControl>
@@ -506,9 +507,9 @@ const FieldProperties = () => {
             
                 <Select
                   label='Max. File Size'
-                  value={getFieldPropertiesValueById(selectedFieldsId, 'fileMaxSizeType')}
+                  value={getFieldPropertiesValueById(selectedFieldsId, 'file_max_size_type')}
                   onChange={(event) => handleUpdateFieldPropertiesById(
-                    selectedFieldsId, 'fileMaxSizeType', event.target.value
+                    selectedFieldsId, 'file_max_size_type', event.target.value
                   )}
                   className='neutralize-zoom-select'
                   MenuProps={{
@@ -526,14 +527,14 @@ const FieldProperties = () => {
       )}
 
       {/* TYPE IMAGE */}
-      {selectedFieldsType === 'image' && (
+      {selectedFieldsType === 'photo' && (
         <FormGroup className={`${classes.formControl} marginBottom0`}>
           <FormControlLabel
             control={(<Checkbox
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'allowGalleryUpload', Boolean(event.target.checked)
+                selectedFieldsId, 'allow_gallery_upload', Boolean(event.target.checked)
               )}
-              checked={getFieldPropertiesValueById(selectedFieldsId, 'allowGalleryUpload')}
+              checked={getFieldPropertiesValueById(selectedFieldsId, 'allow_gallery_upload')}
             />)}
             label='Allow upload from gallery'
           />
@@ -548,7 +549,7 @@ const FieldProperties = () => {
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId, 'required', Boolean(event.target.checked)
               )}
-              checked={getFieldPropertiesValueById(selectedFieldsId, 'required')}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'required'))}
             />)}
             label='Required'
           />
