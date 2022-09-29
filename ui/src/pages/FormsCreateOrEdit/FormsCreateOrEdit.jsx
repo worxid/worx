@@ -31,7 +31,7 @@ const FormsCreateOrEdit = () => {
   const {
     formObject, listFields, setFormObject,
     setListFields, isFormLoading, setIsFormLoading,
-    isFormHaveChange, setIsFormHaveChange
+    hasFormChanged, setHasFormChanged
   } = useContext(PageFormsCreateOrEditContext)
 
   // FETCHING DETAIL FORM TEMPLATE
@@ -90,7 +90,7 @@ const FormsCreateOrEdit = () => {
       })
     }
 
-    setIsFormHaveChange(false)
+    setHasFormChanged(false)
     abortController.abort()
   }
 
@@ -119,7 +119,7 @@ const FormsCreateOrEdit = () => {
   // SIDE EFFECT AUTO SAVE
   useEffect(() => {
     // TRIGGER WHEN NO CHANGE IN 2 SECS ON formObject OR listFields
-    (!isFormLoading && isFormHaveChange) && debounce(() => {
+    (!isFormLoading && hasFormChanged) && debounce(() => {
       updateFormTemplate()
     },
     2000)
@@ -131,7 +131,7 @@ const FormsCreateOrEdit = () => {
         hasFab={false}
         hasBack={true}
         backLink='/forms'
-        pageTitle='Add New Form'
+        pageTitle='Edit Form'
         hasSearch={false}
       />
 

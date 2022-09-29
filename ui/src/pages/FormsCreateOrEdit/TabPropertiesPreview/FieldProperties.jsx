@@ -38,7 +38,7 @@ const FieldProperties = () => {
   // CONTEXT
   const {
     formObject, setFormObject, listFields, setListFields,
-    selectedFieldsType, selectedFieldsId, setIsFormHaveChange,
+    selectedFieldsType, selectedFieldsId, setHasFormChanged,
   } = useContext(PageFormsCreateOrEditContext)
 
   // HANDLE UPDATE FIELD PROPERTIES BY FIELD ID
@@ -48,7 +48,7 @@ const FieldProperties = () => {
 
     // UPDATE
     tempListFields[indexOfId][name] = value
-    setIsFormHaveChange(true)
+    setHasFormChanged(true)
     setListFields([...tempListFields])
   }
 
@@ -66,7 +66,7 @@ const FieldProperties = () => {
 
     // UPDATE
     tempListFields[indexOfId][optionKey][indexOption].label = value
-    setIsFormHaveChange(true)
+    setHasFormChanged(true)
     setListFields([...tempListFields])
   }
 
@@ -99,7 +99,7 @@ const FieldProperties = () => {
 
   // HANDLE OBJECT FORM
   const handleObjectForm = (name, value) => {
-    setIsFormHaveChange(true)
+    setHasFormChanged(true)
     setFormObject({
       ...formObject,
       [name]: value,

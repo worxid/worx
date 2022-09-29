@@ -34,7 +34,7 @@ const FormFields = () => {
   const {
     formObject, listFields, setListFields,
     selectedFieldsId, setSelectedFieldsId,
-    setSelectedFieldsType, setIsFormHaveChange
+    setSelectedFieldsType, setHasFormChanged
   } = useContext(PageFormsCreateOrEditContext)
 
   // HANDLE SELECTED FIELD
@@ -86,9 +86,9 @@ const FormFields = () => {
           list={listFields}
           setList={setListFields}
           // UPDATE EVERY ITEM ADD TO FORM FIELDS
-          onAdd={() => setIsFormHaveChange(true)}
+          onAdd={() => setHasFormChanged(true)}
           // UPDATE EVERY ITEM CHANGE POSITION
-          onEnd={() => setIsFormHaveChange(true)}
+          onEnd={() => setHasFormChanged(true)}
         >
           {listFields.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>

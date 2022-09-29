@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
-import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
-import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
+import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
+import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
