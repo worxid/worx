@@ -1,10 +1,13 @@
 package id.worx.worx.service.users;
 
-import id.worx.worx.entity.users.TokenHistory;
+import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.enums.EmailTokenStatus;
+import id.worx.worx.enums.EmailTokenType;
 import id.worx.worx.enums.UserStatus;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.repository.EmailTokenRepository;
 import id.worx.worx.web.mailTemplate.EmailVerification;
 import id.worx.worx.web.mailTemplate.ResetPasswordMail;
 import id.worx.worx.model.request.auth.*;
@@ -12,7 +15,6 @@ import id.worx.worx.model.request.users.UserRequest;
 import id.worx.worx.model.response.auth.JwtResponse;
 import id.worx.worx.model.response.users.UserResponse;
 import id.worx.worx.repository.RefreshTokenRepository;
-import id.worx.worx.repository.TokenHistoryRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.util.JwtUtils;
 import id.worx.worx.util.MailService;
@@ -49,7 +51,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private final TokenHistoryRepository tokenHistoryRepository;
+    private final EmailTokenRepository emailTokenRepository;
 
     @Autowired
     private  JwtUtils jwtUtils;
@@ -108,13 +110,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             users.setOrganizationCode(organizationCode());
             usersRepository.save(users);
 
-            TokenHistory tokenHistory = new TokenHistory();
-            tokenHistory.setToken(random);
-            tokenHistory.setStatus("UNUSED");
-            tokenHistory.setEmail(userRequest.getEmail());
-            tokenHistory.setType("NEWACC");
-            tokenHistory.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
-            tokenHistoryRepository.save(tokenHistory);
+            EmailToken emailToken = new EmailToken();
+            emailToken.setToken(random);
+            emailToken.setStatus(EmailTokenStatus.UNUSED);
+            emailToken.setEmail(userRequest.getEmail());
+            emailToken.setType(EmailTokenType.NEWACC);
+            emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            emailTokenRepository.save(emailToken);
 
             String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
             String subject = "WORX - Email Confirmation";
@@ -221,13 +223,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             }
             String random = UUID.randomUUID().toString().replace("-", "");
 
-            TokenHistory tokenHistory = new TokenHistory();
-            tokenHistory.setToken(random);
-            tokenHistory.setStatus("UNUSED");
-            tokenHistory.setEmail(email);
-            tokenHistory.setType("RESETPWD");
-            tokenHistory.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
-            tokenHistoryRepository.save(tokenHistory);
+            EmailToken emailToken = new EmailToken();
+            emailToken.setToken(random);
+            emailToken.setStatus(EmailTokenStatus.UNUSED);
+            emailToken.setEmail(email);
+            emailToken.setType(EmailTokenType.RESETPWD);
+            emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            emailTokenRepository.save(emailToken);
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
             String subject = "WORX - Reset Password";
@@ -245,7 +247,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken){
 
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
+        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–:;',?/*~$^+=<>_]).{8,20}$";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
 
@@ -253,7 +255,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<TokenHistory> checkData = tokenHistoryRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
 
         if(!checkData.isPresent()){
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
@@ -270,9 +272,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             usersRepository.save(updateUsers);
 
 
-            TokenHistory updateData = checkData.get();
-            updateData.setStatus("USED");
-            tokenHistoryRepository.save(updateData);
+            EmailToken updateData = checkData.get();
+            updateData.setStatus(EmailTokenStatus.USED);
+            emailTokenRepository.save(updateData);
 
         }else{
             throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
@@ -283,7 +285,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException {
 
-        Optional<TokenHistory> checkToken = tokenHistoryRepository.findByTokenAndTypeAndStatus(code,"NEWACC","UNUSED");
+        Optional<EmailToken> checkToken = emailTokenRepository.findByTokenAndTypeAndStatus(code,EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
 
         if(!checkToken.isPresent()){
             throw new WorxException(WorxErrorCode.TOKEN_INVALID_ERROR);
@@ -291,9 +293,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         //check expired
         if(checkToken.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
-            TokenHistory updateData = checkToken.get();
-            updateData.setStatus("USED");
-            tokenHistoryRepository.save(updateData);
+            EmailToken updateData = checkToken.get();
+            updateData.setStatus(EmailTokenStatus.USED);
+            emailTokenRepository.save(updateData);
 
             httpServletResponse.sendRedirect("https://dev.worx.id/sign-in");
         }else{

@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "DEVICES")
+@Table(name = "devices")
 public class Devices extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DEVICE_NO", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     private String ip;

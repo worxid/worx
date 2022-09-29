@@ -14,14 +14,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "refresh_token")
+@Table(name = "refresh_tokens")
 public class RefreshToken extends Audit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "ID", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users user;
 
     @Column(nullable = false, unique = true)

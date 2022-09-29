@@ -1,14 +1,14 @@
 package id.worx.worx.entity.users;
 
 import id.worx.worx.entity.Audit;
-import id.worx.worx.enums.UserStatus;
+import id.worx.worx.enums.EmailTokenStatus;
+import id.worx.worx.enums.EmailTokenType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -16,8 +16,8 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "token_history")
-public class TokenHistory extends Audit {
+@Table(name = "email_tokens")
+public class EmailToken extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,9 @@ public class TokenHistory extends Audit {
 
     private String token;
     private String email;
-    private String status;
-    private String type;
+    @Enumerated(EnumType.ORDINAL)
+    private EmailTokenStatus status;
+    @Enumerated(EnumType.ORDINAL)
+    private EmailTokenType type;
     private ZonedDateTime expiredToken;
 }

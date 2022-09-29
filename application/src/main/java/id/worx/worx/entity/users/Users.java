@@ -24,32 +24,32 @@ public class Users extends Audit implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "USERNAME", nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "PHONE", nullable = false)
+    @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "STATUS", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private UserStatus status;
 
-    @Column(name = "ORGANIZATION_NAME", nullable = false)
+    @Column(name = "organization_name", nullable = false)
     private String organizationName;
 
-    @Column(name = "ORGANIZATION_CODE", nullable = false)
+    @Column(name = "organization_code", nullable = false)
     private String organizationCode;
 
-    @Column(name = "COUNTRY", nullable = false)
+    @Column(name = "country", nullable = false)
     private String country;
 
     @ManyToMany(fetch = FetchType.EAGER)
