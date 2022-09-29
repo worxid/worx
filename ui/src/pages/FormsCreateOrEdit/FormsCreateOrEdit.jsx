@@ -35,10 +35,10 @@ const FormsCreateOrEdit = () => {
   } = useContext(PageFormsCreateOrEditContext)
 
   // FETCHING DETAIL FORM TEMPLATE
-  const fetchingDetailFormTemplate = async (abortController) => {
+  const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
     const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal)
 
-    if(response?.data?.success) {
+    if(response?.data?.success && inputIsMounted) {
       const values = response.data.value
       const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
 
@@ -60,7 +60,7 @@ const FormsCreateOrEdit = () => {
   }
 
   // UPDATE FORM TEMPLATE
-  const updateFormTemplate = async () => {
+  const updateFormTemplate = async (inputIsMounted) => {
     const abortController = new AbortController()
 
     // REMOVE KEY
@@ -81,7 +81,7 @@ const FormsCreateOrEdit = () => {
     )
 
     // SUCCESS
-    if(response?.data?.success) {
+    if(response?.data?.success && inputIsMounted) {
       setSnackbarObject({
         open: true,
         severity:'success',
@@ -110,19 +110,28 @@ const FormsCreateOrEdit = () => {
 
   // SIDE EFFECT GET DETAIL FORM TEMPLATE
   useEffect(() => {
+    let isMounted = true
     const abortController = new AbortController()
-    fetchingDetailFormTemplate(abortController)
+    fetchingDetailFormTemplate(abortController, isMounted)
 
-    return () => abortController.abort()
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
   }, [formTemplateId])
 
   // SIDE EFFECT AUTO SAVE
   useEffect(() => {
+    let isMounted
+
     // TRIGGER WHEN NO CHANGE IN 2 SECS ON formObject OR listFields
     (!isFormLoading && hasFormChanged) && debounce(() => {
-      updateFormTemplate()
+      isMounted = true
+      updateFormTemplate(isMounted)
     },
     2000)
+
+    return () => isMounted = false
   }, [formObject, listFields])
 
   return (
