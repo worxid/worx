@@ -23,9 +23,6 @@ const FormsCreateOrEdit = () => {
   // NAVIGATE
   const navigate = useNavigate()
 
-  // ABORT CONTROLLER
-  const abortController = new AbortController()
-
   // PARAMS
   const { formTemplateId } = useParams()
 
@@ -38,7 +35,7 @@ const FormsCreateOrEdit = () => {
   } = useContext(PageFormsCreateOrEditContext)
 
   // FETCHING DETAIL FORM TEMPLATE
-  const fetchingDetailFormTemplate = async () => {
+  const fetchingDetailFormTemplate = async (abortController) => {
     const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal)
 
     if(response?.data?.success) {
@@ -52,11 +49,20 @@ const FormsCreateOrEdit = () => {
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
     }
-    else navigate('/forms')
+    else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title:'',
+        message:'Something gone wrong'
+      })
+    }
   }
 
   // UPDATE FORM TEMPLATE
   const updateFormTemplate = async () => {
+    const abortController = new AbortController()
+
     // REMOVE KEY
     let listFieldsFiltered = listFields
       .map(item => removeMultipleKeyObject(
@@ -85,6 +91,7 @@ const FormsCreateOrEdit = () => {
     }
 
     setIsFormHaveChange(false)
+    abortController.abort()
   }
 
   // REMOVE MULTIPLE KEY
@@ -103,7 +110,10 @@ const FormsCreateOrEdit = () => {
 
   // SIDE EFFECT GET DETAIL FORM TEMPLATE
   useEffect(() => {
-    fetchingDetailFormTemplate()
+    const abortController = new AbortController()
+    fetchingDetailFormTemplate(abortController)
+
+    return () => abortController.abort()
   }, [formTemplateId])
 
   // SIDE EFFECT AUTO SAVE
@@ -114,14 +124,6 @@ const FormsCreateOrEdit = () => {
     },
     2000)
   }, [formObject, listFields])
-
-  // SIDE EFFECT CLEAR
-  useEffect(() => {
-    return () => {
-      abortController.abort()
-      clearTimeout(timeoutDebonce)
-    }
-  }, [])
 
   return (
     <>

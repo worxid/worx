@@ -110,9 +110,6 @@ const Forms = () => {
 
   const initialFilters = {}
 
-  // ABORT CONTROLLER
-  const abortController = new AbortController()
-
   // NAVIGATE
   const navigate = useNavigate()
 
@@ -144,6 +141,8 @@ const Forms = () => {
 
   // HANDLE FAB CLICK
   const handleFabClick = async () => {
+    const abortController = new AbortController()
+
     const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm)
     if(response?.data?.success) {
       navigate(`/forms/edit/${response.data.value.id}`)
@@ -155,6 +154,8 @@ const Forms = () => {
         message:'Something gone wrong'
       })
     }
+
+    abortController.abort()
   }
 
   useEffect(() => {
@@ -162,11 +163,6 @@ const Forms = () => {
       setIsFlyoutShown(true)
     }
   }, [selectionModel])
-
-  // SIDE EFFECT ABORT CONTROLLER
-  useEffect(() => {
-    return () => abortController.abort()
-  }, [])
 
   return (
     <>
