@@ -131,7 +131,7 @@ const DevicesFlyout = (props) => {
                 <>
                   {
                     item.value === 'Pending' &&
-                  (<Stack direction='row'>
+                  (<Stack direction='row' spacing='8px'>
                     <Button
                       variant='contained'
                       className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}

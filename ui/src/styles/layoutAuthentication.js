@@ -24,10 +24,6 @@ const useStyles = makeStyles((theme) => ({
   buttonAction: {
     margin: '24px 0px',
   },
-  linkInsideText: {
-    fontWeight: 700,
-    fontFamily: values.fontFamilySpaceMono,
-  },
 }))
 
 export default useStyles

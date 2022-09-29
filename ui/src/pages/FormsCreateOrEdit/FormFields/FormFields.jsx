@@ -23,6 +23,9 @@ import { ReactSortable } from 'react-sortablejs'
 // STYLES
 import useStyles from './formFieldsUseStyles'
 
+// UTILS
+import { getTypeIconComponent, getTypeTitle } from '../formsCreateOrEditConstants'
+
 const FormFields = () => {
   // STYLES
   const classes = useStyles()
@@ -31,7 +34,7 @@ const FormFields = () => {
   const {
     formObject, listFields, setListFields,
     selectedFieldsId, setSelectedFieldsId,
-    setSelectedFieldsType
+    setSelectedFieldsType, setHasFormChanged
   } = useContext(PageFormsCreateOrEditContext)
 
   // HANDLE SELECTED FIELD
@@ -82,6 +85,10 @@ const FormFields = () => {
           }}
           list={listFields}
           setList={setListFields}
+          // UPDATE EVERY ITEM ADD TO FORM FIELDS
+          onAdd={() => setHasFormChanged(true)}
+          // UPDATE EVERY ITEM CHANGE POSITION
+          onEnd={() => setHasFormChanged(true)}
         >
           {listFields.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>
@@ -91,10 +98,10 @@ const FormFields = () => {
                 selected={selectedFieldsId === item.id}
               >
                 <ListItemIcon className={classes.listItemIcon}>
-                  <item.Icon className='colorTextPrimary'/>
+                  {getTypeIconComponent(item.type)}
                 </ListItemIcon>
 
-                <ListItemText primary={<Typography variant='body' className='displayBlock' noWrap>{item?.label || item.title}</Typography>} />
+                <ListItemText primary={<Typography variant='body' className='displayBlock' noWrap>{item?.label || getTypeTitle(item.type)}</Typography>} />
 
                 {selectedFieldsId === item.id && (<IconDragHandle />)}
               </ListItemButton>

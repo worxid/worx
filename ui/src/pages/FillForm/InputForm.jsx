@@ -156,7 +156,7 @@ const InputForm = (props) => {
       )}
 
       {/* CHECKBOX */}
-      {item.type === 'checkboxGroup' && (
+      {item.type === 'checkbox_group' && (
         <FormControl className={classes.formControl} required={item.required}>
           <FormGroup>
             {item.optionList.map((itemOption, index) => (
@@ -178,7 +178,7 @@ const InputForm = (props) => {
       )}
 
       {/* RADIO */}
-      {item.type === 'radioGroup' && (
+      {item.type === 'radio_group' && (
         <FormControl
           className={classes.formControl}
           onChange={(event) => handleInputChange(item.id, item.label, event.target.value)}
@@ -292,7 +292,7 @@ const InputForm = (props) => {
       )}
 
       {/* IMAGE */}
-      {item.type === 'image' && (
+      {item.type === 'photo' && (
         <FormControl className={classes.formControl} required={item.required}>
           {formObject[item.id]?.value && <List className={`${classes.listFile} padding0`}>
             {formObject[item.id]?.value?.map((itemImg, index) => (
