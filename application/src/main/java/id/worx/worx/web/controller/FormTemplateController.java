@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("form/template")
 @RequiredArgsConstructor
-public class FormTemplateController {
+public class FormTemplateController implements SecuredRestController {
 
     private final FormTemplateService templateService;
 

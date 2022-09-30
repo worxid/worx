@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("groups")
 @RequiredArgsConstructor
-public class GroupController {
+public class GroupController implements SecuredRestController {
 
     private final GroupService groupService;
 
