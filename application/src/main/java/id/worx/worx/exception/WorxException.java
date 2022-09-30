@@ -57,5 +57,4 @@ public class WorxException extends RuntimeException {
     protected int getHttpStatusValue() {
         return this.errorCode.getHttpStatus().value();
     }
-
 }

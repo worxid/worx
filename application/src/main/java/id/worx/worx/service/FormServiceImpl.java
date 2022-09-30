@@ -99,6 +99,7 @@ public class FormServiceImpl implements FormService {
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();
 
+
         List<ErrorDetail> validations = validate(fields, values);
         if (!validations.isEmpty()) {
             throw new WorxException(WorxErrorCode.FORM_VALIDATION_ERROR, validations);
@@ -109,6 +110,7 @@ public class FormServiceImpl implements FormService {
         form.setSubmitDate(Instant.now());
         return form;
     }
+
 
     private List<ErrorDetail> validate(List<Field> fields, Map<String, Value> values) {
         List<ErrorDetail> details = new ArrayList<>();

@@ -17,7 +17,20 @@ public enum WorxErrorCode {
     /**
      * {@code Form Validation error}
      */
-    FORM_VALIDATION_ERROR(12, "There were errors during content validation", HttpStatus.BAD_REQUEST);
+    FORM_VALIDATION_ERROR(12, "There were errors during content validation", HttpStatus.BAD_REQUEST),
+
+    PATTERN_PASSWORD_VALIDATION(14, "Character must Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]", HttpStatus.BAD_REQUEST),
+
+
+    TOKEN_INVALID_ERROR(15, "Invalid Token", HttpStatus.BAD_REQUEST),
+    TOKEN_EMAIL_ERROR(16, "Invalid Validation Token & Email", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_FOUND(17, "Email Not Found", HttpStatus.NOT_FOUND),
+    PASSWORD_NOT_MATCH(18, "Password Doesnt Match", HttpStatus.BAD_REQUEST),
+    USERNAME_EXIST(19, "Username already exist", HttpStatus.NOT_FOUND),
+    EMAIL_EXIST(20, "Email already exist", HttpStatus.NOT_FOUND),
+    REQUEST_DATA(21, "Please check your request data", HttpStatus.BAD_REQUEST),
+    FAILED_SEND_EMAIL(22, "Failed send email", HttpStatus.BAD_REQUEST),
+    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
 
     private final int errorCode;
 
