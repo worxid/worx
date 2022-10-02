@@ -18,7 +18,7 @@ import id.worx.worx.data.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.forms.service.value.Value;
-import id.worx.worx.mobile.model.MobileFormDTO;
+import id.worx.worx.service.specification.mobile.model.MobileFormDTO;
 
 @Mapper(componentModel = "spring")
 public abstract class FormMapper {

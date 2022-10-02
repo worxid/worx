@@ -30,6 +30,8 @@ public enum WorxErrorCode {
     EMAIL_EXIST(20, "Email already exist", HttpStatus.NOT_FOUND),
     REQUEST_DATA(21, "Please check your request data", HttpStatus.BAD_REQUEST),
     FAILED_SEND_EMAIL(22, "Failed send email", HttpStatus.BAD_REQUEST),
+    DEVICE_NOT_FOUND(22, "Couldn'nt find device", HttpStatus.NOT_FOUND),
+    DEVICE_EXIST(22, "Device Code already Exist", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
 
     private final int errorCode;

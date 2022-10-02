@@ -1,4 +1,4 @@
-package id.worx.worx.mobile.controller;
+package id.worx.worx.service.specification.mobile.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +21,9 @@ import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mapper.FormTemplateMapper;
-import id.worx.worx.mobile.model.MobileFormDTO;
-import id.worx.worx.mobile.model.MobileFormSubmitRequest;
-import id.worx.worx.mobile.model.MobileFormTemplateDTO;
+import id.worx.worx.service.specification.mobile.model.MobileFormDTO;
+import id.worx.worx.service.specification.mobile.model.MobileFormSubmitRequest;
+import id.worx.worx.service.specification.mobile.model.MobileFormTemplateDTO;
 import id.worx.worx.service.FormService;
 import id.worx.worx.service.FormTemplateService;
 import lombok.RequiredArgsConstructor;

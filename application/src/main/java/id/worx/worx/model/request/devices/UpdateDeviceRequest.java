@@ -1,40 +1,38 @@
 package id.worx.worx.model.request.devices;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import id.worx.worx.enums.DeviceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceRequest implements Serializable {
+public class UpdateDeviceRequest implements Serializable {
 
-    private Long id;
-    @JsonProperty("device_code")
-    private String deviceCode;
-    @JsonProperty("device_name")
-    private String deviceName;
+    @JsonProperty("device_no")
+    private Long deviceNo;
     @JsonProperty("device_model")
+    @NotEmpty
     private String deviceModel;
+    @NotEmpty
     @JsonProperty("device_os_version")
     private String deviceOsVersion;
+    @NotEmpty
     @JsonProperty("device_app_version")
     private String deviceAppVersion;
+    @NotEmpty
     @JsonProperty("device_language")
     private String deviceLanguage;
+    @NotEmpty
     private Integer port;
+    @NotEmpty
     private String ip;
-    private String longitude;
-    private String latitude;
-    private String address;
+    @NotEmpty
     private String label;
-    @JsonProperty("device_status")
-    private DeviceStatus deviceStatus;
-
 }
