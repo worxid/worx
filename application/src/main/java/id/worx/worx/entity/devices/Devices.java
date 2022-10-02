@@ -27,6 +27,7 @@ public class Devices extends Audit {
     private String deviceAppVersion;
     private String deviceLanguage;
     private String deviceCode;
+    @Enumerated(EnumType.ORDINAL)
     private DeviceStatus deviceStatus;
     private LocalDateTime joinedTime;
 
