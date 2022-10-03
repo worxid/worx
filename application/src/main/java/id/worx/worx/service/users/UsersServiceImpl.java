@@ -61,19 +61,19 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> users = usersRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Users> users = usersRepository.findByEmail(email);
 
         if(users == null){
             throw new WorxException(WorxErrorCode.USERNAME_EXIST);
         }else{
-            log.info("User found in the database : {} ", username);
+            log.info("User found in the database : {} ", email);
         }
         Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
         users.get().getRoles().forEach(role -> {
             authotities.add(new SimpleGrantedAuthority(role.getName()) );
             });
-        return new User(users.get().getUsername(), users.get().getPassword(), authotities);
+        return new User(users.get().getEmail(), users.get().getPassword(), authotities);
     }
     @Transactional
     public UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
@@ -85,14 +85,15 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if (!matcher.matches()) {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
+
+        Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
+        if (getByEmail.isPresent()) {
+            throw new WorxException(WorxErrorCode.EMAIL_EXIST);
+        }
+
         try{
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String random = UUID.randomUUID().toString().replace("-", "");
-
-            Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
-            if (getByEmail.isPresent()) {
-                throw new WorxException(WorxErrorCode.EMAIL_EXIST);
-            }
 
             Users users = new Users();
             users.setEmail(userRequest.getEmail());
