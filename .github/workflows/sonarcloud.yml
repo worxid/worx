@@ -34,3 +34,24 @@ jobs:
             #-Dsonar.tests= # optional. For more info about Code Coverage, please refer to https://docs.sonarcloud.io/enriching/test-coverage/overview/
             # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
             #-Dsonar.verbose= # optional, default is false
+
+  AnalysisServer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        working-directory: ./application
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and Analyze with Sonar
+        working-directory: ./application
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.organization=worxid \
+          -Dsonar.projectKey=worxid_worx
