@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
-import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
@@ -15,11 +17,29 @@ import Typography from '@mui/material/Typography'
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
+// MUI LABS
+import LoadingButton from '@mui/lab/LoadingButton'
+
+// SERVICES
+import { postLoginUser } from 'services/users'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
+// UTILITIES
+import { setUserProfileToLocalStorage } from 'utilities/localStorage'
+import { 
+  didSuccessfullyCallTheApi,
+  doesObjectContainDesiredValue, 
+} from 'utilities/validation'
+
 const SignIn = () => {
   const layoutClasses = useLayoutStyles()
+
+  const { 
+    setAuth, 
+    setSnackbarObject, 
+  } = useContext(AllPagesContext)
 
   const initialFormObject = {
     email: '',
@@ -34,7 +54,7 @@ const SignIn = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
-  const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
 
   // HANDLE FORM INPUT CHANGE
   const handleFormObjectChange = (inputKey, inputNewValue) => {
@@ -47,8 +67,66 @@ const SignIn = () => {
   }
 
   // HANDLE BUTTON CLICK
-  const handleFormButtonClick = (inputEvent) => {
+  const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+    setIsLoading(true)
+
+    // CHECK IF USER INPUTS ARE EMPTY
+    if (doesObjectContainDesiredValue(formObject, '') || 
+    doesObjectContainDesiredValue(formObject, null)) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Please fill all fields',
+      })
+    }
+    // USER INPUTS ARE NOT EMPTY
+    else {
+      const abortController = new AbortController()
+  
+      const resultLoginUser = await postLoginUser(
+        abortController.signal,
+        {
+          email: formObject?.email,
+          password: formObject?.password,
+        }
+      )
+
+      // SAVE USER DATA IF THE SUCCESSFULLY LOGGED IN
+      if (didSuccessfullyCallTheApi(resultLoginUser.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully logging in. Welcome.',
+        })
+
+        const userProfileObject = {
+          email: formObject?.email,
+          accessToken: resultLoginUser?.data?.data?.accessToken,
+        }
+        
+        setUserProfileToLocalStorage(userProfileObject)
+        setAuth(userProfileObject)
+      }
+      // SHOW AN ERROR MESSAGE IF THE UNSUCCESSFULLY LOGGED IN
+      else {
+        // UNREGISTERED EMAIL OR PASSWORD
+        if (resultLoginUser.status === 401) {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: '',
+            message: 'Wrong email or password',
+          })
+        }
+      }
+
+      abortController.abort()
+    }
+
+    setIsLoading(false)
   }
 
   return (
@@ -129,16 +207,17 @@ const SignIn = () => {
       </Link>
 
       {/* SIGN IN BUTTON */}
-      <Button
+      <LoadingButton
         variant='contained'
         fullWidth
         className={layoutClasses.buttonAction}
-        disabled={isActionButtonDisabled}
+        disabled={doesObjectContainDesiredValue(formObject, '')}
+        loading={isLoading}
         disableElevation
         type='submit'
       >
         Sign In
-      </Button>
+      </LoadingButton>
     </form>
   )
 }
