@@ -45,6 +45,9 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
+      - name: Test Working Dir
+        working-directory: ./application
+        run: pwd
       - name: Build and Analyze with Sonar
         working-directory: ./application
         env:
