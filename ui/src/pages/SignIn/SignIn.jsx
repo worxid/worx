@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -18,8 +21,13 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
+// UTILITIES
+import { doesObjectContainDesiredValue } from 'utilities/validation'
+
 const SignIn = () => {
   const layoutClasses = useLayoutStyles()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFormObject = {
     email: '',
@@ -49,6 +57,19 @@ const SignIn = () => {
   // HANDLE BUTTON CLICK
   const handleFormButtonClick = (inputEvent) => {
     inputEvent.preventDefault()
+
+    // CHECK IF USER INPUTS ARE EMPTY
+    if (doesObjectContainDesiredValue(formObject, '') || 
+    doesObjectContainDesiredValue(formObject, null)) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Please fill all fields',
+      })
+    }
+    // USER INPUTS ARE NOT EMPTY
+    else {}
   }
 
   return (
