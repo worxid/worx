@@ -4,7 +4,6 @@ import { useState, useContext } from 'react'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
-import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
@@ -17,6 +16,9 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
+
+// MUI LABS
+import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
 import { postLoginUser } from 'services/users'
@@ -52,7 +54,7 @@ const SignIn = () => {
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
-  const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
 
   // HANDLE FORM INPUT CHANGE
   const handleFormObjectChange = (inputKey, inputNewValue) => {
@@ -67,6 +69,7 @@ const SignIn = () => {
   // HANDLE BUTTON CLICK
   const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+    setIsLoading(true)
 
     // CHECK IF USER INPUTS ARE EMPTY
     if (doesObjectContainDesiredValue(formObject, '') || 
@@ -122,6 +125,8 @@ const SignIn = () => {
 
       abortController.abort()
     }
+
+    setIsLoading(false)
   }
 
   return (
@@ -202,16 +207,17 @@ const SignIn = () => {
       </Link>
 
       {/* SIGN IN BUTTON */}
-      <Button
+      <LoadingButton
         variant='contained'
         fullWidth
         className={layoutClasses.buttonAction}
-        disabled={isActionButtonDisabled}
+        disabled={doesObjectContainDesiredValue(formObject, '')}
+        loading={isLoading}
         disableElevation
         type='submit'
       >
         Sign In
-      </Button>
+      </LoadingButton>
     </form>
   )
 }
