@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 // CONSTANTS
 import { countries } from 'constants/countryList'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
@@ -26,8 +29,13 @@ import { postRegisterUser } from 'services/users'
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
+// UTILITIES
+import { doesObjectContainDesiredValue } from 'utilities/validation'
+
 const SignUp = () => {
   const layoutClasses = useLayoutStyles()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFormObject = {
     email: '',
@@ -67,21 +75,34 @@ const SignUp = () => {
   const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
 
-    const abortController = new AbortController()
-
-    const resultRegisterUser = await postRegisterUser(
-      abortController.signal,
-      {
-        username: formObject?.fullName,
-        password: formObject?.password,
-        email: formObject?.email,
-        phoneNo: formObject?.phoneNumber,
-        country: formObject?.country?.name,
-        organization_name: formObject?.organizationName,
-      }
-    )
-
-    abortController.abort()
+    // CHECK IF USER INPUTS ARE EMPTY
+    if (doesObjectContainDesiredValue(formObject, '') || 
+    doesObjectContainDesiredValue(formObject, null)) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Please fill all fields'
+      })
+    }
+    // USER INPUTS ARE NOT EMPTY
+    else {
+      const abortController = new AbortController()
+  
+      const resultRegisterUser = await postRegisterUser(
+        abortController.signal,
+        {
+          username: formObject?.fullName,
+          password: formObject?.password,
+          email: formObject?.email,
+          phoneNo: formObject?.phoneNumber,
+          country: formObject?.country?.name,
+          organization_name: formObject?.organizationName,
+        }
+      )
+  
+      abortController.abort()
+    }
   }
 
   return (
