@@ -25,12 +25,19 @@ import { postLoginUser } from 'services/users'
 import useLayoutStyles from 'styles/layoutAuthentication'
 
 // UTILITIES
-import { doesObjectContainDesiredValue } from 'utilities/validation'
+import { setUserProfileToLocalStorage } from 'utilities/localStorage'
+import { 
+  didSuccessfullyCallTheApi,
+  doesObjectContainDesiredValue, 
+} from 'utilities/validation'
 
 const SignIn = () => {
   const layoutClasses = useLayoutStyles()
 
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { 
+    setAuth, 
+    setSnackbarObject, 
+  } = useContext(AllPagesContext)
 
   const initialFormObject = {
     email: '',
@@ -75,13 +82,43 @@ const SignIn = () => {
     else {
       const abortController = new AbortController()
   
-      const resultRegisterUser = await postLoginUser(
+      const resultLoginUser = await postLoginUser(
         abortController.signal,
         {
           email: formObject?.email,
           password: formObject?.password,
         }
       )
+
+      // SAVE USER DATA IF THE SUCCESSFULLY LOGGED IN
+      if (didSuccessfullyCallTheApi(resultLoginUser.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully logging in. Welcome.',
+        })
+
+        const userProfileObject = {
+          email: formObject?.email,
+          accessToken: resultLoginUser?.data?.data?.accessToken,
+        }
+        
+        setUserProfileToLocalStorage(userProfileObject)
+        setAuth(userProfileObject)
+      }
+      // SHOW AN ERROR MESSAGE IF THE UNSUCCESSFULLY LOGGED IN
+      else {
+        // UNREGISTERED EMAIL OR PASSWORD
+        if (resultLoginUser.status === 401) {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: '',
+            message: 'Wrong email or password',
+          })
+        }
+      }
 
       abortController.abort()
     }
