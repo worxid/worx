@@ -1,5 +1,6 @@
 package id.worx.worx.forms.service.field;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.forms.exception.FormValidationErrorDetail;
+import id.worx.worx.forms.exception.FormValidationReason;
 import id.worx.worx.forms.exception.InvalidParameterException;
 import id.worx.worx.forms.service.value.CheckboxGroupValue;
 import id.worx.worx.forms.service.value.Value;
@@ -67,26 +71,51 @@ public class CheckboxGroupField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
+        List<ErrorDetail> details = new ArrayList<>();
+
+        if (Objects.isNull(value)) {
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
+        }
+
         if (!(value instanceof CheckboxGroupValue)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
         }
 
         CheckboxGroupValue checkboxGroupValue = (CheckboxGroupValue) value;
         List<Boolean> checkList = checkboxGroupValue.getValues();
 
-        if (Objects.isNull(checkList)) {
-            return this.getRequired().equals(Boolean.FALSE);
+        if (Objects.isNull(checkList) && this.getRequired().equals(Boolean.TRUE)) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
         }
 
-        int checkListLength = checkList.size();
+        int checkListLength = 0;
+        if (Objects.nonNull(checkList)) {
+            checkListLength = checkList.size();
+        }
+
         int groupLength = this.group.size();
         if (checkListLength != groupLength) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_CHECKLIST_ARRAY_SIZE, this.getId()));
         }
 
-        long checkedCount = checkList.stream().filter(check -> check).count();
-        return checkedCount >= this.minChecked && checkedCount <= this.maxChecked;
+        if (Objects.nonNull(checkList)) {
+            long checkedCount = checkList.stream().filter(check -> check).count();
+            if (checkedCount < this.minChecked) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_LESS_THAN_MINIMUM, this.getId()));
+            }
+
+            if (checkedCount > this.maxChecked) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_MORE_THAN_MAXIMUM, this.getId()));
+            }
+        }
+
+        return details;
     }
 
 }

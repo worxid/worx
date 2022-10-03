@@ -10,13 +10,13 @@ import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
+import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.FormTemplateRepository;
@@ -121,7 +121,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         Optional<FormTemplate> template = templateRepository.findById(id);
 
         if (template.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
         return template.get();
@@ -131,7 +131,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         Optional<FormTemplate> template = templateRepository.findByUrlCode(urlCode);
 
         if (template.isEmpty()) {
-            throw new WorxException("Not Found", HttpStatus.NOT_FOUND.value());
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
         return template.get();

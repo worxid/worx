@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("web/devices")
+@RequestMapping("devices")
 @RequiredArgsConstructor
-public class DeviceController {
+public class DeviceController implements SecuredRestController{
     private final DeviceService deviceService;
 
     @GetMapping

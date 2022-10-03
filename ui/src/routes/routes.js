@@ -24,31 +24,26 @@ const routes = [
     path: '/forgot-password',
     element: <ForgotPassword/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/reset-password',
     element: <ResetPassword/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/sign-in',
     element: <SignIn/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/sign-up',
     element: <SignUp/>,
     routeType: 'authentication',
-    authenticationType: 'half',
   },
   {
     path: '/authentication-finish',
     element: <AuthenticationFinish/>,
     routeType: 'authentication',
-    authenticationType: 'full',
   },
   // PRIVATE
   {
@@ -62,16 +57,7 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/create',
-    element: (
-      <PageFormsCreateOrEditContextProvider>
-        <FormsCreateOrEdit />
-      </PageFormsCreateOrEditContextProvider>
-    ),
-    routeType: 'private',
-  },
-  {
-    path: '/forms/edit/:id',
+    path: '/forms/edit/:formTemplateId',
     element: (
       <PageFormsCreateOrEditContextProvider>
         <FormsCreateOrEdit />

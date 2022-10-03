@@ -22,12 +22,12 @@ const SignIn = () => {
   const layoutClasses = useLayoutStyles()
 
   const initialFormObject = {
-    companyEmail: '',
+    email: '',
     password: '',
   }
 
   const initialFormHelperObject = {
-    companyEmail: null,
+    email: null,
     password: null,
   }
 
@@ -61,30 +61,30 @@ const SignIn = () => {
         variant='h6'
         className={layoutClasses.textTitle}
       >
-        Sign in to your Worx Account
+        Welcome Back
       </Typography>
 
       {/* COMPANY EMAIL FORM */}
       <FormControl 
         variant='outlined' 
         fullWidth
-        error={formHelperObject.companyEmail}
+        error={formHelperObject.email}
         color='secondary'
       >
         <InputLabel>
-          Company Email
+          Email
         </InputLabel>
         
         <OutlinedInput
           autoFocus
           type='email'
-          value={formObject.companyEmail}
-          onChange={(event) => handleFormObjectChange('companyEmail', event.target.value)}
-          label='Company Email'
+          value={formObject.email}
+          onChange={(event) => handleFormObjectChange('email', event.target.value)}
+          label='Email'
         />
 
         <FormHelperText>
-          {formHelperObject.companyEmail}
+          {formHelperObject.email}
         </FormHelperText>
       </FormControl>
 
@@ -139,18 +139,6 @@ const SignIn = () => {
       >
         Sign In
       </Button>
-
-      {/* SIGN UP TEXT */}
-      <Typography variant='subtitle1'>
-        Don't have an account?&nbsp;
-        <Link
-          underline='none'
-          href='/sign-up'
-          className={layoutClasses.linkInsideText}
-        >
-          Sign Up
-        </Link>
-      </Typography>
     </form>
   )
 }

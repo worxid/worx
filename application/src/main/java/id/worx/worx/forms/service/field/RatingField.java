@@ -1,10 +1,15 @@
 package id.worx.worx.forms.service.field;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.forms.exception.FormValidationErrorDetail;
+import id.worx.worx.forms.exception.FormValidationReason;
 import id.worx.worx.forms.exception.InvalidParameterException;
 import id.worx.worx.forms.service.value.RatingValue;
 import id.worx.worx.forms.service.value.Value;
@@ -37,23 +42,34 @@ public class RatingField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
+        List<ErrorDetail> details = new ArrayList<>();
+
         if (Objects.isNull(value)) {
-            return this.getRequired().equals(Boolean.FALSE);
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
         }
 
         if (!(value instanceof RatingValue)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
         }
 
         RatingValue ratingValue = (RatingValue) value;
         Integer rating = ratingValue.getValue();
 
-        if (rating < 0 || rating > this.maxStars) {
-            return false;
+        if (Objects.isNull(rating) && this.getRequired().equals(Boolean.TRUE)) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
         }
 
-        return true;
+        if (rating < 0 || rating > this.maxStars) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_RATING_VALUE, this.getId()));
+        }
+
+        return details;
     }
 
 }

@@ -16,11 +16,11 @@ const ForgotPassword = () => {
   const layoutClasses = useLayoutStyles()
   
   const initialFormObject = {
-    companyEmail: '',
+    email: '',
   }
 
   const initialFormHelperObject = {
-    companyEmail: null,
+    email: null,
   }
 
   const [ formObject, setFormObject ] = useState(initialFormObject)
@@ -59,23 +59,23 @@ const ForgotPassword = () => {
       <FormControl 
         variant='outlined' 
         fullWidth
-        error={formHelperObject.companyEmail}
+        error={formHelperObject.email}
         color='secondary'
       >
         <InputLabel>
-          Company Email
+          Email
         </InputLabel>
         
         <OutlinedInput
           autoFocus
           type='email'
-          value={formObject.companyEmail}
-          onChange={(event) => handleFormObjectChange('companyEmail', event.target.value)}
-          label='Company Email'
+          value={formObject.email}
+          onChange={(event) => handleFormObjectChange('email', event.target.value)}
+          label='Email'
         />
 
         <FormHelperText>
-          {formHelperObject.companyEmail}
+          {formHelperObject.email}
         </FormHelperText>
       </FormControl>
 
@@ -90,18 +90,6 @@ const ForgotPassword = () => {
       >
         Reset My Password
       </Button>
-
-      {/* SIGN IN TEXT */}
-      <Typography variant='subtitle1'>
-        Already have an account?&nbsp;
-        <Link
-          underline='none'
-          href='/sign-in'
-          className={layoutClasses.linkInsideText}
-        >
-          Sign In
-        </Link>
-      </Typography>
     </form>
   )
 }

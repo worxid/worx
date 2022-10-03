@@ -15,12 +15,12 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name = "DEVICES")
+@Table(name = "devices")
 public class Devices extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     private String ip;
@@ -43,3 +43,4 @@ public class Devices extends Audit {
     @Builder.Default
     private Set<Group> deviceGroups = new HashSet<>();
 }
+

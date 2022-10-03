@@ -7,6 +7,7 @@ import id.worx.worx.data.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.enums.DeviceStatus;
+import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
 import id.worx.worx.repository.DeviceRepository;
@@ -38,7 +39,7 @@ public class DeviceServiceImpl implements DeviceService{
 
     @Override
     public Devices getById(Long id) {
-        return deviceRepository.findById(id).orElseThrow(()-> new WorxException("Device with id: "+id+" not found",404));
+        return deviceRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     @Override

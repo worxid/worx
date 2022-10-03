@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
 import Avatar from '@mui/material/Avatar'
@@ -28,9 +31,11 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import { getExpandOrCollapseIcon } from 'utilities/component'
 
 const MainMenu = (props) => {
-  const { rows } = props
+  const { rows, setGroupData } = props
 
   const layoutClasses = useLayoutStyles()
+
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   const mainMenuIconList = [
     IconTextSnippet,
@@ -57,6 +62,11 @@ const MainMenu = (props) => {
   }
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
+
+  const handleChangeGroup = () => {
+    setGroupData(rows[0].groups)
+    setIsDialogFormOpen(true)
+  }
 
   return (
     <>
@@ -137,8 +147,9 @@ const MainMenu = (props) => {
               <Button
                 variant='contained'
                 className={layoutClasses.flyoutListItemActionButton}
+                onClick={handleChangeGroup}
               >
-                View All
+                Change Group
               </Button>}
             </ListItem>
           ))}
