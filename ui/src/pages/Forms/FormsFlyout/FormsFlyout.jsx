@@ -6,11 +6,11 @@ import Submissions from './Submissions'
 import Stack from '@mui/material/Stack'
 
 const FormsFlyout = (props) => {
-  const { rows } = props
+  const { rows, setGroupData } = props
 
   return (
     <Stack>
-      <MainMenu rows={rows}/>
+      <MainMenu rows={rows} setGroupData={setGroupData}/>
       <Submissions rows={rows}/>
     </Stack>
   )

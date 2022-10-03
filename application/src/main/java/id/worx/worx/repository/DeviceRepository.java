@@ -35,3 +35,4 @@ public interface DeviceRepository extends BaseRepository<Devices, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM devices WHERE deleted= FALSE")
     List<Devices> getAllDeviceByDeleted();
 }
+

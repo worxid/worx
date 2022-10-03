@@ -57,7 +57,7 @@ const MobilePreview = (props) => {
         )}
 
         {/* CHECKBOX */}
-        {item.type === 'checkboxGroup' && (
+        {item.type === 'checkbox_group' && (
           <FormGroup className={classes.formControlMobile}>
             {item.group.map((itemOption, index) => (
               <FormControlLabel
@@ -72,7 +72,7 @@ const MobilePreview = (props) => {
         )}
 
         {/* RADIO */}
-        {item.type === 'radioGroup' && (
+        {item.type === 'radio_group' && (
           <RadioGroup className={classes.formControlMobile}>
             {item.options.map((itemOption, index) => (
               <FormControlLabel
@@ -136,7 +136,7 @@ const MobilePreview = (props) => {
           <FormControl className={classes.formControlMobile}>
             <Rating
               value={0}
-              max={item.maxStars}
+              max={item.max_stars}
               readOnly
               emptyIcon={<IconStar fontSize='small' className={classes.opacityHalf}/>}
             />
@@ -153,14 +153,14 @@ const MobilePreview = (props) => {
         )}
 
         {/* IMAGE */}
-        {item.type === 'image' && (
+        {item.type === 'photo' && (
           <FormControl className={classes.formControlMobile}>
             <Stack direction='row'>
               <Button size='small' className={`${classes.buttonRedPrimary} buttonCamera heightFitContent`} startIcon={<IconCameraAlt fontSize='small'/>}>
                 Camera
               </Button>
 
-              {item.allowGalleryUpload && (
+              {item.allow_gallery_upload && (
                 <Button size='small' className={`${classes.buttonRedPrimary} heightFitContent`} startIcon={<IconImage fontSize='small'/>}>
                   Gallery
                 </Button>

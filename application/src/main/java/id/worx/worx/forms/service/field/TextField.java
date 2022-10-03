@@ -1,10 +1,15 @@
 package id.worx.worx.forms.service.field;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.forms.exception.FormValidationErrorDetail;
+import id.worx.worx.forms.exception.FormValidationReason;
 import id.worx.worx.forms.exception.InvalidParameterException;
 import id.worx.worx.forms.service.value.TextValue;
 import id.worx.worx.forms.service.value.Value;
@@ -69,34 +74,43 @@ public class TextField extends Field {
     }
 
     @Override
-    public boolean validate(Value value) {
+    public List<ErrorDetail> validate(Value value) {
+        List<ErrorDetail> details = new ArrayList<>();
+
+        if (Objects.isNull(value)) {
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
+        }
 
         if (!(value instanceof TextValue)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
         }
 
         TextValue textValue = (TextValue) value;
         String text = textValue.getValue();
 
         if (Objects.isNull(text) && this.getRequired().equals(Boolean.TRUE)) {
-            return false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
         }
 
         Integer textLength = 0;
-        boolean isValidLength = true;
         if (Objects.nonNull(text)) {
             textLength = text.length();
         }
 
         if (textLength < this.minLength) {
-            isValidLength = false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_LESS_THAN_MINIMUM, this.getId()));
         }
 
         if (textLength > this.maxLength) {
-            isValidLength = false;
+            details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_MORE_THAN_MAXIMUM, this.getId()));
         }
 
-        return isValidLength;
+        return details;
     }
 
 }

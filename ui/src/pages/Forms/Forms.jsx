@@ -3,16 +3,17 @@ import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
-import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
+import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
+import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData } from './formsConstants'
+import { dummyTableData, paramsCreateForm } from './formsConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
@@ -21,6 +22,9 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 // MUIS
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+
+// SERVICES
+import { postCreateFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -132,6 +136,27 @@ const Forms = () => {
   const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
+  // SELECTED GROUP DATA
+  const [ groupData, setGroupData ] = useState([])
+
+  // HANDLE FAB CLICK
+  const handleFabClick = async () => {
+    const abortController = new AbortController()
+
+    const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm)
+    if(response?.data?.success) {
+      navigate(`/forms/edit/${response.data.value.id}`)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title:'',
+        message:'Something gone wrong'
+      })
+    }
+
+    abortController.abort()
+  }
 
   useEffect(() => {
     if (selectionModel.length === 1) {
@@ -144,7 +169,7 @@ const Forms = () => {
       {/* APP BAR */}
       <AppBar
         hasFab={true}
-        onFabClick={() => navigate('/forms/create')}
+        onFabClick={() => handleFabClick()}
         pageTitle='Forms'
         hasSearch={true}
         search={pageSearch}
@@ -215,7 +240,7 @@ const Forms = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))}/>
+          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData}/>
         </Flyout>
       </Stack>
 
@@ -238,6 +263,9 @@ const Forms = () => {
         }}
         onCancelButtonClick={() => setDialogDeleteForms({})}
       />
+
+      {/* DIALOG GROUP */}
+      <DialogChangeGroup data={groupData} />
     </>
   )
 }

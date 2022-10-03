@@ -1,24 +1,22 @@
 package id.worx.worx.entity.devices;
 
 import id.worx.worx.entity.Audit;
-import id.worx.worx.entity.Group;
 import id.worx.worx.enums.DeviceStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "DEVICES")
+@Table(name = "devices")
 public class Devices extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     private String ip;

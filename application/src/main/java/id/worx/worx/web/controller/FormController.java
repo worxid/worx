@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("form")
 @RequiredArgsConstructor
-public class FormController {
+public class FormController implements SecuredRestController {
 
     private final FormService formService;
 
