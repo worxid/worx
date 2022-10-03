@@ -16,3 +16,8 @@ export const doesObjectContainDesiredValue = (inputObject, inputValue) => {
   if (resultList.length > 0) return true
   else return false
 }
+
+export const didSuccessfullyCallTheApi = (inputStatus) => {
+  const successRegex = /^20[0-9]$/
+  return successRegex.test(inputStatus)
+}
