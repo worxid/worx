@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // CONSTANTS
 import { countries } from 'constants/countryList'
@@ -30,12 +31,17 @@ import { postRegisterUser } from 'services/users'
 import useLayoutStyles from 'styles/layoutAuthentication'
 
 // UTILITIES
-import { doesObjectContainDesiredValue } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi,
+  doesObjectContainDesiredValue, 
+} from 'utilities/validation'
 
 const SignUp = () => {
   const layoutClasses = useLayoutStyles()
 
   const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const navigate = useNavigate()
 
   const initialFormObject = {
     email: '',
@@ -82,7 +88,7 @@ const SignUp = () => {
         open: true,
         severity: 'error',
         title: '',
-        message: 'Please fill all fields'
+        message: 'Please fill all fields',
       })
     }
     // USER INPUTS ARE NOT EMPTY
@@ -100,7 +106,31 @@ const SignUp = () => {
           organization_name: formObject?.organizationName,
         }
       )
-  
+
+      // REDIRECT USER IF THE ACCOUNT IS SUCCESSFULLY CREATED
+      if (didSuccessfullyCallTheApi(resultRegisterUser.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully creating the acccount',
+        })
+
+        navigate(`/authentication-finish?type=sign-up&email=${formObject.email}`)
+      }
+      // SHOW AN ERROR MESSAGE IF THE ACCOUNT IS NOT SUCCESSFULLY CREATED
+      else {
+        // PASSWORD VALIDATION
+        if (resultRegisterUser.status === 400) {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: resultRegisterUser?.data?.error?.status?.replaceAll('_', ' '),
+            message: resultRegisterUser?.data?.error?.message,
+          })
+        }
+      }
+
       abortController.abort()
     }
   }
