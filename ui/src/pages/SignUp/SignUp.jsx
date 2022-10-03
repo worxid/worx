@@ -20,6 +20,9 @@ import Typography from '@mui/material/Typography'
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
+// SERVICES
+import { postRegisterUser } from 'services/users'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
@@ -61,8 +64,24 @@ const SignUp = () => {
     })
   }
 
-  const handleFormButtonClick = (inputEvent) => {
+  const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+
+    const abortController = new AbortController()
+
+    const resultRegisterUser = await postRegisterUser(
+      abortController.signal,
+      {
+        username: formObject?.fullName,
+        password: formObject?.password,
+        email: formObject?.email,
+        phoneNo: formObject?.phoneNumber,
+        country: formObject?.country?.name,
+        organization_name: formObject?.organizationName,
+      }
+    )
+
+    abortController.abort()
   }
 
   return (
