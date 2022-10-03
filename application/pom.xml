@@ -22,6 +22,7 @@
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 		<com.aventrix.jnanoid.version>2.0.0</com.aventrix.jnanoid.version>
 		<hibernate-jpamodelgen.version>5.6.11.Final</hibernate-jpamodelgen.version>
+		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -187,6 +188,11 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
 		</plugins>
 	</build>
 
