@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class UserRequest implements Serializable {
-    private String username;
+    private String fullname;
     private String password;
     private String email;
     private String phoneNo;

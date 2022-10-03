@@ -89,11 +89,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String random = UUID.randomUUID().toString().replace("-", "");
 
-            Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
-            if (getByUsername.isPresent()) {
-                throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-            }
-
             Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
             if (getByEmail.isPresent()) {
                 throw new WorxException(WorxErrorCode.EMAIL_EXIST);
@@ -101,7 +96,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             Users users = new Users();
             users.setEmail(userRequest.getEmail());
-            users.setUsername(userRequest.getUsername());
+            users.setFullname(userRequest.getFullname());
             users.setPhone(userRequest.getPhoneNo());
             users.setStatus(UserStatus.INACTIVE);
             users.setOrganizationName(userRequest.getOrganizationName());
