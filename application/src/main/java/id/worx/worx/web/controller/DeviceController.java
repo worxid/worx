@@ -8,6 +8,7 @@ import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.data.response.PagingResponseModel;
 import id.worx.worx.service.DeviceService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("devices")
+@RequestMapping("web/devices")
 @RequiredArgsConstructor
 public class DeviceController {
     private final DeviceService deviceService;
@@ -33,13 +34,9 @@ public class DeviceController {
             .build());
     }
 
-    @GetMapping("/page")
+    @PostMapping("/search")
     public ResponseEntity<PagingResponseModel<DeviceDTO>> list(@RequestBody DeviceSearchRequest request,
-                                                               @PageableDefault(page = 0, size = 10)
-                                                               @SortDefault.SortDefaults({
-                                                                   @SortDefault(sort = "created_on", direction = Sort.Direction.DESC)
-                                                               })
-                                                               Pageable pageable){
+                                                               @ParameterObject Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(deviceService.getAllDevicesWithPage(request,pageable));
     }
 
@@ -50,24 +47,24 @@ public class DeviceController {
             .build());
     }
 
-    @PutMapping("/label")
-    public ResponseEntity<BaseValueResponse<DeviceDTO>> updateLabel(@RequestBody DeviceRequest request){
+    @PutMapping("/{id}/label")
+    public ResponseEntity<BaseValueResponse<DeviceDTO>> updateLabel(@PathVariable("id")Long id, @RequestBody DeviceRequest request){
         return ResponseEntity.ok().body(BaseValueResponse.<DeviceDTO>builder()
-            .value(deviceService.toDto(deviceService.updateDeviceLabel(request)))
+            .value(deviceService.toDto(deviceService.updateDeviceLabel(id,request)))
             .build());
     }
 
-    @PutMapping("/group")
-    public ResponseEntity<BaseValueResponse<DeviceDTO>> updateGroup(@RequestBody DeviceRequest request){
+    @PutMapping("/{id}/group")
+    public ResponseEntity<BaseValueResponse<DeviceDTO>> updateGroup(@PathVariable("id")Long id, @RequestBody DeviceRequest request){
         return ResponseEntity.ok().body(BaseValueResponse.<DeviceDTO>builder()
-            .value(deviceService.toDto(deviceService.updateDeviceGroup(request)))
+            .value(deviceService.toDto(deviceService.updateDeviceGroup(id,request)))
             .build());
     }
 
-    @PutMapping("/approve")
-    public ResponseEntity<BaseValueResponse<DeviceDTO>> approveDevice(@RequestBody DeviceRequest request){
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<BaseValueResponse<DeviceDTO>> approveDevice(@PathVariable("id")Long id, @RequestBody DeviceRequest request){
         return ResponseEntity.ok().body(BaseValueResponse.<DeviceDTO>builder()
-            .value(deviceService.toDto(deviceService.approveDevice(request)))
+            .value(deviceService.toDto(deviceService.approveDevice(id,request)))
             .build());
     }
 

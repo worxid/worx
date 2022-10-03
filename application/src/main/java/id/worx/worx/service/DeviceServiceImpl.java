@@ -5,14 +5,13 @@ import id.worx.worx.data.request.DeviceRequest;
 import id.worx.worx.data.request.DeviceSearchRequest;
 import id.worx.worx.data.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
-import id.worx.worx.entity.devices.DeviceGroup;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.enums.DeviceStatus;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
-import id.worx.worx.repository.DeviceGroupRepository;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.service.specification.DeviceSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +32,8 @@ public class DeviceServiceImpl implements DeviceService{
 
     private final DeviceRepository deviceRepository;
     private final GroupRepository groupRepository;
-    private final DeviceGroupRepository deviceGroupRepository;
     private final DeviceMapper deviceMapper;
+    private final DeviceSpecification deviceSpecification;
 
 
     @Override
@@ -44,32 +43,31 @@ public class DeviceServiceImpl implements DeviceService{
 
     @Override
     public List<Devices> getAllDevices() {
-        System.out.println("A");
         List<Devices> devices=deviceRepository.getAllDeviceByDeleted();
-        System.out.println(devices.isEmpty());
         return devices;
     }
 
     @Override
-    public Devices updateDeviceLabel(DeviceRequest request) {
-        Devices devices=getById(request.getId());
+    public Devices updateDeviceLabel(Long id,DeviceRequest request) {
+        Devices devices=getById(id);
         devices.setLabel(request.getLabel());
         return deviceRepository.save(devices);
     }
 
     @Override
-    public Devices approveDevice(DeviceRequest request) {
-        Devices devices=getById(request.getId());
-        devices.setDeviceStatus(DeviceStatus.APPROVED);
+    public Devices approveDevice(Long id,DeviceRequest request) {
+        Devices devices=getById(id);
+        if(devices.getDeviceStatus().ordinal()==2)
+            devices.setDeviceStatus(DeviceStatus.APPROVED);
         return deviceRepository.save(devices);
     }
 
     @Override
-    public Devices updateDeviceGroup(DeviceRequest request) {
-        Devices devices=getById(request.getId());
-        deleteDeviceGroupByDeviceId(devices.getId());
+    public Devices updateDeviceGroup(Long id,DeviceRequest request) {
+        Devices devices=getById(id);
+        deleteDeviceGroupByDeviceId(devices);
         if (request.getGroupIds()!=null&&request.getGroupIds().size()>0){
-            addDeviceGroup(devices.getId(),request.getGroupIds());
+            addDeviceGroup(devices,request.getGroupIds());
         }
         return deviceRepository.save(devices);
     }
@@ -84,7 +82,7 @@ public class DeviceServiceImpl implements DeviceService{
     @Override
     public DeviceDTO toDto(Devices devices) {
         DeviceDTO deviceDTO= deviceMapper.toDto(devices);
-        List<String> groupNames = deviceGroupRepository.getGroupNameByDeviceId(devices.getId());
+        List<String> groupNames = devices.getDeviceGroups().stream().map(Group::getName).collect(Collectors.toList());
         if(groupNames!=null)
             deviceDTO.setGroups(groupNames);
         return deviceDTO;
@@ -94,40 +92,31 @@ public class DeviceServiceImpl implements DeviceService{
     public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             Sort.by(getDirection(pageable),getSortBy(pageable)));
-        Page<Devices> devices= deviceRepository.search(
-            deviceSearchRequest.getLabel(),
-            deviceSearchRequest.getDeviceModel(),
-            deviceSearchRequest.getDeviceOsVersion(),
-            deviceSearchRequest.getDeviceAppVersion(),
-            deviceSearchRequest.getDeviceCode(),
-            deviceSearchRequest.getGlobalSearch(),
-            customPageable
-        );
+        Page<Devices> devices= deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),customPageable);
         return new PagingResponseModel<>(devices.map(device -> toDto(device)));
     }
 
-    public void deleteDeviceGroupByDeviceId(Long deviceId){
-        List<DeviceGroup> deviceGroups= deviceGroupRepository.getDeviceGroupBydeviceId(deviceId);
-        if(deviceGroups!=null)
-            deviceGroups.forEach(deviceGroup -> deviceGroupRepository.delete(deviceGroup));
+    public void deleteDeviceGroupByDeviceId(Devices devices){
+        List<Group> groups= devices.getDeviceGroups().stream().collect(Collectors.toList());
+        devices.getDeviceGroups().removeAll(groups);
+        deviceRepository.save(devices);
     }
 
-    public void addDeviceGroup(Long deviceId, List<Long> groupIds) {
+    public void addDeviceGroup(Devices devices, List<Long> groupIds) {
         List<Group> groups = groupRepository.getAllByIds(groupIds);
         if (groups != null && groups.size() > 0) {
-            List<DeviceGroup> newDeviceGroup  = new ArrayList<>();
-            groups.forEach(group -> newDeviceGroup.add(new DeviceGroup(deviceId, group.getId())));
-            deviceGroupRepository.saveAll(newDeviceGroup);
+            devices.setDeviceGroups(new HashSet<>());
+            groups.forEach(group -> devices.getDeviceGroups().add(group));
+            deviceRepository.save(devices);
         }
     }
 
-    public String camelToSnakeCase(String sortBy){
-        return sortBy.replaceAll("([a-z])([A-Z]+)","$1_$2").toLowerCase();
-    }
-
     public String getSortBy(Pageable pageable){
-        String sortBy=camelToSnakeCase(pageable.getSort().stream().map(sort-> sort.getProperty()).collect(Collectors.toList()).get(0));
-        return sortBy;
+        String sortBy=pageable.getSort().stream().map(sort-> sort.getProperty()).collect(Collectors.toList()).get(0);
+        return sortBy.replaceFirst("_[a-z]",
+            String.valueOf(
+                Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))
+            ));
     }
 
     public Sort.Direction getDirection(Pageable pageable){

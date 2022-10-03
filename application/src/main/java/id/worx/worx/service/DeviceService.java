@@ -14,9 +14,9 @@ public interface DeviceService {
 
     Devices getById(Long id);
     List<Devices> getAllDevices();
-    Devices updateDeviceLabel(DeviceRequest request);
-    Devices approveDevice(DeviceRequest request);
-    Devices updateDeviceGroup(DeviceRequest request);
+    Devices updateDeviceLabel(Long id, DeviceRequest request);
+    Devices approveDevice(Long id,DeviceRequest request);
+    Devices updateDeviceGroup(Long id,DeviceRequest request);
     void deleteDevice(Long id);
     DeviceDTO toDto(Devices devices);
     PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
