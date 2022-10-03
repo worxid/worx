@@ -18,6 +18,9 @@ import Typography from '@mui/material/Typography'
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
+// SERVICES
+import { postLoginUser } from 'services/users'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
@@ -55,7 +58,7 @@ const SignIn = () => {
   }
 
   // HANDLE BUTTON CLICK
-  const handleFormButtonClick = (inputEvent) => {
+  const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
 
     // CHECK IF USER INPUTS ARE EMPTY
@@ -69,7 +72,19 @@ const SignIn = () => {
       })
     }
     // USER INPUTS ARE NOT EMPTY
-    else {}
+    else {
+      const abortController = new AbortController()
+  
+      const resultRegisterUser = await postLoginUser(
+        abortController.signal,
+        {
+          email: formObject?.email,
+          password: formObject?.password,
+        }
+      )
+
+      abortController.abort()
+    }
   }
 
   return (
