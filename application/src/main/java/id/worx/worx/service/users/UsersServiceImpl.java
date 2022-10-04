@@ -82,6 +82,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
+        String regexNumberOnly = "\\d+";
+
+        if(!userRequest.getPhoneNo().matches(regexNumberOnly)){
+            throw new WorxException(WorxErrorCode.INVALID_PHONE_NO);
+        }
         if (!matcher.matches()) {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
@@ -92,16 +97,20 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
 
         try{
+
+            //phone no validation
+            String phone = formatPhone(userRequest.getPhoneNo(), "ID");
+
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String random = UUID.randomUUID().toString().replace("-", "");
 
             Users users = new Users();
             users.setEmail(userRequest.getEmail());
             users.setFullname(userRequest.getFullname());
-            users.setPhone(userRequest.getPhoneNo());
+            users.setPhone(phone);
             users.setStatus(UserStatus.INACTIVE);
             users.setOrganizationName(userRequest.getOrganizationName());
-            users.setCountry(userRequest.getCountry());
+            users.setCountry(userRequest.getCountry().toUpperCase());
             users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             users.setOrganizationCode(organizationCode());
             usersRepository.save(users);
@@ -116,9 +125,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
             String subject = "WORX - Email Confirmation";
-            String mailBody = EmailVerification.EmailVerify(url);
+            String mailBody = EmailVerification.EmailVerify(url,userRequest.getFullname());
 
-            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,false,true);
+            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,true,true);
 
 
         }catch (Exception e){
@@ -229,7 +238,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
             String subject = "WORX - Reset Password";
-            String mailBody = ResetPasswordMail.ResetPasswordTemplate(url);
+            String mailBody = ResetPasswordMail.ResetPasswordTemplate(url,checkEmail.get().getFullname());
 
             mailService.sendEmailTemplate(email,subject,mailBody,false,true);
 
@@ -251,7 +260,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), EmailTokenStatus.USED,EmailTokenType.RESETPWD);
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(changePasswordToken.getToken(),EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
 
         if(!checkData.isPresent()){
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
@@ -317,5 +326,18 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public String defaultUrl(HttpServletRequest httpServletRequest){
 
         return httpServletRequest.getRequestURL().toString();
+    }
+
+    public String formatPhone(String phone, String country){
+
+        String resultPhone = "";
+
+        if(country.equals("ID")){
+            String get2FirstCharacter = phone.substring(0,2);
+            if(get2FirstCharacter.equals("08")){
+                resultPhone = "62"+phone.substring(1);
+            }
+        }
+        return resultPhone;
     }
 }
