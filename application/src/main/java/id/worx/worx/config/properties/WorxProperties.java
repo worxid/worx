@@ -12,4 +12,5 @@ import lombok.Setter;
 @Setter
 public class WorxProperties {
     private MailProperties mail;
+    private StorageProperties storage;
 }

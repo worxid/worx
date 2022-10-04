@@ -17,7 +17,12 @@ public enum WorxErrorCode {
     /**
      * {@code Form Validation error}
      */
-    FORM_VALIDATION_ERROR(12, "There were errors during content validation", HttpStatus.BAD_REQUEST);
+    FORM_VALIDATION_ERROR(12, "There were errors during content validation", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Object Storage error}
+     */
+    OBJECT_STORAGE_ERROR(12, "Something wrong with the object storage.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final int errorCode;
 

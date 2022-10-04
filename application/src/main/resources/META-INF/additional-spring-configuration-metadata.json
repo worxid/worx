@@ -8,5 +8,25 @@
     "name": "worx.mail.from-name",
     "type": "java.lang.String",
     "description": "A description for 'worx.mail.from-name'"
+  },
+  {
+    "name": "worx.storage.access-key",
+    "type": "java.lang.String",
+    "description": "A description for 'worx.storage.access-key'"
+  },
+  {
+    "name": "worx.storage.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'worx.storage.secret-key'"
+  },
+  {
+    "name": "worx.storage.bucket-name",
+    "type": "java.lang.String",
+    "description": "A description for 'worx.storage.bucket-name'"
+  },
+  {
+    "name": "worx.storage.endpoint",
+    "type": "java.lang.String",
+    "description": "A description for 'worx.storage.endpoint'"
   }
 ]}
