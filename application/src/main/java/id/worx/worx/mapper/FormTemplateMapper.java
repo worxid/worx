@@ -16,7 +16,7 @@ import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.service.specification.mobile.model.MobileFormTemplateDTO;
+import id.worx.worx.model.MobileFormTemplateDTO;
 
 @Mapper(componentModel = "spring", uses = { GroupMapper.class })
 public abstract class FormTemplateMapper {

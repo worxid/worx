@@ -1,4 +1,4 @@
-package id.worx.worx.service.specification.mobile.model;
+package id.worx.worx.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

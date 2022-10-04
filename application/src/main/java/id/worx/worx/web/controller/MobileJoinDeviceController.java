@@ -1,4 +1,4 @@
-package id.worx.worx.service.specification.mobile.controller;
+package id.worx.worx.web.controller;
 
 import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.response.BaseValueResponse;
