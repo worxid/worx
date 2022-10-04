@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
-import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
@@ -18,6 +17,9 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
+
+// MUI LABS
+import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
 import { postResetPasswordUser } from 'services/users'
@@ -54,7 +56,7 @@ const ResetPassword = () => {
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isNewPasswordShown, setIsNewPasswordShown ] = useState(false)
   const [ isConfirmPasswordShown, setIsConfirmPasswordShown ] = useState(false)
-  const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
 
   // HANDLE FORM INPUT CHANGE
   const handleFormObjectChange = (inputKey, inputNewValue) => {
@@ -69,6 +71,7 @@ const ResetPassword = () => {
   // HANDLE BUTTON CLICK
   const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+    setIsLoading(true)
 
     // CHECK IF USER INPUTS ARE EMPTY
     if (doesObjectContainDesiredValue(formObject, '')) {
@@ -124,6 +127,8 @@ const ResetPassword = () => {
 
       abortController.abort()
     }
+
+    setIsLoading(false)
   }
 
   return (
@@ -200,16 +205,17 @@ const ResetPassword = () => {
       </FormControl>
 
       {/* RESET MY PASSWORD BUTTON */}
-      <Button
+      <LoadingButton
         variant='contained'
         fullWidth
         className={layoutClasses.buttonAction}
-        disabled={isActionButtonDisabled}
+        disabled={doesObjectContainDesiredValue(formObject, '')}
+        loading={isLoading}
         disableElevation
         type='submit'
       >
         Save New Password
-      </Button>
+      </LoadingButton>
     </form>
   )
 }
