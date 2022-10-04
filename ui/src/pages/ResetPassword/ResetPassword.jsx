@@ -1,4 +1,9 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -14,11 +19,26 @@ import Typography from '@mui/material/Typography'
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
+// SERVICES
+import { postResetPasswordUser } from 'services/users'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
+// UTILITIES
+import { 
+  didSuccessfullyCallTheApi,
+  doesObjectContainDesiredValue, 
+} from 'utilities/validation'
+
 const ResetPassword = () => {
   const layoutClasses = useLayoutStyles()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const [ searchParams ] = useSearchParams()
+
+  const navigate = useNavigate()
   
   const initialFormObject = {
     newPassword: '',
@@ -47,8 +67,63 @@ const ResetPassword = () => {
   }
 
   // HANDLE BUTTON CLICK
-  const handleFormButtonClick = (inputEvent) => {
+  const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+
+    // CHECK IF USER INPUTS ARE EMPTY
+    if (doesObjectContainDesiredValue(formObject, '')) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Please fill all fields',
+      })
+    }
+    // NEW PASSWORD DOESN'T MATCH WITH CONFIRM PASSWORD
+    else if (formObject.newPassword !== formObject.confirmPassword) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Confirm password doesn\'t match new password',
+      })
+    }
+    // USER INPUTS ARE VALID
+    else {
+      const abortController = new AbortController()
+  
+      const resultForgotPasswordUser = await postResetPasswordUser(
+        abortController.signal,
+        {
+          token: searchParams?.code,
+          new_password: formObject.newPassword,
+        },
+      )
+
+      // REDIRECT THE USER IF SUCCESSFULLY CALLING THE API
+      if (didSuccessfullyCallTheApi(resultForgotPasswordUser.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully changing your password',
+        })
+
+        navigate('/sign-in')
+      }
+      // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
+      else {
+        // TO DO: FINISH THIS LATER
+        setSnackbarObject({
+          open: true,
+          severity: 'error',
+          title: '',
+          message: 'Somethings went wrong. Please try again.',
+        })
+      }
+
+      abortController.abort()
+    }
   }
 
   return (
