@@ -251,7 +251,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), EmailTokenStatus.USED,EmailTokenType.RESETPWD);
 
         if(!checkData.isPresent()){
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
@@ -259,7 +259,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
 
-            Optional<Users> users = usersRepository.findByEmail(changePasswordToken.getEmail());
+            Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
             Users updateUsers = users.get();
 
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
