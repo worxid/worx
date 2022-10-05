@@ -14,7 +14,9 @@ public class JwtResponse {
 
     public JwtResponse() {
         this.status = HttpStatus.OK.value();
-        this.data = data;
-        this.error = error;
+        /**
+         * this.data = data;
+         * this.error = error;
+         */
     }
 }

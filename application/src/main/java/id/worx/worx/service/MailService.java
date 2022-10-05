@@ -1,4 +1,4 @@
-package id.worx.worx.util;
+package id.worx.worx.service;
 
 import id.worx.worx.config.properties.WorxProperties;
 import lombok.extern.slf4j.Slf4j;

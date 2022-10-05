@@ -1,4 +1,4 @@
-package id.worx.worx.common.exception;
+package id.worx.worx.exception;
 
 import id.worx.worx.common.model.response.BaseResponse;
 import lombok.AllArgsConstructor;

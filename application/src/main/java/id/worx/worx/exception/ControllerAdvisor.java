@@ -1,4 +1,4 @@
-package id.worx.worx.common.exception;
+package id.worx.worx.exception;
 
 import java.util.Date;
 

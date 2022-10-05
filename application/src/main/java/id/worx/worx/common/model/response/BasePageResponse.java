@@ -1,4 +1,4 @@
-package id.worx.worx.web.pageable;
+package id.worx.worx.common.model.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,12 +20,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
         "last",
         "empty"
 })
-public class SimplePage<T> extends PageImpl<T> {
+public class BasePageResponse<T> extends PageImpl<T> {
 
     private static final long serialVersionUID = 7030035710460675888L;
 
     @JsonCreator
-    public SimplePage(@JsonProperty("content") final List<T> content,
+    public BasePageResponse(@JsonProperty("content") final List<T> content,
             @JsonProperty("totalElements") final long totalElements,
             @JsonProperty("totalPages") final int totalPages,
             @JsonProperty("page") final int page,
@@ -39,7 +39,7 @@ public class SimplePage<T> extends PageImpl<T> {
                 totalElements);
     }
 
-    public SimplePage(final List<T> content, final Pageable pageable, final long totalElements) {
+    public BasePageResponse(final List<T> content, final Pageable pageable, final long totalElements) {
         super(content, pageable, totalElements);
     }
 
