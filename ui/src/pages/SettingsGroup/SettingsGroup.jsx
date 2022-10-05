@@ -114,14 +114,14 @@ const SettingsGroup = () => {
 
   // HANDLE ADD BUTTON CLICKED
   const handleAddButtonClick = () => {
-    setDialogType('Add New')
+    setDialogType('add')
     setIsDialogAddOrEditOpen(true)
   }
 
   // HANDLE EDIT BUTTON CLICKED
   const handleEditButtonClick = () => {
     const editData = tableData.filter(item => item.id === selectionModel[0])
-    setDialogType('Edit')
+    setDialogType('edit')
     setDataDialogEdit(...editData)
     setIsDialogAddOrEditOpen(true)
   }

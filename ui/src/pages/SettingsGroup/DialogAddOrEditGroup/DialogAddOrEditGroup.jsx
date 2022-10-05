@@ -58,8 +58,13 @@ const DialogAddOrEditGroup = (props) => {
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
-  const [ groupName, setGroupName ] = useState('')
-  const [ groupColor, setGroupColor ] = useState('#000000')
+  const initialFormObject = {
+    groupName: '',
+    groupColor: '#000000',
+  }
+
+  const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
+  const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -83,33 +88,22 @@ const DialogAddOrEditGroup = (props) => {
   const handleActionButtonClick = async (inputType) => {
     if (inputType === 'save') {
       const abortController = new AbortController()
+
+      let resultAddOrEditGroup = {}
       
       // CREATE A NEW GROUP ITEM
-      if (dialogType === 'Add New') {
-        const resultCreateGroup = await postCreateGroup(
+      if (dialogType === 'add') {
+        resultAddOrEditGroup = await postCreateGroup(
           abortController.signal,
           {
             name: groupName,
             color: groupColor,
           },
         )
-
-        if (didSuccessfullyCallTheApi(resultCreateGroup.status)) {
-          handleClose()
-          setMustReloadDataGrid(true)
-
-          setSnackbarObject({
-            open: true,
-            severity: 'success',
-            title: '',
-            message: 'Successful in creating a new group'
-          })
-        }
-
       }
       // EDIT AN EXISTING GROUP ITEM
-      else if (dialogType === 'Edit') {
-        const resultEditGroup = await putEditGroup(
+      else if (dialogType === 'edit') {
+        resultAddOrEditGroup = await putEditGroup(
           abortController.signal,
           dataDialogEdit.id,
           {
@@ -117,38 +111,43 @@ const DialogAddOrEditGroup = (props) => {
             color: groupColor,
           },
         )
+      }
 
-        if (didSuccessfullyCallTheApi(resultEditGroup.status)) {
-          handleClose()
-          setMustReloadDataGrid(true)
+      // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
+      if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
+        handleClose()
+        setMustReloadDataGrid(true)
 
-          setSnackbarObject({
-            open: true,
-            severity: 'success',
-            title: '',
-            message: 'Success changing group properties'
-          })
-        }
+        let message = ''
+        if (dialogType === 'add') message = 'Successfully creating a new group'
+        if (dialogType === 'edit') message = 'Successfully editing the group properties'
+
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: message,
+        })
       }
 
       abortController.abort()
     }
-
-    // handleClose()
   }
   
+  // CLOSE DIALOG ADD OR EDIT GROUP
   const handleClose = () => {
     setAnchorEl(null)
-    setGroupName('')
-    setGroupColor('#000')
+    setGroupName(initialFormObject.groupName)
+    setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
     setIsDialogAddOrEditOpen(false)
   }
 
   useEffect(() => {
-    if (dialogType === 'Edit' && dataDialogEdit) {
-      setGroupName(dataDialogEdit?.name ?? '')
-      setGroupColor(dataDialogEdit?.color ?? '#000000')
+    // UPDATE THE DIALOG FORM IF THE DIALOG IS ON EDIT MODE
+    if (dialogType === 'edit' && dataDialogEdit) {
+      setGroupName(dataDialogEdit?.name ?? initialFormObject.groupName)
+      setGroupColor(dataDialogEdit?.color ?? initialFormObject.groupColor)
     }
   }, [dataDialogEdit])
 
