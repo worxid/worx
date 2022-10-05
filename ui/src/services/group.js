@@ -1,6 +1,26 @@
 //APIS
 import { axiosPrivate } from 'apis/axios'
 
+export const deleteGroup = async (
+  inputSignal, 
+  inputId,
+) => {
+  try {
+    const response = await axiosPrivate.delete(
+      `/groups/${inputId}`, 
+      {
+        signal: inputSignal,
+        //headers: { 'Authorization': `Bearer ${inputToken}` },
+      },
+    )
+
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
 // TO DO: REPLACE WITH THE NEW API CONTAINING FILTER, SORT, PAGINATION, AND SEARCH
 export const getGroupList = async (inputSignal) => {
   try {
