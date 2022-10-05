@@ -9,9 +9,6 @@ import DialogAddOrEditGroup from './DialogAddOrEditGroup/DialogAddOrEditGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
-// CONSTANTS
-import { dummyTableData } from './settingsGroupConstants'
-
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -23,11 +20,16 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconCircle from '@mui/icons-material/Circle'
 
+// SERVICES
+import { getGroupList } from 'services/group'
+
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const SettingsGroup = () => {
   const initialColumns = [
     {
-      field: 'groupName',
+      field: 'name',
       headerName: 'Group Name',
       flex: 1,
       minWidth: 200,
@@ -35,11 +37,17 @@ const SettingsGroup = () => {
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
-          <Stack direction={'row'} alignItems='center'>
+          <Stack  
+            direction='row' 
+            alignItems='center'
+            spacing='8px'
+          >
+            {/* ICON */}
             <IconCircle 
-              sx={{ color: params.row.groupColor, width: 12 }} 
+              sx={{ color: params.row.color, width: 12 }} 
             />
-            &nbsp;
+            
+            {/* TEXT */}
             <Typography variant='inherit'>
               {params.value}
             </Typography>
@@ -47,20 +55,22 @@ const SettingsGroup = () => {
         ),
     },
     {
-      field: 'totalDevices',
+      field: 'device_count',
       headerName: 'Total Devices',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => params.value ?? 0,
     },
     {
-      field: 'totalForm',
+      field: 'form_count',
       headerName: 'Total Form',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => params.value ?? 0,
     }
   ]
 
@@ -79,7 +89,7 @@ const SettingsGroup = () => {
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -115,6 +125,26 @@ const SettingsGroup = () => {
     setDataDialogEdit(...editData)
     setIsDialogAddOrEditOpen(true)
   }
+
+  const loadGroupListData = async (inputIsMounted, inputAbortController) => {
+    const resultGroupList = await getGroupList(inputAbortController.signal)
+
+    if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
+      setTableData(resultGroupList.data.list)
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    loadGroupListData(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
 
   return (
     <>
