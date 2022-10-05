@@ -1,4 +1,4 @@
-package id.worx.worx.model;
+package id.worx.worx.mobile.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

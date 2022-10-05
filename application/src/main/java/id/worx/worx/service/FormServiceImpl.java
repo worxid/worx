@@ -24,7 +24,7 @@ import id.worx.worx.exception.detail.ErrorDetail;
 import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.forms.service.value.Value;
 import id.worx.worx.mapper.FormMapper;
-import id.worx.worx.model.MobileFormSubmitRequest;
+import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
