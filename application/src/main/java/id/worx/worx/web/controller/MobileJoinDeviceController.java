@@ -1,6 +1,5 @@
 package id.worx.worx.web.controller;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
 import id.worx.worx.data.response.BaseValueResponse;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.model.request.devices.DeviceRequest;
