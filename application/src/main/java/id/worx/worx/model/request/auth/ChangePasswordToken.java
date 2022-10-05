@@ -15,7 +15,5 @@ public class ChangePasswordToken {
     @JsonProperty("new_password")
     private String newPassword;
     @NotBlank
-    private String email;
-    @NotBlank
     private String token;
 }

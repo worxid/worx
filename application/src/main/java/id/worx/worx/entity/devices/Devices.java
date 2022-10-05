@@ -1,24 +1,28 @@
 package id.worx.worx.entity.devices;
 
 import id.worx.worx.entity.Audit;
+import id.worx.worx.entity.BaseEntity;
 import id.worx.worx.enums.DeviceStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "devices")
+@Where(clause = "deleted = false")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "devices")
-public class Devices extends Audit {
+@Builder
+public class Devices extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
     private String ip;
     private Integer port;
     private String label;

@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface EmailTokenRepository extends BaseRepository<EmailToken, Long>{
 
-    Optional<EmailToken> findByTokenAndEmailAndStatusAndType(String token, String email, String status, String type);
     Optional<EmailToken> findByTokenAndTypeAndStatus(String token, EmailTokenType type, EmailTokenStatus status);
 }
