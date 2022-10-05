@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.value.Value;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.forms.value.Value;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

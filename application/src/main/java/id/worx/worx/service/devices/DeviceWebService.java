@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.devices.Devices;
-import id.worx.worx.model.dto.DeviceDTO;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 

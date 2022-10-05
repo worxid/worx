@@ -1,7 +1,8 @@
 package id.worx.worx.service;
 
-import id.worx.worx.model.request.FieldCondition;
-import id.worx.worx.model.response.pageable.PagingResponseModel;
+import id.worx.worx.common.model.request.FieldCondition;
+import id.worx.worx.common.model.response.pageable.PagingResponseModel;
+
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

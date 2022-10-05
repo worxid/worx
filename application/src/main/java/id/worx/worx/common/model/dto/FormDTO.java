@@ -6,8 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.value.Value;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.forms.value.Value;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

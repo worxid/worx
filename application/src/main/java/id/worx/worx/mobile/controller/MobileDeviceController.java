@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
-import id.worx.worx.model.dto.DeviceDTO;
 import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.AllArgsConstructor;

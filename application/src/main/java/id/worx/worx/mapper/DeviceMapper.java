@@ -1,8 +1,8 @@
 package id.worx.worx.mapper;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
-import id.worx.worx.model.dto.DeviceDTO;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package id.worx.worx.entity.users;
 
-import id.worx.worx.enums.UserStatus;
+import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

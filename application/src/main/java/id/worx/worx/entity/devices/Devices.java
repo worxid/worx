@@ -16,9 +16,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 
+import id.worx.worx.common.enums.DeviceStatus;
 import id.worx.worx.entity.BaseEntity;
 import id.worx.worx.entity.Group;
-import id.worx.worx.enums.DeviceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
