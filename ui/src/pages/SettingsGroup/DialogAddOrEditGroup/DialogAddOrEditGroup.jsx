@@ -30,21 +30,41 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
+// SERVICES
+import { 
+  postCreateGroup, 
+  putEditGroup,
+} from 'services/group'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
+
 const DialogAddOrEditGroup = (props) => {
+  const { 
+    dialogType, 
+    dataDialogEdit, 
+    setDataDialogEdit, 
+    setMustReloadDataGrid,
+  } = props
+
   const layoutClasses = useLayoutStyles()
   const classes = useStyles()
-  
-  const { dialogType, dataDialogEdit, setDataDialogEdit } = props
+
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
-  const [ groupName, setGroupName ] = useState('')
-  const [ groupColor, setGroupColor ] = useState('#000')
+  const initialFormObject = {
+    groupName: '',
+    groupColor: '#000000',
+  }
+
+  const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
+  const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -66,38 +86,72 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const handleActionButtonClick = async (inputType) => {
+    // SAVE BUTTON
     if (inputType === 'save') {
-      if(dialogType === 'Add New'){
+      const abortController = new AbortController()
+
+      let resultAddOrEditGroup = {}
+      
+      // CREATE A NEW GROUP ITEM
+      if (dialogType === 'add') {
+        resultAddOrEditGroup = await postCreateGroup(
+          abortController.signal,
+          {
+            name: groupName,
+            color: groupColor,
+          },
+        )
+      }
+      // EDIT AN EXISTING GROUP ITEM
+      else if (dialogType === 'edit') {
+        resultAddOrEditGroup = await putEditGroup(
+          abortController.signal,
+          dataDialogEdit.id,
+          {
+            name: groupName,
+            color: groupColor,
+          },
+        )
+      }
+
+      abortController.abort()
+
+      // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
+      if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
+        handleClose()
+        setMustReloadDataGrid(true)
+
+        let message = ''
+        if (dialogType === 'add') message = 'Successfully creating a new group'
+        if (dialogType === 'edit') message = 'Successfully editing the group properties'
+
         setSnackbarObject({
           open: true,
-          severity:'success',
-          title:'',
-          message:'Successful in creating a new group'
-        })
-      }else {
-        setSnackbarObject({
-          open: true,
-          severity:'success',
-          title:'',
-          message:'Success changing group name'
+          severity: 'success',
+          title: '',
+          message: message,
         })
       }
-      handleClose()
     }
-    handleClose()
+    // CANCEL BUTTON IS CLICKED
+    else if (inputType === 'cancel') handleClose()
   }
   
+  // CLOSE DIALOG ADD OR EDIT GROUP
   const handleClose = () => {
     setAnchorEl(null)
-    setGroupName('')
-    setGroupColor('#000')
+    setGroupName(initialFormObject.groupName)
+    setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
     setIsDialogAddOrEditOpen(false)
   }
 
   useEffect(() => {
-    setGroupName(dataDialogEdit?.groupName ?? '')
-    setGroupColor(dataDialogEdit?.groupColor ?? '#000')
+    // UPDATE THE DIALOG FORM IF THE DIALOG IS ON EDIT MODE
+    if (dialogType === 'edit' && dataDialogEdit) {
+      setGroupName(dataDialogEdit?.name ?? initialFormObject.groupName)
+      setGroupColor(dataDialogEdit?.color ?? initialFormObject.groupColor)
+    }
   }, [dataDialogEdit])
 
   return (
