@@ -39,3 +39,25 @@ export const postCreateGroup = async (
     else return error.response
   }
 }
+
+export const putEditGroup = async (
+  inputSignal, 
+  inputId,
+  inputBodyParams, 
+) => {
+  try {
+    const response = await axiosPrivate.put(
+      `/groups/${inputId}`, 
+      inputBodyParams, 
+      {
+        signal: inputSignal,
+        //headers: { 'Authorization': `Bearer ${inputToken}` },
+      },
+    )
+
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
