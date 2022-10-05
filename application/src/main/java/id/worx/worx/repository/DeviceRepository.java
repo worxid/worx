@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DeviceRepository extends BaseRepository<Devices, Long> {
@@ -34,5 +35,10 @@ public interface DeviceRepository extends BaseRepository<Devices, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM devices WHERE deleted= FALSE")
     List<Devices> getAllDeviceByDeleted();
+    Optional<Devices> findByDeviceCode(String deviceCode);
+    Optional<Devices> findByDeviceCodeAndDeleted(String deviceCode, boolean deleted);
+
+    Optional<Devices> findByIdAndDeleted(Long deviceNo, boolean deleted);
+
 }
 

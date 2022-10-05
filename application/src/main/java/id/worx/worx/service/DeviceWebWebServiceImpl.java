@@ -1,8 +1,6 @@
 package id.worx.worx.service;
 
-import id.worx.worx.data.dto.DeviceDTO;
-import id.worx.worx.data.request.DeviceRequest;
-import id.worx.worx.data.request.DeviceSearchRequest;
+import id.worx.worx.model.request.devices.DeviceSearchRequest;
 import id.worx.worx.data.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Devices;
@@ -10,6 +8,8 @@ import id.worx.worx.enums.DeviceStatus;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
+import id.worx.worx.model.request.devices.UpdateDeviceRequest;
+import id.worx.worx.model.response.devices.DeviceResponse;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.DeviceSpecification;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DeviceServiceImpl implements DeviceService{
+public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     private final DeviceRepository deviceRepository;
     private final GroupRepository groupRepository;
@@ -49,14 +48,14 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public Devices updateDeviceLabel(Long id,DeviceRequest request) {
+    public Devices updateDeviceLabel(Long id,UpdateDeviceRequest request) {
         Devices devices=getById(id);
         devices.setLabel(request.getLabel());
         return deviceRepository.save(devices);
     }
 
     @Override
-    public Devices approveDevice(Long id,DeviceRequest request) {
+    public Devices approveDevice(Long id, UpdateDeviceRequest request) {
         Devices devices=getById(id);
         if(devices.getDeviceStatus().ordinal()==2)
             devices.setDeviceStatus(DeviceStatus.APPROVED);
@@ -64,7 +63,7 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public Devices updateDeviceGroup(Long id,DeviceRequest request) {
+    public Devices updateDeviceGroup(Long id,UpdateDeviceRequest request) {
         Devices devices=getById(id);
         deleteDeviceGroupByDeviceId(devices);
         if (request.getGroupIds()!=null&&request.getGroupIds().size()>0){
@@ -81,16 +80,16 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public DeviceDTO toDto(Devices devices) {
-        DeviceDTO deviceDTO= deviceMapper.toDto(devices);
+    public DeviceResponse toDto(Devices devices) {
+        DeviceResponse deviceResponse= deviceMapper.toResponse(devices);
         List<String> groupNames = devices.getDeviceGroups().stream().map(Group::getName).collect(Collectors.toList());
         if(groupNames!=null)
-            deviceDTO.setGroups(groupNames);
-        return deviceDTO;
+            deviceResponse.setGroups(groupNames);
+        return deviceResponse;
     }
 
     @Override
-    public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
+    public PagingResponseModel<DeviceResponse> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             Sort.by(getDirection(pageable),getSortBy(pageable)));
         Page<Devices> devices= deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),customPageable);

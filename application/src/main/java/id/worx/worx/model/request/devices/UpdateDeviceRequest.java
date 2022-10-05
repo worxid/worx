@@ -1,36 +1,41 @@
-package id.worx.worx.data.request;
+package id.worx.worx.model.request.devices;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DeviceSearchRequest implements Serializable {
-    private String label;
+public class UpdateDeviceRequest implements Serializable {
+
+    @JsonProperty("device_no")
+    private Long deviceNo;
     @JsonProperty("device_model")
+    @NotEmpty
     private String deviceModel;
+    @NotEmpty
     @JsonProperty("device_os_version")
     private String deviceOsVersion;
+    @NotEmpty
     @JsonProperty("device_app_version")
     private String deviceAppVersion;
+    @NotEmpty
     @JsonProperty("device_language")
     private String deviceLanguage;
-    @JsonProperty("device_code")
-    private String deviceCode;
-    private List<String> groups;
-    @JsonProperty("global_search")
-    private String globalSearch;
-    @JsonProperty("joined_time")
-    private Instant joinedTime;
+    @NotEmpty
+    private Integer port;
+    @NotEmpty
+    private String ip;
+    @NotEmpty
+    private String label;
+    @JsonProperty("group_ids")
+    private List<Long> groupIds;
 }

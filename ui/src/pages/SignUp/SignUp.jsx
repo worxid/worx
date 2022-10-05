@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // CONSTANTS
 import { countries } from 'constants/countryList'
 
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
-import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
@@ -20,11 +23,27 @@ import Typography from '@mui/material/Typography'
 import IconVisibility from '@mui/icons-material/Visibility'
 import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 
+// MUI LABS
+import LoadingButton from '@mui/lab/LoadingButton'
+
+// SERVICES
+import { postRegisterUser } from 'services/users'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
+// UTILITIES
+import { 
+  didSuccessfullyCallTheApi,
+  doesObjectContainDesiredValue, 
+} from 'utilities/validation'
+
 const SignUp = () => {
   const layoutClasses = useLayoutStyles()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const navigate = useNavigate()
 
   const initialFormObject = {
     email: '',
@@ -50,7 +69,7 @@ const SignUp = () => {
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
   const [ countryInputValue, setCountryInputValue ] = useState(countries[0].name)
-  const [ isActionButtonDisabled, setIsActionButtonDisabled ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(false)
 
   const handleFormObjectChange = (inputKey, inputNewValue) => {
     setFormObject(current => {
@@ -61,8 +80,64 @@ const SignUp = () => {
     })
   }
 
-  const handleFormButtonClick = (inputEvent) => {
+  const handleFormButtonClick = async (inputEvent) => {
     inputEvent.preventDefault()
+    setIsLoading(true)
+
+    // CHECK IF USER INPUTS ARE EMPTY
+    if (doesObjectContainDesiredValue(formObject, '') || 
+    doesObjectContainDesiredValue(formObject, null)) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Please fill all fields',
+      })
+    }
+    // USER INPUTS ARE NOT EMPTY
+    else {
+      const abortController = new AbortController()
+  
+      const resultRegisterUser = await postRegisterUser(
+        abortController.signal,
+        {
+          username: formObject?.fullName,
+          password: formObject?.password,
+          email: formObject?.email,
+          phoneNo: formObject?.phoneNumber,
+          country: formObject?.country?.name,
+          organization_name: formObject?.organizationName,
+        }
+      )
+
+      // REDIRECT USER IF THE ACCOUNT IS SUCCESSFULLY CREATED
+      if (didSuccessfullyCallTheApi(resultRegisterUser.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully creating the acccount',
+        })
+
+        navigate(`/authentication-finish?type=sign-up&email=${formObject.email}`)
+      }
+      // SHOW AN ERROR MESSAGE IF THE ACCOUNT IS NOT SUCCESSFULLY CREATED
+      else {
+        // PASSWORD VALIDATION
+        if (resultRegisterUser.status === 400) {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: resultRegisterUser?.data?.error?.status?.replaceAll('_', ' '),
+            message: resultRegisterUser?.data?.error?.message,
+          })
+        }
+      }
+
+      abortController.abort()
+    }
+
+    setIsLoading(false)
   }
 
   return (
@@ -225,16 +300,18 @@ const SignUp = () => {
       </FormControl>
 
       {/* SIGN UP BUTTON */}
-      <Button
+      <LoadingButton
         variant='contained'
         fullWidth
         className={layoutClasses.buttonAction}
-        disabled={isActionButtonDisabled}
+        disabled={doesObjectContainDesiredValue(formObject, '') || 
+        doesObjectContainDesiredValue(formObject, null)}
+        loading={isLoading}
         disableElevation
         type='submit'
       >
         Sign Up
-      </Button>
+      </LoadingButton>
 
       {/* AGREEMENT TEXT */}
       <Typography 

@@ -27,8 +27,8 @@ public class Users extends Audit implements UserDetails {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
+    @Column(name = "fullname", nullable = false)
+    private String fullname;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -78,5 +78,10 @@ public class Users extends Audit implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getUsername(){
+        return this.getUsername();
     }
 }

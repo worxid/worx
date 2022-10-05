@@ -1,6 +1,6 @@
 package id.worx.worx.service.specification;
 
-import id.worx.worx.data.request.DeviceSearchRequest;
+import id.worx.worx.model.request.devices.DeviceSearchRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.Group_;
 import id.worx.worx.entity.devices.Devices;

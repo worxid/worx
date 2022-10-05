@@ -61,19 +61,19 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Users> users = usersRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Users> users = usersRepository.findByEmail(email);
 
         if(users == null){
             throw new WorxException(WorxErrorCode.USERNAME_EXIST);
         }else{
-            log.info("User found in the database : {} ", username);
+            log.info("User found in the database : {} ", email);
         }
         Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
         users.get().getRoles().forEach(role -> {
             authotities.add(new SimpleGrantedAuthority(role.getName()) );
             });
-        return new User(users.get().getUsername(), users.get().getPassword(), authotities);
+        return new User(users.get().getEmail(), users.get().getPassword(), authotities);
     }
     @Transactional
     public UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
@@ -82,30 +82,35 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
+        String regexNumberOnly = "\\d+";
+
+        if(!userRequest.getPhoneNo().matches(regexNumberOnly)){
+            throw new WorxException(WorxErrorCode.INVALID_PHONE_NO);
+        }
         if (!matcher.matches()) {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
+
+        Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
+        if (getByEmail.isPresent()) {
+            throw new WorxException(WorxErrorCode.EMAIL_EXIST);
+        }
+
         try{
+
+            //phone no validation
+            String phone = formatPhone(userRequest.getPhoneNo(), "ID");
+
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String random = UUID.randomUUID().toString().replace("-", "");
 
-            Optional<Users> getByUsername = usersRepository.findByUsername(userRequest.getUsername());
-            if (getByUsername.isPresent()) {
-                throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-            }
-
-            Optional<Users> getByEmail = usersRepository.findByEmail(userRequest.getEmail());
-            if (getByEmail.isPresent()) {
-                throw new WorxException(WorxErrorCode.EMAIL_EXIST);
-            }
-
             Users users = new Users();
             users.setEmail(userRequest.getEmail());
-            users.setUsername(userRequest.getUsername());
-            users.setPhone(userRequest.getPhoneNo());
+            users.setFullname(userRequest.getFullname());
+            users.setPhone(phone);
             users.setStatus(UserStatus.INACTIVE);
             users.setOrganizationName(userRequest.getOrganizationName());
-            users.setCountry(userRequest.getCountry());
+            users.setCountry(userRequest.getCountry().toUpperCase());
             users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             users.setOrganizationCode(organizationCode());
             usersRepository.save(users);
@@ -120,9 +125,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
             String subject = "WORX - Email Confirmation";
-            String mailBody = EmailVerification.EmailVerify(url);
+            String mailBody = EmailVerification.EmailVerify(url,userRequest.getFullname());
 
-            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,false,true);
+            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,true,true);
 
 
         }catch (Exception e){
@@ -233,7 +238,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
             String subject = "WORX - Reset Password";
-            String mailBody = ResetPasswordMail.ResetPasswordTemplate(url);
+            String mailBody = ResetPasswordMail.ResetPasswordTemplate(url,checkEmail.get().getFullname());
 
             mailService.sendEmailTemplate(email,subject,mailBody,false,true);
 
@@ -255,7 +260,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndEmailAndStatusAndType(changePasswordToken.getToken(), changePasswordToken.getEmail(), "ACTIVE","RESETPWD");
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(changePasswordToken.getToken(),EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
 
         if(!checkData.isPresent()){
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
@@ -263,7 +268,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
 
-            Optional<Users> users = usersRepository.findByEmail(changePasswordToken.getEmail());
+            Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
             Users updateUsers = users.get();
 
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -321,5 +326,18 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public String defaultUrl(HttpServletRequest httpServletRequest){
 
         return httpServletRequest.getRequestURL().toString();
+    }
+
+    public String formatPhone(String phone, String country){
+
+        String resultPhone = "";
+
+        if(country.equals("ID")){
+            String get2FirstCharacter = phone.substring(0,2);
+            if(get2FirstCharacter.equals("08")){
+                resultPhone = "62"+phone.substring(1);
+            }
+        }
+        return resultPhone;
     }
 }
