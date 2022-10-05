@@ -21,7 +21,10 @@ import Typography from '@mui/material/Typography'
 import IconCircle from '@mui/icons-material/Circle'
 
 // SERVICES
-import { getGroupList } from 'services/group'
+import {
+  deleteGroup, 
+  getGroupList, 
+} from 'services/group'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
@@ -104,7 +107,7 @@ const SettingsGroup = () => {
   const [ selectionModel, setSelectionModel ] = useState([])
 
   // DELETE DIALOG
-  const [ dialogDeleteGroupName, setDialogDeleteGroupName ] = useState({})
+  const [ dialogDeleteObject, setDialogDeleteObject ] = useState({})
 
   // DIALOG TYPE
   const [ dialogType, setDialogType ] = useState('')
@@ -134,6 +137,29 @@ const SettingsGroup = () => {
     }
 
     setMustReloadDataGrid(false)
+  }
+
+  const handleDialogConfirmationActionButtonClick = async (inputType) => {
+    setDialogDeleteObject({})
+
+    // CONTINUE BUTTON IS CLICKED
+    if (inputType === 'continue') {
+      const abortController = new AbortController()
+
+      const resultDeleteGroup = await deleteGroup(abortController.signal, dialogDeleteObject.id)
+      abortController.abort()
+
+      if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
+        setMustReloadDataGrid(true)
+        
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully delete the selected group'
+        })
+      }
+    }
   }
 
   useEffect(() => {
@@ -185,7 +211,7 @@ const SettingsGroup = () => {
             handleEditButtonClick={handleEditButtonClick}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => setDialogDeleteGroupName({id: selectionModel})}
+            handleDeleteButtonClick={() => setDialogDeleteObject({ id: selectionModel[0] })}
           />
 
           <DataGridTable
@@ -227,20 +253,12 @@ const SettingsGroup = () => {
       <DialogConfirmation
         title='Delete Group'
         caption='Are you sure you want to delete this group?'
-        dialogConfirmationObject={dialogDeleteGroupName}
-        setDialogConfirmationObject={setDialogDeleteGroupName}
+        dialogConfirmationObject={dialogDeleteObject}
+        setDialogConfirmationObject={setDialogDeleteObject}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => {
-          setDialogDeleteGroupName({})
-          setSnackbarObject({
-            open: true,
-            severity:'success',
-            title:'',
-            message:'Group deleted successfully'
-          })
-        }}
-        onCancelButtonClick={() => setDialogDeleteGroupName({})}
+        onContinueButtonClick={() => handleDialogConfirmationActionButtonClick('continue')}
+        onCancelButtonClick={() => handleDialogConfirmationActionButtonClick('cancel')}
       />
     </>
   )

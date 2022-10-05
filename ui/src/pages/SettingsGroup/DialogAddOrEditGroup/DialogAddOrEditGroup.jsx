@@ -86,6 +86,7 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const handleActionButtonClick = async (inputType) => {
+    // SAVE BUTTON
     if (inputType === 'save') {
       const abortController = new AbortController()
 
@@ -113,6 +114,8 @@ const DialogAddOrEditGroup = (props) => {
         )
       }
 
+      abortController.abort()
+
       // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
       if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
         handleClose()
@@ -129,9 +132,9 @@ const DialogAddOrEditGroup = (props) => {
           message: message,
         })
       }
-
-      abortController.abort()
     }
+    // CANCEL BUTTON IS CLICKED
+    else if (inputType === 'cancel') handleClose()
   }
   
   // CLOSE DIALOG ADD OR EDIT GROUP
