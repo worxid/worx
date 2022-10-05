@@ -1,6 +1,6 @@
-package id.worx.worx.data.response;
+package id.worx.worx.common.model.response;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
+import id.worx.worx.common.model.dto.FormTemplateDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

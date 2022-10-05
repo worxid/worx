@@ -1,12 +1,13 @@
-package id.worx.worx.data.response;
+package id.worx.worx.common.model.response;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder.Default;
 import lombok.experimental.SuperBuilder;
 
 @Setter
@@ -14,11 +15,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BaseResponse implements Serializable {
+public class BaseListResponse<K extends Serializable> implements Serializable {
 
-    private static final long serialVersionUID = -7613351314636172501L;
+    private static final long serialVersionUID = -1928366718839540450L;
 
     @Default
     private Boolean success = true;
+    private List<K> list;
 
 }

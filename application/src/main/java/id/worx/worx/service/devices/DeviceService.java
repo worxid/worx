@@ -3,7 +3,7 @@ package id.worx.worx.service.devices;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
 import id.worx.worx.model.dto.DeviceDTO;
-import id.worx.worx.model.request.devices.UpdateDeviceRequest;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 
 public interface DeviceService {
 

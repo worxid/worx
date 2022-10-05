@@ -1,4 +1,4 @@
-package id.worx.worx.web.model;
+package id.worx.worx.web.model.request;
 
 import java.io.Serializable;
 import java.time.Instant;

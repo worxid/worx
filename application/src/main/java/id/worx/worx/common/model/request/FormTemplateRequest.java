@@ -1,4 +1,4 @@
-package id.worx.worx.data.request;
+package id.worx.worx.common.model.request;
 
 import java.io.Serializable;
 import java.util.List;

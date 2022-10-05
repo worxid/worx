@@ -1,12 +1,12 @@
 package id.worx.worx.web.controller;
 
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
+import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.model.dto.DeviceDTO;
-import id.worx.worx.model.request.devices.DeviceSearchRequest;
-import id.worx.worx.data.response.BaseListResponse;
-import id.worx.worx.data.response.BaseValueResponse;
-import id.worx.worx.data.response.PagingResponseModel;
-import id.worx.worx.model.request.devices.UpdateDeviceRequest;
-import id.worx.worx.service.DeviceWebService;
+import id.worx.worx.service.devices.DeviceWebService;
+import id.worx.worx.web.model.request.DeviceSearchRequest;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

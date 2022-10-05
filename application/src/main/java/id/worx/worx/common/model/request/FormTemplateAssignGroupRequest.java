@@ -1,9 +1,7 @@
-package id.worx.worx.data.request;
+package id.worx.worx.common.model.request;
 
 import java.io.Serializable;
 import java.util.List;
-
-import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -17,11 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FormShareRequest implements Serializable {
+public class FormTemplateAssignGroupRequest implements Serializable {
 
-    private static final long serialVersionUID = 4085332954576289385L;
+    private static final long serialVersionUID = 6590908496158592036L;
 
-    @NotEmpty
-    private List<String> recipients;
+    private List<Long> assignedGroups;
 
 }

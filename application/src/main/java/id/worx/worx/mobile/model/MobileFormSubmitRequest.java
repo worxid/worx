@@ -2,7 +2,7 @@ package id.worx.worx.mobile.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.common.model.request.FormSubmitRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

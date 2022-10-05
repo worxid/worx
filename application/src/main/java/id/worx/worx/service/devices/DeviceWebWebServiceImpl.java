@@ -1,4 +1,4 @@
-package id.worx.worx.service;
+package id.worx.worx.service.devices;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import id.worx.worx.data.response.PagingResponseModel;
+import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.enums.DeviceStatus;
@@ -18,11 +18,11 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
 import id.worx.worx.model.dto.DeviceDTO;
-import id.worx.worx.model.request.devices.DeviceSearchRequest;
-import id.worx.worx.model.request.devices.UpdateDeviceRequest;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.DeviceSpecification;
+import id.worx.worx.web.model.request.DeviceSearchRequest;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

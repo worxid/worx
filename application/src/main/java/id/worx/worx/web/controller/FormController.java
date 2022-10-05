@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.request.FormSubmitRequest;
-import id.worx.worx.data.response.BaseListResponse;
-import id.worx.worx.data.response.BaseValueResponse;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.request.FormSubmitRequest;
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
-import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 import id.worx.worx.web.pageable.SimplePage;
 import lombok.RequiredArgsConstructor;
 

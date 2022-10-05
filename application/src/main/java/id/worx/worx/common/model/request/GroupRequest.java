@@ -1,11 +1,11 @@
-package id.worx.worx.data.request;
+package id.worx.worx.common.model.request;
 
 import java.io.Serializable;
-import java.util.List;
+
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import id.worx.worx.forms.service.field.Field;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FormRequest implements Serializable {
+public class GroupRequest implements Serializable {
 
-    private static final long serialVersionUID = 5126428518517212539L;
+    private static final long serialVersionUID = 6172123880029773313L;
 
-    private List<Field> fields;
+    @NotBlank
+    private String name;
+    @NotBlank
+    private String color;
 
 }

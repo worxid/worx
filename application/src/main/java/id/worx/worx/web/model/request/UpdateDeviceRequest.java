@@ -1,4 +1,4 @@
-package id.worx.worx.model.request.devices;
+package id.worx.worx.web.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

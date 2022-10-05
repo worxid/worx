@@ -15,9 +15,9 @@ import id.worx.worx.mapper.DeviceMapper;
 import id.worx.worx.mapper.MobileDeviceMapper;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
 import id.worx.worx.model.dto.DeviceDTO;
-import id.worx.worx.model.request.devices.UpdateDeviceRequest;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

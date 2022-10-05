@@ -1,4 +1,4 @@
-package id.worx.worx.data.dto;
+package id.worx.worx.common.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

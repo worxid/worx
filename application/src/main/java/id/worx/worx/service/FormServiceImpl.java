@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.RespondentType;
@@ -28,7 +28,7 @@ import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
-import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service

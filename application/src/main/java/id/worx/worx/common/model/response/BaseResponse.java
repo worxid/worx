@@ -1,4 +1,4 @@
-package id.worx.worx.data.response;
+package id.worx.worx.common.model.response;
 
 import java.io.Serializable;
 
@@ -14,12 +14,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BaseValueResponse<K extends Serializable> implements Serializable {
+public class BaseResponse implements Serializable {
 
-    private static final long serialVersionUID = 6976850910196991924L;
+    private static final long serialVersionUID = -7613351314636172501L;
 
     @Default
     private Boolean success = true;
-    private K value;
 
 }

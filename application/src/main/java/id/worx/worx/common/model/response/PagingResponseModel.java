@@ -1,4 +1,4 @@
-package id.worx.worx.data.response;
+package id.worx.worx.common.model.response;
 
 import lombok.*;
 import org.springframework.data.domain.Page;

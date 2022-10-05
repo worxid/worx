@@ -1,10 +1,11 @@
 package id.worx.worx.service.specification;
 
-import id.worx.worx.model.request.devices.DeviceSearchRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.Group_;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.entity.devices.Devices_;
+import id.worx.worx.web.model.request.DeviceSearchRequest;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 

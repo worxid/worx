@@ -1,4 +1,4 @@
-package id.worx.worx.model.request.devices;
+package id.worx.worx.web.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceSearchRequest implements Serializable {
+
+    private static final long serialVersionUID = -412072042324853097L;
 
     private String label;
     @JsonProperty("device_code")

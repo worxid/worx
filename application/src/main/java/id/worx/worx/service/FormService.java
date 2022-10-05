@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
-import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 
 public interface FormService {
 
