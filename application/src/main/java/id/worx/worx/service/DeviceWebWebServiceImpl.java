@@ -1,6 +1,15 @@
 package id.worx.worx.service;
 
-import id.worx.worx.model.request.devices.DeviceSearchRequest;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import id.worx.worx.data.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Devices;
@@ -8,22 +17,14 @@ import id.worx.worx.enums.DeviceStatus;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
+import id.worx.worx.model.dto.DeviceDTO;
+import id.worx.worx.model.request.devices.DeviceSearchRequest;
 import id.worx.worx.model.request.devices.UpdateDeviceRequest;
-import id.worx.worx.model.response.devices.DeviceResponse;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.DeviceSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -79,8 +80,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     @Override
-    public DeviceResponse toDto(Devices devices) {
-        DeviceResponse deviceResponse= deviceMapper.toResponse(devices);
+    public DeviceDTO toDto(Devices devices) {
+        DeviceDTO deviceResponse= deviceMapper.toResponse(devices);
         List<String> groupNames = devices.getDeviceGroups().stream().map(Group::getName).collect(Collectors.toList());
         if(groupNames!=null)
             deviceResponse.setGroups(groupNames);
@@ -88,7 +89,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     @Override
-    public PagingResponseModel<DeviceResponse> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
+    public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             Sort.by(getDirection(pageable),getSortBy(pageable)));
         Page<Devices> devices= deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),customPageable);

@@ -16,7 +16,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeviceSearchRequest extends DeviceRequest implements Serializable {
+public class DeviceSearchRequest implements Serializable {
+
+    private String label;
+    @JsonProperty("device_code")
+    private String deviceCode;
+    @JsonProperty("device_model")
+    private String deviceModel;
+    @JsonProperty("device_language")
+    private String deviceLanguage;
+    @JsonProperty("device_os_version")
+    private String deviceOsVersion;
+    @JsonProperty("device_app_version")
+    private String deviceAppVersion;
     private List<String> groups;
     @JsonProperty("global_search")
     private String globalSearch;

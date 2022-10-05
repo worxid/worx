@@ -49,7 +49,7 @@ public class DeviceSpecification implements BaseSpecification<Devices>{
             spec= spec.and(deviceGroupSpec);
         }
         if(Objects.nonNull(searchRequest.getJoinedTime())){
-            spec= spec.and(lessThanOrEqualTo(Devices_.JOINED_TIME,searchRequest.getJoinedTime()));
+            spec= spec.and(lessThanOrEqualTo(Devices_.JOINED_DATE,searchRequest.getJoinedTime()));
         }
         if (Objects.nonNull(searchRequest.getGlobalSearch())){
             spec= spec.and(globalSearch(searchRequest.getGlobalSearch()));
