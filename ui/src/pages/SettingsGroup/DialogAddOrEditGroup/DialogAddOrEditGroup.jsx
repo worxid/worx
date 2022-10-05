@@ -30,15 +30,27 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
+// SERVICES
+import { postCreateGroup } from 'services/group'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
+
 const DialogAddOrEditGroup = (props) => {
+  const { 
+    dialogType, 
+    dataDialogEdit, 
+    setDataDialogEdit, 
+    setMustReloadDataGrid,
+  } = props
+
   const layoutClasses = useLayoutStyles()
   const classes = useStyles()
-  
-  const { dialogType, dataDialogEdit, setDataDialogEdit } = props
+
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
   const { setSnackbarObject } = useContext(AllPagesContext)
@@ -67,24 +79,40 @@ const DialogAddOrEditGroup = (props) => {
 
   const handleActionButtonClick = async (inputType) => {
     if (inputType === 'save') {
-      if(dialogType === 'Add New'){
+      if (dialogType === 'Add New') {
+        const abortController = new AbortController()
+
+        const resultCreateGroup = await postCreateGroup(
+          abortController.signal,
+          {
+            name: groupName,
+            color: groupColor,
+          },
+        )
+
+        if (didSuccessfullyCallTheApi(resultCreateGroup.status)) {
+          handleClose()
+          setMustReloadDataGrid(true)
+          
+          setSnackbarObject({
+            open: true,
+            severity: 'success',
+            title: '',
+            message: 'Successful in creating a new group'
+          })
+        }
+      }
+      else if (dialogType === 'Edit') {
         setSnackbarObject({
           open: true,
-          severity:'success',
-          title:'',
-          message:'Successful in creating a new group'
-        })
-      }else {
-        setSnackbarObject({
-          open: true,
-          severity:'success',
-          title:'',
-          message:'Success changing group name'
+          severity: 'success',
+          title: '',
+          message: 'Success changing group name'
         })
       }
-      handleClose()
     }
-    handleClose()
+
+    // handleClose()
   }
   
   const handleClose = () => {

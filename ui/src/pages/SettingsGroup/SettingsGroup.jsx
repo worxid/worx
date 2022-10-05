@@ -86,7 +86,7 @@ const SettingsGroup = () => {
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
-  const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ mustReloadDataGrid, setMustReloadDataGrid ] = useState(true)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
   const [ tableData, setTableData ] = useState([])
@@ -132,19 +132,21 @@ const SettingsGroup = () => {
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setTableData(resultGroupList.data.list)
     }
+
+    setMustReloadDataGrid(false)
   }
 
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
 
-    loadGroupListData(isMounted, abortController)
+    mustReloadDataGrid && loadGroupListData(isMounted, abortController)
 
     return () => {
       isMounted = false
       abortController.abort()
     }
-  }, [])
+  }, [mustReloadDataGrid])
 
   return (
     <>
@@ -167,7 +169,7 @@ const SettingsGroup = () => {
         height='100%'
       >
         {/* MAIN CONTENT */}
-        <LoadingPaper isLoading={isDataGridLoading}>
+        <LoadingPaper isLoading={mustReloadDataGrid}>
           <DataGridFilters
             // COLUMN
             columns={initialColumns}
@@ -218,6 +220,7 @@ const SettingsGroup = () => {
         dialogType={dialogType}
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit}
+        setMustReloadDataGrid={setMustReloadDataGrid}
       />
 
       {/* DIALOG DELETE GROUP NAME */}
