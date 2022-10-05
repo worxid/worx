@@ -98,7 +98,7 @@ const ResetPassword = () => {
       const resultForgotPasswordUser = await postResetPasswordUser(
         abortController.signal,
         {
-          token: searchParams?.code,
+          token: searchParams.get('code'),
           new_password: formObject.newPassword,
         },
       )
@@ -112,7 +112,7 @@ const ResetPassword = () => {
           message: 'Successfully changing your password',
         })
 
-        navigate('/sign-in')
+        navigate('/authentication-finish?type=reset-password')
       }
       // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
       else {
