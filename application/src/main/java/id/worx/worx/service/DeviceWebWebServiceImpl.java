@@ -43,8 +43,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     @Override
     public List<Devices> getAllDevices() {
-        List<Devices> devices=deviceRepository.getAllDeviceByDeleted();
-        return devices;
+        return deviceRepository.getAllDeviceByDeleted();
     }
 
     @Override
@@ -66,7 +65,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     public Devices updateDeviceGroup(Long id,UpdateDeviceRequest request) {
         Devices devices=getById(id);
         deleteDeviceGroupByDeviceId(devices);
-        if (request.getGroupIds()!=null&&request.getGroupIds().size()>0){
+        if (request.getGroupIds()!=null&&!request.getGroupIds().isEmpty()){
             addDeviceGroup(devices,request.getGroupIds());
         }
         return deviceRepository.save(devices);
@@ -93,7 +92,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             Sort.by(getDirection(pageable),getSortBy(pageable)));
         Page<Devices> devices= deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),customPageable);
-        return new PagingResponseModel<>(devices.map(device -> toDto(device)));
+        return new PagingResponseModel<>(devices.map(this::toDto));
     }
 
     public void deleteDeviceGroupByDeviceId(Devices devices){
@@ -104,7 +103,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     public void addDeviceGroup(Devices devices, List<Long> groupIds) {
         List<Group> groups = groupRepository.getAllByIds(groupIds);
-        if (groups != null && groups.size() > 0) {
+        if (groups != null && !groups.isEmpty()) {
             devices.setDeviceGroups(new HashSet<>());
             groups.forEach(group -> devices.getDeviceGroups().add(group));
             deviceRepository.save(devices);
@@ -112,7 +111,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     public String getSortBy(Pageable pageable){
-        String sortBy=pageable.getSort().stream().map(sort-> sort.getProperty()).collect(Collectors.toList()).get(0);
+        String sortBy=pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
         return sortBy.replaceFirst("_[a-z]",
             String.valueOf(
                 Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))
@@ -120,7 +119,6 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     public Sort.Direction getDirection(Pageable pageable){
-        Sort.Direction direction= pageable.getSort().stream().map(sort-> sort.getDirection()).collect(Collectors.toList()).get(0);
-        return direction;
+        return pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList()).get(0);
     }
 }

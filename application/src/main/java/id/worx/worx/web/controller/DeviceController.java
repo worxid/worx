@@ -8,7 +8,6 @@ import id.worx.worx.model.request.devices.UpdateDeviceRequest;
 import id.worx.worx.model.response.devices.DeviceResponse;
 import id.worx.worx.service.DeviceWebService;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
@@ -27,7 +26,7 @@ public class DeviceController implements SecuredRestController{
 
     @GetMapping
     public ResponseEntity<BaseListResponse<DeviceResponse>> list(){
-        List<DeviceResponse> deviceDTOS= deviceWebService.getAllDevices().stream().map(device-> deviceWebService.toDto(device)).collect(Collectors.toList());
+        List<DeviceResponse> deviceDTOS= deviceWebService.getAllDevices().stream().map(deviceWebService::toDto).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(BaseListResponse.<DeviceResponse>builder()
             .list(deviceDTOS)
             .build());
