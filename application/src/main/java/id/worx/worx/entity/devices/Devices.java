@@ -1,16 +1,23 @@
 package id.worx.worx.entity.devices;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 
 import id.worx.worx.entity.BaseEntity;
+import id.worx.worx.entity.Group;
 import id.worx.worx.enums.DeviceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,5 +54,13 @@ public class Devices extends BaseEntity {
     private String deviceLanguage;
     private DeviceStatus deviceStatus;
     private Instant joinedDate;
+
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "device_groups", joinColumns = @JoinColumn(name = "device_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
+    @Builder.Default
+    private Set<Group> deviceGroups = new HashSet<>();
 
 }

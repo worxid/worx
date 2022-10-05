@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .antMatchers("/logo.svg");
+            .antMatchers("/logo.svg");
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -73,7 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/groups/**"
                 , "/api/users/**"
                 ,"/api/form/**"
-                )
+            )
             .permitAll()
             .antMatchers("/mobile/**").permitAll()
             .anyRequest()

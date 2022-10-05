@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +36,6 @@ public class UpdateDeviceRequest implements Serializable {
     private String ip;
     @NotEmpty
     private String label;
+    @JsonProperty("group_ids")
+    private List<Long> groupIds;
 }

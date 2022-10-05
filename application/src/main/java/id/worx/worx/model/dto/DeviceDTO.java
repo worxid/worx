@@ -2,6 +2,7 @@ package id.worx.worx.model.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -39,5 +40,6 @@ public class DeviceDTO implements Serializable {
     private Integer port;
     @JsonProperty("joined_time")
     private Instant joinedDate;
+    private List<String> groups;
 
 }
