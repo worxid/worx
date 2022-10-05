@@ -31,7 +31,10 @@ import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
-import { postCreateGroup } from 'services/group'
+import { 
+  postCreateGroup, 
+  putEditGroup,
+} from 'services/group'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -56,7 +59,7 @@ const DialogAddOrEditGroup = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [ groupName, setGroupName ] = useState('')
-  const [ groupColor, setGroupColor ] = useState('#000')
+  const [ groupColor, setGroupColor ] = useState('#000000')
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -79,9 +82,10 @@ const DialogAddOrEditGroup = (props) => {
 
   const handleActionButtonClick = async (inputType) => {
     if (inputType === 'save') {
+      const abortController = new AbortController()
+      
+      // CREATE A NEW GROUP ITEM
       if (dialogType === 'Add New') {
-        const abortController = new AbortController()
-
         const resultCreateGroup = await postCreateGroup(
           abortController.signal,
           {
@@ -93,7 +97,7 @@ const DialogAddOrEditGroup = (props) => {
         if (didSuccessfullyCallTheApi(resultCreateGroup.status)) {
           handleClose()
           setMustReloadDataGrid(true)
-          
+
           setSnackbarObject({
             open: true,
             severity: 'success',
@@ -101,15 +105,33 @@ const DialogAddOrEditGroup = (props) => {
             message: 'Successful in creating a new group'
           })
         }
+
       }
+      // EDIT AN EXISTING GROUP ITEM
       else if (dialogType === 'Edit') {
-        setSnackbarObject({
-          open: true,
-          severity: 'success',
-          title: '',
-          message: 'Success changing group name'
-        })
+        const resultEditGroup = await putEditGroup(
+          abortController.signal,
+          dataDialogEdit.id,
+          {
+            name: groupName,
+            color: groupColor,
+          },
+        )
+
+        if (didSuccessfullyCallTheApi(resultEditGroup.status)) {
+          handleClose()
+          setMustReloadDataGrid(true)
+
+          setSnackbarObject({
+            open: true,
+            severity: 'success',
+            title: '',
+            message: 'Success changing group properties'
+          })
+        }
       }
+
+      abortController.abort()
     }
 
     // handleClose()
@@ -124,8 +146,10 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   useEffect(() => {
-    setGroupName(dataDialogEdit?.groupName ?? '')
-    setGroupColor(dataDialogEdit?.groupColor ?? '#000')
+    if (dialogType === 'Edit' && dataDialogEdit) {
+      setGroupName(dataDialogEdit?.name ?? '')
+      setGroupColor(dataDialogEdit?.color ?? '#000000')
+    }
   }, [dataDialogEdit])
 
   return (
