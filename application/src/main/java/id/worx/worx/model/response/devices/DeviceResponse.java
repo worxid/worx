@@ -29,6 +29,4 @@ public class DeviceResponse implements Serializable {
     private String deviceCode;
     private DeviceStatus deviceStatus;
     private LocalDateTime joinedTime;
-    private String longitude;
-    private String latitude;
 }

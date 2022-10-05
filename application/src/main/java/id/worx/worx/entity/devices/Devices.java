@@ -24,7 +24,6 @@ public class Devices extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
     private String ip;
-    private String deviceName;
     private Integer port;
     private String label;
     private String deviceModel;
@@ -32,10 +31,7 @@ public class Devices extends BaseEntity {
     private String deviceAppVersion;
     private String deviceLanguage;
     private String deviceCode;
-    @Enumerated(EnumType.ORDINAL)
     private DeviceStatus deviceStatus;
     private LocalDateTime joinedTime;
-    private String longitude;
-    private String latitude;
 
 }
