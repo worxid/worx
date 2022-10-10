@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import id.worx.worx.entity.devices.Device;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -50,8 +51,19 @@ public class Group extends BaseEntity {
     @Default
     private Set<FormTemplate> templates = new HashSet<>();
 
+    @ManyToMany(mappedBy = "assignedGroups", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @Default
+    private Set<Device> devices = new HashSet<>();
+
     public int getFormCount() {
         return templates.size();
+    }
+
+    public int getDeviceCount() {
+        return devices.size();
     }
 
 }

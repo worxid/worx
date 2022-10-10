@@ -5,6 +5,7 @@ import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.PagingResponseModel;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.service.devices.DeviceWebService;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
@@ -62,8 +63,10 @@ public class DeviceController implements SecuredRestController {
     @PutMapping("/{id}/group")
     public ResponseEntity<BaseValueResponse<DeviceDTO>> updateGroup(@PathVariable("id") Long id,
             @RequestBody UpdateDeviceRequest request) {
+        Device device = deviceWebService.updateGroup(id, request.getGroupIds());
+        DeviceDTO dto = deviceWebService.toDto(device);
         return ResponseEntity.ok().body(BaseValueResponse.<DeviceDTO>builder()
-                .value(deviceWebService.toDto(deviceWebService.updateDeviceGroup(id, request)))
+                .value(dto)
                 .build());
     }
 

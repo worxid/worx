@@ -2,7 +2,10 @@ package id.worx.worx.service.devices;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,14 +73,23 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
         return deviceRepository.save(device);
     }
 
+    @Transactional
     @Override
-    public Device updateDeviceGroup(Long id, UpdateDeviceRequest request) {
-        Device devices = getById(id);
-        deleteDeviceGroupByDeviceId(devices);
-        if (request.getGroupIds() != null && !request.getGroupIds().isEmpty()) {
-            addDeviceGroup(devices, request.getGroupIds());
-        }
-        return deviceRepository.save(devices);
+    public Device updateGroup(Long id, List<Long> groupIds) {
+        Device device = this.findByIdorElseThrowNotFound(id);
+        List<Group> groups = groupRepository.findAllById(groupIds);
+        device.setAssignedGroups(new HashSet<>());
+        groups = groups.stream()
+                .map(group -> {
+                    device.getAssignedGroups().add(group);
+                    group.getDevices().add(device);
+                    return group;
+                })
+                .collect(Collectors.toList());
+
+        groupRepository.saveAll(groups);
+        deviceRepository.save(device);
+        return device;
     }
 
     @Override
@@ -106,21 +118,6 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
         return new PagingResponseModel<>(devices.map(this::toDto));
     }
 
-    public void deleteDeviceGroupByDeviceId(Device devices) {
-        List<Group> groups = devices.getAssignedGroups().stream().collect(Collectors.toList());
-        devices.getAssignedGroups().removeAll(groups);
-        deviceRepository.save(devices);
-    }
-
-    public void addDeviceGroup(Device devices, List<Long> groupIds) {
-        List<Group> groups = groupRepository.getAllByIds(groupIds);
-        if (groups != null && !groups.isEmpty()) {
-            devices.setAssignedGroups(new HashSet<>());
-            groups.forEach(group -> devices.getAssignedGroups().add(group));
-            deviceRepository.save(devices);
-        }
-    }
-
     public String getSortBy(Pageable pageable) {
         String sortBy = pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
         return sortBy.replaceFirst("_[a-z]",
@@ -131,4 +128,15 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     public Sort.Direction getDirection(Pageable pageable) {
         return pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList()).get(0);
     }
+
+    private Device findByIdorElseThrowNotFound(Long id) {
+        Optional<Device> device = deviceRepository.findById(id);
+
+        if (device.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        return device.get();
+    }
+
 }

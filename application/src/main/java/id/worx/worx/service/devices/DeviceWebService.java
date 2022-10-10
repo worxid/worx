@@ -21,7 +21,7 @@ public interface DeviceWebService {
 
     Device approveDevice(Long id, ApproveRequest request);
 
-    Device updateDeviceGroup(Long id, UpdateDeviceRequest request);
+    Device updateGroup(Long id, List<Long> groupIds);
 
     void deleteDevice(Long id);
 
