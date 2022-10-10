@@ -82,6 +82,6 @@ public class Users extends Audit implements UserDetails {
 
     @Override
     public String getUsername(){
-        return this.getUsername();
+        return this.getEmail();
     }
 }

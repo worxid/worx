@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.enums.DeviceStatus;
 import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Devices;
@@ -36,10 +37,9 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     private final DeviceMapper deviceMapper;
     private final DeviceSpecification deviceSpecification;
 
-
     @Override
     public Devices getById(Long id) {
-        return deviceRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        return deviceRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     @Override
@@ -48,56 +48,66 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     @Override
-    public Devices updateDeviceLabel(Long id,UpdateDeviceRequest request) {
-        Devices devices=getById(id);
+    public Devices updateDeviceLabel(Long id, UpdateDeviceRequest request) {
+        Devices devices = getById(id);
         devices.setLabel(request.getLabel());
         return deviceRepository.save(devices);
     }
 
     @Override
-    public Devices approveDevice(Long id, UpdateDeviceRequest request) {
-        Devices devices=getById(id);
-        if(devices.getDeviceStatus().ordinal()==2)
-            devices.setDeviceStatus(DeviceStatus.APPROVED);
-        return deviceRepository.save(devices);
+    public Devices approveDevice(Long id, ApproveRequest request) {
+        Devices device = getById(id);
+        DeviceStatus status = device.getDeviceStatus();
+
+        if (status.equals(DeviceStatus.PENDING)) {
+            if (request.getIsApproved().equals(Boolean.TRUE)) {
+                device.setDeviceStatus(DeviceStatus.APPROVED);
+            } else {
+                device.setDeviceStatus(DeviceStatus.DENIED);
+            }
+        }
+
+        return deviceRepository.save(device);
     }
 
     @Override
-    public Devices updateDeviceGroup(Long id,UpdateDeviceRequest request) {
-        Devices devices=getById(id);
+    public Devices updateDeviceGroup(Long id, UpdateDeviceRequest request) {
+        Devices devices = getById(id);
         deleteDeviceGroupByDeviceId(devices);
-        if (request.getGroupIds()!=null&&!request.getGroupIds().isEmpty()){
-            addDeviceGroup(devices,request.getGroupIds());
+        if (request.getGroupIds() != null && !request.getGroupIds().isEmpty()) {
+            addDeviceGroup(devices, request.getGroupIds());
         }
         return deviceRepository.save(devices);
     }
 
     @Override
     public void deleteDevice(Long id) {
-        Devices devices= getById(id);
+        Devices devices = getById(id);
         devices.setDeleted(true);
         deviceRepository.save(devices);
     }
 
     @Override
     public DeviceDTO toDto(Devices devices) {
-        DeviceDTO deviceResponse= deviceMapper.toResponse(devices);
+        DeviceDTO deviceResponse = deviceMapper.toResponse(devices);
         List<String> groupNames = devices.getDeviceGroups().stream().map(Group::getName).collect(Collectors.toList());
-        if(groupNames!=null)
+        if (groupNames != null)
             deviceResponse.setGroups(groupNames);
         return deviceResponse;
     }
 
     @Override
-    public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
+    public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest,
+            Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            Sort.by(getDirection(pageable),getSortBy(pageable)));
-        Page<Devices> devices= deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),customPageable);
+                Sort.by(getDirection(pageable), getSortBy(pageable)));
+        Page<Devices> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),
+                customPageable);
         return new PagingResponseModel<>(devices.map(this::toDto));
     }
 
-    public void deleteDeviceGroupByDeviceId(Devices devices){
-        List<Group> groups= devices.getDeviceGroups().stream().collect(Collectors.toList());
+    public void deleteDeviceGroupByDeviceId(Devices devices) {
+        List<Group> groups = devices.getDeviceGroups().stream().collect(Collectors.toList());
         devices.getDeviceGroups().removeAll(groups);
         deviceRepository.save(devices);
     }
@@ -111,15 +121,14 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
         }
     }
 
-    public String getSortBy(Pageable pageable){
-        String sortBy=pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
+    public String getSortBy(Pageable pageable) {
+        String sortBy = pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
         return sortBy.replaceFirst("_[a-z]",
-            String.valueOf(
-                Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))
-            ));
+                String.valueOf(
+                        Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))));
     }
 
-    public Sort.Direction getDirection(Pageable pageable){
+    public Sort.Direction getDirection(Pageable pageable) {
         return pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList()).get(0);
     }
 }

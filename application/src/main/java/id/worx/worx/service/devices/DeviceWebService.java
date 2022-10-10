@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.devices.Devices;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
@@ -18,7 +19,7 @@ public interface DeviceWebService {
 
     Devices updateDeviceLabel(Long id, UpdateDeviceRequest request);
 
-    Devices approveDevice(Long id, UpdateDeviceRequest request);
+    Devices approveDevice(Long id, ApproveRequest request);
 
     Devices updateDeviceGroup(Long id, UpdateDeviceRequest request);
 

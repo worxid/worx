@@ -1,6 +1,7 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.PagingResponseModel;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("devices")
@@ -65,8 +68,9 @@ public class DeviceController implements SecuredRestController {
     }
 
     @PutMapping("/{id}/approve")
-    public ResponseEntity<BaseValueResponse<DeviceDTO>> approveDevice(@PathVariable("id") Long id,
-            @RequestBody UpdateDeviceRequest request) {
+    public ResponseEntity<BaseValueResponse<DeviceDTO>> approveDevice(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid ApproveRequest request) {
         return ResponseEntity.ok().body(BaseValueResponse.<DeviceDTO>builder()
                 .value(deviceWebService.toDto(deviceWebService.approveDevice(id, request)))
                 .build());
