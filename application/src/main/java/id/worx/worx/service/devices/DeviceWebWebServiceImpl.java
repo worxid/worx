@@ -94,9 +94,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     @Override
     public void deleteDevice(Long id) {
-        Device devices = getById(id);
-        devices.setDeleted(true);
-        deviceRepository.save(devices);
+        Device device = this.findByIdorElseThrowNotFound(id);
+        deviceRepository.delete(device);
     }
 
     @Override
