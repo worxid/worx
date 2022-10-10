@@ -12,8 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.request.FormTemplateRequest;
+import id.worx.worx.common.model.dto.FormTemplateDTO;
+import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxErrorCode;
@@ -23,7 +23,7 @@ import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
 import id.worx.worx.util.UrlUtils;
-import id.worx.worx.web.model.FormTemplateSearchRequest;
+import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service

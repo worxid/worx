@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import id.worx.worx.entity.Audit_;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.Form_;
-import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 
 @Component
 public class FormSpecification implements BaseSpecification<Form> {

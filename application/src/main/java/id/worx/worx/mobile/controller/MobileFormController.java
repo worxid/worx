@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.response.BaseListResponse;
-import id.worx.worx.data.response.BaseValueResponse;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.mapper.FormMapper;

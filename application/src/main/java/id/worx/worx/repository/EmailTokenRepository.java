@@ -1,8 +1,8 @@
 package id.worx.worx.repository;
 
+import id.worx.worx.common.enums.EmailTokenStatus;
+import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.entity.users.EmailToken;
-import id.worx.worx.enums.EmailTokenStatus;
-import id.worx.worx.enums.EmailTokenType;
 
 import java.util.Optional;
 

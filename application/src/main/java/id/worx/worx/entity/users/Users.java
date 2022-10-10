@@ -1,6 +1,6 @@
 package id.worx.worx.entity.users;
 
-import id.worx.worx.enums.UserStatus;
+import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -82,6 +82,6 @@ public class Users extends Audit implements UserDetails {
 
     @Override
     public String getUsername(){
-        return this.getUsername();
+        return this.getEmail();
     }
 }

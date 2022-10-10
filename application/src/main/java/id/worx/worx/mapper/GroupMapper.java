@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import id.worx.worx.data.dto.GroupDTO;
-import id.worx.worx.data.request.GroupRequest;
+import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
 
 @Mapper(componentModel = "spring")

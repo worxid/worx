@@ -13,11 +13,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.forms.value.Value;
+import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.value.Value;
 import id.worx.worx.mobile.model.MobileFormDTO;
 
 @Mapper(componentModel = "spring")

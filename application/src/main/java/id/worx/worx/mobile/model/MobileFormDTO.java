@@ -2,7 +2,7 @@ package id.worx.worx.mobile.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import id.worx.worx.data.dto.FormDTO;
+import id.worx.worx.common.model.dto.FormDTO;
 import lombok.Getter;
 import lombok.Setter;
 

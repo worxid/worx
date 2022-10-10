@@ -1,8 +1,8 @@
 package id.worx.worx.entity.users;
 
+import id.worx.worx.common.enums.EmailTokenStatus;
+import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.entity.Audit;
-import id.worx.worx.enums.EmailTokenStatus;
-import id.worx.worx.enums.EmailTokenType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
