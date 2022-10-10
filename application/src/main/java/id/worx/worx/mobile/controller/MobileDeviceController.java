@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseValueResponse;
-import id.worx.worx.entity.devices.Devices;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
 import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
@@ -28,7 +28,7 @@ public class MobileDeviceController {
     @PostMapping("/register")
     public ResponseEntity<BaseValueResponse<DeviceDTO>> registerDevice(@RequestBody MobileRegisterRequest request) {
 
-        Devices devices = deviceService.registerDevice(request);
+        Device devices = deviceService.registerDevice(request);
         DeviceDTO dto = deviceService.toDTO(devices);
 
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()
@@ -50,7 +50,7 @@ public class MobileDeviceController {
             @RequestHeader(value = "deviceCode", required = true) String deviceCode,
             @RequestBody UpdateDeviceRequest deviceRequest) {
 
-        Devices devices = deviceService.updateInformation(deviceCode, deviceRequest);
+        Device devices = deviceService.updateInformation(deviceCode, deviceRequest);
         DeviceDTO dto = deviceService.toDTO(devices);
 
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()
@@ -66,7 +66,7 @@ public class MobileDeviceController {
     public ResponseEntity<BaseValueResponse<DeviceDTO>> getInfoDevice(
             @RequestHeader(value = "deviceCode") String deviceCode) {
 
-        Devices devices = deviceService.getByDeviceCode(deviceCode);
+        Device devices = deviceService.getByDeviceCode(deviceCode);
         DeviceDTO dto = deviceService.toDTO(devices);
 
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()

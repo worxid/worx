@@ -15,7 +15,7 @@ import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
-import id.worx.worx.entity.devices.Devices;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
@@ -38,25 +38,25 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     private final DeviceSpecification deviceSpecification;
 
     @Override
-    public Devices getById(Long id) {
+    public Device getById(Long id) {
         return deviceRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     @Override
-    public List<Devices> getAllDevices() {
+    public List<Device> getAllDevices() {
         return deviceRepository.getAllDeviceByDeleted();
     }
 
     @Override
-    public Devices updateDeviceLabel(Long id, UpdateDeviceRequest request) {
-        Devices devices = getById(id);
+    public Device updateDeviceLabel(Long id, UpdateDeviceRequest request) {
+        Device devices = getById(id);
         devices.setLabel(request.getLabel());
         return deviceRepository.save(devices);
     }
 
     @Override
-    public Devices approveDevice(Long id, ApproveRequest request) {
-        Devices device = getById(id);
+    public Device approveDevice(Long id, ApproveRequest request) {
+        Device device = getById(id);
         DeviceStatus status = device.getDeviceStatus();
 
         if (status.equals(DeviceStatus.PENDING)) {
@@ -71,8 +71,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     }
 
     @Override
-    public Devices updateDeviceGroup(Long id, UpdateDeviceRequest request) {
-        Devices devices = getById(id);
+    public Device updateDeviceGroup(Long id, UpdateDeviceRequest request) {
+        Device devices = getById(id);
         deleteDeviceGroupByDeviceId(devices);
         if (request.getGroupIds() != null && !request.getGroupIds().isEmpty()) {
             addDeviceGroup(devices, request.getGroupIds());
@@ -82,15 +82,15 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     @Override
     public void deleteDevice(Long id) {
-        Devices devices = getById(id);
+        Device devices = getById(id);
         devices.setDeleted(true);
         deviceRepository.save(devices);
     }
 
     @Override
-    public DeviceDTO toDto(Devices devices) {
+    public DeviceDTO toDto(Device devices) {
         DeviceDTO deviceResponse = deviceMapper.toResponse(devices);
-        List<String> groupNames = devices.getDeviceGroups().stream().map(Group::getName).collect(Collectors.toList());
+        List<String> groupNames = devices.getAssignedGroups().stream().map(Group::getName).collect(Collectors.toList());
         if (groupNames != null)
             deviceResponse.setGroups(groupNames);
         return deviceResponse;
@@ -101,22 +101,22 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
             Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by(getDirection(pageable), getSortBy(pageable)));
-        Page<Devices> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),
+        Page<Device> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),
                 customPageable);
         return new PagingResponseModel<>(devices.map(this::toDto));
     }
 
-    public void deleteDeviceGroupByDeviceId(Devices devices) {
-        List<Group> groups = devices.getDeviceGroups().stream().collect(Collectors.toList());
-        devices.getDeviceGroups().removeAll(groups);
+    public void deleteDeviceGroupByDeviceId(Device devices) {
+        List<Group> groups = devices.getAssignedGroups().stream().collect(Collectors.toList());
+        devices.getAssignedGroups().removeAll(groups);
         deviceRepository.save(devices);
     }
 
-    public void addDeviceGroup(Devices devices, List<Long> groupIds) {
+    public void addDeviceGroup(Device devices, List<Long> groupIds) {
         List<Group> groups = groupRepository.getAllByIds(groupIds);
         if (groups != null && !groups.isEmpty()) {
-            devices.setDeviceGroups(new HashSet<>());
-            groups.forEach(group -> devices.getDeviceGroups().add(group));
+            devices.setAssignedGroups(new HashSet<>());
+            groups.forEach(group -> devices.getAssignedGroups().add(group));
             deviceRepository.save(devices);
         }
     }

@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import id.worx.worx.common.enums.DeviceStatus;
@@ -27,13 +28,14 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "devices")
+@SQLDelete(sql = "UPDATE devices SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Devices extends BaseEntity {
+public class Device extends BaseEntity {
 
     private static final long serialVersionUID = 796548166854517012L;
 
@@ -61,6 +63,6 @@ public class Devices extends BaseEntity {
     })
     @JoinTable(name = "device_groups", joinColumns = @JoinColumn(name = "device_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     @Builder.Default
-    private Set<Group> deviceGroups = new HashSet<>();
+    private Set<Group> assignedGroups = new HashSet<>();
 
 }

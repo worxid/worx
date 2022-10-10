@@ -7,25 +7,25 @@ import org.springframework.data.domain.Pageable;
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.PagingResponseModel;
-import id.worx.worx.entity.devices.Devices;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 
 public interface DeviceWebService {
 
-    Devices getById(Long id);
+    Device getById(Long id);
 
-    List<Devices> getAllDevices();
+    List<Device> getAllDevices();
 
-    Devices updateDeviceLabel(Long id, UpdateDeviceRequest request);
+    Device updateDeviceLabel(Long id, UpdateDeviceRequest request);
 
-    Devices approveDevice(Long id, ApproveRequest request);
+    Device approveDevice(Long id, ApproveRequest request);
 
-    Devices updateDeviceGroup(Long id, UpdateDeviceRequest request);
+    Device updateDeviceGroup(Long id, UpdateDeviceRequest request);
 
     void deleteDevice(Long id);
 
-    DeviceDTO toDto(Devices devices);
+    DeviceDTO toDto(Device devices);
 
     PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
 }

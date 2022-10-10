@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import id.worx.worx.common.enums.DeviceStatus;
 import id.worx.worx.common.model.dto.DeviceDTO;
-import id.worx.worx.entity.devices.Devices;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
@@ -33,7 +33,7 @@ public class DeviceServiceImpl implements DeviceService {
     private final UsersRepository userRepository;
 
     @Override
-    public Devices registerDevice(MobileRegisterRequest request) {
+    public Device registerDevice(MobileRegisterRequest request) {
         log.trace("Start registering new device {}", request);
 
         String organizationCode = request.getOrganizationCode();
@@ -43,16 +43,16 @@ public class DeviceServiceImpl implements DeviceService {
         }
 
         String deviceCode = request.getDeviceCode();
-        Optional<Devices> checkDevice = deviceRepository.findByDeviceCode(deviceCode);
+        Optional<Device> checkDevice = deviceRepository.findByDeviceCode(deviceCode);
 
         if (checkDevice.isPresent()) {
-            Devices device = checkDevice.get();
+            Device device = checkDevice.get();
             if (device.getOrganizationCode().equals(organizationCode)) {
                 throw new WorxException(WorxErrorCode.DEVICE_ALREADY_REGISTERED);
             }
         }
 
-        Devices devices;
+        Device devices;
         devices = deviceMapper.toEntity(request);
         devices.setDeviceStatus(DeviceStatus.PENDING);
         devices.setJoinedDate(Instant.now());
@@ -62,11 +62,11 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public void softDeleteDeviceForMobile(String deviceCode) {
         log.trace("Trying to leave device code {}", deviceCode);
-        Optional<Devices> foundDevice = deviceRepository.findByDeviceCode(deviceCode);
+        Optional<Device> foundDevice = deviceRepository.findByDeviceCode(deviceCode);
         if (!foundDevice.isPresent()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
-        Devices getDevice = foundDevice.get();
+        Device getDevice = foundDevice.get();
 
         getDevice.setDeleted(true);
         deviceRepository.save((getDevice));
@@ -74,9 +74,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     @Transactional
-    public Devices updateInformation(String deviceCode, UpdateDeviceRequest deviceRequest) {
+    public Device updateInformation(String deviceCode, UpdateDeviceRequest deviceRequest) {
 
-        Optional<Devices> foundedDevice;
+        Optional<Device> foundedDevice;
 
         if (!deviceCode.isEmpty()) {
             foundedDevice = deviceRepository.findByDeviceCodeAndDeleted(deviceCode, false);
@@ -88,7 +88,7 @@ public class DeviceServiceImpl implements DeviceService {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
-        Devices device = foundedDevice.get();
+        Device device = foundedDevice.get();
         device.setDeviceModel(deviceRequest.getDeviceModel());
         device.setDeviceOsVersion(deviceRequest.getDeviceOsVersion());
         device.setDeviceAppVersion(deviceRequest.getDeviceAppVersion());
@@ -102,17 +102,17 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public Devices getByDeviceCode(String deviceCode) {
+    public Device getByDeviceCode(String deviceCode) {
         return this.findByDeviceCodeorElseThrowNotFound(deviceCode);
     }
 
     @Override
-    public DeviceDTO toDTO(Devices devices) {
+    public DeviceDTO toDTO(Device devices) {
         return mobileDeviceMapper.toDto(devices);
     }
 
-    private Devices findByDeviceCodeorElseThrowNotFound(String deviceCode) {
-        Optional<Devices> devices = deviceRepository.findByDeviceCode(deviceCode);
+    private Device findByDeviceCodeorElseThrowNotFound(String deviceCode) {
+        Optional<Device> devices = deviceRepository.findByDeviceCode(deviceCode);
 
         if (devices.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
