@@ -24,6 +24,7 @@ import id.worx.worx.common.model.dto.FormTemplateDTO;
 import id.worx.worx.common.model.request.FormShareRequest;
 import id.worx.worx.common.model.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.common.model.request.FormTemplateRequest;
+import id.worx.worx.common.model.request.MultipleDeleteRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
@@ -81,6 +82,13 @@ public class FormTemplateController implements SecuredRestController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
+        templateService.delete(request.getIds());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(BaseResponse.builder().build());
     }
 
     @GetMapping("{id}")
