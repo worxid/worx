@@ -1,6 +1,6 @@
 package id.worx.worx.service;
 
-import id.worx.worx.data.dto.EmailDTO;
+import id.worx.worx.common.model.dto.EmailDTO;
 
 public interface EmailService {
 

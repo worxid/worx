@@ -1,6 +1,6 @@
 package id.worx.worx.repository;
 
-import id.worx.worx.entity.devices.Devices;
+import id.worx.worx.entity.devices.Device;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DeviceRepository extends BaseRepository<Devices, Long> {
+public interface DeviceRepository extends BaseRepository<Device, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM devices " +
         "WHERE (:label is null OR(lower(label)like concat('%',lower(:label),'%'))) " +
         "AND (:deviceModel is null OR(lower(device_model)like concat('%',lower(:deviceModel),'%'))) " +
@@ -25,7 +25,7 @@ public interface DeviceRepository extends BaseRepository<Devices, Long> {
         "   OR (lower(device_app_version)like concat('%',lower(:globalSearch),'%')) " +
         "   OR (lower(device_code)like concat('%',lower(:globalSearch),'%')) "+
         ") ")
-    Page<Devices> search(String label,
+    Page<Device> search(String label,
                          String deviceModel,
                          String deviceOsVersion,
                          String deviceAppVersion,
@@ -34,11 +34,11 @@ public interface DeviceRepository extends BaseRepository<Devices, Long> {
                          Pageable pageable);
 
     @Query(nativeQuery = true, value = "SELECT * FROM devices WHERE deleted= FALSE")
-    List<Devices> getAllDeviceByDeleted();
-    Optional<Devices> findByDeviceCode(String deviceCode);
-    Optional<Devices> findByDeviceCodeAndDeleted(String deviceCode, boolean deleted);
+    List<Device> getAllDeviceByDeleted();
+    Optional<Device> findByDeviceCode(String deviceCode);
+    Optional<Device> findByDeviceCodeAndDeleted(String deviceCode, boolean deleted);
 
-    Optional<Devices> findByIdAndDeleted(Long deviceNo, boolean deleted);
+    Optional<Device> findByIdAndDeleted(Long deviceNo, boolean deleted);
 
 }
 

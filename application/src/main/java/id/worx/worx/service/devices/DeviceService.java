@@ -1,21 +1,19 @@
 package id.worx.worx.service.devices;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.entity.devices.Devices;
-import id.worx.worx.model.request.devices.DeviceRequest;
-import id.worx.worx.model.request.devices.UpdateDeviceRequest;
-import id.worx.worx.model.response.devices.DeviceResponse;
-import id.worx.worx.service.BaseService;
+import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.entity.devices.Device;
+import id.worx.worx.mobile.model.request.MobileRegisterRequest;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 
 public interface DeviceService {
 
-    DeviceResponse toDTO(Devices devices);
+    DeviceDTO toDTO(Device devices);
 
-    Devices registerDevice(DeviceRequest request);
+    Device registerDevice(MobileRegisterRequest request);
+
     void softDeleteDeviceForMobile(String deviceCode);
 
-    Devices updateInformation(String deviceCode, UpdateDeviceRequest deviceRequest);
+    Device updateInformation(String deviceCode, UpdateDeviceRequest deviceRequest);
 
-    Devices getByDeviceCode(String deviceCode);
+    Device getByDeviceCode(String deviceCode);
 }

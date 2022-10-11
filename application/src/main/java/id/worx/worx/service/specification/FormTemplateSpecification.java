@@ -19,7 +19,7 @@ import id.worx.worx.entity.FormTemplate_;
 import id.worx.worx.entity.Form_;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.Group_;
-import id.worx.worx.web.model.FormTemplateSearchRequest;
+import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 
 @Component
 public class FormTemplateSpecification implements BaseSpecification<FormTemplate> {

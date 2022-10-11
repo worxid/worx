@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.request.FormShareRequest;
-import id.worx.worx.data.request.FormTemplateAssignGroupRequest;
-import id.worx.worx.data.request.FormTemplateRequest;
-import id.worx.worx.data.response.BaseListResponse;
-import id.worx.worx.data.response.BaseResponse;
-import id.worx.worx.data.response.BaseValueResponse;
+import id.worx.worx.common.model.dto.FormTemplateDTO;
+import id.worx.worx.common.model.request.FormShareRequest;
+import id.worx.worx.common.model.request.FormTemplateAssignGroupRequest;
+import id.worx.worx.common.model.request.FormTemplateRequest;
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
+import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.service.FormTemplateService;
-import id.worx.worx.web.model.FormTemplateSearchRequest;
-import id.worx.worx.web.pageable.SimplePage;
+import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class FormTemplateController implements SecuredRestController {
         List<FormTemplateDTO> dtos = templates.stream()
                 .map(templateService::toDTO)
                 .collect(Collectors.toList());
-        Page<FormTemplateDTO> page = new SimplePage<>(dtos, templates.getPageable(), templates.getTotalElements());
+        Page<FormTemplateDTO> page = new BasePageResponse<>(dtos, templates.getPageable(), templates.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(page);
     }

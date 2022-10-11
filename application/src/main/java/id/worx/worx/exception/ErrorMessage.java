@@ -7,7 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import id.worx.worx.exception.detail.ErrorDetail;
+import id.worx.worx.common.exception.detail.ErrorDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
