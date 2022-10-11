@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 // MUIS
 import Link from '@mui/material/Link'
@@ -6,6 +6,9 @@ import Typography from '@mui/material/Typography'
 
 const AppBarText = () => {
   const location = useLocation()
+  const [ searchParams ] = useSearchParams()
+
+  const pageType = searchParams.get('type')
 
   if (
     location.pathname === '/sign-up' ||
@@ -29,7 +32,7 @@ const AppBarText = () => {
     location.pathname === '/sign-in' ||
     location.pathname.includes('/reset-password') ||
     (location.pathname === '/authentication-finish' && 
-    location.search === '?type=reset-password')
+    pageType === 'reset-password')
   ) return (
     <Typography 
       variant='body2'
@@ -47,9 +50,9 @@ const AppBarText = () => {
   )
   else if (
     (location.pathname === '/authentication-finish' && 
-    location.search === '?type=sign-up') ||
+    pageType === 'sign-up') ||
     (location.pathname === '/authentication-finish' && 
-    location.search === '?type=forgot-password')
+    pageType === 'forgot-password')
   ) return (
     <Typography 
       variant='body2'

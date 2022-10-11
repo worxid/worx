@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import id.worx.worx.data.dto.GroupDTO;
-import id.worx.worx.data.request.GroupRequest;
+import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxErrorCode;

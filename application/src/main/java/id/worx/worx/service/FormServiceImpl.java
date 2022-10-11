@@ -13,22 +13,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import id.worx.worx.data.dto.FormDTO;
-import id.worx.worx.data.request.FormSubmitRequest;
+import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.forms.value.Value;
+import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.RespondentType;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
-import id.worx.worx.exception.detail.ErrorDetail;
-import id.worx.worx.forms.service.field.Field;
-import id.worx.worx.forms.service.value.Value;
 import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
-import id.worx.worx.web.model.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -99,6 +99,7 @@ public class FormServiceImpl implements FormService {
         List<Field> fields = request.getFields();
         Map<String, Value> values = request.getValues();
 
+
         List<ErrorDetail> validations = validate(fields, values);
         if (!validations.isEmpty()) {
             throw new WorxException(WorxErrorCode.FORM_VALIDATION_ERROR, validations);
@@ -109,6 +110,7 @@ public class FormServiceImpl implements FormService {
         form.setSubmitDate(Instant.now());
         return form;
     }
+
 
     private List<ErrorDetail> validate(List<Field> fields, Map<String, Value> values) {
         List<ErrorDetail> details = new ArrayList<>();

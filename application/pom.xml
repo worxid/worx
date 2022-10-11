@@ -23,6 +23,9 @@
 		<com.aventrix.jnanoid.version>2.0.0</com.aventrix.jnanoid.version>
 		<hibernate-jpamodelgen.version>5.6.11.Final</hibernate-jpamodelgen.version>
 		<minio.version>8.4.5</minio.version>
+		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+		<sonar.organization>worxid</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -46,12 +49,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -184,6 +195,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>${sonar-maven-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>

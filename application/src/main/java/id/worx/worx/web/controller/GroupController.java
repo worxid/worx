@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.data.dto.GroupDTO;
-import id.worx.worx.data.request.GroupRequest;
-import id.worx.worx.data.response.BaseListResponse;
-import id.worx.worx.data.response.BaseResponse;
-import id.worx.worx.data.response.BaseValueResponse;
+import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.request.GroupRequest;
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.Group;
 import id.worx.worx.service.GroupService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("groups")
 @RequiredArgsConstructor
-public class GroupController {
+public class GroupController implements SecuredRestController {
 
     private final GroupService groupService;
 

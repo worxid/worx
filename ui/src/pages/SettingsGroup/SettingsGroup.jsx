@@ -9,9 +9,6 @@ import DialogAddOrEditGroup from './DialogAddOrEditGroup/DialogAddOrEditGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
-// CONSTANTS
-import { dummyTableData } from './settingsGroupConstants'
-
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -23,11 +20,19 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconCircle from '@mui/icons-material/Circle'
 
+// SERVICES
+import {
+  deleteGroup, 
+  getGroupList, 
+} from 'services/group'
+
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const SettingsGroup = () => {
   const initialColumns = [
     {
-      field: 'groupName',
+      field: 'name',
       headerName: 'Group Name',
       flex: 1,
       minWidth: 200,
@@ -35,11 +40,17 @@ const SettingsGroup = () => {
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
-          <Stack direction={'row'} alignItems='center'>
+          <Stack  
+            direction='row' 
+            alignItems='center'
+            spacing='8px'
+          >
+            {/* ICON */}
             <IconCircle 
-              sx={{ color: params.row.groupColor, width: 12 }} 
+              sx={{ color: params.row.color, width: 12 }} 
             />
-            &nbsp;
+            
+            {/* TEXT */}
             <Typography variant='inherit'>
               {params.value}
             </Typography>
@@ -47,20 +58,22 @@ const SettingsGroup = () => {
         ),
     },
     {
-      field: 'totalDevices',
+      field: 'device_count',
       headerName: 'Total Devices',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => params.value ?? 0,
     },
     {
-      field: 'totalForm',
+      field: 'form_count',
       headerName: 'Total Form',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => params.value ?? 0,
     }
   ]
 
@@ -76,10 +89,10 @@ const SettingsGroup = () => {
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
-  const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ mustReloadDataGrid, setMustReloadDataGrid ] = useState(true)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -94,7 +107,7 @@ const SettingsGroup = () => {
   const [ selectionModel, setSelectionModel ] = useState([])
 
   // DELETE DIALOG
-  const [ dialogDeleteGroupName, setDialogDeleteGroupName ] = useState({})
+  const [ dialogDeleteObject, setDialogDeleteObject ] = useState({})
 
   // DIALOG TYPE
   const [ dialogType, setDialogType ] = useState('')
@@ -104,17 +117,62 @@ const SettingsGroup = () => {
 
   // HANDLE ADD BUTTON CLICKED
   const handleAddButtonClick = () => {
-    setDialogType('Add New')
+    setDialogType('add')
     setIsDialogAddOrEditOpen(true)
   }
 
   // HANDLE EDIT BUTTON CLICKED
   const handleEditButtonClick = () => {
     const editData = tableData.filter(item => item.id === selectionModel[0])
-    setDialogType('Edit')
+    setDialogType('edit')
     setDataDialogEdit(...editData)
     setIsDialogAddOrEditOpen(true)
   }
+
+  const loadGroupListData = async (inputIsMounted, inputAbortController) => {
+    const resultGroupList = await getGroupList(inputAbortController.signal)
+
+    if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
+      setTableData(resultGroupList.data.list)
+    }
+
+    setMustReloadDataGrid(false)
+  }
+
+  const handleDialogConfirmationActionButtonClick = async (inputType) => {
+    setDialogDeleteObject({})
+
+    // CONTINUE BUTTON IS CLICKED
+    if (inputType === 'continue') {
+      const abortController = new AbortController()
+
+      const resultDeleteGroup = await deleteGroup(abortController.signal, dialogDeleteObject.id)
+      abortController.abort()
+
+      if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
+        setMustReloadDataGrid(true)
+        
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully delete the selected group'
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    mustReloadDataGrid && loadGroupListData(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [mustReloadDataGrid])
 
   return (
     <>
@@ -137,7 +195,7 @@ const SettingsGroup = () => {
         height='100%'
       >
         {/* MAIN CONTENT */}
-        <LoadingPaper isLoading={isDataGridLoading}>
+        <LoadingPaper isLoading={mustReloadDataGrid}>
           <DataGridFilters
             // COLUMN
             columns={initialColumns}
@@ -153,7 +211,7 @@ const SettingsGroup = () => {
             handleEditButtonClick={handleEditButtonClick}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => setDialogDeleteGroupName({id: selectionModel})}
+            handleDeleteButtonClick={() => setDialogDeleteObject({ id: selectionModel[0] })}
           />
 
           <DataGridTable
@@ -188,26 +246,19 @@ const SettingsGroup = () => {
         dialogType={dialogType}
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit}
+        setMustReloadDataGrid={setMustReloadDataGrid}
       />
 
       {/* DIALOG DELETE GROUP NAME */}
       <DialogConfirmation
         title='Delete Group'
         caption='Are you sure you want to delete this group?'
-        dialogConfirmationObject={dialogDeleteGroupName}
-        setDialogConfirmationObject={setDialogDeleteGroupName}
+        dialogConfirmationObject={dialogDeleteObject}
+        setDialogConfirmationObject={setDialogDeleteObject}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => {
-          setDialogDeleteGroupName({})
-          setSnackbarObject({
-            open: true,
-            severity:'success',
-            title:'',
-            message:'Group deleted successfully'
-          })
-        }}
-        onCancelButtonClick={() => setDialogDeleteGroupName({})}
+        onContinueButtonClick={() => handleDialogConfirmationActionButtonClick('continue')}
+        onCancelButtonClick={() => handleDialogConfirmationActionButtonClick('cancel')}
       />
     </>
   )

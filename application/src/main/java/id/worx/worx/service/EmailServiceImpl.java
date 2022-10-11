@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import id.worx.worx.common.model.dto.EmailDTO;
 import id.worx.worx.config.properties.WorxProperties;
-import id.worx.worx.data.dto.EmailDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

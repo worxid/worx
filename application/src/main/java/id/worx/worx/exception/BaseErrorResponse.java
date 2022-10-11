@@ -1,6 +1,6 @@
 package id.worx.worx.exception;
 
-import id.worx.worx.data.response.BaseResponse;
+import id.worx.worx.common.model.response.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

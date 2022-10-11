@@ -12,10 +12,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.request.FormTemplateRequest;
+import id.worx.worx.common.model.dto.FormTemplateDTO;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.forms.service.field.Field;
 import id.worx.worx.mobile.model.MobileFormTemplateDTO;
 
 @Mapper(componentModel = "spring", uses = { GroupMapper.class })

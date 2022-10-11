@@ -23,6 +23,31 @@ public enum WorxErrorCode {
      * {@code Object Storage error}
      */
     OBJECT_STORAGE_ERROR(12, "Something wrong with the object storage.", HttpStatus.INTERNAL_SERVER_ERROR);
+    
+    PATTERN_PASSWORD_VALIDATION(14,
+            "Character must 8 Character & Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]",
+            HttpStatus.BAD_REQUEST),
+
+    TOKEN_INVALID_ERROR(15, "Invalid Token", HttpStatus.BAD_REQUEST),
+    TOKEN_EMAIL_ERROR(16, "Invalid Validation Token & Email", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_FOUND(17, "Email Not Found", HttpStatus.NOT_FOUND),
+    PASSWORD_NOT_MATCH(18, "Old Password Doesnt Match", HttpStatus.BAD_REQUEST),
+    USERNAME_EXIST(19, "Username already exist", HttpStatus.NOT_FOUND),
+    EMAIL_EXIST(20, "Email already exist", HttpStatus.NOT_FOUND),
+    REQUEST_DATA(21, "Please check your request data", HttpStatus.BAD_REQUEST),
+    FAILED_SEND_EMAIL(22, "Failed send email", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Invalid organization code error}
+     */
+    ORGANIZATION_CODE_IS_INVALID(22, "Organization (code) is not exist.", HttpStatus.NOT_FOUND),
+
+    /**
+     * {@code Device is registered error}
+     */
+    DEVICE_ALREADY_REGISTERED(22, "Device is already registered to the Organization (code).", HttpStatus.BAD_REQUEST),
+    INVALID_PHONE_NO(23, "Phone Number must be Number Only", HttpStatus.BAD_REQUEST),
+    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
 
     private final int errorCode;
 

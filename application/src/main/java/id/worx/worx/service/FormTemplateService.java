@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import id.worx.worx.data.dto.FormTemplateDTO;
-import id.worx.worx.data.request.FormTemplateRequest;
+import id.worx.worx.common.model.dto.FormTemplateDTO;
+import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.web.model.FormTemplateSearchRequest;
+import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 
 public interface FormTemplateService {
 
