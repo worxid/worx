@@ -23,8 +23,7 @@ export const didSuccessfullyCallTheApi = (inputStatus) => {
 }
 
 /**
- * 
- * @param {string} date ex: 9-20-2022 15:00:00
+ * @param {string} date ex: 09-20-2022 15:00:00
  */
 export const isFormatDateSearchValid = (date) => {
   const pattern = /\d{1,2}\-\d{1,2}\-\d{4} \d{2}\:\d{2}\:\d{2}/g
