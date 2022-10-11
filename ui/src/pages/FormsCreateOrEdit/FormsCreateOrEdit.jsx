@@ -27,7 +27,7 @@ const FormsCreateOrEdit = () => {
   const { formTemplateId } = useParams()
 
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
   const {
     formObject, listFields, setFormObject,
     setListFields, isFormLoading, setIsFormLoading,
@@ -36,7 +36,7 @@ const FormsCreateOrEdit = () => {
 
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
-    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal)
+    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal, auth.accessToken)
 
     if(response?.data?.success && inputIsMounted) {
       const values = response.data.value
@@ -77,7 +77,8 @@ const FormsCreateOrEdit = () => {
         fields: listFieldsFiltered,
         submit_in_zone: false,
         default: false
-      }
+      },
+      auth.accessToken
     )
 
     // SUCCESS
