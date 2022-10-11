@@ -22,8 +22,8 @@ public enum WorxErrorCode {
     /**
      * {@code Object Storage error}
      */
-    OBJECT_STORAGE_ERROR(12, "Something wrong with the object storage.", HttpStatus.INTERNAL_SERVER_ERROR);
-    
+    OBJECT_STORAGE_ERROR(12, "Something wrong with the object storage.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     PATTERN_PASSWORD_VALIDATION(14,
             "Character must 8 Character & Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]",
             HttpStatus.BAD_REQUEST),
