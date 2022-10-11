@@ -29,6 +29,7 @@ import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
+import { convertDate } from 'utilities/date'
 
 const MainMenu = (props) => {
   const { rows, setGroupData } = props
@@ -63,6 +64,12 @@ const MainMenu = (props) => {
           return {
             title: mainMenuTitleList[index],
             value: rows[0][key] ? 'Yes' : 'No',
+            icon: mainMenuIconList[index],
+          }
+        } else if(key === 'modified_on' || key === 'created_on') {
+          return {
+            title: mainMenuTitleList[index],
+            value: convertDate(rows[0][key]),
             icon: mainMenuIconList[index],
           }
         } else {

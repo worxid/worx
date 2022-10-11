@@ -31,7 +31,10 @@ import { postCreateFormTemplate, postGetListFormTemplate } from 'services/formTe
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+
+// UTILITIES
 import { didSuccessfullyCallTheApi, isFormatDateSearchValid } from 'utilities/validation'
+import { convertDate } from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
@@ -63,7 +66,7 @@ const Forms = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
-      valueGetter: params => moment(new Date(params.value)).format('DD-MM-yyyy, hh:mm A')
+      valueGetter: params => convertDate(params.value)
     },
     {
       field: 'modified_on',
@@ -72,7 +75,7 @@ const Forms = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
-      valueGetter: params => moment(new Date(params.value)).format('DD-MM-yyyy, hh:mm A')
+      valueGetter: params => convertDate(params.value)
     },
     {
       field: 'assigned_groups',
@@ -211,6 +214,7 @@ const Forms = () => {
 
     if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setTableData(response.data.content)
+      setTotalRow(response.data.totalElements)
     }
 
     isDataGridLoading && setIsDataGridLoading(false)
@@ -235,7 +239,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters])
+  }, [filters, pageNumber, pageSize])
 
   return (
     <>
