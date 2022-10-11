@@ -16,7 +16,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
     rowHeight={48}
     headerHeight={48}
     pagination
-    rowsPerPageOptions={[ 5, 10, 15, 25, 50, 100, 250, 500, 1000 ]}
+    rowsPerPageOptions={[ 5, 10, 15, 25, 50, 100 ]}
     disableColumnMenu
     componentsProps={{
       ...componentsProps,
