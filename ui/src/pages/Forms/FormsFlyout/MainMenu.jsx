@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react'
 
+// COMPONENTS
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
+
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
-import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -146,17 +148,8 @@ const MainMenu = (props) => {
                 }
                 secondary={
                   item.title === 'Groups' 
-                    ? <Stack direction={'row'} alignItems='center'>
-                      <Typography variant='body2' className='colorTextPrimary'>
-                        {item.value.length ? item.value[0] : 'Default'}&nbsp;
-                      </Typography>
-                      {
-                        item.value.length > 1 && (
-                          <Avatar className={layoutClasses.avatar} variant='square'>
-                            +{item.value.length - 1}
-                          </Avatar>
-                        )
-                      }
+                    ? <Stack className='colorTextPrimary'>
+                      <CellGroups dataValue={item.value} limitShowGroup={false} />
                     </Stack>
                     : (<Typography variant='body2'>
                       {item.value}
