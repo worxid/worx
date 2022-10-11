@@ -44,27 +44,42 @@ const MainMenu = (props) => {
     IconDateRange,
     IconGroups,
     IconCheckCircle,
-    IconViewHeadline,
     IconTextSnippet,
+    IconViewHeadline,
+  ]
+
+  const mainMenuTitleList = [
+    'Form Title', 'Description', 'Created', 'Modified', 'Groups', 'Submissions', 'Default Form', 'Fields'
   ]
 
   let mainMenuList = []
   if (rows.length === 1) {
     mainMenuList = Object.keys(rows[0])
-      .filter(key => key !== 'id')
+      .filter(key => {
+        return key !== 'id' && key !== 'fields' && key !== 'submit_in_zone'
+      })
       .map((key, index) => {
-        return {
-          title: key,
-          value: rows[0][key],
-          icon: mainMenuIconList[index],
+        if(key === 'default') {
+          return {
+            title: mainMenuTitleList[index],
+            value: rows[0][key] ? 'Yes' : 'No',
+            icon: mainMenuIconList[index],
+          }
+        } else {
+          return {
+            title: mainMenuTitleList[index],
+            value: rows[0][key],
+            icon: mainMenuIconList[index],
+          }
         }
+        
       })
   }
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
 
   const handleChangeGroup = () => {
-    setGroupData(rows[0].groups)
+    setGroupData(rows[0].assigned_groups)
     setIsDialogFormOpen(true)
   }
 
@@ -109,7 +124,7 @@ const MainMenu = (props) => {
             >
               {/* ICON */}
               <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon/>
+                <item.icon />
               </ListItemIcon>
 
               {/* TEXT */}
@@ -123,10 +138,10 @@ const MainMenu = (props) => {
                   </Typography>
                 }
                 secondary={
-                  item.title === 'groups' 
+                  item.title === 'Groups' 
                     ? <Stack direction={'row'} alignItems='center'>
                       <Typography variant='body2' className='colorTextPrimary'>
-                        {item.value[0]}&nbsp;
+                        {item.value.length ? item.value[0] : 'Default'}&nbsp;
                       </Typography>
                       {
                         item.value.length > 1 && (
@@ -143,7 +158,7 @@ const MainMenu = (props) => {
               />
 
               {/* ACTION */}
-              {item.title === 'formTitle' &&
+              {item.title === 'Form Title' &&
               <Button
                 variant='contained'
                 className={layoutClasses.flyoutListItemActionButton}
