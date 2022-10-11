@@ -27,7 +27,6 @@ public class FormTemplateRequest implements Serializable {
     @NotBlank
     private String label;
     private String description;
-    @NotEmpty
     private List<Field> fields;
     @JsonProperty("submit_in_zone")
     private Boolean submitInZone;
