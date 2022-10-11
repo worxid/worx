@@ -16,7 +16,7 @@ const CellGroups = (props) => {
   return (
     <Stack direction='row' alignItems={'center'}>
       <Typography variant='inherit'>
-        {dataValue[0]}{dataValue.length > 1 ? `, ${dataValue[1]}` : ''}&nbsp;
+        {dataValue[0]}{dataValue.length > 1 ? `, ${dataValue[1]}` : 'Default'}&nbsp;
       </Typography>
       {
         dataValue.length > 2 && (
