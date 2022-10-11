@@ -1,7 +1,7 @@
 package id.worx.worx.web.mailTemplate;
 
 public class EmailVerification {
-
+    // TODO #82 Convert this template as html file, read from resources/templates
     public static String EmailVerify(String linkUrl, String fullname){
         return "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:th=\"http://www.thymeleaf.org\">\n" +
             "\n" +

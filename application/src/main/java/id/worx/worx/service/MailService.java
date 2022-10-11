@@ -12,6 +12,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
+// TODO #83 Duplicate implementation with EmailService.java
 @Service
 @Slf4j
 public class MailService {
