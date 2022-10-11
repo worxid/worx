@@ -58,3 +58,16 @@ export const postGetListFormTemplate = async (inputSignal, inputQuery, inputPara
     else return error.response
   }
 }
+
+export const deleteFormTemplate = async (formTemplateId, inputSignal, inputToken) => {
+  try {
+    const response = await axiosPrivate.delete(`/form/template/${formTemplateId}`, {
+      signal: inputSignal,
+      headers: { 'Authorization': `Bearer ${inputToken}` }
+    })
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}

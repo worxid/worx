@@ -27,7 +27,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { postCreateFormTemplate, postGetListFormTemplate } from 'services/formTemplate'
+import { deleteFormTemplate, postCreateFormTemplate, postGetListFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -220,13 +220,48 @@ const Forms = () => {
     isDataGridLoading && setIsDataGridLoading(false)
   }
 
+  // HANLDE DELETE FORM TEMPLATE
+  const handleDeleteFormTemplate = async () => {
+    setIsDataGridLoading(true)
+    const abortController = new AbortController()
+
+    setDialogDeleteForms({})
+    setIsFlyoutShown(false)
+
+    if(selectionModel.length >= 1) {
+      // CURRENTLY JUST CAN DELETE 1 ITEM
+      const response = await deleteFormTemplate(selectionModel[0], abortController.signal, auth.accessToken)
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        fetchingFormsList(abortController.signal, true)
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title:'',
+          message:'Form deleted successfully'
+        })
+        setSelectionModel([])
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title:'',
+          message:'Something gone wrong'
+        })
+      }
+    }
+
+    setIsDataGridLoading(false)
+    abortController.abort()
+  }
+
   useEffect(() => {
     if (selectionModel.length === 1) {
       setIsFlyoutShown(true)
+    } else {
+      setIsFlyoutShown(false)
     }
   }, [selectionModel])
-
-  // SIDE EFFECT FETCHING FIRSTTIME MOUNT
 
   // SIDE EFFECT FILTERS
   useEffect(() => {
@@ -329,15 +364,7 @@ const Forms = () => {
         setDialogConfirmationObject={setDialogDeleteForms}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => {
-          setDialogDeleteForms({})
-          setSnackbarObject({
-            open: true,
-            severity:'success',
-            title:'',
-            message:'Form deleted successfully'
-          })
-        }}
+        onContinueButtonClick={() => handleDeleteFormTemplate()}
         onCancelButtonClick={() => setDialogDeleteForms({})}
       />
 
