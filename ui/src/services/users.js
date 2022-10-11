@@ -60,3 +60,23 @@ export const postRegisterUser = async (
     else return error.response
   }
 }
+
+export const postResetPasswordUser = async (
+  inputSignal, 
+  inputBodyParams, 
+) => {
+  try {
+    const response = await axios.post(
+      '/api/users/reset-password/verify', 
+      inputBodyParams, 
+      {
+        signal: inputSignal,
+      },
+    )
+
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}

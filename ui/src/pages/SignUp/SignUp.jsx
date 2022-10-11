@@ -101,7 +101,7 @@ const SignUp = () => {
       const resultRegisterUser = await postRegisterUser(
         abortController.signal,
         {
-          username: formObject?.fullName,
+          fullname: formObject?.fullName,
           password: formObject?.password,
           email: formObject?.email,
           phoneNo: formObject?.phoneNumber,
