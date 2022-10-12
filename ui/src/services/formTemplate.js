@@ -84,3 +84,16 @@ export const putAssignGroupFormTemplate = async (formTemplateId, inputSignal, in
     else return error.response
   }
 }
+
+export const postShareFormTemplate = async (formTemplateId, inputSignal, inputParams, inputToken) => {
+  try {
+    const response = await axiosPrivate.post(`/form/template/${formTemplateId}/share`, inputParams, {
+      signal: inputSignal,
+      headers: { 'Authorization': `Bearer ${inputToken}` }
+    })
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
