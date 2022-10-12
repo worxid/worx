@@ -1,11 +1,15 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.exception.TokenException;
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.auth.TokenRefreshResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.service.users.UsersService;
@@ -26,6 +30,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,5 +117,17 @@ public class UsersController {
     public void verifyAccount(@RequestParam String code, HttpServletResponse httpServletResponse) throws IOException {
 
         usersService.verifyAccount(code,httpServletResponse);
+    }
+    @GetMapping("/user-details/{email}")
+    public ResponseEntity<BaseValueResponse<UserDetailsResponse>> getInfoDevice(@PathVariable String email) {
+        UserDetailsResponse users = usersService.getByEmail(email);
+
+
+        BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
+            .value(users)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
     }
 }

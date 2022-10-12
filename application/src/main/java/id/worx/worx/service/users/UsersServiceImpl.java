@@ -6,6 +6,7 @@ import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.Users;
@@ -308,6 +309,21 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
 
     }
+
+    @Override
+    public UserDetailsResponse getByEmail(String email) {
+        Optional<Users> getEmail = usersRepository.findByEmail(email);
+        Users data = getEmail.get();
+        UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+        userDetailsResponse.setCountry(data.getCountry());
+        userDetailsResponse.setOrganizationName(data.getOrganizationName());
+        userDetailsResponse.setOrganizationCode(data.getOrganizationCode());
+        userDetailsResponse.setEmail(data.getEmail());
+        userDetailsResponse.setPhone(data.getPhone());
+
+        return userDetailsResponse;
+    }
+
     public String organizationCode(){
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
