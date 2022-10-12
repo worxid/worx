@@ -13,6 +13,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
+import LoadingButton from '@mui/lab/LoadingButton'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -21,29 +22,92 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 import IconLink from '@mui/icons-material/Link'
 
+// SERVICES
+import { postShareFormTemplate } from 'services/formTemplate'
+
 // STYLES
 import useStyles from './dialogShareLinkUseStyles'
 
-const DialogShareLink = () => {
+// UTILITIES
+import { didSuccessfullyCallTheApi, isEmailFormatValid } from 'utilities/validation'
+
+const DialogShareLink = (props) => {
+  const { id } = props
+
   // STYLES
   const classes = useStyles()
 
   // CONTEXTS
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
-  // RECEIVERS
+  // STATES
+  const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
 
   // HANDLE BUTTON SEND CLICK
-  const handleButtonSendClick = () => {
-    setIsDialogFormOpen(false)
+  const handleButtonSendClick = async () => {
+    const abortController = new AbortController()
+    setIsLoading(true)
+    let message = {}
+    let isValidEmail
+
+    if(receivers.length) {
+      // VALIDATE EMAIL EVERY ITEM
+      for(let item of receivers) {
+        if(isEmailFormatValid(item)) {
+          isValidEmail = true
+        } else {
+          isValidEmail = false
+          break
+        }
+      }
+
+      if(isValidEmail) {
+        const response = await postShareFormTemplate(id, abortController.signal,
+          {
+            recipients: receivers
+          },
+          auth.accessToken,
+        )
+  
+        if(didSuccessfullyCallTheApi(response?.status)) {
+          message = {
+            severity: 'success',
+            title: '',
+            message: 'Successfully sent the form via email'
+          }
+          setReceivers([])
+          setIsDialogFormOpen(false)
+        } else {
+          message = {
+            severity: 'error',
+            title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+            message: response?.data?.error?.message || 'Something gone wrong',
+          }
+        }
+      } else {
+        message = {
+          severity: 'error',
+          title: '',
+          message: 'Invalid email found',
+        }
+      }
+    } else {
+      message = {
+        severity:'info',
+        title:'',
+        message:'Field add email must filled'
+      }
+    }
+
     setSnackbarObject({
       open: true,
-      severity:'success',
-      title:'',
-      message:'Successfully sent the form via email'
+      ...message,
     })
+
+    setIsLoading(false)
+    abortController.abort()
   }
 
   // HANDLE BUTTON COPY CLICK
@@ -62,7 +126,10 @@ const DialogShareLink = () => {
       title={<Stack direction='row' alignItems='center'>
         <Typography variant='subtitle1' flex={1}>Share Form</Typography>
 
-        <IconButton onClick={() => setIsDialogFormOpen(false)}>
+        <IconButton onClick={() => {
+          setReceivers([])
+          setIsDialogFormOpen(false)
+        }}>
           <IconClose fontSize='small'/>
         </IconButton>
       </Stack>}
@@ -111,14 +178,15 @@ const DialogShareLink = () => {
     
           {/* BUTTON SEND FORM */}
           <Stack paddingLeft={'12px'}>
-            <Button
+            <LoadingButton
               size='small'
               variant='contained'
               className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={handleButtonSendClick}
+              onClick={() => handleButtonSendClick()}
+              loading={isLoading}
             >
               Send Form
-            </Button>
+            </LoadingButton>
           </Stack>
         </Stack>
       </Stack>
