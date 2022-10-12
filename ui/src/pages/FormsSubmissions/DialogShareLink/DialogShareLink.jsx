@@ -90,7 +90,7 @@ const DialogShareLink = (props) => {
         message = {
           severity: 'error',
           title: '',
-          message: 'Invalid email found',
+          message: 'Email format must be valid',
         }
       }
     } else {
