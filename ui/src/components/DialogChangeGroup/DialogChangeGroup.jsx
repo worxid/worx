@@ -84,6 +84,8 @@ const DialogChangeGroup = (props) => {
         open: true,
         ...message,
       })
+    } else {
+      setGroupChecked(dataChecked)
     }
 
     handleClose()
