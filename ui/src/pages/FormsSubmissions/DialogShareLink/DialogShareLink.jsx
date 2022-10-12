@@ -95,9 +95,9 @@ const DialogShareLink = (props) => {
       }
     } else {
       message = {
-        severity:'info',
+        severity:'error',
         title:'',
-        message:'Field add email must filled'
+        message:'Email field must be filled'
       }
     }
 
