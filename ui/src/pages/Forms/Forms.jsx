@@ -153,14 +153,14 @@ const Forms = () => {
     const abortController = new AbortController()
 
     const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm, auth.accessToken)
-    if(response?.data?.success) {
+    if(didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
     } else {
       setSnackbarObject({
         open: true,
         severity:'error',
-        title:'',
-        message:'Something gone wrong'
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
       })
     }
 
