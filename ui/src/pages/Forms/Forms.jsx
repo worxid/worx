@@ -13,7 +13,7 @@ import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData, paramsCreateForm } from './formsConstants'
+import { paramsCreateForm } from './formsConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
@@ -61,7 +61,7 @@ const Forms = () => {
     },
     {
       field: 'created_on',
-      headerName: 'created',
+      headerName: 'Created',
       flex: 1,
       minWidth: 200,
       hide: false,
@@ -70,7 +70,7 @@ const Forms = () => {
     },
     {
       field: 'modified_on',
-      headerName: 'updated',
+      headerName: 'Updated',
       flex: 1,
       minWidth: 200,
       hide: false,
@@ -128,7 +128,7 @@ const Forms = () => {
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(true)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -171,7 +171,7 @@ const Forms = () => {
   const handleDateSearchValue = (filterValue) => {
     if(filterValue) {
       if(isFormatDateSearchValid(filterValue)) {
-        const value = moment(filterValue, 'DD-MM-yyyy HH:mm:ss').toISOString()
+        const value = moment(filterValue, 'dd-MM-yyyy HH:mm:ss').toISOString()
         return value
       } else {
         setSnackbarObject({
@@ -369,7 +369,12 @@ const Forms = () => {
       />
 
       {/* DIALOG GROUP */}
-      <DialogChangeGroup data={groupData} />
+      <DialogChangeGroup
+        dataChecked={groupData}
+        page='form-template'
+        selectedItemId={selectionModel[0]}
+        reloadData={fetchingFormsList}
+      />
     </>
   )
 }
