@@ -10,14 +10,17 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
 
-public class GroupServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
