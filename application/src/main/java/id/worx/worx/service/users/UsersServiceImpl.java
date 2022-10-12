@@ -13,8 +13,6 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.EmailTokenRepository;
 import id.worx.worx.service.EmailService;
-import id.worx.worx.web.mailTemplate.EmailVerification;
-import id.worx.worx.web.mailTemplate.ResetPasswordMail;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.util.JwtUtils;
