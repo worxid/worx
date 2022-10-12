@@ -23,6 +23,9 @@ public class EmailServiceImpl implements EmailService {
 
     private final WorxProperties worxProps;
     private static final String EMAIL_RESET_PASSWORD_TEMPLATE = "email-reset-password.html";
+    private static final String RESET_PASSWORD_EMAIL = "email-reset-passsword";
+    private static final String EMAIL_CONFIRMATION = "email-confirmation";
+    private static final String SHARE_TEMPLATE = "email-share-link";
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
@@ -65,6 +68,9 @@ public class EmailServiceImpl implements EmailService {
     public void sendShareFormEmail(String email, String code) {
         String url = String.format("https://dev.worx.id/fill-form?code=%s", code);
         log.info("share url {}", url);
+        Context context = new Context();
+        context.setVariable("confirmationUrl", url);
+        String body = templateEngine.process(SHARE_TEMPLATE, context);
         EmailDTO emailDTO = EmailDTO.builder()
                 .from(worxProps.getMail().getFromAddress())
                 .to(email)
@@ -74,4 +80,32 @@ public class EmailServiceImpl implements EmailService {
         sendEmail(emailDTO);
     }
 
+    @Override
+    public void sendResetPassword(String email, String fullname, String url) {
+        Context context = new Context();
+        context.setVariable("confirmationUrl", url);
+        context.setVariable("greeting", String.format("Hi %s,", fullname));
+        String body = templateEngine.process(EMAIL_RESET_PASSWORD_TEMPLATE, context);
+        EmailDTO emailDTO = EmailDTO.builder()
+            .from(worxProps.getMail().getFromAddress())
+            .to(email)
+            .content(body)
+            .subject("WORX - Reset Password")
+            .build();
+        sendEmail(emailDTO);
+    }
+    @Override
+    public void sendWelcomingEmail(String email, String fullname, String url) {
+        Context context = new Context();
+        context.setVariable("confirmationUrl", url);
+        context.setVariable("greeting", String.format("Hi %s,", fullname));
+        String body = templateEngine.process(EMAIL_CONFIRMATION, context);
+        EmailDTO emailDTO = EmailDTO.builder()
+            .from(worxProps.getMail().getFromAddress())
+            .to(email)
+            .content(body)
+            .subject("WORX - Email Confirmation")
+            .build();
+        sendEmail(emailDTO);
+    }
 }
