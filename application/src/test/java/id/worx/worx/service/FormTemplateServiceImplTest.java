@@ -65,7 +65,7 @@ class FormTemplateServiceImplTest {
     }
 
     @Test
-    void givenNonExistentFormTemplateId_whenDelete_thenThrowVocException() {
+    void givenNonExistentFormTemplateId_whenDelete_thenThrowWorxException() {
         Long nonExistentFormTemplateId = 1L;
 
         when(templateRepository.findById(nonExistentFormTemplateId)).thenReturn(Optional.empty());
