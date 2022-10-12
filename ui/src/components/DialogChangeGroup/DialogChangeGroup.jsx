@@ -180,12 +180,16 @@ const DialogChangeGroup = (props) => {
         {groupList?.
           filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
           .map((item, index) => (
-            <ListItemButton key={index} className={layoutClasses.groupItem} dense>
+            <ListItemButton
+              onClick={(event) => handleCheckboxClick(event, item)}
+              key={index}
+              className={layoutClasses.groupItem}
+              dense
+            >
               {/* RADIO */}
               <ListItemIcon>
                 <Checkbox
                   checked={Boolean(groupChecked?.find(itemData => itemData.name === item.name))}
-                  onClick={(event) => handleCheckboxClick(event, item)}
                 />
               </ListItemIcon>
               {/* TEXT */}
