@@ -5,6 +5,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.response.BasePageResponse;
+import id.worx.worx.web.model.request.GroupSearchRequest;
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,6 +59,15 @@ public class GroupController implements SecuredRestController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PostMapping("search")
+    public ResponseEntity<Page<GroupDTO>> create(@RequestBody GroupSearchRequest searchRequest, @ParameterObject Pageable pageable) {
+        Page<Group> groups = groupService.searchGroup(searchRequest,pageable);
+        List<GroupDTO> dtos = groups.stream().map(groupService::toDTO).collect(Collectors.toList());
+        Page<GroupDTO> page= new BasePageResponse<>(dtos,groups.getPageable(),groups.getTotalElements());
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(page);
     }
 
     @GetMapping("{id}")

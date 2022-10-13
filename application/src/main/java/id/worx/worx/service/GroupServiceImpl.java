@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import id.worx.worx.web.model.request.GroupSearchRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.GroupDTO;
@@ -62,6 +65,16 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupDTO toDTO(Group group) {
         return groupMapper.toDTO(group);
+    }
+
+    @Override
+    public Page<Group> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
+        return groupRepository.search(groupSearchRequest.getId(),
+            groupSearchRequest.getName(),
+            groupSearchRequest.getColor(),
+            groupSearchRequest.getDeviceCount(),
+            groupSearchRequest.getFormCount(),
+            pageable);
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {
