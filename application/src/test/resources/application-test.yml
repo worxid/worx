@@ -11,3 +11,24 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+  mail:
+    host: smtp.mailtrap.io
+    username: ae26ae5e25e8ff
+    password: 939398299e864b
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 2525
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Application Properties
+worx:
+  mail:
+    from-address: from@example.com
+    from-name: Magic Elves
