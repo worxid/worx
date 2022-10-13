@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -37,6 +37,7 @@ const FormsSubmissions = () => {
 
   // NAVIGATE
   const navigate = useNavigate()
+  const { id } = useParams()
 
   // INITS
   let initialColumns = [
@@ -270,7 +271,7 @@ const FormsSubmissions = () => {
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink />
+      <DialogShareLink id={Number(id)} />
 
       {/* DOWNLOAD MENU */}
       <Menu

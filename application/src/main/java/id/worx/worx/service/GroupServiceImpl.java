@@ -55,11 +55,15 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Long id) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        Set<FormTemplate> templates = group.getTemplates();
-        for (FormTemplate template : templates) {
-            template.getAssignedGroups().remove(group);
+        this.delete(group);
+    }
+
+    @Override
+    public void delete(List<Long> ids) {
+        List<Group> groups = groupRepository.findAllById(ids);
+        for (Group group : groups) {
+            this.delete(group);
         }
-        groupRepository.delete(group);
     }
 
     @Override
@@ -75,6 +79,14 @@ public class GroupServiceImpl implements GroupService {
             groupSearchRequest.getDeviceCount(),
             groupSearchRequest.getFormCount(),
             pageable);
+    }
+
+    private void delete(Group group) {
+        Set<FormTemplate> templates = group.getTemplates();
+        for (FormTemplate template : templates) {
+            template.getAssignedGroups().remove(group);
+        }
+        groupRepository.delete(group);
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {

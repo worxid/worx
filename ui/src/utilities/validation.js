@@ -22,6 +22,11 @@ export const didSuccessfullyCallTheApi = (inputStatus) => {
   return successRegex.test(inputStatus)
 }
 
+export const isEmailFormatValid = (inputEmail) => {
+  const format = /\S+@\S+\.\S+/
+  return format.test(inputEmail)
+}
+
 /**
  * @param {string} date ex: 09-20-2022 15:00:00
  */

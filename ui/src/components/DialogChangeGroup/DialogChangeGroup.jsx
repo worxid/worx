@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -20,31 +21,73 @@ import ListItemText from '@mui/material/ListItemText'
 import IconClear from '@mui/icons-material/Clear'
 import IconSearch from '@mui/icons-material/Search'
 
+// SERVICES
+import { putAssignGroupFormTemplate } from 'services/formTemplate'
+import { getGroupList } from 'services/group'
+
 // STYLES
 import useLayoutStyles from './dialogChangeGroupUseStyles'
 
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
+
 const DialogChangeGroup = (props) => {
+  const { dataChecked, page, selectedItemId, reloadData } = props
   const layoutClasses = useLayoutStyles()
 
-  const { data } = props
-
+  // CONTEXTS
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
-  const { setSnackbarObject } = useContext(AllPagesContext)
-
+  // STATES
   const [ search, setSearch ] = useState('')
-  const groupList = ['Default', 'Medical', 'Group 1', 'Group 2', 'Group 3', 'Group 4', 'Group 5', 'Group 6', 'Group 7', 'Group 8']
-  const [groupLists, setGroupLists] = useState(groupList)
+  const [ groupList, setGroupList ] = useState([])
+  const [ groupChecked, setGroupChecked ] = useState([])
 
   const handleActionButtonClick = async (inputType) => {
+    const abortController = new AbortController()
+
     if (inputType === 'save') {
+      const listSelectedGroupId = groupChecked.map(item => item.id)
+      let response
+      let message = {}
+      
+      if(page === 'form-template') {
+        response = await putAssignGroupFormTemplate(
+          selectedItemId,
+          abortController.signal,
+          {
+            assignedGroups: listSelectedGroupId
+          },
+          auth.accessToken
+        )
+      } else if (page === 'devices') {
+        // DEVICE SAVE GROUP
+      }
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        message = {
+          severity:'success',
+          title:'',
+          message:'Change group success'
+        }
+        reloadData(abortController, true)
+      } else {
+        message = {
+          severity: 'error',
+          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: response?.data?.error?.message || 'Something gone wrong',
+        }
+      }
+
       setSnackbarObject({
         open: true,
-        severity:'success',
-        title:'',
-        message:'Change group success'
+        ...message,
       })
+    } else {
+      setGroupChecked(dataChecked)
     }
+
     handleClose()
   }
   
@@ -59,15 +102,46 @@ const DialogChangeGroup = (props) => {
     setSearch(valueSearch)
   }
 
+  const handleCheckboxClick = (event, itemGroup) => {
+    const hasChecked = groupChecked.find(item => item.name === itemGroup.name)
+    if(!Boolean(hasChecked)) {
+      // CHECKED
+      setGroupChecked([ ...groupChecked, itemGroup ])
+    } else {
+      // UNCHECKED
+      const tempGroupChecked = groupChecked.filter(item => item.id !== itemGroup.id)
+      setGroupChecked(tempGroupChecked)
+    }
+  }
+
+  const loadGroupListData = async (inputIsMounted, inputAbortController) => {
+    const resultGroupList = await getGroupList(inputAbortController.signal, auth.accessToken)
+
+    if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
+      setGroupList(resultGroupList.data.list)
+    }
+  }
+
+  // SIDE EFFECT FETCHING
   useEffect(() => {
-    if(search){
-      setGroupLists(groupList.filter((groups) => groups.includes(search.toLowerCase())))
-    } 
-    else{
-      setGroupLists(groupList)
-    } 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search])
+    let isMounted = true
+    const abortController = new AbortController()
+    loadGroupListData(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
+
+  // SIDE EFFECT SET GROUP CHECKED
+  useEffect(() => {
+    if(dataChecked?.length) {
+      setGroupChecked(dataChecked)
+    } else {
+      setGroupChecked([])
+    }
+  }, [dataChecked])
 
   return (
     <DialogForm 
@@ -96,25 +170,49 @@ const DialogChangeGroup = (props) => {
         }
       </Stack>
       <List disablePadding className='width100 padding0'>
-        {groupLists?.map((item, index) => (
-          <ListItemButton 
-            key={index}
-            className={layoutClasses.groupItem}
-            dense
-          >
-            {/* RADIO */}
-            <ListItemIcon>
-              <Checkbox
-                checked={data?.includes(item)}
-              />
-            </ListItemIcon>
-            {/* TEXT */}
-            <ListItemText primary={item}/>
-          </ListItemButton>
-        ))}
+        <ListItemButton className={layoutClasses.groupItem} dense>
+          {/* RADIO */}
+          <ListItemIcon>
+            <Checkbox checked={groupChecked?.length <= 0}/>
+          </ListItemIcon>
+          {/* TEXT */}
+          <ListItemText primary={'Default'}/>
+        </ListItemButton>
+
+        {groupList?.
+          filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
+          .map((item, index) => (
+            <ListItemButton
+              onClick={(event) => handleCheckboxClick(event, item)}
+              key={index}
+              className={layoutClasses.groupItem}
+              dense
+            >
+              {/* RADIO */}
+              <ListItemIcon>
+                <Checkbox
+                  checked={Boolean(groupChecked?.find(itemData => itemData.name === item.name))}
+                />
+              </ListItemIcon>
+              {/* TEXT */}
+              <ListItemText primary={item.name}/>
+            </ListItemButton>
+          ))}
       </List>
     </DialogForm>
   )
+}
+
+DialogChangeGroup.defaultProps = {
+  dataChecked: [],
+  page: 'form-template',
+}
+
+DialogChangeGroup.propTypes = {
+  dataChecked: PropTypes.array,
+  page: PropTypes.oneOf(['form-template', 'devices']).isRequired,
+  selectedItemId: PropTypes.number,
+  reloadData: PropTypes.func.isRequired,
 }
 
 export default DialogChangeGroup
