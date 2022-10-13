@@ -1,3 +1,7 @@
+<h1>Contributing</h1>
+
+We wouldfor you to contribute to Worx-ID and help make it better! We want contributing to Worx-ID to be fun, enjoyable, and educational for anyone and everyone. All contributions are welcome, including features, bugfixes, and documentation changes, as well as updates and tweaks, blog posts, workshops, and everything else.
+
 ## Code of conduct
 
 Help us keep Worx-ID open and inclusive. Please read and follow our [Code of Conduct](/CODE_OF_CONDUCT.md).
