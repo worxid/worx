@@ -1,11 +1,11 @@
-# <img height="25" src="/img/security.svg">&nbsp;&nbsp;Security Policy
+# Security Policy
 
 ## Supported versions
 
 | Version    | Supported                                       |
 | ---------- | ----------------------------------------------- |
 | < 1.0      | -                                               |
-| >= 1.0.0   | <img width="20" src="/img/tick.svg">            |
+| >= 1.0.0   | :white_check_mark:           |
 
 ## Reporting a Vulnerability
 
