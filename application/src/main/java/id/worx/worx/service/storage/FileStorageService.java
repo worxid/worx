@@ -14,7 +14,7 @@ public interface FileStorageService {
 
     default String generateUniquePath(String filename, String foldername) {
         DateFormat writeFormat = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss");
-        return foldername.toLowerCase() + "/" + writeFormat.format(new Date()) + "/" + filename;
+        return String.format("%s/%s/%s", foldername.toLowerCase(), writeFormat.format(new Date()), filename);
     }
 
 }

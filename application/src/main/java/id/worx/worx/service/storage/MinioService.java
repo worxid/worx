@@ -23,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MinioService implements FileStorageService {
 
+    private static final String MEDIA_PATH = "media";
+
     private final MinioClientService clientService;
 
     @Override
@@ -33,8 +35,7 @@ public class MinioService implements FileStorageService {
 
     @Override
     public String getUploadUrl(String filename) {
-        // TODO Generate path
-        String path = filename;
+        String path = this.generateUniquePath(filename, MEDIA_PATH);
         String url = "";
         try {
             url = clientService.getUploadPresignedObjectUrl(path);
