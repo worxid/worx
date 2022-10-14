@@ -313,6 +313,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public UserDetailsResponse getByEmail(String email) {
         Optional<Users> getEmail = usersRepository.findByEmail(email);
+        if(!getEmail.isPresent()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
         Users data = getEmail.get();
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
         userDetailsResponse.setCountry(data.getCountry());
