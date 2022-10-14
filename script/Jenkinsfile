@@ -59,6 +59,9 @@ node {
 
   stage('Clean up') {
     sh 'docker image prune -f'
+    dir("${env.WORKSPACE}/ui") {
+      sh 'rm .env'
+    }
   }
 
 }
