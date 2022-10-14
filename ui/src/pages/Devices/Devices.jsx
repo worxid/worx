@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -14,7 +13,6 @@ import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData } from './devicesConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
@@ -26,33 +24,41 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconClear from '@mui/icons-material/Clear'
 import IconWarning from '@mui/icons-material/Warning'
 import IconVerified from '@mui/icons-material/Verified'
 
+// SERVICES
+import { deleteDevices, postGetListDevices } from 'services/devices'
+
 // STYLES
 import useLayoutStyles from './devicesUseStyles'
+
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { getDeviceStatusColor } from 'utilities/component'
 
 const Devices = () => { 
   const classes = useLayoutStyles()
   const initialColumns = [
     {
-      field: 'status',
+      field: 'device_status',
       headerName: 'Status',
-      flex: 1,
-      minWidth: 125,
+      //flex: 1,
+      width: 120,
       hide: false,
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
           <Stack direction={'row'} alignItems='center'>
-            {
-              params.value === 'Pending' 
-                ? <IconWarning className={classes.iconStatusSize} color='warning' /> 
-                : <IconVerified className={classes.iconStatusSize} color='success' />
-            }&nbsp;
+            {params.value === 'PENDING' && <IconWarning className={classes.iconStatusSize} color='warning' />}
+            {params.value === 'APPROVED' && <IconVerified className={classes.iconStatusSize} color='success' />}
+            {params.value === 'DENIED' && <IconClear className={classes.iconStatusSize} color='error' />}
+            &nbsp;
             <Typography 
               variant='inherit'
-              color={params.value === 'Pending' ? 'warning.main' : 'success.main'}
+              color={getDeviceStatusColor(params.value)}
+              className='textCapitalize'
             >
               {params.value}
             </Typography>
@@ -68,7 +74,7 @@ const Devices = () => {
       areFilterAndSortShown: true,
     },
     {
-      field: 'identifier',
+      field: 'device_code',
       headerName: 'Identifier',
       flex: 1,
       minWidth: 200,
@@ -76,7 +82,7 @@ const Devices = () => {
       areFilterAndSortShown: true,
     },
     {
-      field: 'deviceModel',
+      field: 'device_model',
       headerName: 'Device Model',
       flex: 1,
       minWidth: 150,
@@ -84,7 +90,7 @@ const Devices = () => {
       areFilterAndSortShown: true,
     },
     {
-      field: 'deviceVersion',
+      field: 'device_os_version',
       headerName: 'Device Version',
       flex: 1,
       minWidth: 125,
@@ -92,7 +98,7 @@ const Devices = () => {
       areFilterAndSortShown: true,
     },
     {
-      field: 'deviceAppVersion',
+      field: 'device_app_version',
       headerName: 'Device App Version',
       flex: 1,
       minWidth: 150,
@@ -103,32 +109,28 @@ const Devices = () => {
       field: 'groups',
       headerName: 'Groups',
       flex: 1,
-      minWidth: 200,
+      minWidth: 380,
       hide: false,
       areFilterAndSortShown: true,
       renderCell: (params) =>
         params.value && (
-          <CellGroups dataValue={params.value} />
+          <CellGroups dataValue={params.value.map(item => ({ name: item }))} />
         ),
     }
   ]
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
-
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const initialFilters = {}
-
-  // NAVIGATE
-  const navigate = useNavigate()
 
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
-  const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ isDataGridLoading, setIsDataGridLoading ] = useState(true)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -143,21 +145,12 @@ const Devices = () => {
   const [ selectionModel, setSelectionModel ] = useState([])
   // FLYOUT
   const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
-
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
-
   // DELETE DIALOG
   const [ dialogDeleteDevice, setDialogDeleteDevice ] = useState({})
-
   // DATA EDIT DEVICE
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
-
-  useEffect(() => {
-    if (selectionModel.length === 1) {
-      setIsFlyoutShown(true)
-    }
-  }, [selectionModel])
 
   // HANDLE EDIT BUTTON CLICKED
   const handleEditButtonClick = () => {
@@ -165,6 +158,100 @@ const Devices = () => {
     setDataDialogEdit(...editData)
     setIsDialogAddOrEditOpen(true)
   }
+
+  // FETCHING DATA TABLE DEVICES
+  const fetchingDevicesList = async (abortController, isMounted) => {
+    const response = await postGetListDevices(
+      abortController.signal,
+      {
+        request: {
+          label: '',
+          groups: null,
+          device_code: '',
+          device_model: '',
+          device_language: '',
+          device_os_version: '',
+          device_app_version: '',
+          global_search: '',
+          joined_time: null
+        },
+        pageable: {
+          page: pageNumber,
+          size: pageSize,
+          sort: null
+        }
+      },
+      auth.accessToken
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status) && isMounted) {
+      setTableData(response.data.rows)
+      setTotalRow(response.data.totalElements)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
+      })
+    }
+
+    isDataGridLoading && setIsDataGridLoading(false)
+  }
+
+  // HANDLE DELETE BUTTON CLICKED
+  const handleDeleteDevicesClick = async () => {
+    setIsDataGridLoading(true)
+    const abortController = new AbortController()
+
+    setDialogDeleteDevice({})
+    setIsFlyoutShown(false)
+
+    if(selectionModel.length >= 1) {
+      // CURRENTLY JUST CAN DELETE 1 ITEM
+      const response = await deleteDevices(selectionModel[0], abortController.signal, auth.accessToken)
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        fetchingDevicesList(abortController.signal, true)
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title:'',
+          message:'Device deleted successfully'
+        })
+        setSelectionModel([])
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: response?.data?.error?.message || 'Something gone wrong',
+        })
+      }
+    }
+
+    setIsDataGridLoading(false)
+  }
+
+  // SIDE EFFECT FETCHING DATA
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+    fetchingDevicesList(abortController, isMounted)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [filters, pageNumber, pageSize])
+
+  useEffect(() => {
+    if (selectionModel.length === 1) {
+      setIsFlyoutShown(true)
+    } else {
+      setIsFlyoutShown(false)
+    }
+  }, [selectionModel])
 
   return (
     <>
@@ -241,17 +328,27 @@ const Devices = () => {
           isFlyoutShown={isFlyoutShown}
           flyoutWidth={values.flyoutWidth}
         >
-          <DeviceFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData} />
+          <DeviceFlyout
+            rows={tableData.filter(item => selectionModel.includes(item.id))}
+            reloadData={fetchingDevicesList}
+            setGroupData={setGroupData}
+          />
         </Flyout>
       </Stack>
 
       {/* DIALOG CHANGE GROUP */}
-      <DialogChangeGroup data={groupData} />
+      <DialogChangeGroup
+        dataChecked={groupData.map(item => ({ name: item }))}
+        page='devices'
+        selectedItemId={selectionModel[0]}
+        reloadData={fetchingDevicesList}
+      />
       
       {/* DIALOG EDIT DEVICES */}
       <DialogAddOrEditDevice 
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit} 
+        reloadData={fetchingDevicesList}
       />
 
       {/* DIALOG DELETE DEVICES */}
@@ -262,15 +359,7 @@ const Devices = () => {
         setDialogConfirmationObject={setDialogDeleteDevice}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => {
-          setDialogDeleteDevice({})
-          setSnackbarObject({
-            open: true,
-            severity:'success',
-            title:'',
-            message:'Device deleted successfully'
-          })
-        }}
+        onContinueButtonClick={() => handleDeleteDevicesClick()}
         onCancelButtonClick={() => setDialogDeleteDevice({})}
       />
     </>
