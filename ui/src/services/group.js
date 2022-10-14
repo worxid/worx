@@ -1,16 +1,13 @@
 //APIS
 import { axiosPrivate } from 'apis/axios'
 
-export const deleteGroup = async (
-  inputSignal, 
-  inputId,
-) => {
+export const deleteGroup = async (inputSignal, inputId, inputToken) => {
   try {
     const response = await axiosPrivate.delete(
       `/groups/${inputId}`, 
       {
         signal: inputSignal,
-        //headers: { 'Authorization': `Bearer ${inputToken}` },
+        headers: { 'Authorization': `Bearer ${inputToken}` },
       },
     )
 
@@ -22,13 +19,13 @@ export const deleteGroup = async (
 }
 
 // TO DO: REPLACE WITH THE NEW API CONTAINING FILTER, SORT, PAGINATION, AND SEARCH
-export const getGroupList = async (inputSignal) => {
+export const getGroupList = async (inputSignal, inputToken) => {
   try {
     const response = await axiosPrivate.get(
       '/groups', 
       {
         signal: inputSignal,
-        //headers: { 'Authorization': `Bearer ${inputToken}` },
+        headers: { 'Authorization': `Bearer ${inputToken}` },
       }
     )
 
@@ -39,17 +36,14 @@ export const getGroupList = async (inputSignal) => {
   }
 }
 
-export const postCreateGroup = async (
-  inputSignal, 
-  inputBodyParams, 
-) => {
+export const postCreateGroup = async (inputSignal, inputBodyParams, inputToken) => {
   try {
     const response = await axiosPrivate.post(
       '/groups', 
       inputBodyParams, 
       {
         signal: inputSignal,
-        //headers: { 'Authorization': `Bearer ${inputToken}` },
+        headers: { 'Authorization': `Bearer ${inputToken}` },
       },
     )
 
@@ -60,18 +54,14 @@ export const postCreateGroup = async (
   }
 }
 
-export const putEditGroup = async (
-  inputSignal, 
-  inputId,
-  inputBodyParams, 
-) => {
+export const putEditGroup = async (inputSignal, inputId, inputBodyParams, inputToken) => {
   try {
     const response = await axiosPrivate.put(
       `/groups/${inputId}`, 
       inputBodyParams, 
       {
         signal: inputSignal,
-        //headers: { 'Authorization': `Bearer ${inputToken}` },
+        headers: { 'Authorization': `Bearer ${inputToken}` },
       },
     )
 

@@ -24,30 +24,67 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
+// SERVICES
+import { putUpdateLabelDevices } from 'services/devices'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const DialogAddOrEditDevice = (props) => {
   const layoutClasses = useLayoutStyles()
   
-  const { dataDialogEdit, setDataDialogEdit } = props
+  const { dataDialogEdit, setDataDialogEdit, reloadData } = props
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const [ label, setLabel ] = useState('')
 
   const handleActionButtonClick = async (inputType) => {
+    const abortController = new AbortController()
+
     if (inputType === 'save') {
-      setSnackbarObject({
-        open: true,
-        severity:'success',
-        title:'',
-        message:'Successfully change device'
-      })
+      if(label.length) {
+        const response = await putUpdateLabelDevices(
+          dataDialogEdit?.id,
+          abortController.signal,
+          {
+            label,
+          },
+          auth.accessToken,
+        )
+  
+        if(didSuccessfullyCallTheApi(response?.status)) {
+          setSnackbarObject({
+            open: true,
+            severity:'success',
+            title: '',
+            message: 'Successfully change device',
+          })
+          reloadData(abortController.signal, true)
+          handleClose()
+        } else {
+          setSnackbarObject({
+            open: true,
+            severity:'error',
+            title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+            message: response?.data?.error?.message || 'Something gone wrong',
+          })
+        }
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: '',
+          message: 'Label field must be filled',
+        })
+      }
+    } else {
       handleClose()
     }
-    handleClose()
   }
   
   const handleClose = () => {

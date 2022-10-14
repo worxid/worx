@@ -18,6 +18,8 @@ public interface GroupService {
 
     void delete(Long id);
 
+    void delete(List<Long> ids);
+
     GroupDTO toDTO(Group group);
 
 }

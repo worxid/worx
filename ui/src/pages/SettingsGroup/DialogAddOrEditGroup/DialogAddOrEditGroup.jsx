@@ -56,7 +56,7 @@ const DialogAddOrEditGroup = (props) => {
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const initialFormObject = {
     groupName: '',
@@ -100,6 +100,7 @@ const DialogAddOrEditGroup = (props) => {
             name: groupName,
             color: groupColor,
           },
+          auth.accessToken
         )
       }
       // EDIT AN EXISTING GROUP ITEM
@@ -111,6 +112,7 @@ const DialogAddOrEditGroup = (props) => {
             name: groupName,
             color: groupColor,
           },
+          auth.accessToken
         )
       }
 

@@ -13,31 +13,38 @@ import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyTableData, paramsCreateForm } from './formsConstants'
+import { paramsCreateForm } from './formsConstants'
 import { values } from 'constants/values'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+
+// DATE
+import moment from 'moment'
 
 // MUIS
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { postCreateFormTemplate } from 'services/formTemplate'
+import { deleteFormTemplate, postCreateFormTemplate, postGetListFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
+// UTILITIES
+import { didSuccessfullyCallTheApi, isFormatDateSearchValid } from 'utilities/validation'
+import { convertDate } from 'utilities/date'
+
 const Forms = () => {
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const layoutClasses = useLayoutStyles()
 
   const initialColumns = [
     {
-      field: 'formTitle',
+      field: 'label',
       headerName: 'Form Title',
       flex: 1,
       minWidth: 200,
@@ -53,23 +60,25 @@ const Forms = () => {
       areFilterAndSortShown: true,
     },
     {
-      field: 'created',
+      field: 'created_on',
       headerName: 'Created',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: params => convertDate(params.value)
     },
     {
-      field: 'updated',
+      field: 'modified_on',
       headerName: 'Updated',
       flex: 1,
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: params => convertDate(params.value)
     },
     {
-      field: 'groups',
+      field: 'assigned_groups',
       headerName: 'Groups',
       flex: 1,
       minWidth: 315,
@@ -81,7 +90,7 @@ const Forms = () => {
         ),
     },
     {
-      field: 'submissions',
+      field: 'submission_count',
       headerName: 'Submissions',
       flex: 1,
       minWidth: 200,
@@ -99,12 +108,12 @@ const Forms = () => {
         )
     },
     {
-      field: 'fields',
+      field: 'fields_size',
       headerName: 'Fields',
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      areFilterAndSortShown: false,
     },
   ]
 
@@ -116,10 +125,10 @@ const Forms = () => {
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
-  const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ isDataGridLoading, setIsDataGridLoading ] = useState(true)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -143,26 +152,129 @@ const Forms = () => {
   const handleFabClick = async () => {
     const abortController = new AbortController()
 
-    const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm)
-    if(response?.data?.success) {
+    const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm, auth.accessToken)
+    if(didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
     } else {
       setSnackbarObject({
         open: true,
         severity:'error',
-        title:'',
-        message:'Something gone wrong'
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
       })
     }
 
     abortController.abort()
   }
 
+  // HANDLE DATE SEARCH VALUE
+  const handleDateSearchValue = (filterValue) => {
+    if(filterValue) {
+      if(isFormatDateSearchValid(filterValue)) {
+        const value = moment(filterValue, 'dd-MM-yyyy HH:mm:ss').toISOString()
+        return value
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'info',
+          title:'',
+          message:'For your information, example value search date is 30-09-2022 18:00:00'
+        })
+        return ''
+      }
+    } else {
+      return ''
+    }
+  }
+
+  // FETCHING DATA TABLE FORMS
+  const fetchingFormsList = async (abortController, inputIsMounted) => {
+    let createdDate = handleDateSearchValue(filters?.created_on)
+    let modifiedDate = handleDateSearchValue(filters?.modified_on)
+
+    const response = await postGetListFormTemplate(
+      abortController.signal,
+      {
+        size: pageSize,
+        page: pageNumber,
+      },
+      {
+        label: filters?.label || '',
+        description: filters?.description || '',
+        created_on: createdDate || '',
+        modified_on: modifiedDate || '',
+        // EXAMPLE: group, group
+        assigned_groups: filters?.assigned_groups?.includes(', ')
+          ? filters?.assigned_groups?.split(', ') : filters?.assigned_groups
+            ? [filters?.assigned_groups] : null,
+        submission_count: filters?.submission_count || null
+      },
+      auth.accessToken,
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+      setTableData(response.data.content)
+      setTotalRow(response.data.totalElements)
+    }
+
+    isDataGridLoading && setIsDataGridLoading(false)
+  }
+
+  // HANLDE DELETE FORM TEMPLATE
+  const handleDeleteFormTemplate = async () => {
+    setIsDataGridLoading(true)
+    const abortController = new AbortController()
+
+    setDialogDeleteForms({})
+    setIsFlyoutShown(false)
+
+    if(selectionModel.length >= 1) {
+      // CURRENTLY JUST CAN DELETE 1 ITEM
+      const response = await deleteFormTemplate(selectionModel[0], abortController.signal, auth.accessToken)
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        fetchingFormsList(abortController.signal, true)
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title:'',
+          message:'Form deleted successfully'
+        })
+        setSelectionModel([])
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: response?.data?.error?.message || 'Something gone wrong',
+        })
+      }
+    }
+
+    setIsDataGridLoading(false)
+    abortController.abort()
+  }
+
   useEffect(() => {
     if (selectionModel.length === 1) {
       setIsFlyoutShown(true)
+    } else {
+      setIsFlyoutShown(false)
     }
   }, [selectionModel])
+
+  // SIDE EFFECT FETCHING DATA
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    fetchingFormsList(abortController, isMounted)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [filters, pageNumber, pageSize])
 
   return (
     <>
@@ -252,20 +364,17 @@ const Forms = () => {
         setDialogConfirmationObject={setDialogDeleteForms}
         cancelButtonText='Cancel'
         continueButtonText='Delete'
-        onContinueButtonClick={() => {
-          setDialogDeleteForms({})
-          setSnackbarObject({
-            open: true,
-            severity:'success',
-            title:'',
-            message:'Form deleted successfully'
-          })
-        }}
+        onContinueButtonClick={() => handleDeleteFormTemplate()}
         onCancelButtonClick={() => setDialogDeleteForms({})}
       />
 
       {/* DIALOG GROUP */}
-      <DialogChangeGroup data={groupData} />
+      <DialogChangeGroup
+        dataChecked={groupData}
+        page='form-template'
+        selectedItemId={selectionModel[0]}
+        reloadData={fetchingFormsList}
+      />
     </>
   )
 }

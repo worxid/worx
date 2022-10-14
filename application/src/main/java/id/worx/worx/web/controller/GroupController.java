@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.request.GroupRequest;
+import id.worx.worx.common.model.request.MultipleDeleteRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
@@ -54,6 +55,13 @@ public class GroupController implements SecuredRestController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
+        groupService.delete(request.getIds());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(BaseResponse.builder().build());
     }
 
     @GetMapping("{id}")
