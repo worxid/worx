@@ -22,8 +22,9 @@ import IconClear from '@mui/icons-material/Clear'
 import IconSearch from '@mui/icons-material/Search'
 
 // SERVICES
-import { putAssignGroupFormTemplate } from 'services/formTemplate'
 import { getGroupList } from 'services/group'
+import { putAssignGroupDevices } from 'services/devices'
+import { putAssignGroupFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useLayoutStyles from './dialogChangeGroupUseStyles'
@@ -62,7 +63,14 @@ const DialogChangeGroup = (props) => {
           auth.accessToken
         )
       } else if (page === 'devices') {
-        // DEVICE SAVE GROUP
+        response = await putAssignGroupDevices(
+          selectedItemId,
+          abortController.signal,
+          {
+            group_ids: listSelectedGroupId
+          },
+          auth.accessToken,
+        )
       }
 
       if(didSuccessfullyCallTheApi(response?.status)) {
@@ -109,7 +117,7 @@ const DialogChangeGroup = (props) => {
       setGroupChecked([ ...groupChecked, itemGroup ])
     } else {
       // UNCHECKED
-      const tempGroupChecked = groupChecked.filter(item => item.id !== itemGroup.id)
+      const tempGroupChecked = groupChecked.filter(item => item.name !== itemGroup.name)
       setGroupChecked(tempGroupChecked)
     }
   }
@@ -137,11 +145,15 @@ const DialogChangeGroup = (props) => {
   // SIDE EFFECT SET GROUP CHECKED
   useEffect(() => {
     if(dataChecked?.length) {
-      setGroupChecked(dataChecked)
+      page === 'form-template' && setGroupChecked(dataChecked)
+      page === 'devices' && setGroupChecked(dataChecked.map(item => {
+        const findItemGroup = groupList.find(itemGroup => itemGroup.name === item.name)
+        return findItemGroup
+      }))
     } else {
       setGroupChecked([])
     }
-  }, [dataChecked])
+  }, [dataChecked, groupList])
 
   return (
     <DialogForm 
