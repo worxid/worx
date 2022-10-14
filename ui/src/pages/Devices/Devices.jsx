@@ -44,8 +44,8 @@ const Devices = () => {
     {
       field: 'device_status',
       headerName: 'Status',
-      //flex: 1,
-      width: 120,
+      flex: 1,
+      minWidth: 125,
       hide: false,
       areFilterAndSortShown: true,
       renderCell: (params) =>
