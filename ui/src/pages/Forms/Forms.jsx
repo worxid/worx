@@ -245,8 +245,8 @@ const Forms = () => {
         setSnackbarObject({
           open: true,
           severity:'error',
-          title:'',
-          message:'Something gone wrong'
+          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: response?.data?.error?.message || 'Something gone wrong',
         })
       }
     }
@@ -263,7 +263,7 @@ const Forms = () => {
     }
   }, [selectionModel])
 
-  // SIDE EFFECT FILTERS
+  // SIDE EFFECT FETCHING DATA
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
