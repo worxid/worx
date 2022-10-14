@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailServiceImpl implements EmailService {
 
     private final WorxProperties worxProps;
-    private static final String EMAIL_RESET_PASSWORD_TEMPLATE = "email-reset-password.html";
     private static final String RESET_PASSWORD_EMAIL = "email-reset-passsword";
     private static final String EMAIL_CONFIRMATION = "email-confirmation";
     private static final String SHARE_TEMPLATE = "email-share-link";
@@ -54,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
         Context context = new Context();
         context.setVariable("confirmationUrl", content);
         context.setVariable("greeting", String.format("Hi %s,", email));
-        String body = templateEngine.process(EMAIL_RESET_PASSWORD_TEMPLATE, context);
+        String body = templateEngine.process(RESET_PASSWORD_EMAIL, context);
         EmailDTO emailDTO = EmailDTO.builder()
                 .from(worxProps.getMail().getFromAddress())
                 .to(email)
@@ -74,7 +73,7 @@ public class EmailServiceImpl implements EmailService {
         EmailDTO emailDTO = EmailDTO.builder()
                 .from(worxProps.getMail().getFromAddress())
                 .to(email)
-                .content(url)
+                .content(body)
                 .subject("Fill Your Form with Worx")
                 .build();
         sendEmail(emailDTO);
@@ -85,7 +84,7 @@ public class EmailServiceImpl implements EmailService {
         Context context = new Context();
         context.setVariable("confirmationUrl", url);
         context.setVariable("greeting", String.format("Hi %s,", fullname));
-        String body = templateEngine.process(EMAIL_RESET_PASSWORD_TEMPLATE, context);
+        String body = templateEngine.process(RESET_PASSWORD_EMAIL, context);
         EmailDTO emailDTO = EmailDTO.builder()
             .from(worxProps.getMail().getFromAddress())
             .to(email)
