@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,6 +64,7 @@ public class UsersController {
 
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
+            data.put("refreshToken", createRefreshToken(loginRequest.getEmail()));
 
             JwtResponse response = new JwtResponse();
             response.setData(data);
@@ -89,7 +91,15 @@ public class UsersController {
         String message = usersService.resetPassword(resetPasswordRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<JwtResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest)
+        throws Exception {
 
+        JwtResponse response = usersService.refreshToken(tokenRefreshRequest);
+
+
+        return ResponseEntity.ok(response);
+    }
     @CrossOrigin
     @PostMapping("/reset-password/verify")
     public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) throws Exception {
@@ -112,5 +122,18 @@ public class UsersController {
     public void verifyAccount(@RequestParam String code, HttpServletResponse httpServletResponse) throws IOException {
 
         usersService.verifyAccount(code,httpServletResponse);
+    }
+
+
+    public String createRefreshToken(String email){
+        String token = usersService.createRefreshToken(email);
+
+        return token;
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody TokenRefreshRequest request) {
+        usersService.logout(request);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
     }
 }
