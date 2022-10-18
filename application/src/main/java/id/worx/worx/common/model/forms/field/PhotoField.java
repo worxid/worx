@@ -1,12 +1,17 @@
 package id.worx.worx.common.model.forms.field;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.common.exception.FormValidationErrorDetail;
+import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.InvalidParameterException;
 import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -45,8 +50,29 @@ public class PhotoField extends Field {
 
     @Override
     public List<ErrorDetail> validate(Value value) {
-        // TODO Auto-generated method stub
-        return List.of();
+        List<ErrorDetail> details = new ArrayList<>();
+
+        if (Objects.isNull(value)) {
+            if (this.getRequired().equals(Boolean.TRUE)) {
+                details.add(new FormValidationErrorDetail(FormValidationReason.NO_VALUE_ON_REQUIRED, this.getId()));
+            }
+
+            return details;
+        }
+
+        if (!(value instanceof PhotoValue)) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FIELD_TYPE, this.getId()));
+            return details;
+        }
+
+        PhotoValue fileValue = (PhotoValue) value;
+        List<Long> fileIds = fileValue.getFileIds();
+
+        if (fileIds.size() > this.maxFiles) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.VALUE_MORE_THAN_MAXIMUM, this.getId()));
+        }
+
+        return details;
     }
 
 }
