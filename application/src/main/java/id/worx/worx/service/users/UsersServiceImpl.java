@@ -345,4 +345,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
         return resultPhone;
     }
+
+    @Override
+    public Users findByEmail(String email){
+
+        Optional<Users> getUser = usersRepository.findByEmail(email);
+
+        return getUser.get();
+    }
 }

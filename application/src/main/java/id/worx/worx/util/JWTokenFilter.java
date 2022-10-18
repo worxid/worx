@@ -67,7 +67,6 @@ public class JWTokenFilter extends OncePerRequestFilter {
 
         return userDetails;
     }
-
     private boolean hasAuthorizationHeader(HttpServletRequest request){
 
         String header = request.getHeader("Authorization");
