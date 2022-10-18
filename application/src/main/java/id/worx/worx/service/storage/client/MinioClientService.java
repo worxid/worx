@@ -8,9 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
+import id.worx.worx.common.exception.ObjectStorageErrorDetail;
 import id.worx.worx.config.properties.WorxProperties;
+import id.worx.worx.exception.WorxErrorCode;
+import id.worx.worx.exception.WorxException;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
+import io.minio.StatObjectArgs;
+import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -28,6 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MinioClientService {
 
     private static final int PRESIGNED_URL_EXPIRY_DAYS = 1;
+    private static final String NO_SUCH_KEY_STRING_VALUE = "NoSuchKey";
+    private static final String MINIO_ERROR_MESSAGE_STRING = "Error while dowloading file from MinIO";
+
 
     private final WorxProperties props;
 
@@ -58,6 +66,54 @@ public class MinioClientService {
             InsufficientDataException, InternalException, InvalidResponseException, NoSuchAlgorithmException,
             XmlParserException, ServerException, IllegalArgumentException, IOException {
         return this.getPresignedObjectUrl(Method.PUT, path);
+    }
+
+    public String getDownloadPresignedObjectUrl(String path) throws InvalidKeyException, ErrorResponseException,
+            InsufficientDataException, InternalException, InvalidResponseException, NoSuchAlgorithmException,
+            XmlParserException, ServerException, IllegalArgumentException, IOException {
+        return this.getPresignedObjectUrl(Method.GET, path);
+    }
+
+    public boolean isObjectExist(String path) {
+        try {
+            client.statObject(StatObjectArgs.builder()
+                    .bucket(props.getStorage().getBucketName())
+                    .object(path)
+                    .build());
+            return true;
+        } catch (ErrorResponseException e) {
+            return e.errorResponse().code().equals(NO_SUCH_KEY_STRING_VALUE);
+        } catch (InvalidKeyException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
+                | IllegalArgumentException | IOException e) {
+            log.error(MINIO_ERROR_MESSAGE_STRING, e);
+            return false;
+        }
+    }
+
+    public StatObjectResponse getStatObjectResponse(String path) {
+        try {
+            return client.statObject(StatObjectArgs.builder()
+                    .bucket(props.getStorage().getBucketName())
+                    .object(path)
+                    .build());
+        } catch (ErrorResponseException e) {
+
+            if (e.errorResponse().code().equals(NO_SUCH_KEY_STRING_VALUE)) {
+                throw new WorxException(
+                    WorxErrorCode.OBJECT_STORAGE_ERROR, List.of(new ObjectStorageErrorDetail()));
+            }
+            log.error(MINIO_ERROR_MESSAGE_STRING, e);
+            throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
+
+        } catch (InvalidKeyException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
+                | IllegalArgumentException | IOException e) {
+
+            log.error(MINIO_ERROR_MESSAGE_STRING, e);
+            throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
+
+        }
     }
 
 }
