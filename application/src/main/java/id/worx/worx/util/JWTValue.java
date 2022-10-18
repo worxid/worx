@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 @Getter
