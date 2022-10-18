@@ -180,6 +180,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
 
         Optional<Users> optionalUsers = usersRepository.findByEmail(updatePasswordRequest.getEmail());
+        if(optionalUsers.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
         Users getUsers = optionalUsers.get();
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -299,7 +302,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public UserDetailsResponse getByEmail(String email) {
         Optional<Users> getEmail = usersRepository.findByEmail(email);
-        if(!getEmail.isPresent()){
+        if(getEmail.isEmpty()){
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
         Users data = getEmail.get();
@@ -350,7 +353,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public Users findByEmail(String email){
 
         Optional<Users> getUser = usersRepository.findByEmail(email);
-
+        if(getUser.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
         return getUser.get();
     }
 }

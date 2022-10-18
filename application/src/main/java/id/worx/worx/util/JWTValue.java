@@ -9,10 +9,10 @@ import java.util.Base64;
 @Getter
 @Setter
 public class JWTValue {
-    public String sub;
-    public String iss;
-    public String iat;
-    public String exp;
+    private String sub;
+    private String iss;
+    private String iat;
+    private String exp;
 
     public static JWTValue getDecoded(String encodedToken) {
         String[] pieces = encodedToken.split("\\.");
