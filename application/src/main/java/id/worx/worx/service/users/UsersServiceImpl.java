@@ -7,6 +7,7 @@ import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
@@ -68,15 +69,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Users> users = usersRepository.findByEmail(email);
 
-        if(users == null){
+        if(users.isEmpty()){
             throw new WorxException(WorxErrorCode.USERNAME_EXIST);
         }else{
             log.info("User found in the database : {} ", email);
         }
         Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
-        users.get().getRoles().forEach(role -> {
-            authotities.add(new SimpleGrantedAuthority(role.getName()) );
-            });
+
         return new User(users.get().getEmail(), users.get().getPassword(), authotities);
     }
     @Transactional
@@ -137,21 +136,14 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         JwtResponse jwtResponse = new JwtResponse();
         log.info("get users by email : {} ", loginRequest.getEmail());
-        Optional<Users> users = usersRepository.findByEmail(loginRequest.getEmail());
-        if(users != null){
+        Optional<Users>  users = usersRepository.findByEmail(loginRequest.getEmail());
+        if(users.isPresent()){
 
             try{
-
-//                Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-//                );
-//
-//                Users getPrincipal = (Users) authentication.getPrincipal();
                 String accessToken = "JWT Access Token here";
 
                 Map<String, Object> data = new HashMap<>();
                 data.put("accessToken", accessToken);
-                //data.put("email", getPrincipal.getEmail());
 
                 jwtResponse.setData(data);
                 jwtResponse.setStatus(HttpStatus.OK.value());
@@ -186,6 +178,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
 
         Optional<Users> optionalUsers = usersRepository.findByEmail(updatePasswordRequest.getEmail());
+        if(optionalUsers.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
         Users getUsers = optionalUsers.get();
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -196,7 +191,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         if(optionalUsers.isPresent()){
 
-            if ((matchPassword==true)){
+            if (matchPassword){
                 getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
                 usersRepository.save(getUsers);
 
@@ -261,18 +256,19 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
 
             Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
-            Users updateUsers = users.get();
+            if(users.isPresent()){
+                Users updateUsers = users.get();
 
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            updateUsers.setPassword(passwordEncoder.encode(changePasswordToken.getNewPassword()));
-            usersRepository.save(updateUsers);
+                updateUsers.setPassword(passwordEncoder.encode(changePasswordToken.getNewPassword()));
+                usersRepository.save(updateUsers);
 
 
-            EmailToken updateData = checkData.get();
-            updateData.setStatus(EmailTokenStatus.USED);
-            emailTokenRepository.save(updateData);
-
+                EmailToken updateData = checkData.get();
+                updateData.setStatus(EmailTokenStatus.USED);
+                emailTokenRepository.save(updateData);
+            }
         }else{
             throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
         }
@@ -300,6 +296,24 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
 
     }
+
+    @Override
+    public UserDetailsResponse getByEmail(String email) {
+        Optional<Users> getEmail = usersRepository.findByEmail(email);
+        if(getEmail.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
+        Users data = getEmail.get();
+        UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+        userDetailsResponse.setCountry(data.getCountry());
+        userDetailsResponse.setOrganizationName(data.getOrganizationName());
+        userDetailsResponse.setOrganizationCode(data.getOrganizationCode());
+        userDetailsResponse.setEmail(data.getEmail());
+        userDetailsResponse.setPhone(data.getPhone());
+
+        return userDetailsResponse;
+    }
+
     public String organizationCode(){
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -338,5 +352,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
+    }
+    public Users findByEmail(String email){
+
+        Optional<Users> getUser = usersRepository.findByEmail(email);
+        if(getUser.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
+        return getUser.get();
     }
 }
