@@ -1,8 +1,10 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.exception.TokenException;
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.auth.TokenRefreshResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
@@ -18,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,9 +46,16 @@ public class UsersController {
     JwtUtils jwtUtils;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+    public ResponseEntity<BaseValueResponse<UserResponse>> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+        Users users = usersService.createUser(userRequest,httpServletRequest);
+        UserResponse dto = usersService.toDTO(users);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(usersService.createUser(userRequest,httpServletRequest));
+        BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()
+            .value(dto)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
     }
 
     @PostMapping("/login")

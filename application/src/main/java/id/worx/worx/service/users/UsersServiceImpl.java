@@ -3,14 +3,17 @@ package id.worx.worx.service.users;
 import id.worx.worx.common.enums.EmailTokenStatus;
 import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.common.enums.UserStatus;
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.UsersMapper;
 import id.worx.worx.repository.EmailTokenRepository;
 import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
@@ -57,6 +60,9 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UsersMapper usersMapper;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -74,7 +80,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         return new User(users.get().getEmail(), users.get().getPassword(), authotities);
     }
     @Transactional
-    public UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
+    public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
         String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
@@ -94,8 +100,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             throw new WorxException(WorxErrorCode.EMAIL_EXIST);
         }
 
-        try{
-
             //phone no validation
             String phone = formatPhone(userRequest.getPhoneNo(), "ID");
 
@@ -111,7 +115,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             users.setCountry(userRequest.getCountry().toUpperCase());
             users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             users.setOrganizationCode(organizationCode());
-            usersRepository.save(users);
+            users = usersRepository.save(users);
 
             EmailToken emailToken = new EmailToken();
             emailToken.setToken(random);
@@ -125,13 +129,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
             emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
-
-        }catch (Exception e){
-            throw new WorxException(WorxErrorCode.REQUEST_DATA);
-        }
-
-        return null;
-
+            return users;
 
     }
 
@@ -330,8 +328,15 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             String get2FirstCharacter = phone.substring(0,2);
             if(get2FirstCharacter.equals("08")){
                 resultPhone = "62"+phone.substring(1);
+            }else{
+                resultPhone = phone;
             }
         }
         return resultPhone;
+    }
+
+    @Override
+    public UserResponse toDTO(Users users) {
+        return usersMapper.toDto(users);
     }
 }
