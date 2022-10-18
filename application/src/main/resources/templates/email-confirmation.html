@@ -1,0 +1,102 @@
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Email Verification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+
+<body yahoo="" bgcolor="#f8f9fa" style="margin: 0; padding: 0; min-width: 100% !important">
+<table width="100%" bgcolor="#f8f9fa" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <table class="content" align="center" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 541.31px; border: 2px solid rgba(0, 0, 0, 0.87);">
+        <tr>
+          <td bgcolor="#ffffff" class="header" style="padding: 48px 30px 0 30px">
+            <table align="center" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding: 0 0 0 0">
+                  <img class="fix" src="https://i.ibb.co/j4vm3Z1/worx.png" height="40"
+                       width="100%" alt="worx-logo" />
+                  <h1 style="
+                            font-family: 'Open Sans', sans-serif;
+                            font-weight: 600;
+                            font-size: 16px;
+                            line-height: 22px;
+                            text-align: center;
+                          ">Welcome to Worx</h1>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#ffffff" class="innerpadding borderbottom" style="padding: 24px 52px 64px 52px;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="bodycopy" style="
+                            color: #000000;
+                            font-family: 'Open Sans', sans-serif;
+                            font-size: 12px;
+                            line-height: 16.34px;
+                          ">
+                  <p th:text="${greeting}">Hi, Selena Gomez!</p>
+                  <p style="margin-top: 18px;">
+                    Thank you for registering in our application! Worx is a new and easy way to monitor fleet that you have.
+                  </p>
+                  <p style="margin-top: 18px;">
+                    To login your account, please click the button below:
+                  </p>
+                  <table align="center" class="buttonwrapper" border="0" cellspacing="0" cellpadding="0"
+                         style="margin-top: 30px">
+                    <tr>
+                      <td class="button" width="181" height="36" bgcolor="#DA3630" style="
+                                  text-align: center;
+                                  border: 2px solid rgba(0, 0, 0, 0.87);
+                                  box-shadow: 2px 2px 0px #000000;
+                                ">
+                        <a th:href="${confirmationUrl}" target="_blank" style="
+                                    font-family: 'Space Mono', sans-serif;
+                                    font-style: normal;
+                                    font-weight: 700;
+                                    font-size: 14px;
+                                    line-height: 24px;
+                                    color: #ffffff;
+                                    letter-spacing: 0.4px;
+                                    text-decoration: none;
+                                  ">Confirm Account</a>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="padding: 20px 0 0 0">
+                    By clicking on the button above you will be logged in to your new account at
+                    Worx and have to complete access to all features. You also agree to receive
+                    occasional emails with helpful hints, product updates, and industry news.
+                  </p>
+                  <p style="margin-top: 18px;">
+                    Thank you<br />
+                    Everyone at Worx
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 12px" align="center" bgcolor="#ffffff">
+            <p style="margin: 0; font-family: 'Open Sans', sans-serif; font-size: 12px;">®worx 2021</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>
+
+<!-- -->

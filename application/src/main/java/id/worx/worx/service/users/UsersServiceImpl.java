@@ -13,11 +13,9 @@ import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.EmailTokenRepository;
-import id.worx.worx.web.mailTemplate.EmailVerification;
-import id.worx.worx.web.mailTemplate.ResetPasswordMail;
+import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
-import id.worx.worx.service.MailService;
 import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +56,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private  JwtUtils jwtUtils;
 
     @Autowired
-    private MailService mailService;
+    private EmailService emailService;
 
 
     @Override
@@ -123,10 +121,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             emailTokenRepository.save(emailToken);
 
             String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
-            String subject = "WORX - Email Confirmation";
-            String mailBody = EmailVerification.EmailVerify(url,userRequest.getFullname());
 
-            mailService.sendEmailTemplate(userRequest.getEmail(),subject,mailBody,true,true);
+            emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
 
         }catch (Exception e){
@@ -229,10 +225,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             emailTokenRepository.save(emailToken);
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
-            String subject = "WORX - Reset Password";
-            String mailBody = ResetPasswordMail.ResetPasswordTemplate(url,checkEmail.get().getFullname());
 
-            mailService.sendEmailTemplate(email,subject,mailBody,false,true);
+            emailService.sendResetPassword(email,checkEmail.get().getFullname(),url);
 
             return "Reset Password Request Success, Please check your email";
         }catch (Exception e){
