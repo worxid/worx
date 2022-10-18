@@ -3,11 +3,12 @@ package id.worx.worx.web.controller;
 import id.worx.worx.common.exception.TokenException;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
-import id.worx.worx.common.model.response.auth.TokenRefreshResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.users.Users;
-import id.worx.worx.exception.WorxException;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JwtUtils;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/users")
@@ -41,6 +40,9 @@ public class UsersController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    AuthenticationContext authenticationContext;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
@@ -84,15 +86,14 @@ public class UsersController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest)
-        throws Exception {
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         String message = usersService.resetPassword(resetPasswordRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     @CrossOrigin
     @PostMapping("/reset-password/verify")
-    public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) throws Exception {
+    public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) {
         try {
             usersService.verifyPasswordResetToken(changePasswordToken);
         } catch (TokenException e) {
@@ -112,5 +113,19 @@ public class UsersController {
     public void verifyAccount(@RequestParam String code, HttpServletResponse httpServletResponse) throws IOException {
 
         usersService.verifyAccount(code,httpServletResponse);
+    }
+    @GetMapping("/user-details")
+    public ResponseEntity<BaseValueResponse<UserDetailsResponse>> getInfoDevice() {
+
+        String email = authenticationContext.getEmail();
+
+        UserDetailsResponse users = usersService.getByEmail(email);
+
+        BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
+            .value(users)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
     }
 }
