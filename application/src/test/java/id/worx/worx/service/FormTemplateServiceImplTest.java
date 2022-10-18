@@ -40,6 +40,9 @@ class FormTemplateServiceImplTest {
 
     private FormTemplateService templateService;
 
+    @Mock
+    AuthContext authContext;
+
     @BeforeEach
     void init() {
         templateService = new FormTemplateServiceImpl(
@@ -47,7 +50,8 @@ class FormTemplateServiceImplTest {
                 templateRepository,
                 groupRepository,
                 templateMapper,
-                specification);
+                specification,
+                authContext);
     }
 
     @Test
