@@ -4,6 +4,8 @@ import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
+import id.worx.worx.entity.users.Users;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +13,7 @@ import java.io.IOException;
 
 public interface UsersService {
 
-    UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
+    Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
 
 
     String changePassword(ChangePasswordRequest updatePasswordRequest);
@@ -26,5 +28,10 @@ public interface UsersService {
     void logout(TokenRefreshRequest request);
 
     JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest);
+
+    UserResponse toDTO(Users users);
+    UserDetailsResponse getByEmail(String email);
+
+    Users findByEmail(String email);
 
 }

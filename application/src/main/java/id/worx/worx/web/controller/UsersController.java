@@ -1,13 +1,15 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.exception.TokenException;
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
-import id.worx.worx.common.model.response.auth.TokenRefreshResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.users.Users;
-import id.worx.worx.exception.WorxException;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JwtUtils;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,9 +29,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/users")
@@ -43,10 +43,20 @@ public class UsersController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+    @Autowired
+    AuthenticationContext authenticationContext;
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(usersService.createUser(userRequest,httpServletRequest));
+    @PostMapping("/register")
+    public ResponseEntity<BaseValueResponse<UserResponse>> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+        Users users = usersService.createUser(userRequest,httpServletRequest);
+        UserResponse dto = usersService.toDTO(users);
+
+        BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()
+            .value(dto)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
     }
 
     @PostMapping("/login")
@@ -86,8 +96,7 @@ public class UsersController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest)
-        throws Exception {
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         String message = usersService.resetPassword(resetPasswordRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
@@ -102,7 +111,7 @@ public class UsersController {
     }
     @CrossOrigin
     @PostMapping("/reset-password/verify")
-    public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) throws Exception {
+    public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) {
         try {
             usersService.verifyPasswordResetToken(changePasswordToken);
         } catch (TokenException e) {
@@ -135,5 +144,19 @@ public class UsersController {
     public ResponseEntity<String> logout(@Valid @RequestBody TokenRefreshRequest request) {
         usersService.logout(request);
         return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
+    }
+    @GetMapping("/user-details")
+    public ResponseEntity<BaseValueResponse<UserDetailsResponse>> getInfoDevice() {
+
+        String email = authenticationContext.getEmail();
+
+        UserDetailsResponse users = usersService.getByEmail(email);
+
+        BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
+            .value(users)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
     }
 }

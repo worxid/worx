@@ -22,6 +22,7 @@
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 		<com.aventrix.jnanoid.version>2.0.0</com.aventrix.jnanoid.version>
 		<hibernate-jpamodelgen.version>5.6.11.Final</hibernate-jpamodelgen.version>
+		<minio.version>8.4.5</minio.version>
 		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
 		<sonar.organization>worxid</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -89,6 +90,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc-openapi.version}</version>
@@ -115,6 +121,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>${minio.version}</version>
 		</dependency>
 	</dependencies>
 

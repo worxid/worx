@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     '&:hover': {
       boxShadow: 'none'
+    },
+    '&.Mui-disabled': {
+      backgroundColor: theme.palette.primary.main,
     }
   },
   buttonRedLight: {

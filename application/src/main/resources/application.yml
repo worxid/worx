@@ -32,3 +32,8 @@ worx:
   mail:
     from-address: ${WORX_EMAIL_FROM_ADDRESS}
     from-name: ${WORX_EMAIL_FROM_NAME}
+  storage:
+    endpoint: ${WORX_STORAGE_ENDPOINT}
+    access-key: ${WORX_STORAGE_ACCESS_KEY}
+    secret-key: ${WORX_STORAGE_SECRET_KEY}
+    bucket-name: ${WORX_STORAGE_BUCKET_NAME}

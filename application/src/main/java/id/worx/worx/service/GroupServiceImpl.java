@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import id.worx.worx.web.model.request.GroupSearchRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.GroupDTO;
@@ -52,16 +55,38 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Long id) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        Set<FormTemplate> templates = group.getTemplates();
-        for (FormTemplate template : templates) {
-            template.getAssignedGroups().remove(group);
+        this.delete(group);
+    }
+
+    @Override
+    public void delete(List<Long> ids) {
+        List<Group> groups = groupRepository.findAllById(ids);
+        for (Group group : groups) {
+            this.delete(group);
         }
-        groupRepository.delete(group);
     }
 
     @Override
     public GroupDTO toDTO(Group group) {
         return groupMapper.toDTO(group);
+    }
+
+    @Override
+    public Page<Group> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
+        return groupRepository.search(groupSearchRequest.getId(),
+            groupSearchRequest.getName(),
+            groupSearchRequest.getColor(),
+            groupSearchRequest.getDeviceCount(),
+            groupSearchRequest.getFormCount(),
+            pageable);
+    }
+
+    private void delete(Group group) {
+        Set<FormTemplate> templates = group.getTemplates();
+        for (FormTemplate template : templates) {
+            template.getAssignedGroups().remove(group);
+        }
+        groupRepository.delete(group);
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {

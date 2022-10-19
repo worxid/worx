@@ -3,8 +3,8 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   iconStatusSize: {
-    height: 12,
-    width: 12
+    height: 16,
+    width: 16
   },
 }))
 
