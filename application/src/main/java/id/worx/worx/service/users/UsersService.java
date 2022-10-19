@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public interface UsersService {
 
-    UserResponse createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
+    Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
 
 
     String changePassword(ChangePasswordRequest updatePasswordRequest);
@@ -23,6 +23,7 @@ public interface UsersService {
 
     void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException;
 
+    UserResponse toDTO(Users users);
     UserDetailsResponse getByEmail(String email);
 
     Users findByEmail(String email);
