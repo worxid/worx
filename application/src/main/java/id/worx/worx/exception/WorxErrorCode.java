@@ -19,6 +19,17 @@ public enum WorxErrorCode {
      */
     FORM_VALIDATION_ERROR(12, "There were errors during content validation", HttpStatus.BAD_REQUEST),
 
+    /**
+     * {@code Object Storage error}
+     */
+    OBJECT_STORAGE_ERROR(12, "Something wrong with the object storage.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    /**
+     * {@code Object Storage Upload error}
+     * This error is used to notify user to not upload to this path because another file exists.
+     */
+    OBJECT_STORAGE_UPLOAD_ERROR(12, "Something wrong with the object storage.", HttpStatus.FORBIDDEN),
+
     PATTERN_PASSWORD_VALIDATION(14,
             "Character must 8 Character & Combination Uppercase,Lowercase and Special Character [!@#$%^&*_]",
             HttpStatus.BAD_REQUEST),
@@ -41,6 +52,12 @@ public enum WorxErrorCode {
      * {@code Device is registered error}
      */
     DEVICE_ALREADY_REGISTERED(22, "Device is already registered to the Organization (code).", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Device is registered error}
+     */
+    DEVICE_NOT_REGISTERED(22, "Device is not registered.", HttpStatus.BAD_REQUEST),
+
     INVALID_PHONE_NO(23, "Phone Number must be Number Only", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
 

@@ -32,3 +32,8 @@ worx:
   mail:
     from-address: from@example.com
     from-name: Magic Elves
+  storage:
+    endpoint: http://103.30.246.130:9000
+    access-key: worxtest
+    secret-key: worxtest
+    bucket-name: worx-dev-test
