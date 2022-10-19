@@ -21,23 +21,15 @@ public class MobileMediaController {
 
     @GetMapping("presigned-url")
     public ResponseEntity<UrlPresignedResponse> getPresignedUrlForUpload(
-            @RequestHeader(value = "device-code") String deviceCode,
+            @RequestHeader(value = "deviceCode") String deviceCode,
             @RequestParam String filename) {
                 return ResponseEntity.status(HttpStatus.OK)
                 .body(storageService.getUploadUrl(filename));
     }
 
-    @GetMapping("presigned-url")
-    public ResponseEntity<UrlPresignedResponse> getPresignedUrlForUpload(
-            @RequestHeader(value = "device-code") String deviceCode,
-            @RequestParam Long fileId) {
-                return ResponseEntity.status(HttpStatus.OK)
-                .body(storageService.getUploadUrl(fileId));
-    }
-
     @GetMapping("download-presigned-url")
     public ResponseEntity<UrlPresignedResponse> getPresignedUrlForDownload(
-            @RequestHeader(value = "device-code") String deviceCode,
+            @RequestHeader(value = "deviceCode") String deviceCode,
             @RequestParam Long fileId) {
                 return ResponseEntity.status(HttpStatus.OK)
                 .body(storageService.getDownloadUrl(fileId));

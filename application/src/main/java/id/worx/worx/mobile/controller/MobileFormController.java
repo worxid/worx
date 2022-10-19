@@ -41,7 +41,7 @@ public class MobileFormController {
 
     @PostMapping("submit")
     public ResponseEntity<BaseValueResponse<FormDTO>> submit(
-            @RequestHeader(value = "device-code") String deviceCode,
+            @RequestHeader(value = "deviceCode") String deviceCode,
             @RequestBody @Valid MobileFormSubmitRequest request) {
         request.setDeviceCode(deviceCode);
         Form form = formService.submit(request);
@@ -56,7 +56,7 @@ public class MobileFormController {
 
     @GetMapping
     public ResponseEntity<BaseListResponse<MobileFormTemplateDTO>> list(
-            @RequestHeader(value = "device-code") String deviceCode) {
+            @RequestHeader(value = "deviceCode") String deviceCode) {
         // TODO filter by device code
         List<FormTemplate> templates = templateService.list();
         List<MobileFormTemplateDTO> list = templates.stream()
@@ -71,7 +71,7 @@ public class MobileFormController {
 
     @GetMapping("submissions")
     public ResponseEntity<BaseListResponse<MobileFormDTO>> submissionList(
-            @RequestHeader(value = "device-code") String deviceCode) {
+            @RequestHeader(value = "deviceCode") String deviceCode) {
         List<Form> forms = formService.list(deviceCode);
         List<MobileFormDTO> list = forms.stream()
                 .map(formMapper::toMobileDTO)
