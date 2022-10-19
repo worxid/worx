@@ -14,6 +14,7 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.storage.client.MinioClientService;
 import id.worx.worx.util.MediaUtils;
+import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -111,18 +112,24 @@ public class MinioService implements FileStorageService {
     }
 
     @Override
-    public Boolean isObjectExist(String path) {
+    public boolean isObjectExist(String path) {
         return clientService.isObjectExist(path);
     }
 
-    private File findByIdorElseThrowNotFound(Long id) {
-        Optional<File> template = fileRepository.findById(id);
+    @Override
+    public long getObjectSize(String path) {
+        StatObjectResponse response = clientService.getStatObjectResponse(path);
+        return response.size();
+    }
 
-        if (template.isEmpty()) {
+    private File findByIdorElseThrowNotFound(Long id) {
+        Optional<File> file = fileRepository.findById(id);
+
+        if (file.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
-        return template.get();
+        return file.get();
     }
 
 }

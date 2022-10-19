@@ -82,7 +82,7 @@ public class MinioClientService {
                     .build());
             return true;
         } catch (ErrorResponseException e) {
-            return e.errorResponse().code().equals(NO_SUCH_KEY_STRING_VALUE);
+            return !e.errorResponse().code().equals(NO_SUCH_KEY_STRING_VALUE);
         } catch (InvalidKeyException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
                 | IllegalArgumentException | IOException e) {

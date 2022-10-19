@@ -16,7 +16,9 @@ public interface FileStorageService {
 
     UrlPresignedResponse getDownloadUrl(Long fileId);
 
-    Boolean isObjectExist(String path);
+    boolean isObjectExist(String path);
+
+    long getObjectSize(String path);
 
     default String generateUniquePath(String filename, String foldername) {
         DateFormat writeFormat = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss");
