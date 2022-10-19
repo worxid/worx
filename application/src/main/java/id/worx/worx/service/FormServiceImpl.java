@@ -28,6 +28,7 @@ import id.worx.worx.common.model.forms.value.SignatureValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.File;
+import id.worx.worx.entity.FileSubmission;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.RespondentType;
@@ -36,6 +37,7 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.FileRepository;
+import id.worx.worx.repository.FileSubmissionRepository;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
@@ -58,6 +60,7 @@ public class FormServiceImpl implements FormService {
 
     private final FileStorageService fileStorageService;
     private final FileRepository fileRepository;
+    private final FileSubmissionRepository fileSubmissionRepository;
 
     @Override
     public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
@@ -74,6 +77,7 @@ public class FormServiceImpl implements FormService {
         form.setRespondentIP("0.0.0.0");
 
         form = formRepository.save(form);
+        updateFileState(form, request.getFields(), request.getValues());
         return form;
     }
 
@@ -87,6 +91,7 @@ public class FormServiceImpl implements FormService {
         form.setRespondentDeviceCode(request.getDeviceCode());
 
         form = formRepository.save(form);
+        updateFileState(form, request.getFields(), request.getValues());
         return form;
     }
 
@@ -125,6 +130,7 @@ public class FormServiceImpl implements FormService {
         Form form = formMapper.fromSubmitRequest(request);
         form.setTemplate(template);
         form.setSubmitDate(Instant.now());
+
         return form;
     }
 
@@ -204,10 +210,82 @@ public class FormServiceImpl implements FormService {
             return details;
         }
 
-        long fileSize = fileStorageService.getObjectSize(file.getPath());
-        file.setSize(fileSize);
+        Optional<FileSubmission> fileSubmission = fileSubmissionRepository.findByFile(file);
+        if (fileSubmission.isPresent()) {
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION, fieldId));
+            return details;
+        }
+
+        // TODO validate min size
+        // TODO validate max size
+        // TODO validate allowed extension
 
         return details;
+    }
+
+    private void updateFileState(Form form, List<Field> fields, Map<String, Value> values) {
+        List<Field> signatureFields = fields.stream()
+                .filter(SignatureField.class::isInstance)
+                .collect(Collectors.toList());
+
+        for (Field field : signatureFields) {
+            Value value = values.get(field.getId());
+            SignatureValue signatureValue = (SignatureValue) value;
+            Long fileId = signatureValue.getFileId();
+            updateFileStateHelper(form, fileId, field.getId());
+        }
+
+        List<Field> fileFields = fields.stream()
+                .filter(FileField.class::isInstance)
+                .collect(Collectors.toList());
+
+        for (Field field : fileFields) {
+            Value value = values.get(field.getId());
+            FileValue fileValue = (FileValue) value;
+            List<Long> fileIds = fileValue.getFileIds();
+            for (Long fileId : fileIds) {
+                updateFileStateHelper(form, fileId, field.getId());
+            }
+        }
+
+        List<Field> photoFields = fields.stream()
+                .filter(PhotoField.class::isInstance)
+                .collect(Collectors.toList());
+
+        for (Field field : photoFields) {
+            Value value = values.get(field.getId());
+            PhotoValue photoValue = (PhotoValue) value;
+            List<Long> fileIds = photoValue.getFileIds();
+            for (Long fileId : fileIds) {
+                updateFileStateHelper(form, fileId, field.getId());
+            }
+        }
+
+    }
+
+    private void updateFileStateHelper(Form form, Long fileId, String fieldId) {
+        Optional<File> optFile = fileRepository.findById(fileId);
+        if (optFile.isEmpty()) {
+            return;
+        }
+
+        File file = optFile.get();
+        updateFileSize(file);
+
+        FileSubmission fileSubmission = FileSubmission.builder()
+                .file(file)
+                .form(form)
+                .fieldId(fieldId)
+                .isSubmitted(true)
+                .build();
+
+        fileSubmissionRepository.save(fileSubmission);
+    }
+
+    private void updateFileSize(File file) {
+        long fileSize = fileStorageService.getObjectSize(file.getPath());
+        file.setSize(fileSize);
+        fileRepository.save(file);
     }
 
 }

@@ -13,6 +13,7 @@ public enum FormValidationReason {
     INVALID_REFERENCE("Field contains invalid references."),
     INVALID_FILE_TYPE("Invalid file type."),
     INVALID_FILE_STATE("Invalid file state."),
+    INVALID_FILE_SUBMISSION("File is already used for another submission."),
     FUTURE_DATE_DISABLED("Date constraint is not met. Future date is disabled."),
     PAST_DATE_DISABLE("Date constraint is not met. Past date is disabled.");
 
