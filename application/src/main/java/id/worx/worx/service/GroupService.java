@@ -5,6 +5,9 @@ import java.util.List;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
+import id.worx.worx.web.model.request.GroupSearchRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface GroupService {
 
@@ -18,6 +21,10 @@ public interface GroupService {
 
     void delete(Long id);
 
+    void delete(List<Long> ids);
+
     GroupDTO toDTO(Group group);
+
+    Page<Group> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
 
 }

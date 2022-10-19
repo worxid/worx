@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react'
 
+// COMPONENTS
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
+
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
-import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -29,6 +31,7 @@ import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
+import { convertDate } from 'utilities/date'
 
 const MainMenu = (props) => {
   const { rows, setGroupData } = props
@@ -44,27 +47,48 @@ const MainMenu = (props) => {
     IconDateRange,
     IconGroups,
     IconCheckCircle,
-    IconViewHeadline,
     IconTextSnippet,
+    IconViewHeadline,
+  ]
+
+  const mainMenuTitleList = [
+    'Form Title', 'Description', 'Created', 'Modified', 'Groups', 'Submissions', 'Default Form', 'Fields'
   ]
 
   let mainMenuList = []
   if (rows.length === 1) {
     mainMenuList = Object.keys(rows[0])
-      .filter(key => key !== 'id')
+      .filter(key => {
+        return key !== 'id' && key !== 'fields' && key !== 'submit_in_zone'
+      })
       .map((key, index) => {
-        return {
-          title: key,
-          value: rows[0][key],
-          icon: mainMenuIconList[index],
+        if(key === 'default') {
+          return {
+            title: mainMenuTitleList[index],
+            value: rows[0][key] ? 'Yes' : 'No',
+            icon: mainMenuIconList[index],
+          }
+        } else if(key === 'modified_on' || key === 'created_on') {
+          return {
+            title: mainMenuTitleList[index],
+            value: convertDate(rows[0][key]),
+            icon: mainMenuIconList[index],
+          }
+        } else {
+          return {
+            title: mainMenuTitleList[index],
+            value: rows[0][key],
+            icon: mainMenuIconList[index],
+          }
         }
+        
       })
   }
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
 
   const handleChangeGroup = () => {
-    setGroupData(rows[0].groups)
+    setGroupData(rows[0].assigned_groups)
     setIsDialogFormOpen(true)
   }
 
@@ -109,7 +133,7 @@ const MainMenu = (props) => {
             >
               {/* ICON */}
               <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon/>
+                <item.icon />
               </ListItemIcon>
 
               {/* TEXT */}
@@ -123,18 +147,9 @@ const MainMenu = (props) => {
                   </Typography>
                 }
                 secondary={
-                  item.title === 'groups' 
-                    ? <Stack direction={'row'} alignItems='center'>
-                      <Typography variant='body2' className='colorTextPrimary'>
-                        {item.value[0]}&nbsp;
-                      </Typography>
-                      {
-                        item.value.length > 1 && (
-                          <Avatar className={layoutClasses.avatar} variant='square'>
-                            +{item.value.length - 1}
-                          </Avatar>
-                        )
-                      }
+                  item.title === 'Groups' 
+                    ? <Stack className='colorTextPrimary'>
+                      <CellGroups dataValue={item.value} limitShowGroup={false} />
                     </Stack>
                     : (<Typography variant='body2'>
                       {item.value}
@@ -143,7 +158,7 @@ const MainMenu = (props) => {
               />
 
               {/* ACTION */}
-              {item.title === 'formTitle' &&
+              {item.title === 'Form Title' &&
               <Button
                 variant='contained'
                 className={layoutClasses.flyoutListItemActionButton}

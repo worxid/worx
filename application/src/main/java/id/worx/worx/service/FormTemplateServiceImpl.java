@@ -84,6 +84,14 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     @Override
+    public void delete(List<Long> ids) {
+        List<FormTemplate> templates = templateRepository.findAllById(ids);
+        for (FormTemplate template : templates) {
+            templateRepository.delete(template);
+        }
+    }
+
+    @Override
     public FormTemplateDTO toDTO(FormTemplate template) {
         return templateMapper.toDTO(template);
     }

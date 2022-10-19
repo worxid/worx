@@ -79,7 +79,7 @@ const SettingsGroup = () => {
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const initialFilters = {}
 
@@ -130,7 +130,7 @@ const SettingsGroup = () => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(inputAbortController.signal)
+    const resultGroupList = await getGroupList(inputAbortController.signal, auth.accessToken)
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setTableData(resultGroupList.data.list)
@@ -146,7 +146,7 @@ const SettingsGroup = () => {
     if (inputType === 'continue') {
       const abortController = new AbortController()
 
-      const resultDeleteGroup = await deleteGroup(abortController.signal, dialogDeleteObject.id)
+      const resultDeleteGroup = await deleteGroup(abortController.signal, dialogDeleteObject.id, auth.accessToken)
       abortController.abort()
 
       if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {

@@ -72,6 +72,12 @@ const GlobalStyles = () => {
         '.padding0': {
           padding: '0 !important',
         },
+        '.textCapitalize': {
+          textTransform: 'lowercase',
+          '&:first-letter': {
+            textTransform: 'capitalize'
+          }
+        },
         '.width100': {
           width: '100%',
         },

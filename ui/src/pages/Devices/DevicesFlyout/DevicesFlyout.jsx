@@ -1,6 +1,10 @@
 import { useState, useContext } from 'react'
 
+// COMPONENTS
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
+
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
@@ -23,40 +27,55 @@ import IconSecurityUpdate from '@mui/icons-material/SecurityUpdate'
 import IconSmartphone from '@mui/icons-material/Smartphone'
 import IconGroups from '@mui/icons-material/Groups'
 
+// SERVICES
+import { putApprovedDevices } from 'services/devices'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const DevicesFlyout = (props) => {
-  const { rows, setGroupData } = props
+  const { rows, setGroupData, reloadData } = props
 
   const layoutClasses = useLayoutStyles()
 
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const mainMenuIconList = [
     IconAdjust,
     IconAssignmentInd,
+    IconGroups,
     IconReceipt,
     IconPhoneIphone,
     IconSecurityUpdate,
     IconSmartphone,
-    IconGroups,
+  ]
+
+  const excludeKey = ['id', 'port', 'ip', 'joined_time', 'device_language', 'device_status']
+  const mainMenuTitleList = [
+    'Status', 'Label', 'Groups', 'Identifier', 'Device Model', 'Device Version', 'Device App Version'
   ]
 
   let mainMenuList = []
   if (rows.length === 1) {
     mainMenuList = Object.keys(rows[0])
-      .filter(key => key !== 'id')
-      .map((key, index) => {
-        return {
-          title: key,
-          value: rows[0][key],
-          icon: mainMenuIconList[index],
-        }
+      .filter(key => {
+        const find = excludeKey.find(itemExclude => itemExclude === key)
+        if(!Boolean(find)) return true
+        else return false
       })
+    mainMenuList.unshift('device_status')
+    mainMenuList = mainMenuList.map((key, index) => {
+      return {
+        title: mainMenuTitleList[index],
+        value: rows[0][key],
+        icon: mainMenuIconList[index],
+      }
+    })
   }
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
@@ -65,6 +84,49 @@ const DevicesFlyout = (props) => {
     setGroupData(rows[0].groups)
     setIsDialogFormOpen(true)
   }
+
+  const handleApprovedDevices = async (type) => {
+    let message
+    const abortController = new AbortController()
+    const response = await putApprovedDevices(
+      rows[0].id,
+      abortController.signal,
+      {
+        is_approved: type === 'approved' ? true : false
+      },
+      auth.accessToken,
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      if(response?.data?.value?.device_status === 'APPROVED') {
+        message = {
+          severity:'success',
+          title: '',
+          message: `Device ${rows[0].label} has been approved`,
+        }
+      } else if (response?.data?.value?.device_status === 'DENIED') {
+        message = {
+          severity:'error',
+          title: '',
+          message: `Device ${rows[0].label} has been rejected`,
+        }
+      }
+
+      reloadData(abortController.signal, true)
+    } else {
+      message = {
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
+      }
+    }
+
+    setSnackbarObject({
+      open: true,
+      ...message,
+    })
+  }
+
   return (
     <>
       {/* HEADER */}
@@ -75,10 +137,7 @@ const DevicesFlyout = (props) => {
         marginBottom='8px'
       >
         {/* TITLE */}
-        <Typography
-          variant='subtitle1'
-          className='fontWeight500'
-        >
+        <Typography variant='subtitle1' className='fontWeight500' >
           Device Info
         </Typography>
 
@@ -92,18 +151,11 @@ const DevicesFlyout = (props) => {
       </Stack>
 
       {/* LIST */}
-      <Collapse 
-        in={isMainMenuExpanded} 
-        timeout='auto' 
-        unmountOnExit
-      >
+      <Collapse in={isMainMenuExpanded} timeout='auto' unmountOnExit>
         {rows.length === 1 &&
         <List>
           {mainMenuList.map((item, index) => (
-            <ListItem
-              key={index}
-              disablePadding
-            >
+            <ListItem key={index} disablePadding>
               {/* ICON */}
               <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
                 <item.icon/>
@@ -120,34 +172,43 @@ const DevicesFlyout = (props) => {
                   </Typography>
                 }
                 secondary={
-                  <Typography variant='body2'>
-                    {item.value}
-                  </Typography>
+                  item.title === 'Groups'
+                    ? <Stack className='colorTextPrimary'>
+                      <CellGroups
+                        dataValue={item.value.map(item => ({ name: item }))}
+                        limitShowGroup={false}
+                      />
+                    </Stack>
+                    : <Typography variant='body2' className='textCapitalize'>
+                      {item.value}
+                    </Typography>
                 }
               />
 
               {/* ACTION */}
-              {item.title === 'status' &&
+              {item.title === 'Status' &&
                 <>
                   {
-                    item.value === 'Pending' &&
+                    item.value === 'PENDING' &&
                   (<Stack direction='row' spacing='8px'>
                     <Button
                       variant='contained'
                       className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
+                      onClick={() => handleApprovedDevices('reject')}
                     >
                       Reject
                     </Button>
                     <Button
                       variant='contained'
                       className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
+                      onClick={() => handleApprovedDevices('approved')}
                     >
                       Approve
                     </Button>
                   </Stack>)
                   }
                   {
-                    item.value === 'Approved' && (
+                    (item.value === 'APPROVED' || item.value === 'ONLINE') && (
                       <Button
                         variant='contained'
                         className={layoutClasses.flyoutListItemActionButton}

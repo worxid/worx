@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -19,15 +19,15 @@ import Stack from '@mui/material/Stack'
 // SERVICES
 import { getDetailFormTemplate, putUpdateFormTemplate } from 'services/formTemplate'
 
-const FormsCreateOrEdit = () => {
-  // NAVIGATE
-  const navigate = useNavigate()
+// UTILITIES
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
+const FormsCreateOrEdit = () => {
   // PARAMS
   const { formTemplateId } = useParams()
 
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, auth } = useContext(AllPagesContext)
   const {
     formObject, listFields, setFormObject,
     setListFields, isFormLoading, setIsFormLoading,
@@ -36,9 +36,9 @@ const FormsCreateOrEdit = () => {
 
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
-    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal)
+    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal, auth.accessToken)
 
-    if(response?.data?.success && inputIsMounted) {
+    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
       const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
 
@@ -53,8 +53,8 @@ const FormsCreateOrEdit = () => {
       setSnackbarObject({
         open: true,
         severity:'error',
-        title:'',
-        message:'Something gone wrong'
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
       })
     }
   }
@@ -77,16 +77,24 @@ const FormsCreateOrEdit = () => {
         fields: listFieldsFiltered,
         submit_in_zone: false,
         default: false
-      }
+      },
+      auth.accessToken
     )
 
     // SUCCESS
-    if(response?.data?.success && inputIsMounted) {
+    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setSnackbarObject({
         open: true,
         severity:'success',
         title:'',
         message:'Change have been save'
+      })
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
       })
     }
 

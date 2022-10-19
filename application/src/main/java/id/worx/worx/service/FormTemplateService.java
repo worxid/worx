@@ -26,6 +26,8 @@ public interface FormTemplateService {
 
     void delete(Long id);
 
+    void delete(List<Long> ids);
+
     FormTemplateDTO toDTO(FormTemplate template);
 
     FormTemplate assignGroup(Long id, List<Long> groupIds);
