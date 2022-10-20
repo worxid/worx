@@ -92,7 +92,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/api/users/reset-password/verify",
                     "/api/users/register/account-confirmation",
                     "/form/template/read",
-                    "/form/submit")
+                    "/form/submit",
+                    "/media/presigned-url")
                 .permitAll()
                 .antMatchers("/mobile/**").permitAll()
                 .anyRequest()
