@@ -43,10 +43,11 @@ const Drawer = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { setAuth } = useContext(AllPagesContext)
+  const { 
+    auth, setAuth, 
+    setSnackbarObject,
+  } = useContext(AllPagesContext)
   const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
-
-  const dummyId = 'Dummy Code'
 
   const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
     ? location.state.expandParent
@@ -54,8 +55,14 @@ const Drawer = () => {
   )
 
   const handleIdButtonClick = () => {
-    navigator.clipboard.writeText(dummyId)
-    // TO DO: SHOW SNACKBAR OBJECT
+    navigator.clipboard.writeText(auth?.user?.organization_code)
+    
+    setSnackbarObject({
+      open: true,
+      severity: 'info',
+      title: '',
+      message: 'Copied to clipboard',
+    })
   }
 
   const getListItemButtonClassName = (inputPath) => {
@@ -151,7 +158,7 @@ const Drawer = () => {
               variant='inherit'
               className={classes.navigationItemContentInactive}
             >
-              Code: {dummyId}
+              Code: {auth?.user?.organization_code}
             </Typography>
           }/>
         </ListItemButton>
