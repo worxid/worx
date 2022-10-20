@@ -1,7 +1,6 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.exception.TokenException;
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.BaseValueResponse;
@@ -20,7 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -135,9 +133,7 @@ public class UsersController {
 
 
     public String createRefreshToken(String email){
-        String token = usersService.createRefreshToken(email);
-
-        return token;
+        return usersService.createRefreshToken(email);
     }
 
     @PostMapping("/logout")

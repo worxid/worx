@@ -66,7 +66,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
-    private static int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
+    private static final int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
