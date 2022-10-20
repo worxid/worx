@@ -1,7 +1,6 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.exception.TokenException;
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.BaseValueResponse;
@@ -20,7 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,6 +72,7 @@ public class UsersController {
 
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
+            data.put("refreshToken", createRefreshToken(loginRequest.getEmail()));
 
             JwtResponse response = new JwtResponse();
             response.setData(data);
@@ -99,7 +98,15 @@ public class UsersController {
         String message = usersService.resetPassword(resetPasswordRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<JwtResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest)
+        throws Exception {
 
+        JwtResponse response = usersService.refreshToken(tokenRefreshRequest);
+
+
+        return ResponseEntity.ok(response);
+    }
     @CrossOrigin
     @PostMapping("/reset-password/verify")
     public ResponseEntity<String> verifyPasswordResetToken(@Valid @RequestBody ChangePasswordToken changePasswordToken) {
@@ -122,6 +129,17 @@ public class UsersController {
     public void verifyAccount(@RequestParam String code, HttpServletResponse httpServletResponse) throws IOException {
 
         usersService.verifyAccount(code,httpServletResponse);
+    }
+
+
+    public String createRefreshToken(String email){
+        return usersService.createRefreshToken(email);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody TokenRefreshRequest request) {
+        usersService.logout(request);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
     }
     @GetMapping("/user-details")
     public ResponseEntity<BaseValueResponse<UserDetailsResponse>> getInfoDevice() {

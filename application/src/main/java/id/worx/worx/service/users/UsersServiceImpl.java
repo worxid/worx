@@ -11,6 +11,7 @@ import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
+import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -64,6 +66,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
+    private static final int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -350,6 +353,60 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     }
 
     @Override
+    public String createRefreshToken(String email){
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(usersRepository.findByEmail(email).get());
+        refreshToken.setExpiryDate(Instant.now().plusMillis(JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS));
+        refreshToken.setToken(UUID.randomUUID().toString());
+        refreshToken = refreshTokenRepository.save(refreshToken);
+
+        return refreshToken.getToken();
+
+    }
+
+    @Transactional
+    public void deleteRefreshToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+            .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
+        refreshTokenRepository.delete(refreshToken);
+    }
+    public void logout(TokenRefreshRequest request) {
+        deleteRefreshToken(request.getRefreshToken());
+    }
+
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+            refreshTokenRepository.delete(token);
+            throw new WorxException(WorxErrorCode.REFRESH_TOKEN_INVALID);
+        }
+        return token;
+    }
+
+    public JwtResponse refreshToken(TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+        return this.findByToken(requestRefreshToken)
+            .map(this::verifyExpiration)
+            .map(RefreshToken::getUser)
+            .map(user -> {
+                String accessToken = jwtUtils.generateToken(user.getEmail());
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("accessToken", accessToken);
+                data.put("refreshToken", requestRefreshToken);
+
+                JwtResponse response = new JwtResponse();
+                response.setData(data);
+                response.setStatus(200);
+
+                return response;
+            })
+            .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
+    }
+
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
+    }
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
     }
