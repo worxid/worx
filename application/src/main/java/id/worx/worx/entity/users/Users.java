@@ -2,7 +2,11 @@ package id.worx.worx.entity.users;
 
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
