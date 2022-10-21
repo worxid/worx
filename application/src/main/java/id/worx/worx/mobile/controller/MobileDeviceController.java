@@ -40,14 +40,14 @@ public class MobileDeviceController {
     }
 
     @PutMapping(value = "/leave")
-    public ResponseEntity<String> leaveDevice(@RequestHeader(value = "deviceCode") String deviceCode) {
+    public ResponseEntity<String> leaveDevice(@RequestHeader(value = "device_code") String deviceCode) {
         deviceService.softDeleteDeviceForMobile(deviceCode);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted");
     }
 
     @PutMapping(value = "/update-info")
     public ResponseEntity<BaseValueResponse<DeviceDTO>> updateDeviceInformation(
-            @RequestHeader(value = "deviceCode", required = true) String deviceCode,
+            @RequestHeader(value = "device_code", required = true) String deviceCode,
             @RequestBody UpdateDeviceRequest deviceRequest) {
 
         Device devices = deviceService.updateInformation(deviceCode, deviceRequest);
@@ -64,7 +64,7 @@ public class MobileDeviceController {
 
     @GetMapping("/get-info-device")
     public ResponseEntity<BaseValueResponse<DeviceDTO>> getInfoDevice(
-            @RequestHeader(value = "deviceCode") String deviceCode) {
+            @RequestHeader(value = "device_code") String deviceCode) {
 
         Device devices = deviceService.getByDeviceCode(deviceCode);
         DeviceDTO dto = deviceService.toDTO(devices);

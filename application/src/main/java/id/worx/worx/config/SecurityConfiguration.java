@@ -90,6 +90,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/api/users/login",
                     "/api/users/reset-password",
                     "/api/users/reset-password/verify",
+                    "/api/mobile/users/create-new-team",
                     "/api/users/register/account-confirmation",
                     "/form/template/read",
                     "/form/submit")
