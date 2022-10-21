@@ -159,7 +159,7 @@ const InputForm = (props) => {
       {item.type === 'checkbox_group' && (
         <FormControl className={classes.formControl} required={item.required}>
           <FormGroup>
-            {item.optionList.map((itemOption, index) => (
+            {item.group.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
                 control={<Checkbox
@@ -185,7 +185,7 @@ const InputForm = (props) => {
           required={item.required}
         >
           <RadioGroup>
-            {item.optionList.map((itemOption, index) => (
+            {item.options.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
                 value={itemOption.label}
@@ -213,9 +213,9 @@ const InputForm = (props) => {
             size='small'
             className='heightFitContent'
             onChange={(event) => handleInputChange(item.id, item.label, event.target.value)}
-            value={formObject[item.id]?.value || item?.optionList[0]?.label}
+            value={formObject[item.id]?.value || item?.options[0]?.label}
           >
-            {item.optionList.map((item, index) => (
+            {item.options.map((item, index) => (
               <MenuItem key={index} value={item.label}>
                 <Typography variant='caption' className='displayBlock' noWrap>{item.label}</Typography>
               </MenuItem>

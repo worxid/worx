@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // ASSETS
 import logoWorx from 'assets/images/logos/product-logo-with-text-black.svg'
@@ -18,14 +19,24 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+// SERVICES
+import { getReadFormTemplate } from 'services/formTemplate'
+
 // STYLES
 import useStyles from './fillFormUseStyles'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const FillForm = () => {
   // STYLES
   const classes = useStyles()
 
-  // FORM
+  // ROUTING
+  const [ searchParams ] = useSearchParams()
+  const navigate = useNavigate()
+
+  // STATES
+  const [isPageLoading, setIsPageLoading] = useState(true)
+  const [dataFormTemplate, setDataFormTemplate] = useState({})
   const [formObject, setFormObject] = useState({})
 
   // HANDLE INPUT CHANGE
@@ -40,10 +51,30 @@ const FillForm = () => {
     setFormObject({...tempFormObject})
   }
 
+  // FETCHING FORM FIELDS
+  const fetchingFormField = async (abortController) => {
+    const response = await getReadFormTemplate(searchParams.get('code'), abortController.signal)
+    if (didSuccessfullyCallTheApi(response.status)) {
+      setDataFormTemplate(response.data.value)
+      setIsPageLoading(false)
+    } else {
+      navigate('/error?code=404')
+    }
+  }
+
+  console.log({ dataFormTemplate })
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    fetchingFormField(abortController)
+
+    return () => abortController.abort()
+  }, [])
+
   return (
     <Stack direction='column' alignItems='center' className={`${classes.root} no-zoom`}>
       {/* CONTENT */}
-      <LoadingPaper className={`${classes.content} zoom`}>
+      <LoadingPaper isLoading={isPageLoading} className={`${classes.content} zoom`}>
         {/* HEADER */}
         <Stack className={classes.header}>
           <Typography variant='h5' className='fontWeight500'>{dummyData.label}</Typography>
@@ -54,7 +85,7 @@ const FillForm = () => {
         {/* FORM */}
         <Stack className={classes.form} flex={1}>
           <Stack flex={1} height={'100%'}>
-            {dummyData.listFields.map((item, index) => (
+            {dataFormTemplate?.fields?.map((item, index) => (
               <InputForm
                 key={index}
                 item={item}
