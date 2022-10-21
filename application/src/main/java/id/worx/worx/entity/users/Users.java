@@ -3,6 +3,7 @@ package id.worx.worx.entity.users;
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Users extends Audit implements UserDetails {
 
     @Id
