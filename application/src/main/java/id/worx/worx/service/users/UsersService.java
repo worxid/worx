@@ -2,8 +2,9 @@ package id.worx.worx.service.users;
 
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
-import id.worx.worx.common.model.response.users.UserDetailsResponse;
+import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.entity.users.Users;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,9 +20,14 @@ public interface UsersService {
 
     String resetPassword(String email);
 
+    String createRefreshToken(String email);
     void verifyPasswordResetToken(ChangePasswordToken changePasswordToken);
 
     void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException;
+
+    void logout(TokenRefreshRequest request);
+
+    JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest);
 
     UserResponse toDTO(Users users);
     UserDetailsResponse getByEmail(String email);

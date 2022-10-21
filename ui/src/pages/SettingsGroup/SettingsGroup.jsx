@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -82,9 +81,6 @@ const SettingsGroup = () => {
   const { setSnackbarObject, auth } = useContext(AllPagesContext)
 
   const initialFilters = {}
-
-  // NAVIGATE
-  const navigate = useNavigate()
 
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
