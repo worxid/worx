@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class UsersServiceImpl implements UsersService, UserDetailsService {
+public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -65,19 +65,19 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private UsersMapper usersMapper;
 
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Users> users = usersRepository.findByEmail(email);
+    // @Override
+    // public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    //     Optional<Users> users = usersRepository.findByEmail(email);
 
-        if(users.isEmpty()){
-            throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-        }else{
-            log.info("User found in the database : {} ", email);
-        }
-        Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
+    //     if(users.isEmpty()){
+    //         throw new WorxException(WorxErrorCode.USERNAME_EXIST);
+    //     }else{
+    //         log.info("User found in the database : {} ", email);
+    //     }
+    //     Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
 
-        return new User(users.get().getEmail(), users.get().getPassword(), authotities);
-    }
+    //     return new User(users.get().getEmail(), users.get().getPassword(), authotities);
+    // }
     @Transactional
     public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 

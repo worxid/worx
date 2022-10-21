@@ -8,11 +8,14 @@ import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.config.security.WorxUserPrincipal;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JwtUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +34,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -68,7 +73,8 @@ public class UsersController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
-            Users users = (Users) authentication.getPrincipal();
+            WorxUserPrincipal principal = (WorxUserPrincipal) authentication.getPrincipal();
+            Users users = principal.getUser();
 
             String accessToken = jwtUtils.generateJwt(users);
 

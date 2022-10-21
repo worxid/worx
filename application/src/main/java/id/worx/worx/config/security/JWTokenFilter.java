@@ -1,6 +1,8 @@
-package id.worx.worx.util;
+package id.worx.worx.config.security;
 
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.util.JwtUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
