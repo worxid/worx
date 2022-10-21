@@ -15,9 +15,7 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WorxUserDetailsService implements UserDetailsService {
@@ -30,8 +28,6 @@ public class WorxUserDetailsService implements UserDetailsService {
 
         if (users.isEmpty()) {
             throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-        } else {
-            log.trace("User found in the database : {} ", username);
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
