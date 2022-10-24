@@ -7,6 +7,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
@@ -38,12 +41,14 @@ const DialogShareLink = (props) => {
   const classes = useStyles()
 
   // CONTEXTS
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
+
+  const axiosPrivate = useAxiosPrivate()
 
   // HANDLE BUTTON SEND CLICK
   const handleButtonSendClick = async () => {
@@ -65,10 +70,8 @@ const DialogShareLink = (props) => {
 
       if(isValidEmail) {
         const response = await postShareFormTemplate(id, abortController.signal,
-          {
-            recipients: receivers
-          },
-          auth.accessToken,
+          { recipients: receivers },
+          axiosPrivate,
         )
   
         if(didSuccessfullyCallTheApi(response?.status)) {

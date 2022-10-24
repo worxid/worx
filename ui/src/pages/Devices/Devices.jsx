@@ -19,6 +19,9 @@ import { values } from 'constants/values'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -40,6 +43,9 @@ import { getDeviceStatusColor } from 'utilities/component'
 
 const Devices = () => { 
   const classes = useLayoutStyles()
+
+  const axiosPrivate = useAxiosPrivate()
+
   const initialColumns = [
     {
       field: 'device_status',
@@ -120,7 +126,7 @@ const Devices = () => {
   ]
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFilters = {}
 
@@ -181,7 +187,7 @@ const Devices = () => {
           sort: null
         }
       },
-      auth.accessToken
+      axiosPrivate,
     )
 
     if(didSuccessfullyCallTheApi(response?.status) && isMounted) {
@@ -209,7 +215,11 @@ const Devices = () => {
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
-      const response = await deleteDevices(selectionModel[0], abortController.signal, auth.accessToken)
+      const response = await deleteDevices(
+        selectionModel[0], 
+        abortController.signal, 
+        axiosPrivate,
+      )
 
       if(didSuccessfullyCallTheApi(response?.status)) {
         fetchingDevicesList(abortController.signal, true)

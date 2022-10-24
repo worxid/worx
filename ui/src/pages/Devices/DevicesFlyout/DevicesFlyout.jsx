@@ -7,6 +7,9 @@ import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -43,7 +46,9 @@ const DevicesFlyout = (props) => {
   const layoutClasses = useLayoutStyles()
 
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const axiosPrivate = useAxiosPrivate()
 
   const mainMenuIconList = [
     IconAdjust,
@@ -94,7 +99,7 @@ const DevicesFlyout = (props) => {
       {
         is_approved: type === 'approved' ? true : false
       },
-      auth.accessToken,
+      axiosPrivate,
     )
 
     if(didSuccessfullyCallTheApi(response?.status)) {

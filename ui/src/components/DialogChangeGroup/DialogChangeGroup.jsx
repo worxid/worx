@@ -8,6 +8,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Input from '@mui/material/Input'
 import Stack from '@mui/material/Stack'
@@ -34,11 +37,14 @@ import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const DialogChangeGroup = (props) => {
   const { dataChecked, page, selectedItemId, reloadData } = props
+
   const layoutClasses = useLayoutStyles()
 
   // CONTEXTS
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const axiosPrivate = useAxiosPrivate()
 
   // STATES
   const [ search, setSearch ] = useState('')
@@ -60,7 +66,7 @@ const DialogChangeGroup = (props) => {
           {
             assignedGroups: listSelectedGroupId
           },
-          auth.accessToken
+          axiosPrivate,
         )
       } else if (page === 'devices') {
         response = await putAssignGroupDevices(
@@ -69,7 +75,7 @@ const DialogChangeGroup = (props) => {
           {
             group_ids: listSelectedGroupId
           },
-          auth.accessToken,
+          axiosPrivate,
         )
       }
 
@@ -123,7 +129,10 @@ const DialogChangeGroup = (props) => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(inputAbortController.signal, auth.accessToken)
+    const resultGroupList = await getGroupList(
+      inputAbortController.signal, 
+      axiosPrivate,
+    )
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setGroupList(resultGroupList.data.list)

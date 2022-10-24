@@ -13,6 +13,9 @@ import CustomDialogActionButton from 'components/Customs/CustomDialogActionButto
 import CustomDialogContent from 'components/DialogAddOrEdit/Customs/CustomDialogContent'
 import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTitle'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Input from '@mui/material/Input'
 import InputLabel from '@mui/material/InputLabel'
@@ -39,7 +42,9 @@ const DialogAddOrEditDevice = (props) => {
   const { dataDialogEdit, setDataDialogEdit, reloadData } = props
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const axiosPrivate = useAxiosPrivate()
 
   const [ label, setLabel ] = useState('')
 
@@ -54,7 +59,7 @@ const DialogAddOrEditDevice = (props) => {
           {
             label,
           },
-          auth.accessToken,
+          axiosPrivate,
         )
   
         if(didSuccessfullyCallTheApi(response?.status)) {

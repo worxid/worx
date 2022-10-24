@@ -22,15 +22,19 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 // DATE
 import moment from 'moment'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { deleteFormTemplate, postCreateFormTemplate, postGetListFormTemplate } from 'services/formTemplate'
-
-// STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
+import { 
+  deleteFormTemplate, 
+  postCreateFormTemplate, 
+  postGetListFormTemplate, 
+} from 'services/formTemplate'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi, isFormatDateSearchValid } from 'utilities/validation'
@@ -38,9 +42,9 @@ import { convertDate } from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
-  const layoutClasses = useLayoutStyles()
+  const axiosPrivate = useAxiosPrivate()
 
   const initialColumns = [
     {
@@ -152,7 +156,12 @@ const Forms = () => {
   const handleFabClick = async () => {
     const abortController = new AbortController()
 
-    const response = await postCreateFormTemplate(abortController.signal, paramsCreateForm, auth.accessToken)
+    const response = await postCreateFormTemplate(
+      abortController.signal, 
+      paramsCreateForm, 
+      axiosPrivate,
+    )
+
     if(didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
     } else {
@@ -209,7 +218,7 @@ const Forms = () => {
             ? [filters?.assigned_groups] : null,
         submission_count: filters?.submission_count || null
       },
-      auth.accessToken,
+      axiosPrivate,
     )
 
     if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
@@ -230,7 +239,11 @@ const Forms = () => {
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
-      const response = await deleteFormTemplate(selectionModel[0], abortController.signal, auth.accessToken)
+      const response = await deleteFormTemplate(
+        selectionModel[0], 
+        abortController.signal, 
+        axiosPrivate,
+      )
 
       if(didSuccessfullyCallTheApi(response?.status)) {
         fetchingFormsList(abortController.signal, true)

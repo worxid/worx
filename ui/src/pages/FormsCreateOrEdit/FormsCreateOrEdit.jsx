@@ -12,6 +12,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -27,16 +30,22 @@ const FormsCreateOrEdit = () => {
   const { formTemplateId } = useParams()
 
   // CONTEXT
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const {
     formObject, listFields, setFormObject,
     setListFields, isFormLoading, setIsFormLoading,
     hasFormChanged, setHasFormChanged
   } = useContext(PageFormsCreateOrEditContext)
 
+  const axiosPrivate = useAxiosPrivate()
+
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
-    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal, auth.accessToken)
+    const response = await getDetailFormTemplate(
+      Number(formTemplateId), 
+      abortController.signal, 
+      axiosPrivate,
+    )
 
     if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
@@ -78,7 +87,7 @@ const FormsCreateOrEdit = () => {
         submit_in_zone: false,
         default: false
       },
-      auth.accessToken
+      axiosPrivate,
     )
 
     // SUCCESS
