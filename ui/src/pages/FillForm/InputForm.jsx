@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef } from 'react'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -53,26 +53,31 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import useStyles from './fillFormUseStyles'
 
 const InputForm = (props) => {
-  const { item, handleInputChange, formObject } = props
+  const { item, handleInputChange, formObject, id } = props
 
   // CONTEXT
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
-  // DATE
+  // REFS
+  const tempItemRef = useRef(id)
+
+  // STATES
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
-  // SIGNATURE
   const [signatureRef, setSignatureRef] = useState()
 
   // STYLES
   const classes = useStyles()
 
   // HANDLE SIGANTURE ACTION BUTTON CLICK
-  const handleSignatureActionButtonClick = async (inputType) => {
+  const handleSignatureActionButtonClick = (inputType) => {
+    console.log({ id })
     if (inputType === 'save') {
       handleInputChange(item.id, item.label, signatureRef?.toDataURL())
     } else {
 
     }
+
+    console.log('id inside handleSignatureActionButtonClick: ', item.id)
 
     setIsDialogFormOpen(false)
   }
@@ -326,7 +331,7 @@ const InputForm = (props) => {
               Camera
             </Button>
 
-            {item.imageAllowGallery && (
+            {item.allow_gallery_upload && (
               <Button
                 size='small'
                 className={`${classes.buttonRedPrimary} heightFitContent`}
@@ -390,35 +395,14 @@ const InputForm = (props) => {
 
       {/* SIGNATURE */}
       {item.type === 'signature' && (
-        <FormControl className={classes.formControl} required={item.required}>
-          {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
-            <Box
-              component='img'
-              className={classes.signatureImage}
-              src={formObject[item.id]?.value}
-            />
-
-            <IconButton
-              className='heightFitContent'
-              onClick={() => setIsDialogFormOpen(true)}
-            >
-              <IconCancel fontSize='small'/>
-            </IconButton>
-          </Stack>)}
-
-          {!formObject[item.id]?.value && (<Button
-            size='small'
-            className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
-            startIcon={<IconCreate fontSize='small'/>}
-            onClick={() => setIsDialogFormOpen(true)}
-          >
-            Add Signature
-          </Button>)}
-
+        <>
           <DialogForm
+            item={item}
             classNames={`${classes.dialogSignature} neutralize-dialog-form`}
             title='Create Signature'
-            handleActionButtonClick={handleSignatureActionButtonClick}
+            handleActionButtonClick={(inputType) => {
+              handleSignatureActionButtonClick(inputType)
+            }}
           >
             <Stack className={classes.dialogSignatureContent}>
               <Stack className={classes.signatureCanvas}>
@@ -430,11 +414,40 @@ const InputForm = (props) => {
                   ref={(ref) => {
                     setSignatureRef(ref)
                   }}
+                  onEnd={() => {
+                    console.log('on end ref: ', tempItemRef)
+                  }}
                 />
               </Stack>
             </Stack>
           </DialogForm>
-        </FormControl>
+
+          <FormControl className={classes.formControl} required={item.required}>
+            {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
+              <Box
+                component='img'
+                className={classes.signatureImage}
+                src={formObject[item.id]?.value}
+              />
+
+              <IconButton
+                className='heightFitContent'
+                onClick={() => setIsDialogFormOpen(true)}
+              >
+                <IconCancel fontSize='small'/>
+              </IconButton>
+            </Stack>)}
+
+            {!formObject[item.id]?.value && (<Button
+              size='small'
+              className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
+              startIcon={<IconCreate fontSize='small'/>}
+              onClick={() => setIsDialogFormOpen(true)}
+            >
+              Add Signature
+            </Button>)}
+          </FormControl>
+        </>
       )}
 
       <Divider className={classes.dividerFormControl}/>

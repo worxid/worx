@@ -62,7 +62,7 @@ const FillForm = () => {
     }
   }
 
-  console.log({ dataFormTemplate })
+  console.log({ formObject, dataFormTemplate })
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -85,12 +85,13 @@ const FillForm = () => {
         {/* FORM */}
         <Stack className={classes.form} flex={1}>
           <Stack flex={1} height={'100%'}>
-            {dataFormTemplate?.fields?.map((item, index) => (
+            {dataFormTemplate?.fields?.map(item => (
               <InputForm
-                key={index}
+                key={item.id}
                 item={item}
                 handleInputChange={handleInputChange}
                 formObject={formObject}
+                id={item.id}
               />
             ))}
           </Stack>
