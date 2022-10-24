@@ -1,7 +1,34 @@
 package id.worx.worx.web.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import id.worx.worx.common.exception.TokenException;
-import id.worx.worx.common.model.request.auth.*;
+import id.worx.worx.common.model.request.auth.ChangePasswordRequest;
+import id.worx.worx.common.model.request.auth.ChangePasswordToken;
+import id.worx.worx.common.model.request.auth.LoginRequest;
+import id.worx.worx.common.model.request.auth.ResetPasswordRequest;
+import id.worx.worx.common.model.request.auth.TokenRefreshRequest;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
@@ -13,27 +40,7 @@ import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JwtUtils;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -106,8 +113,7 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<JwtResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest)
-        throws Exception {
+    public ResponseEntity<JwtResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
 
         JwtResponse response = usersService.refreshToken(tokenRefreshRequest);
 
