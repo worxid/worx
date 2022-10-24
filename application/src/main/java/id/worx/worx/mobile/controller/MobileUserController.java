@@ -4,6 +4,8 @@ import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.exception.WorxErrorCode;
+import id.worx.worx.exception.WorxException;
 import id.worx.worx.service.users.UsersService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,11 @@ public class MobileUserController {
     @PostMapping("/create-new-team")
     public ResponseEntity<BaseValueResponse<UserResponse>> createNewTeam(@RequestHeader("device_code") String deviceCode,
                                                                          @RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+
+        if(deviceCode.isEmpty()){
+            throw new WorxException(WorxErrorCode.DEVICE_CODE_INVALID);
+        }
+
         Users users = usersService.createUser(userRequest,httpServletRequest);
         UserResponse dto = usersService.toDTO(users);
 

@@ -61,6 +61,7 @@ public enum WorxErrorCode {
     INVALID_PHONE_NO(23, "Phone Number must be Number Only", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_NOT_FOUND(24, "Refresh token is not in database!", HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_INVALID(25, "Refresh token was expired. Please make a new signin request", HttpStatus.BAD_REQUEST),
+    DEVICE_CODE_INVALID(25, "Invalid device code", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
 
     private final int errorCode;
