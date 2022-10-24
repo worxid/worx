@@ -4,6 +4,7 @@ import id.worx.worx.entity.users.Users;
 import id.worx.worx.util.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,32 +27,31 @@ public class JWTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        //System.out.println("auth header "+ header);
+            throws ServletException, IOException {
 
-        if(!hasAuthorizationHeader(request)){
+        if (!hasAuthorizationHeader(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String accessToken = getAccessToken(request);
 
-        if(!jwtUtils.validateAccessToken(accessToken)){
-            filterChain.doFilter(request,response);
+        if (!jwtUtils.validateAccessToken(accessToken)) {
+            filterChain.doFilter(request, response);
             return;
         }
 
         setAuthenticationContext(accessToken, request);
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
 
     }
 
     private void setAuthenticationContext(String accessToken, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(accessToken);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,null);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                null);
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -67,23 +67,19 @@ public class JWTokenFilter extends OncePerRequestFilter {
 
         return userDetails;
     }
-    private boolean hasAuthorizationHeader(HttpServletRequest request){
 
-        String header = request.getHeader("Authorization");
-        //System.out.println("auth header : "+ header);
+    private boolean hasAuthorizationHeader(HttpServletRequest request) {
 
-        if(ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")){
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
             return false;
         }
         return true;
     }
 
-    private String getAccessToken(HttpServletRequest request){
-        String header = request.getHeader("Authorization");
-        String token = header.split(" ")[1].trim();
-
-        //System.out.println("AccessToken : "+ token);
-
-        return token;
+    private String getAccessToken(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return header.split(" ")[1].trim();
     }
 }
