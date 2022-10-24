@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final UsersRepository usersRepository;
 
-    private static final String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
+    private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -86,7 +86,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Transactional
     public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
         String regexNumberOnly = "\\d+";
@@ -173,7 +173,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         String message = "";
 
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(updatePasswordRequest.getNewPassword());
 
         if (!matcher.matches()) {
@@ -237,7 +237,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken){
 
 
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
 
         if (!matcher.matches()) {
