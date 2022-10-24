@@ -39,15 +39,17 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     private final FormTemplateSpecification specification;
 
+    private final AuthenticationContext authContext;
+
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
-        Specification<FormTemplate> spec = specification.fromSearchRequest(request);
+        Specification<FormTemplate> spec = specification.fromSearchRequest(request,authContext.getUsers().getId());
         return templateRepository.findAll(spec, pageable);
     }
 
     @Override
     public List<FormTemplate> list() {
-        return templateRepository.findAll();
+        return templateRepository.findAllByUserId(authContext.getUsers().getId());
     }
 
     @Override
@@ -55,6 +57,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         FormTemplate template = templateMapper.fromDTO(request);
         String urlCode = UrlUtils.generateUrlCode();
         template.setUrlCode(urlCode);
+        template.setUserId(authContext.getUsers().getId());
         templateRepository.save(template);
         return template;
     }
@@ -126,7 +129,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     private FormTemplate findByIdorElseThrowNotFound(Long id) {
-        Optional<FormTemplate> template = templateRepository.findById(id);
+        Optional<FormTemplate> template = templateRepository.findByIdAndUserId(id,authContext.getUsers().getId());
 
         if (template.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
@@ -136,7 +139,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     private FormTemplate findByUrlCodeorElseThrowNotFound(String urlCode) {
-        Optional<FormTemplate> template = templateRepository.findByUrlCode(urlCode);
+        Optional<FormTemplate> template = templateRepository.findByUrlCodeAndUserId(urlCode,authContext.getUsers().getId());
 
         if (template.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);

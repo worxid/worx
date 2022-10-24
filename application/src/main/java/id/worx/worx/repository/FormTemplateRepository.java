@@ -1,5 +1,6 @@
 package id.worx.worx.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,10 @@ import id.worx.worx.entity.FormTemplate;
 public interface FormTemplateRepository
         extends JpaRepository<FormTemplate, Long>, JpaSpecificationExecutor<FormTemplate> {
 
-    Optional<FormTemplate> findByUrlCode(String urlCode);
+    Optional<FormTemplate> findByUrlCodeAndUserId(String urlCode, Long userId);
+
+    Optional<FormTemplate> findByIdAndUserId(Long id, Long userId);
+
+    List<FormTemplate> findAllByUserId(Long userId);
 
 }

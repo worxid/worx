@@ -60,7 +60,7 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
         };
     }
 
-    public Specification<FormTemplate> fromSearchRequest(FormTemplateSearchRequest request) {
+    public Specification<FormTemplate> fromSearchRequest(FormTemplateSearchRequest request, Long userId) {
 
         Specification<FormTemplate> spec = Specification.where(null);
 
@@ -78,6 +78,10 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
 
         if (Objects.nonNull(request.getModifiedOn())) {
             spec = spec.and(lessThanOrEqualTo(Audit_.MODIFIED_ON, request.getModifiedOn()));
+        }
+
+        if(userId!=null){
+            spec = spec.and(equalTo(FormTemplate_.USER_ID,userId));
         }
 
         if (Objects.nonNull(request.getAssignedGroups())) {

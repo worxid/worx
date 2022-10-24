@@ -1,12 +1,10 @@
 package id.worx.worx.service;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Optional;
 
+import id.worx.worx.common.model.request.FormTemplateRequest;
+import id.worx.worx.entity.users.Users;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +18,11 @@ import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
+
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FormTemplateServiceImplTest {
@@ -40,6 +43,9 @@ class FormTemplateServiceImplTest {
 
     private FormTemplateService templateService;
 
+    @Mock
+    AuthenticationContext authContext;
+
     @BeforeEach
     void init() {
         templateService = new FormTemplateServiceImpl(
@@ -47,17 +53,23 @@ class FormTemplateServiceImplTest {
                 templateRepository,
                 groupRepository,
                 templateMapper,
-                specification);
+                specification,
+                authContext);
     }
 
     @Test
     void givenFormTemplateId_whenDelete_thenReturn() {
         Long formTemplateId = 1L;
+        Long userId=1L;
         FormTemplate template = FormTemplate.builder()
                 .id(1L)
                 .build();
+        Users user= Users.builder()
+            .id(1L)
+            .build();
 
-        when(templateRepository.findById(formTemplateId)).thenReturn(Optional.of(template));
+        when(authContext.getUsers()).thenReturn(user);
+        when(templateRepository.findByIdAndUserId(formTemplateId,userId)).thenReturn(Optional.of(template));
 
         templateService.delete(formTemplateId);
 
@@ -67,9 +79,11 @@ class FormTemplateServiceImplTest {
     @Test
     void givenNonExistentFormTemplateId_whenDelete_thenThrowWorxException() {
         Long nonExistentFormTemplateId = 1L;
-
-        when(templateRepository.findById(nonExistentFormTemplateId)).thenReturn(Optional.empty());
-
+        Users user= Users.builder()
+            .id(1L)
+            .build();
+        lenient().when(templateRepository.findById(nonExistentFormTemplateId)).thenReturn(Optional.empty());
+        when(authContext.getUsers()).thenReturn(user);
         Assertions.assertThrows(WorxException.class, () -> templateService.delete(nonExistentFormTemplateId));
     }
 
