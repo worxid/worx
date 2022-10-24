@@ -64,6 +64,7 @@ const InputForm = (props) => {
   // STATES
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [signatureRef, setSignatureRef] = useState()
+  const [selectedSignature, setSelectedSignature] = useState('')
 
   // STYLES
   const classes = useStyles()
@@ -396,8 +397,7 @@ const InputForm = (props) => {
       {/* SIGNATURE */}
       {item.type === 'signature' && (
         <>
-          <DialogForm
-            item={item}
+          {selectedSignature === item.id && (<DialogForm
             classNames={`${classes.dialogSignature} neutralize-dialog-form`}
             title='Create Signature'
             handleActionButtonClick={(inputType) => {
@@ -420,7 +420,7 @@ const InputForm = (props) => {
                 />
               </Stack>
             </Stack>
-          </DialogForm>
+          </DialogForm>)}
 
           <FormControl className={classes.formControl} required={item.required}>
             {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
@@ -432,7 +432,10 @@ const InputForm = (props) => {
 
               <IconButton
                 className='heightFitContent'
-                onClick={() => setIsDialogFormOpen(true)}
+                onClick={() => {
+                  setSelectedSignature(item.id)
+                  setIsDialogFormOpen(true)
+                }}
               >
                 <IconCancel fontSize='small'/>
               </IconButton>
@@ -442,7 +445,10 @@ const InputForm = (props) => {
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}
-              onClick={() => setIsDialogFormOpen(true)}
+              onClick={() => {
+                setSelectedSignature(item.id)
+                setIsDialogFormOpen(true)
+              }}
             >
               Add Signature
             </Button>)}
