@@ -1,14 +1,10 @@
-//APIS
-import { axiosPrivate } from 'apis/axios'
-
 // QUERY
 import { stringify } from 'query-string'
 
-export const postCreateFormTemplate = async (inputSignal, inputParams, inputToken) => {
+export const postCreateFormTemplate = async (inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.post('/form/template', inputParams, {
+    const response = await inputAxiosPrivate.post('/form/template', inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {
@@ -17,11 +13,10 @@ export const postCreateFormTemplate = async (inputSignal, inputParams, inputToke
   }
 }
 
-export const getDetailFormTemplate = async (formTemplateId, inputSignal, inputToken) => {
+export const getDetailFormTemplate = async (formTemplateId, inputSignal, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.get(`/form/template/${formTemplateId}`, {
+    const response = await inputAxiosPrivate.get(`/form/template/${formTemplateId}`, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {
@@ -30,11 +25,10 @@ export const getDetailFormTemplate = async (formTemplateId, inputSignal, inputTo
   }
 }
 
-export const putUpdateFormTemplate = async (formTemplateId, inputSignal, inputParams, inputToken) => {
+export const putUpdateFormTemplate = async (formTemplateId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(`/form/template/${formTemplateId}`, inputParams, {
+    const response = await inputAxiosPrivate.put(`/form/template/${formTemplateId}`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {
@@ -43,14 +37,11 @@ export const putUpdateFormTemplate = async (formTemplateId, inputSignal, inputPa
   }
 }
 
-export const postGetListFormTemplate = async (inputSignal, inputQuery, inputParams, inputToken) => {
+export const postGetListFormTemplate = async (inputSignal, inputQuery, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.post(`/form/template/search?${stringify(inputQuery)}`,
+    const response = await inputAxiosPrivate.post(`/form/template/search?${stringify(inputQuery)}`,
       inputParams,
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputToken}` },
-      }
+      { signal: inputSignal },
     )
     return response
   } catch (error) {
@@ -59,11 +50,10 @@ export const postGetListFormTemplate = async (inputSignal, inputQuery, inputPara
   }
 }
 
-export const deleteFormTemplate = async (formTemplateId, inputSignal, inputToken) => {
+export const deleteFormTemplate = async (formTemplateId, inputSignal, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.delete(`/form/template/${formTemplateId}`, {
+    const response = await inputAxiosPrivate.delete(`/form/template/${formTemplateId}`, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {
@@ -72,11 +62,10 @@ export const deleteFormTemplate = async (formTemplateId, inputSignal, inputToken
   }
 }
 
-export const putAssignGroupFormTemplate = async (formTemplateId, inputSignal, inputParams, inputToken) => {
+export const putAssignGroupFormTemplate = async (formTemplateId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(`/form/template/${formTemplateId}/assign`, inputParams, {
+    const response = await inputAxiosPrivate.put(`/form/template/${formTemplateId}/assign`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {
@@ -85,11 +74,10 @@ export const putAssignGroupFormTemplate = async (formTemplateId, inputSignal, in
   }
 }
 
-export const postShareFormTemplate = async (formTemplateId, inputSignal, inputParams, inputToken) => {
+export const postShareFormTemplate = async (formTemplateId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.post(`/form/template/${formTemplateId}/share`, inputParams, {
+    const response = await inputAxiosPrivate.post(`/form/template/${formTemplateId}/share`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}` }
     })
     return response
   } catch (error) {

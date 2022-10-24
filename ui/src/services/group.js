@@ -1,14 +1,8 @@
-//APIS
-import { axiosPrivate } from 'apis/axios'
-
-export const deleteGroup = async (inputSignal, inputId, inputToken) => {
+export const deleteGroup = async (inputSignal, inputId, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.delete(
+    const response = await inputAxiosPrivate.delete(
       `/groups/${inputId}`, 
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputToken}` },
-      },
+      { signal: inputSignal },
     )
 
     return response
@@ -19,14 +13,11 @@ export const deleteGroup = async (inputSignal, inputId, inputToken) => {
 }
 
 // TO DO: REPLACE WITH THE NEW API CONTAINING FILTER, SORT, PAGINATION, AND SEARCH
-export const getGroupList = async (inputSignal, inputToken) => {
+export const getGroupList = async (inputSignal, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.get(
+    const response = await inputAxiosPrivate.get(
       '/groups', 
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputToken}` },
-      }
+      { signal: inputSignal }
     )
 
     return response
@@ -36,15 +27,12 @@ export const getGroupList = async (inputSignal, inputToken) => {
   }
 }
 
-export const postCreateGroup = async (inputSignal, inputBodyParams, inputToken) => {
+export const postCreateGroup = async (inputSignal, inputBodyParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.post(
+    const response = await inputAxiosPrivate.post(
       '/groups', 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputToken}` },
-      },
+      { signal: inputSignal },
     )
 
     return response
@@ -54,15 +42,12 @@ export const postCreateGroup = async (inputSignal, inputBodyParams, inputToken) 
   }
 }
 
-export const putEditGroup = async (inputSignal, inputId, inputBodyParams, inputToken) => {
+export const putEditGroup = async (inputSignal, inputId, inputBodyParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(
+    const response = await inputAxiosPrivate.put(
       `/groups/${inputId}`, 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputToken}` },
-      },
+      { signal: inputSignal },
     )
 
     return response
