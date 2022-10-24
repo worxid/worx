@@ -36,6 +36,7 @@ const Private = (props) => {
     if (didSuccessfullyCallTheApi(resultUserDetails.status) && inputIsMounted) {
       const userProfileObject = {
         accessToken: auth.accessToken,
+        refreshToken: auth.refreshToken,
         user: resultUserDetails.data?.value
       }
       
