@@ -8,7 +8,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import id.worx.worx.entity.FormTemplate;
+import id.worx.worx.entity.Group;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormTemplateMapper;
@@ -96,6 +100,33 @@ class FormTemplateServiceImplTest {
         FormTemplate actualTemplate = templateService.read(expectedTemplate.getUrlCode());
 
         assertEquals(expectedTemplate, actualTemplate);
+    }
+
+    @Test
+    void givenDeviceCode_whenList_thenReturn() {
+        String deviceCode = "b97ab7803a27991f";
+        when(deviceRepository.findByDeviceCode(deviceCode)).thenReturn(Optional.empty());
+        Assertions.assertThrows(WorxException.class, () -> templateService.list(deviceCode));
+
+        FormTemplate expectedTemplate1 = FormTemplate.builder()
+                .id(1L)
+                .build();
+        FormTemplate expectedTemplate2 = FormTemplate.builder()
+                .id(2L)
+                .build();
+        Group group = Group.builder()
+                .templates(Set.of(expectedTemplate2, expectedTemplate1))
+                .build();
+        Device device = Device.builder()
+                .id(1L)
+                .deviceCode(deviceCode)
+                .assignedGroups(Set.of(group))
+                .build();
+        when(deviceRepository.findByDeviceCode(deviceCode)).thenReturn(Optional.of(device));
+
+        List<FormTemplate> actualTemplates = templateService.list(deviceCode);
+        assertEquals(2, actualTemplates.size());
+        assertEquals(expectedTemplate1, actualTemplates.get(0));
     }
 
     @Test
