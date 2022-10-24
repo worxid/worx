@@ -152,6 +152,7 @@ public class FormServiceImpl implements FormService {
 
         List<Field> signatureFields = fields.stream()
                 .filter(SignatureField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : signatureFields) {
@@ -164,6 +165,7 @@ public class FormServiceImpl implements FormService {
 
         List<Field> fileFields = fields.stream()
                 .filter(FileField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : fileFields) {
@@ -178,6 +180,7 @@ public class FormServiceImpl implements FormService {
 
         List<Field> photoFields = fields.stream()
                 .filter(PhotoField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : photoFields) {
@@ -225,6 +228,7 @@ public class FormServiceImpl implements FormService {
     private void updateFileState(Form form, List<Field> fields, Map<String, Value> values) {
         List<Field> signatureFields = fields.stream()
                 .filter(SignatureField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : signatureFields) {
@@ -236,6 +240,7 @@ public class FormServiceImpl implements FormService {
 
         List<Field> fileFields = fields.stream()
                 .filter(FileField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : fileFields) {
@@ -249,6 +254,7 @@ public class FormServiceImpl implements FormService {
 
         List<Field> photoFields = fields.stream()
                 .filter(PhotoField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
                 .collect(Collectors.toList());
 
         for (Field field : photoFields) {
