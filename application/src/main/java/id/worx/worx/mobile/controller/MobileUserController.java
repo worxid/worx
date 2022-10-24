@@ -24,7 +24,7 @@ public class MobileUserController {
 
 
     @PostMapping("/create-new-team")
-    public ResponseEntity<BaseValueResponse<UserResponse>> createNewTeam(@RequestHeader("device_code") String deviceCode,
+    public ResponseEntity<BaseValueResponse<UserResponse>> createNewTeam(@RequestHeader("deviceCode") String deviceCode,
                                                                          @RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
 
         if(deviceCode.isEmpty()){
