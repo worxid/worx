@@ -27,14 +27,17 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupMapper groupMapper;
 
+    private final AuthenticationContext authContext;
+
     @Override
     public List<Group> list() {
-        return groupRepository.findAll();
+        return groupRepository.findAllByUserId(authContext.getUsers().getId());
     }
 
     @Override
     public Group create(GroupRequest request) {
         Group group = groupMapper.fromRequest(request);
+        group.setUserId(authContext.getUsers().getId());
         group = groupRepository.save(group);
         return group;
     }
@@ -60,7 +63,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void delete(List<Long> ids) {
-        List<Group> groups = groupRepository.findAllById(ids);
+        List<Group> groups = groupRepository.findByIdsAndUserId(ids,authContext.getUsers().getId());
         for (Group group : groups) {
             this.delete(group);
         }
@@ -76,6 +79,7 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.search(groupSearchRequest.getId(),
             groupSearchRequest.getName(),
             groupSearchRequest.getColor(),
+            authContext.getUsers().getId(),
             groupSearchRequest.getDeviceCount(),
             groupSearchRequest.getFormCount(),
             pageable);
@@ -90,7 +94,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {
-        Optional<Group> group = groupRepository.findById(id);
+        Optional<Group> group = groupRepository.findByIdAndUserId(id,authContext.getUsers().getId());
 
         if (group.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);

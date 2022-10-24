@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Users extends Audit {
 
     private static final long serialVersionUID = 4324739476207136765L;

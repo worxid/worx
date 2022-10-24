@@ -53,6 +53,7 @@ public class SecurityConfiguration {
                         "/api/users/register",
                         "/api/users/login",
                         "/api/users/reset-password",
+                        "/api/users/refresh-token",
                         "/api/users/reset-password/verify",
                         "/api/users/register/account-confirmation",
                         "/form/template/read",

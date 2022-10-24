@@ -57,8 +57,7 @@ public class MobileFormController {
     @GetMapping
     public ResponseEntity<BaseListResponse<MobileFormTemplateDTO>> list(
             @RequestHeader(value = "deviceCode") String deviceCode) {
-        // TODO filter by device code
-        List<FormTemplate> templates = templateService.list();
+        List<FormTemplate> templates = templateService.list(deviceCode);
         List<MobileFormTemplateDTO> list = templates.stream()
                 .map(templateMapper::toMobileDTO)
                 .collect(Collectors.toList());
