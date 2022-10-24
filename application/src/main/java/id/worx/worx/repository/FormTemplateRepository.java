@@ -13,7 +13,7 @@ import id.worx.worx.entity.FormTemplate;
 public interface FormTemplateRepository
         extends JpaRepository<FormTemplate, Long>, JpaSpecificationExecutor<FormTemplate> {
 
-    Optional<FormTemplate> findByUrlCodeAndUserId(String urlCode, Long userId);
+    Optional<FormTemplate> findByUrlCode(String urlCode);
 
     Optional<FormTemplate> findByIdAndUserId(Long id, Long userId);
 

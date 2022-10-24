@@ -1,8 +1,10 @@
 package id.worx.worx.service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -16,9 +18,11 @@ import id.worx.worx.common.model.dto.FormTemplateDTO;
 import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormTemplateMapper;
+import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
@@ -32,6 +36,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     private final EmailService emailService;
 
+    private final DeviceRepository deviceRepository;
     private final FormTemplateRepository templateRepository;
     private final GroupRepository groupRepository;
 
@@ -43,13 +48,33 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
-        Specification<FormTemplate> spec = specification.fromSearchRequest(request,authContext.getUsers().getId());
+        Specification<FormTemplate> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
         return templateRepository.findAll(spec, pageable);
     }
 
     @Override
     public List<FormTemplate> list() {
         return templateRepository.findAllByUserId(authContext.getUsers().getId());
+    }
+
+    @Override
+    public List<FormTemplate> list(String deviceCode) {
+        Optional<Device> optDevice = deviceRepository.findByDeviceCode(deviceCode);
+
+        if (optDevice.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        Device device = optDevice.get();
+
+        Set<Group> groups = device.getAssignedGroups();
+        Set<FormTemplate> templates = groups.stream()
+                .map(Group::getTemplates)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+        return templates.stream()
+                .sorted((FormTemplate t1, FormTemplate t2) -> t1.getId().compareTo(t2.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -129,7 +154,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     private FormTemplate findByIdorElseThrowNotFound(Long id) {
-        Optional<FormTemplate> template = templateRepository.findByIdAndUserId(id,authContext.getUsers().getId());
+        Optional<FormTemplate> template = templateRepository.findByIdAndUserId(id, authContext.getUsers().getId());
 
         if (template.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
@@ -139,7 +164,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     private FormTemplate findByUrlCodeorElseThrowNotFound(String urlCode) {
-        Optional<FormTemplate> template = templateRepository.findByUrlCodeAndUserId(urlCode,authContext.getUsers().getId());
+        Optional<FormTemplate> template = templateRepository.findByUrlCode(urlCode);
 
         if (template.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);

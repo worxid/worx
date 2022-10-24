@@ -16,6 +16,8 @@ public interface FormTemplateService {
 
     List<FormTemplate> list();
 
+    List<FormTemplate> list(String deviceCode);
+
     FormTemplate create(FormTemplateRequest request);
 
     FormTemplate read(Long id);
