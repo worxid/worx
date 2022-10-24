@@ -164,8 +164,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     }
 
     private FormTemplate findByUrlCodeorElseThrowNotFound(String urlCode) {
-        Optional<FormTemplate> template = templateRepository.findByUrlCodeAndUserId(urlCode,
-                authContext.getUsers().getId());
+        Optional<FormTemplate> template = templateRepository.findByUrlCode(urlCode);
 
         if (template.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
