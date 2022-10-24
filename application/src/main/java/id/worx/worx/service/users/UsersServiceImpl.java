@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final UsersRepository usersRepository;
 
-    static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
     private final RefreshTokenRepository refreshTokenRepository;
 
