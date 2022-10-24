@@ -1,17 +1,14 @@
 //APIS
-import axios, { axiosPrivate } from 'apis/axios'
+import axios from 'apis/axios'
 
 export const getUserDetails = async (
   inputSignal, 
-  inputAccessToken,
+  inputAxiosPrivate,
 ) => {
   try {
-    const response = await axiosPrivate.get(
+    const response = await inputAxiosPrivate.get(
       '/api/users/user-details', 
-      {
-        signal: inputSignal,
-        headers: { 'Authorization': `Bearer ${inputAccessToken}` },
-      },
+      { signal: inputSignal },
     )
 
     return response
@@ -29,9 +26,7 @@ export const postForgotPasswordUser = async (
     const response = await axios.post(
       '/api/users/reset-password', 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-      },
+      { signal: inputSignal },
     )
 
     return response
@@ -49,13 +44,26 @@ export const postLoginUser = async (
     const response = await axios.post(
       '/api/users/login', 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-      },
+      { signal: inputSignal },
     )
 
     return response
   } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
+export const postRefreshToken = async (inputRefreshToken) => {
+  try {
+    const response = await axios.post(
+      '/users/refresh-token',
+      { refreshToken: inputRefreshToken },
+    )
+
+    return response
+  }
+  catch (error) {
     if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
@@ -69,9 +77,7 @@ export const postRegisterUser = async (
     const response = await axios.post(
       '/api/users/register', 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-      },
+      { signal: inputSignal },
     )
 
     return response
@@ -89,9 +95,7 @@ export const postResetPasswordUser = async (
     const response = await axios.post(
       '/api/users/reset-password/verify', 
       inputBodyParams, 
-      {
-        signal: inputSignal,
-      },
+      { signal: inputSignal },
     )
 
     return response
