@@ -1,5 +1,6 @@
 package id.worx.worx.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,6 +61,43 @@ class FormTemplateServiceImplTest {
                 authContext);
     }
 
+    FormTemplate initOneTemplate() {
+        Long formTemplateId = 1L;
+        String urlCode = "dZi1drVbbOfMBB5I3Ppfs";
+        FormTemplate template = FormTemplate.builder()
+                .id(formTemplateId)
+                .urlCode(urlCode)
+                .build();
+        return template;
+    }
+
+    @Test
+    void givenFormTemplateId_whenRead_thenReturn() {
+        Long formTemplateId = 1L;
+        Long userId = 1L;
+        Users user = Users.builder()
+                .id(userId)
+                .build();
+        FormTemplate expectedTemplate = initOneTemplate();
+        when(authContext.getUsers()).thenReturn(user);
+        when(templateRepository.findByIdAndUserId(formTemplateId, userId)).thenReturn(Optional.of(expectedTemplate));
+
+        FormTemplate actualTemplate = templateService.read(expectedTemplate.getId());
+
+        assertEquals(expectedTemplate, actualTemplate);
+    }
+
+    @Test
+    void givenFormTemplateUrlCode_whenRead_thenReturn() {
+        String urlCode = "dZi1drVbbOfMBB5I3Ppfs";
+        FormTemplate expectedTemplate = initOneTemplate();
+        when(templateRepository.findByUrlCode(urlCode)).thenReturn(Optional.of(expectedTemplate));
+
+        FormTemplate actualTemplate = templateService.read(expectedTemplate.getUrlCode());
+
+        assertEquals(expectedTemplate, actualTemplate);
+    }
+
     @Test
     void givenFormTemplateId_whenDelete_thenReturn() {
         Long formTemplateId = 1L;
@@ -108,4 +146,5 @@ class FormTemplateServiceImplTest {
         verify(templateRepository, times(1)).delete(template1);
         verify(templateRepository, times(1)).delete(template2);
     }
+
 }
