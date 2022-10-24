@@ -65,10 +65,8 @@ public class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.exceptionHandling().authenticationEntryPoint(
-                ((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                            "this API requeire access token");
-                }));
+                ((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "this API requeire access token")));
 
         http.addFilterBefore(jwTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

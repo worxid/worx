@@ -3,6 +3,8 @@ package id.worx.worx.util;
 import id.worx.worx.entity.users.Users;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -28,10 +30,11 @@ public class JwtUtils {
     public String generateJwt(Users users){
 
         return Jwts.builder()
-            .setSubject(users.getId() + ", "+ users.getEmail())
+            .setSubject(users.getId() + ", " + users.getEmail())
             .setIssuer("AUTH")
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + expiryDuration))
+            .addClaims(Map.of(StandardClaimNames.PREFERRED_USERNAME, users.getEmail()))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();
     }
@@ -58,6 +61,11 @@ public class JwtUtils {
     public String getSubject(String token){
         return parseClaims(token).getSubject();
     }
+
+    public String getUsername(String token) {
+        return parseClaims(token).get(StandardClaimNames.PREFERRED_USERNAME, String.class);
+    }
+
     private Claims parseClaims(String token){
         return Jwts.parser()
             .setSigningKey(secret)

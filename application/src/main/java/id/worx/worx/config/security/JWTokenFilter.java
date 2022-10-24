@@ -1,7 +1,11 @@
 package id.worx.worx.config.security;
 
-import id.worx.worx.entity.users.Users;
-import id.worx.worx.util.JwtUtils;
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,17 +17,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import id.worx.worx.util.JwtUtils;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JWTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    private final WorxUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -59,23 +63,13 @@ public class JWTokenFilter extends OncePerRequestFilter {
     }
 
     private UserDetails getUserDetails(String accessToken) {
-        Users userDetails = new Users();
-        String[] subjectArray = jwtUtils.getSubject(accessToken).split(",");
-
-        userDetails.setId(Long.parseLong(subjectArray[0]));
-        userDetails.setEmail(subjectArray[1]);
-
-        return userDetails;
+        String subject = jwtUtils.getUsername(accessToken);
+        return userDetailsService.loadUserByUsername(subject);
     }
 
     private boolean hasAuthorizationHeader(HttpServletRequest request) {
-
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (ObjectUtils.isEmpty(header) || !header.startsWith("Bearer")) {
-            return false;
-        }
-        return true;
+        return !(ObjectUtils.isEmpty(header) || !header.startsWith("Bearer"));
     }
 
     private String getAccessToken(HttpServletRequest request) {
