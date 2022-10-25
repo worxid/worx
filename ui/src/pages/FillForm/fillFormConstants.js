@@ -51,7 +51,7 @@ export const formatBytes = (bytes, decimals = 2) => {
 }
 
 export const checkboxErrorMessage = (message, min_checked, max_checked) => {
-  if(message.includes('Value is more than maximum')) return `Select maximum ${max_checked} options`
-  if(message.includes('Value is less than minimum')) return `Select minimum ${min_checked} options`
+  if(message.includes('Value is more than maximum')) return `Select maximum ${max_checked} option${max_checked >= 2 ? 's' : ''}`
+  if(message.includes('Value is less than minimum')) return `Select minimum ${min_checked} option${min_checked >= 2 ? 's' : ''}`
   else return message
 }
