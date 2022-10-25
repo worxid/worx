@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
       margin: '0 8px 12px 8px',
     }
   },
+  headerDescription: {
+    marginTop: 4,
+  },
   form: {
     padding: '0 32px',
     height: '100%',
@@ -205,6 +208,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       maxWidth: 60,
     }
+  },
+  formHelperText: {
+    marginTop: 4,
   }
 }))
 

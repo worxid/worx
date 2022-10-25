@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // ASSETS
@@ -8,8 +8,11 @@ import logoWorx from 'assets/images/logos/product-logo-with-text-black.svg'
 import InputForm from './InputForm'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
 // CONSTANTS
-import { dummyData } from './fillFormConstants'
+import { structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
 
 // MUIS
 import Box from '@mui/material/Box'
@@ -21,14 +24,27 @@ import Typography from '@mui/material/Typography'
 
 // SERVICES
 import { getReadFormTemplate } from 'services/formTemplate'
+import { postSubmitFormSubmission } from 'services/form'
 
 // STYLES
 import useStyles from './fillFormUseStyles'
+
+// UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
+/**
+ * next to-do:
+ * - implement api upload
+ * - handle error message input upload
+ * - handle value input upload
+ * - implement ui input upload
+ */
 const FillForm = () => {
   // STYLES
   const classes = useStyles()
+
+  // CONTEXTS
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   // ROUTING
   const [ searchParams ] = useSearchParams()
@@ -38,14 +54,16 @@ const FillForm = () => {
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [dataFormTemplate, setDataFormTemplate] = useState({})
   const [formObject, setFormObject] = useState({})
+  const [formObjectError, setFormObjectError] = useState({})
+  const [currentLatLng, setCurrentLatLng] = useState({ lat: 0, lng: 0 })
 
   // HANDLE INPUT CHANGE
-  const handleInputChange = (fieldId, fieldLabel, value) => {
+  const handleInputChange = (fieldId, type, keyValue, value) => {
     let tempFormObject = formObject
 
     tempFormObject[fieldId] = {
-      label: fieldLabel,
-      value: value,
+      type,
+      [keyValue]: value
     }
 
     setFormObject({...tempFormObject})
@@ -62,14 +80,69 @@ const FillForm = () => {
     }
   }
 
-  console.log({ formObject, dataFormTemplate })
+  // HANDLE SUBMIT SUBMISSION
+  const handleSubmitSubmission = async () => {
+    setIsPageLoading(true)
+    const abortController = new AbortController()
+    const params = {
+      label: dataFormTemplate.label,
+      description: dataFormTemplate.description,
+      fields: dataFormTemplate.fields,
+      values: formObject,
+      template_id: dataFormTemplate.id,
+      submit_in_zone: false,
+      submit_location: {
+        address: '',
+        ...currentLatLng,
+      }
+    }
+    
+    const response = await postSubmitFormSubmission(abortController.signal, params)
+
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Form has been submitted',
+      })
+
+      // CLEAR MESSAGE ERROR
+      setFormObjectError(structureErrorMessage(dataFormTemplate.fields))
+    } else {
+      // HANDLE ERROR MESSAGE
+      let tempErrorMessage = formObjectError
+      for(let keys of Object.keys(tempErrorMessage)) {
+        const findError = response.data.error.details.find(item => item.field_id === keys)
+        if(Boolean(findError)) tempErrorMessage[keys] = findError.description
+        else tempErrorMessage[keys] = ''
+      }
+      setFormObjectError(tempErrorMessage)
+    }
+
+    setIsPageLoading(false)
+  }
 
   useEffect(() => {
     const abortController = new AbortController()
     fetchingFormField(abortController)
 
+    // GET LAT LNG
+    navigator.geolocation.getCurrentPosition((position) => {
+      setCurrentLatLng({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      })
+    })
     return () => abortController.abort()
   }, [])
+
+  useEffect(() => {
+    if(dataFormTemplate?.fields) {
+      setFormObject(structureParamsValuesCheckbox(dataFormTemplate.fields))
+      setFormObjectError(structureErrorMessage(dataFormTemplate.fields))
+    }
+  }, [dataFormTemplate])
 
   return (
     <Stack direction='column' alignItems='center' className={`${classes.root} no-zoom`}>
@@ -77,13 +150,16 @@ const FillForm = () => {
       <LoadingPaper isLoading={isPageLoading} className={`${classes.content} zoom`}>
         {/* HEADER */}
         <Stack className={classes.header}>
-          <Typography variant='h5' className='fontWeight500'>{dummyData.label}</Typography>
+          <Typography variant='h5' className='fontWeight500'>{dataFormTemplate.label}</Typography>
+          {dataFormTemplate.description && (
+            <Typography className={classes.headerDescription} color='text.secondary' variant='body2'>{dataFormTemplate.description}</Typography>
+          )}
         </Stack>
 
         <Divider />
 
         {/* FORM */}
-        <Stack className={classes.form} flex={1}>
+        <Stack className={classes.form} flex={1} component='form'>
           <Stack flex={1} height={'100%'}>
             {dataFormTemplate?.fields?.map(item => (
               <InputForm
@@ -91,13 +167,13 @@ const FillForm = () => {
                 item={item}
                 handleInputChange={handleInputChange}
                 formObject={formObject}
-                id={item.id}
+                formObjectError={formObjectError}
               />
             ))}
           </Stack>
 
           <Stack>
-            <Button variant='contained' className={classes.buttonSubmit}>Submit</Button>
+            <Button onClick={() => handleSubmitSubmission()} variant='contained' className={classes.buttonSubmit}>Submit</Button>
           </Stack>
         </Stack>
       </LoadingPaper>
