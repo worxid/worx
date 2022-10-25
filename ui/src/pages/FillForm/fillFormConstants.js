@@ -49,3 +49,9 @@ export const formatBytes = (bytes, decimals = 2) => {
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
+
+export const checkboxErrorMessage = (message, min_checked, max_checked) => {
+  if(message.includes('Value is more than maximum')) return `Select maximum ${max_checked} options`
+  if(message.includes('Value is less than minimum')) return `Select minimum ${min_checked} options`
+  else return message
+}

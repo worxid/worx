@@ -7,7 +7,7 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { formatBytes, getKeyValue } from './fillFormConstants'
+import { checkboxErrorMessage, formatBytes, getKeyValue } from './fillFormConstants'
 
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
@@ -199,7 +199,7 @@ const InputForm = (props) => {
 
           {formObjectError?.[item.id] && (
             <FormHelperText variant='error' className={classes.formHelperText}>
-              {formObjectError?.[item.id]}
+              {checkboxErrorMessage(formObjectError?.[item.id], item.min_checked, item.max_checked)}
             </FormHelperText>
           )}
         </FormControl>
