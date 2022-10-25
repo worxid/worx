@@ -6,6 +6,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 // CONTEXT
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// CONSTANTS
+import { checkboxErrorMessage, formatBytes, getKeyValue } from './fillFormConstants'
+
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
 
@@ -17,6 +20,7 @@ import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
+import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
@@ -52,76 +56,64 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 // STYLES
 import useStyles from './fillFormUseStyles'
 
+// UTILITIES
+import { convertDate } from 'utilities/date'
+
+/**
+ * next to-do:
+ * - handle error message input upload
+ * - handle value input upload
+ */
 const InputForm = (props) => {
-  const { item, handleInputChange, formObject } = props
+  const { item, handleInputChange, formObject, formObjectError } = props
 
   // CONTEXT
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
-  // DATE
+  // STATES
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
-  // SIGNATURE
   const [signatureRef, setSignatureRef] = useState()
+  const [selectedSignature, setSelectedSignature] = useState('')
 
   // STYLES
   const classes = useStyles()
 
   // HANDLE SIGANTURE ACTION BUTTON CLICK
-  const handleSignatureActionButtonClick = async (inputType) => {
+  const handleSignatureActionButtonClick = (inputType, fieldId, fieldType) => {
     if (inputType === 'save') {
-      handleInputChange(item.id, item.label, signatureRef?.toDataURL())
-    } else {
-
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), signatureRef?.toDataURL())
     }
 
+    setSelectedSignature('')
     setIsDialogFormOpen(false)
   }
 
   // HANDLE GALLERY CHANGE
-  const handleGalleryChange = (event) => {
-    let temp = formObject[item.id]?.value || []
+  const handleGalleryChange = (event, fieldId, fieldType) => {
+    let temp = formObject[fieldId]?.value || []
     temp.push(event.target.files[0])
-    handleInputChange(item.id, item.label, temp)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
   }
 
   // HANDLE FILE CHANGE
-  const handleFileChange = (event) => {
-    let temp = formObject[item.id]?.value || []
+  const handleFileChange = (event, fieldId, fieldType) => {
+    let temp = formObject[fieldId]?.value || []
     temp.push(event.target.files[0])
-    handleInputChange(item.id, item.label, temp)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
   }
 
   // HANDLE CHECKBOX CHANGE
-  const handleCheckboxChange = (fieldId, fieldLabel, event) => {
-    let temp = formObject[item.id]?.value || []
-    
-    // FIND
-    const find = temp.find(item => item === event.target.value)
+  const handleCheckboxChange = (event, fieldId, fieldType, indexGroup) => {
+    let temp = formObject[fieldId][getKeyValue(fieldType)]
 
-    if(!event.target.checked) {
-      handleInputChange(fieldId, fieldLabel, [...temp.filter(item => item !== event.target.value)])
-    } else {
-      handleInputChange(fieldId, fieldLabel, [...temp, event.target.value])
-    }
+    temp[indexGroup] = event.target.checked
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
   }
 
   // HANDLE REMOVE FILE
-  const handleRemoveFile = (fieldId, fieldLabel, indexId) => {
-    const remove = formObject[fieldId]?.value.filter((item, index) => index !== indexId)
-    handleInputChange(fieldId, fieldLabel, remove.length > 0 ? remove : null)
-  }
-
-  // FORMAT SIZE
-  const formatBytes = (bytes, decimals = 2) => {
-    if (!+bytes) return '0 Bytes'
-
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  const handleRemoveFile = (fieldId, fieldType, indexId) => {
+    const remove = formObject[fieldId][getKeyValue(fieldType)].filter((item, index) => index !== indexId)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), remove.length > 0 ? remove : null)
   }
 
   return (
@@ -138,35 +130,65 @@ const InputForm = (props) => {
 
       {/* LABEL & DESCRIPTION */}
       <Box className={classes.formLabelWrap}>
-        <Typography variant='subtitle2' className='displayBlock fontWeight400' noWrap>{item.label}</Typography>
-        <Typography variant='caption' color='text.secondary' className='displayBlock' noWrap>{item.description}</Typography>
+        <Typography
+          variant='subtitle2'
+          color={Boolean(formObjectError?.[item.id]) ? 'error.main' : 'text.primary'}
+          className='displayBlock fontWeight400'
+          noWrap
+        >
+          {item.label} {item.required && '*'}
+        </Typography>
+        <Typography
+          variant='caption'
+          color={Boolean(formObjectError?.[item.id]) ? 'error.main' : 'text.secondary'}
+          className='displayBlock'
+          noWrap
+        >
+          {item.description}
+        </Typography>
       </Box>
 
       {/* TEXTFIELD */}
       {item.type === 'text' && (
-        <FormControl fullWidth className={classes.formControl} required={item.required}>
+        <FormControl
+          fullWidth
+          className={classes.formControl}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
           <TextField
+            error={Boolean(formObjectError?.[item.id])}
             label='Answer'
             variant='filled'
             size='small'
             className='heightFitContent'
-            onChange={(event) => handleInputChange(item.id, item.label, event.target.value)}
+            onChange={(event) => handleInputChange(item.id, item.type, getKeyValue(item.type), event.target.value)}
           />
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
       {/* CHECKBOX */}
       {item.type === 'checkbox_group' && (
-        <FormControl className={classes.formControl} required={item.required}>
+        <FormControl
+          className={classes.formControl}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
           <FormGroup>
-            {item.optionList.map((itemOption, index) => (
+            {item.group.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
                 control={<Checkbox
                   size='small'
                   required={item.required}
                   value={itemOption.label}
-                  onChange={(event) => handleCheckboxChange(item.id, item.label, event)}
+                  onChange={(event) => handleCheckboxChange(event, item.id, item.type, index)}
                 />}
                 label={(
                   <Typography variant='caption' className='displayBlock'>{itemOption.label}</Typography>
@@ -174,6 +196,12 @@ const InputForm = (props) => {
               />
             ))}
           </FormGroup>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {checkboxErrorMessage(formObjectError?.[item.id], item.min_checked, item.max_checked)}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
@@ -181,14 +209,19 @@ const InputForm = (props) => {
       {item.type === 'radio_group' && (
         <FormControl
           className={classes.formControl}
-          onChange={(event) => handleInputChange(item.id, item.label, event.target.value)}
+          onChange={(event) => handleInputChange(
+            item.id, item.type,
+            getKeyValue(item.type),
+            Number(event.target.value)
+          )}
           required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
         >
           <RadioGroup>
-            {item.optionList.map((itemOption, index) => (
+            {item.options.map((itemOption, index) => (
               <FormControlLabel
                 key={index}
-                value={itemOption.label}
+                value={index}
                 control={<Radio size='small'/>}
                 label={(
                   <Typography variant='caption' className='displayBlock'>{itemOption.label}</Typography>
@@ -196,6 +229,12 @@ const InputForm = (props) => {
               />
             ))}
           </RadioGroup>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
@@ -206,21 +245,35 @@ const InputForm = (props) => {
           fullWidth
           className={classes.formControl}
           required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
         >
           <InputLabel>Answer</InputLabel>
           <Select
             label={item.label}
             size='small'
             className='heightFitContent'
-            onChange={(event) => handleInputChange(item.id, item.label, event.target.value)}
-            value={formObject[item.id]?.value || item?.optionList[0]?.label}
+            onChange={(event) => handleInputChange(
+              item.id,
+              item.type,
+              getKeyValue(item.type),
+              Number(event.target.value)
+            )}
+            value={formObject[item.id]?.[getKeyValue(item.type)] >= 0
+              ? formObject[item.id]?.[getKeyValue(item.type)] : ''
+            }
           >
-            {item.optionList.map((item, index) => (
-              <MenuItem key={index} value={item.label}>
-                <Typography variant='caption' className='displayBlock' noWrap>{item.label}</Typography>
+            {item.options.map((itemOption, index) => (
+              <MenuItem key={index} value={index}>
+                <Typography variant='caption' className='displayBlock' noWrap>{itemOption.label}</Typography>
               </MenuItem>
             ))}
           </Select>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
@@ -229,31 +282,49 @@ const InputForm = (props) => {
         <FormControl
           required={item.required}
           className={classes.formControl}
-          onChange={(event) => handleInputChange(item.id, item.label, Number(event.target.value))}
+          onChange={(event) => handleInputChange(
+            item.id,
+            item.type,
+            getKeyValue(item.type),
+            Number(event.target.value)
+          )}
+          error={Boolean(formObjectError?.[item.id])}
         >
           <Rating
-            value={formObject[item.id]?.value || 0}
+            value={formObject[item.id]?.[getKeyValue(item.type)] >= 1
+              ? formObject[item.id]?.[getKeyValue(item.type)] : 0}
             max={item.ratingStarsCount}
             size='medium'
             emptyIcon={<IconStar className={classes.opacityHalf}/>}
           />
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
       {/* DATE */}
       {item.type === 'date' && (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <FormControl fullWidth className={classes.formControl} required={item.required}>
+          <FormControl
+            fullWidth
+            className={classes.formControl}
+            required={item.required}
+            error={Boolean(formObjectError?.[item.id])}
+          >
             <Stack direction='row' alignItems='center'>
               <TextField
-                value={formObject[item.id]?.value ? new Date(formObject[item.id]?.value || Date.now()).toLocaleDateString('ID') : ''}
+                value={formObject[item.id]?.[getKeyValue(item.type)] ? new Date(formObject[item.id][getKeyValue(item.type)] || Date.now()).toLocaleDateString('ID') : ''}
                 label='Answer'
                 variant='filled'
                 size='small'
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton size='small' onClick={() => handleInputChange(item.id, item.label, null)}>
+                      <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
                         <IconCancel
                           fontSize='small'
                         />
@@ -273,16 +344,22 @@ const InputForm = (props) => {
                 <IconDateRange fontSize='small'/>
               </IconButton>
             </Stack>
+
+            {formObjectError?.[item.id] && (
+              <FormHelperText variant='error' className={classes.formHelperText}>
+                {formObjectError?.[item.id]}
+              </FormHelperText>
+            )}
           </FormControl>
 
-          <FormControl>
+          <FormControl error={Boolean(formObjectError?.[item.id])}>
             <MobileDatePicker
               label='For mobile'
               renderInput={(params) => <></>}
-              onChange={(newValue) => handleInputChange(item.id, item.label, newValue)}
+              onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'yyyy-MM-dd'))}
               onClose={() => setIsDatePickerOpen(false)}
               open={isDatePickerOpen}
-              value={formObject[item.id]?.value}
+              value={formObject[item.id]?.[getKeyValue(item.type)]}
               componentsProps={{
                 actionBar: { className: classes.actionCalendar },
               }}
@@ -326,7 +403,7 @@ const InputForm = (props) => {
               Camera
             </Button>
 
-            {item.imageAllowGallery && (
+            {item.allow_gallery_upload && (
               <Button
                 size='small'
                 className={`${classes.buttonRedPrimary} heightFitContent`}
@@ -390,35 +467,13 @@ const InputForm = (props) => {
 
       {/* SIGNATURE */}
       {item.type === 'signature' && (
-        <FormControl className={classes.formControl} required={item.required}>
-          {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
-            <Box
-              component='img'
-              className={classes.signatureImage}
-              src={formObject[item.id]?.value}
-            />
-
-            <IconButton
-              className='heightFitContent'
-              onClick={() => setIsDialogFormOpen(true)}
-            >
-              <IconCancel fontSize='small'/>
-            </IconButton>
-          </Stack>)}
-
-          {!formObject[item.id]?.value && (<Button
-            size='small'
-            className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
-            startIcon={<IconCreate fontSize='small'/>}
-            onClick={() => setIsDialogFormOpen(true)}
-          >
-            Add Signature
-          </Button>)}
-
-          <DialogForm
+        <>
+          {selectedSignature === item.id && (<DialogForm
             classNames={`${classes.dialogSignature} neutralize-dialog-form`}
             title='Create Signature'
-            handleActionButtonClick={handleSignatureActionButtonClick}
+            handleActionButtonClick={(inputType) => {
+              handleSignatureActionButtonClick(inputType)
+            }}
           >
             <Stack className={classes.dialogSignatureContent}>
               <Stack className={classes.signatureCanvas}>
@@ -433,8 +488,40 @@ const InputForm = (props) => {
                 />
               </Stack>
             </Stack>
-          </DialogForm>
-        </FormControl>
+          </DialogForm>)}
+
+          <FormControl className={classes.formControl} required={item.required}>
+            {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
+              <Box
+                component='img'
+                className={classes.signatureImage}
+                src={formObject[item.id]?.value}
+              />
+
+              <IconButton
+                className='heightFitContent'
+                onClick={() => {
+                  setSelectedSignature(item.id)
+                  setIsDialogFormOpen(true)
+                }}
+              >
+                <IconCancel fontSize='small'/>
+              </IconButton>
+            </Stack>)}
+
+            {!formObject[item.id]?.value && (<Button
+              size='small'
+              className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
+              startIcon={<IconCreate fontSize='small'/>}
+              onClick={() => {
+                setSelectedSignature(item.id)
+                setIsDialogFormOpen(true)
+              }}
+            >
+              Add Signature
+            </Button>)}
+          </FormControl>
+        </>
       )}
 
       <Divider className={classes.dividerFormControl}/>
