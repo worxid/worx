@@ -19,12 +19,14 @@ import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
+import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
 import id.worx.worx.util.UrlUtils;
 import id.worx.worx.web.model.request.FormTemplateSearchRequest;
@@ -39,6 +41,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     private final DeviceRepository deviceRepository;
     private final FormTemplateRepository templateRepository;
     private final GroupRepository groupRepository;
+    private final UsersRepository usersRepository;
 
     private final FormTemplateMapper templateMapper;
 
@@ -66,12 +69,27 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         }
 
         Device device = optDevice.get();
-
+        Set<FormTemplate> templates;
         Set<Group> groups = device.getAssignedGroups();
-        Set<FormTemplate> templates = groups.stream()
-                .map(Group::getTemplates)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+
+        if (groups.isEmpty()) {
+            // TODO Replace this impl with user relation.
+            String orgCode = device.getOrganizationCode();
+            Optional<Users> optUser = usersRepository.findByOrganizationCode(orgCode);
+            if (optUser.isEmpty()) {
+                throw new WorxException(WorxErrorCode.DEVICE_NOT_REGISTERED);
+            }
+            Users user = optUser.get();
+            Specification<FormTemplate> spec = specification.userIdEqualsTo(user.getId());
+            spec = spec.and(specification.isNotAssignedToAnyGroup());
+            templates = templateRepository.findAll(spec).stream()
+                    .collect(Collectors.toSet());
+        } else {
+            templates = groups.stream()
+                    .map(Group::getTemplates)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        }
         return templates.stream()
                 .sorted((FormTemplate t1, FormTemplate t2) -> t1.getId().compareTo(t2.getId()))
                 .collect(Collectors.toList());
