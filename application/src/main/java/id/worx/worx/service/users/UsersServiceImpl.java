@@ -24,6 +24,7 @@ import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -66,7 +67,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
-    private static final int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
+    @Value("${REFRESH_TOKEN_EXPIRED_AT_MS}")
+    private int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS; //2 week 1209600000
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
