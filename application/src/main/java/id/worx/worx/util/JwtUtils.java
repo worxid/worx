@@ -1,8 +1,10 @@
 package id.worx.worx.util;
 
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.users.Users;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,8 @@ import java.util.Map;
 public class JwtUtils {
 
     private static String secret = "This_is_secret";
-    @Value("${ACCESS_TOKEN_EXPIRED_AT_HOUR}")
-    private long expiryDuration; // at hour
+    @Autowired
+    WorxProperties worxProperties;
 
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
@@ -24,16 +26,17 @@ public class JwtUtils {
     }
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiryDuration))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * worxProperties.getToken().getAccess()))
             .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
     public String generateJwt(Users users){
 
+        System.out.println("get access : "+ worxProperties.getToken().getAccess());
         return Jwts.builder()
             .setSubject(users.getId() + ", "+ users.getEmail())
             .setIssuer("AUTH")
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expiryDuration * 60 * 60 * 1000))
+            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess() * 60 * 60 * 1000))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();
     }

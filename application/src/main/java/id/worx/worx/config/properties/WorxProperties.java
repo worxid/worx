@@ -13,4 +13,5 @@ import lombok.Setter;
 public class WorxProperties {
     private MailProperties mail;
     private StorageProperties storage;
+    private ExpiredTokenProperties token;
 }

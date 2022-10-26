@@ -9,6 +9,7 @@ import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
@@ -67,8 +68,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
-    @Value("${REFRESH_TOKEN_EXPIRED_AT_MS}")
-    private int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS; //2 week 1209600000
+    private WorxProperties worxProperties;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -359,7 +359,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(usersRepository.findByEmail(email).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(worxProperties.getToken().getRefresh()));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);
 
