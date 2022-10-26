@@ -70,6 +70,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
+    @Autowired
     private WorxProperties worxProperties;
 
     @Override
@@ -351,6 +352,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public String createRefreshToken(String email){
 
+        Integer expiredTimeRefreshToken = worxProperties.getToken().getRefresh();
         Optional<Users> getByEmail = usersRepository.findByEmail(email);
 
         if(!getByEmail.isPresent()){
@@ -359,7 +361,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(getByEmail.get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(worxProperties.getToken().getRefresh()));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(expiredTimeRefreshToken));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);
 

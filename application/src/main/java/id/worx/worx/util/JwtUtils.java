@@ -31,7 +31,6 @@ public class JwtUtils {
     }
     public String generateJwt(Users users){
 
-        System.out.println("get access : "+ worxProperties.getToken().getAccess());
         return Jwts.builder()
             .setSubject(users.getId() + ", "+ users.getEmail())
             .setIssuer("AUTH")
