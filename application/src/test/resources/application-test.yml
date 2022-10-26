@@ -29,6 +29,8 @@ spring:
 
 # Application Properties
 worx:
+  web:
+    endpoint: http://localhost:3000
   mail:
     from-address: from@example.com
     from-name: Magic Elves

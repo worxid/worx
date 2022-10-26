@@ -13,9 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import id.worx.worx.common.model.dto.FormTemplateDTO;
 import id.worx.worx.common.model.request.FormTemplateRequest;
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
@@ -35,6 +37,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class FormTemplateServiceImpl implements FormTemplateService {
+
+    private final WorxProperties worxProps;
 
     private final EmailService emailService;
 
@@ -164,9 +168,17 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     @Override
     public void share(FormTemplate template, List<String> recipients) {
         String code = template.getUrlCode();
+        String url = String.format(
+                "%s/fill-form?code=%s",
+                worxProps.getWeb().getEndpoint(),
+                code);
+        Context context = new Context();
+        context.setVariable("confirmationUrl", url);
+        context.setVariable("formTitle", template.getLabel());
+        context.setVariable("formDescription", template.getDescription());
 
         for (String recipient : recipients) {
-            emailService.sendShareFormEmail(recipient, code);
+            emailService.sendShareFormEmail(recipient, context);
         }
 
     }

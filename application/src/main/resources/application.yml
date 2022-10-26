@@ -29,6 +29,8 @@ spring:
 
 # Application Properties
 worx:
+  web:
+    endpoint: ${WORX_WEB_ENDPOINT}
   mail:
     from-address: ${WORX_EMAIL_FROM_ADDRESS}
     from-name: ${WORX_EMAIL_FROM_NAME}

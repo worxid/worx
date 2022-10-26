@@ -26,6 +26,8 @@ public class EmailServiceImpl implements EmailService {
     private static final String EMAIL_CONFIRMATION = "email-confirmation";
     private static final String SHARE_TEMPLATE = "email-share-link";
 
+    private static final String SHARE_FORM_SUBJECT_STRING = "Fill Your Form with Worx";
+
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
@@ -42,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(email.getSubject());
             helper.setFrom(email.getFrom());
             javaMailSender.send(message);
-            log.info("Mail sent to : " + email.getTo());
+            log.trace("Mail sent to : " + email.getTo());
         } catch (MessagingException e) {
             log.error("Mail Sending failure : " + e.getMessage(), e);
         }
@@ -64,17 +66,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendShareFormEmail(String email, String code) {
-        String url = String.format("https://dev.worx.id/fill-form?code=%s", code);
-        log.info("share url {}", url);
-        Context context = new Context();
-        context.setVariable("confirmationUrl", url);
+    public void sendShareFormEmail(String email, Context context) {
         String body = templateEngine.process(SHARE_TEMPLATE, context);
         EmailDTO emailDTO = EmailDTO.builder()
                 .from(worxProps.getMail().getFromAddress())
                 .to(email)
                 .content(body)
-                .subject("Fill Your Form with Worx")
+                .subject(SHARE_FORM_SUBJECT_STRING)
                 .build();
         sendEmail(emailDTO);
     }
@@ -86,13 +84,14 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("greeting", String.format("Hi %s,", fullname));
         String body = templateEngine.process(RESET_PASSWORD_EMAIL, context);
         EmailDTO emailDTO = EmailDTO.builder()
-            .from(worxProps.getMail().getFromAddress())
-            .to(email)
-            .content(body)
-            .subject("WORX - Reset Password")
-            .build();
+                .from(worxProps.getMail().getFromAddress())
+                .to(email)
+                .content(body)
+                .subject("WORX - Reset Password")
+                .build();
         sendEmail(emailDTO);
     }
+
     @Override
     public void sendWelcomingEmail(String email, String fullname, String url) {
         Context context = new Context();
@@ -100,11 +99,12 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("greeting", String.format("Hi %s,", fullname));
         String body = templateEngine.process(EMAIL_CONFIRMATION, context);
         EmailDTO emailDTO = EmailDTO.builder()
-            .from(worxProps.getMail().getFromAddress())
-            .to(email)
-            .content(body)
-            .subject("WORX - Email Confirmation")
-            .build();
+                .from(worxProps.getMail().getFromAddress())
+                .to(email)
+                .content(body)
+                .subject("WORX - Email Confirmation")
+                .build();
         sendEmail(emailDTO);
     }
+
 }

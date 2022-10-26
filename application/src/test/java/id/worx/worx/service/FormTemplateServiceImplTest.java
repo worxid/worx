@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
@@ -31,6 +33,9 @@ import id.worx.worx.service.specification.FormTemplateSpecification;
 
 @ExtendWith(MockitoExtension.class)
 class FormTemplateServiceImplTest {
+
+    @Autowired
+    WorxProperties worxProps = new WorxProperties();
 
     @Mock
     EmailService emailService;
@@ -58,6 +63,7 @@ class FormTemplateServiceImplTest {
     @BeforeEach
     void init() {
         templateService = new FormTemplateServiceImpl(
+                worxProps,
                 emailService,
                 deviceRepository,
                 templateRepository,
