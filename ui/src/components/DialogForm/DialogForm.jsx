@@ -38,9 +38,9 @@ const DialogForm = (props) => {
       className={`${classes.dialogForm} ${classNames}`}
     >
       {/* TITLE */}
-      <DialogTitle className={classes.dialogFormTitle}>
+      {title && (<DialogTitle className={classes.dialogFormTitle}>
         {title}
-      </DialogTitle>
+      </DialogTitle>)}
 
       {/* CONTENT */}
       <DialogContent className='width100 padding0'>
