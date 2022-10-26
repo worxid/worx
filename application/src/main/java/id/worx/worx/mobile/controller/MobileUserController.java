@@ -22,23 +22,22 @@ public class MobileUserController {
 
     private final UsersService usersService;
 
-
     @PostMapping("/create-new-team")
     public ResponseEntity<BaseValueResponse<UserResponse>> createNewTeam(@RequestHeader("deviceCode") String deviceCode,
-                                                                         @RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
+            @RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest) {
 
-        if(deviceCode.isEmpty()){
+        if (deviceCode.isEmpty()) {
             throw new WorxException(WorxErrorCode.DEVICE_CODE_INVALID);
         }
 
-        Users users = usersService.createUser(userRequest,httpServletRequest);
+        Users users = usersService.createUser(userRequest, httpServletRequest);
         UserResponse dto = usersService.toDTO(users);
 
         BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()
-            .value(dto)
-            .build();
+                .value(dto)
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(response);
+                .body(response);
     }
 }
