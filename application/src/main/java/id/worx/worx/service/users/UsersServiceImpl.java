@@ -55,6 +55,8 @@ import java.util.regex.Pattern;
 public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final UsersRepository usersRepository;
 
+    private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final EmailTokenRepository emailTokenRepository;
@@ -86,8 +88,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Transactional
     public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
         String regexNumberOnly = "\\d+";
@@ -174,8 +175,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         String message = "";
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(updatePasswordRequest.getNewPassword());
 
         if (!matcher.matches()) {
@@ -194,20 +194,15 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         boolean matchPassword = passwordEncoder.matches(updatePasswordRequest.getOldPassword(), encodedPassword);
         log.info("Match Password user : {} ", matchPassword);
 
-        if(optionalUsers.isPresent()){
+        if (matchPassword){
+            getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+            usersRepository.save(getUsers);
 
-            if (matchPassword){
-                getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
-                usersRepository.save(getUsers);
+            message = "Update Password Success";
 
-                message = "Update Password Success";
-
-                return message;
-            }else{
-                throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
-            }
+            return message;
         }else{
-            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+            throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
         }
     }
 
@@ -244,8 +239,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken){
 
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
 
         if (!matcher.matches()) {
@@ -357,8 +351,14 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public String createRefreshToken(String email){
 
+        Optional<Users> getByEmail = usersRepository.findByEmail(email);
+
+        if(!getByEmail.isPresent()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
+
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(usersRepository.findByEmail(email).get());
+        refreshToken.setUser(getByEmail.get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(worxProperties.getToken().getRefresh()));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);

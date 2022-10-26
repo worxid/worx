@@ -39,6 +39,14 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
         };
     }
 
+    public Specification<FormTemplate> userIdEqualsTo(Long userId) {
+        return this.equalTo(FormTemplate_.USER_ID, userId);
+    }
+
+    public Specification<FormTemplate> isNotAssignedToAnyGroup() {
+        return (root, query, cb) -> cb.isEmpty(root.get(FormTemplate_.ASSIGNED_GROUPS));
+    }
+
     public Specification<FormTemplate> submissionCountEqualTo(Integer submissionCount) {
         return (root, query, cb) -> {
             Root<FormTemplate> template = root;
@@ -80,8 +88,8 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
             spec = spec.and(lessThanOrEqualTo(Audit_.MODIFIED_ON, request.getModifiedOn()));
         }
 
-        if(userId!=null){
-            spec = spec.and(equalTo(FormTemplate_.USER_ID,userId));
+        if (userId != null) {
+            spec = spec.and(equalTo(FormTemplate_.USER_ID, userId));
         }
 
         if (Objects.nonNull(request.getAssignedGroups())) {

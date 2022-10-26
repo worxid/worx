@@ -29,6 +29,8 @@ spring:
 
 # Application Properties
 worx:
+  web:
+    endpoint: http://localhost:3000
   mail:
     from-address: from@example.com
     from-name: Magic Elves
@@ -37,3 +39,6 @@ worx:
     access-key: worxtest
     secret-key: worxtest
     bucket-name: worx-dev-test
+  token:
+    access: ${WORX_ACCESS_TOKEN_EXPIRED_AT_HOUR}
+    refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}

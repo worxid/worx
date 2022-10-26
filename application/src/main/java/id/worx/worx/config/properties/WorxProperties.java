@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WorxProperties {
+    private WebProperties web;
     private MailProperties mail;
     private StorageProperties storage;
     private ExpiredTokenProperties token;

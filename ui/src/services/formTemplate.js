@@ -1,5 +1,5 @@
 //APIS
-import { axiosPrivate } from 'apis/axios'
+import axios, { axiosPrivate } from 'apis/axios'
 
 // QUERY
 import { stringify } from 'query-string'
@@ -90,6 +90,18 @@ export const postShareFormTemplate = async (formTemplateId, inputSignal, inputPa
     const response = await axiosPrivate.post(`/form/template/${formTemplateId}/share`, inputParams, {
       signal: inputSignal,
       headers: { 'Authorization': `Bearer ${inputToken}` }
+    })
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
+export const getReadFormTemplate = async (formCode, inputSignal) => {
+  try {
+    const response = await axios.get(`/form/template/read?code=${formCode}`, {
+      signal: inputSignal,
     })
     return response
   } catch (error) {

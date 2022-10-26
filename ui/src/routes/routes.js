@@ -47,7 +47,7 @@ const routes = [
   },
   // PRIVATE
   {
-    path: '/home',
+    path: '/',
     element: <Home/>,
     routeType: 'private',
   },
