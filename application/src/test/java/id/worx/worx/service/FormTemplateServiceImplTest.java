@@ -26,6 +26,7 @@ import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.service.specification.FormTemplateSpecification;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +41,8 @@ class FormTemplateServiceImplTest {
     FormTemplateRepository templateRepository;
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    UsersRepository usersRepository;
 
     @Mock
     FormTemplateSpecification specification;
@@ -59,6 +62,7 @@ class FormTemplateServiceImplTest {
                 deviceRepository,
                 templateRepository,
                 groupRepository,
+                usersRepository,
                 templateMapper,
                 specification,
                 authContext);
