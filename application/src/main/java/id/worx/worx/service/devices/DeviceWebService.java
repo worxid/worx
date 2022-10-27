@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
-import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;

@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import id.worx.worx.entity.Form;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import id.worx.worx.common.enums.DeviceStatus;
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
-import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
@@ -108,16 +105,6 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
             deviceResponse.setGroups(groupNames);
         return deviceResponse;
     }
-
-//    @Override
-//    public PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest,
-//            Pageable pageable) {
-//        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-//                Sort.by(getDirection(pageable), getSortBy(pageable)));
-//        Page<Device> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),
-//                customPageable);
-//        return new PagingResponseModel<>(devices.map(this::toDto));
-//    }
     @Override
     public Page<Device> getAllDeviceWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable){
 
