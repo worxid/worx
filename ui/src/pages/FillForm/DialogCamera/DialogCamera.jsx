@@ -26,7 +26,7 @@ import IconReplay from '@mui/icons-material/Replay'
 import useStyles from './dialogCameraUseStyles'
 
 const DialogCamera = (props) => {
-  const { handleUsePhoto, handleCancel } = props
+  const { handleUsePhoto, handleCancel, handleBackdropClick } = props
 
   // STYLES
   const classes = useStyles()
@@ -105,6 +105,7 @@ const DialogCamera = (props) => {
     <DialogForm
       classNames={`${classes.dialogCamera} neutralize-dialog-form`}
       areActionsAvailable={false}
+      onBackdropClick={handleBackdropClick}
     >
       <Stack width='100%' height='100%' alignItems='center'>
         {/* CAMERA */}

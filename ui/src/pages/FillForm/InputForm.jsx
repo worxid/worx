@@ -130,10 +130,12 @@ const InputForm = (props) => {
     handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
   }
 
-  // HANDLE GALLERY CHANGE
+  // HANDLE CAMERA CHANGE
   const handleCamera = (fieldId, fieldType, resultPhoto) => {
     setSelectedDialog('')
     setIsDialogFormOpen(false)
+
+    console.log({selectedDialog})
 
     let temp = formObject[fieldId]?.values || []
     const imageInObject = dataURLtoFileObject(resultPhoto, `photo-${uuid()}.jpeg`)
@@ -495,6 +497,7 @@ const InputForm = (props) => {
                 setIsDialogFormOpen(false)
               }}
               handleUsePhoto={(result) => handleCamera(item.id, item.type, result)}
+              handleBackdropClick={() => setSelectedDialog('')}
             />
           )}
 
@@ -619,27 +622,30 @@ const InputForm = (props) => {
       {/* SIGNATURE */}
       {item.type === 'signature' && (
         <>
-          {selectedDialog === item.id && (<DialogForm
-            classNames={`${classes.dialogSignature} neutralize-dialog-form`}
-            title='Create Signature'
-            handleActionButtonClick={(inputType) => {
-              handleSignatureActionButtonClick(inputType, item.id, item.type)
-            }}
-          >
-            <Stack className={classes.dialogSignatureContent}>
-              <Stack className={classes.signatureCanvas}>
-                <SignatureCanvas
-                  canvasProps={{
-                    height: 200,
-                    width: 350,
-                  }}
-                  ref={(ref) => {
-                    setSignatureRef(ref)
-                  }}
-                />
+          {selectedDialog === item.id && (
+            <DialogForm
+              classNames={`${classes.dialogSignature} neutralize-dialog-form`}
+              title='Create Signature'
+              handleActionButtonClick={(inputType) => {
+                handleSignatureActionButtonClick(inputType, item.id, item.type)
+              }}
+              onBackdropClick={() => setSelectedDialog('')}
+            >
+              <Stack className={classes.dialogSignatureContent}>
+                <Stack className={classes.signatureCanvas}>
+                  <SignatureCanvas
+                    canvasProps={{
+                      height: 200,
+                      width: 350,
+                    }}
+                    ref={(ref) => {
+                      setSignatureRef(ref)
+                    }}
+                  />
+                </Stack>
               </Stack>
-            </Stack>
-          </DialogForm>)}
+            </DialogForm>
+          )}
 
           <FormControl
             className={classes.formControl}
