@@ -1,5 +1,19 @@
 package id.worx.worx.entity.users;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import lombok.AllArgsConstructor;
@@ -7,14 +21,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
 @Table(name = "users")
@@ -23,7 +29,9 @@ import java.util.Collection;
 @Getter
 @Setter
 @Builder
-public class Users extends Audit implements UserDetails {
+public class Users extends Audit {
+
+    private static final long serialVersionUID = 4324739476207136765L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,33 +66,4 @@ public class Users extends Audit implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public String getUsername(){
-        return this.getEmail();
-    }
 }

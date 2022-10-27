@@ -3,7 +3,6 @@ package id.worx.worx.service.users;
 import id.worx.worx.common.enums.EmailTokenStatus;
 import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.common.enums.UserStatus;
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
@@ -28,11 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +46,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class UsersServiceImpl implements UsersService, UserDetailsService {
+public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
@@ -73,19 +67,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private WorxProperties worxProperties;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Users> users = usersRepository.findByEmail(email);
-
-        if(users.isEmpty()){
-            throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-        }else{
-            log.info("User found in the database : {} ", email);
-        }
-        Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
-
-        return new User(users.get().getEmail(), users.get().getPassword(), authotities);
-    }
     @Transactional
     public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
