@@ -26,6 +26,7 @@
 		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
 		<sonar.organization>worxid</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<google-maps-services.version>2.1.0</google-maps-services.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -126,6 +127,11 @@
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
 			<version>${minio.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+			<version>${google-maps-services.version}</version>
 		</dependency>
 	</dependencies>
 

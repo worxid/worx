@@ -39,3 +39,6 @@ worx:
     access-key: ${WORX_STORAGE_ACCESS_KEY}
     secret-key: ${WORX_STORAGE_SECRET_KEY}
     bucket-name: ${WORX_STORAGE_BUCKET_NAME}
+  geocoder:
+    default-option: ${WORX_GEOCODER_DEFAULT}
+    google-api-key: ${WORX_GEOCODER_GOOGLE_API_KEY}
