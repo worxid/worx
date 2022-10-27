@@ -130,6 +130,39 @@ const InputForm = (props) => {
     handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
   }
 
+  // HANDLE GALLERY CHANGE
+  const handleCamera = (fieldId, fieldType, resultPhoto) => {
+    setSelectedDialog('')
+    setIsDialogFormOpen(false)
+
+    let temp = formObject[fieldId]?.values || []
+    const imageInObject = dataURLtoFileObject(resultPhoto, `photo-${uuid()}.jpeg`)
+
+    // CHECK MAX FILES
+    if(temp.length >= Number(item.max_files)) {
+      handleErrorMessage(
+        fieldId,
+        `Max files is ${item.max_files}`
+      )
+      return
+    }
+
+    // CHECK FILE FORMAT
+    if(!formatFileValidation(imageInObject, anyFormatImage)) {
+      handleErrorMessage(
+        fieldId,
+        `Only accept format ${anyFormatImage.join(', ').replace(/, ([^,]*)$/, ' and $1')}`
+      )
+      return
+    }
+
+    // CLEAR ERROR MESSAGE
+    handleErrorMessage(fieldId, '')
+
+    temp.push(imageInObject)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+  }
+
   // HANDLE FILE CHANGE
   const handleFileChange = async (event, fieldId, fieldType, allowedExtensions) => {
     let temp = formObject[fieldId]?.values || []
@@ -461,9 +494,7 @@ const InputForm = (props) => {
                 setSelectedDialog('')
                 setIsDialogFormOpen(false)
               }}
-              handleUsePhoto={(result) => {
-                console.log({ result })
-              }}
+              handleUsePhoto={(result) => handleCamera(item.id, item.type, result)}
             />
           )}
 
