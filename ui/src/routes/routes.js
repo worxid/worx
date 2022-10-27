@@ -5,6 +5,7 @@ import { PrivateLayoutContextProvider } from 'contexts/PrivateLayoutContext'
 // PAGES
 import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
 import Devices from 'pages/Devices/Devices'
+import Error from 'pages/Error'
 import FillForm from 'pages/FillForm/FillForm'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
@@ -94,7 +95,12 @@ const routes = [
       </PrivateLayoutContextProvider>
     ),
     routeType: 'free'
-  }
+  },
+  {
+    path: '/error',
+    element: <Error />,
+    routeType: 'free',
+  },
 ]
 
 export default routes
