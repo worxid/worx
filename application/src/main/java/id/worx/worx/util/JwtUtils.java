@@ -1,5 +1,6 @@
 package id.worx.worx.util;
 
+import id.worx.worx.common.model.forms.field.Option;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.repository.UsersRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -29,16 +31,22 @@ public class JwtUtils {
     }
     private String createToken(String subject) {
 
-        Users getUsers = usersRepository.findByEmail(subject).get();
+        Optional<Users> getUsers = usersRepository.findByEmail(subject);
+        if(getUsers.isPresent()){
 
-        return Jwts.builder()
-            .setSubject(getUsers.getId() + ", " + getUsers.getEmail())
-            .setIssuer("AUTH")
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
-            .addClaims(Map.of(StandardClaimNames.PREFERRED_USERNAME, getUsers.getEmail()))
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+            Users users = getUsers.get();
+            return Jwts.builder()
+                .setSubject(users.getId() + ", " + users.getEmail())
+                .setIssuer("AUTH")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
+                .addClaims(Map.of(StandardClaimNames.PREFERRED_USERNAME, users.getEmail()))
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+        }
+
+        return null;
+
     }
     public String generateJwt(Users users){
 
