@@ -52,9 +52,6 @@ public class DeviceSpecification implements BaseSpecification<Device>{
         if(Objects.nonNull(searchRequest.getJoinedTime())){
             spec= spec.and(lessThanOrEqualTo(Device_.JOINED_DATE,searchRequest.getJoinedTime()));
         }
-        if (Objects.nonNull(searchRequest.getGlobalSearch())){
-            spec= spec.and(globalSearch(searchRequest.getGlobalSearch()));
-        }
 
 
         return spec;
