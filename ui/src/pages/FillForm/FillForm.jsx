@@ -123,6 +123,9 @@ const FillForm = () => {
     setIsPageLoading(false)
   }
 
+  console.log({ formObject, formObjectError })
+  console.log(dataFormTemplate.fields)
+
   useEffect(() => {
     const abortController = new AbortController()
     fetchingFormField(abortController)
@@ -168,6 +171,7 @@ const FillForm = () => {
                 handleInputChange={handleInputChange}
                 formObject={formObject}
                 formObjectError={formObjectError}
+                setFormObjectError={setFormObjectError}
               />
             ))}
           </Stack>
