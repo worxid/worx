@@ -57,8 +57,8 @@ export const postLoginUser = async (
 export const postRefreshToken = async (inputRefreshToken) => {
   try {
     const response = await axios.post(
-      '/users/refresh-token',
-      { refreshToken: inputRefreshToken },
+      '/api/users/refresh-token',
+      { refresh_token: inputRefreshToken },
     )
 
     return response

@@ -8,24 +8,30 @@ import { postRefreshToken } from 'services/users'
 
 // UTILS
 import { signOutUser } from 'utilities/authentication'
+import { setUserProfileToLocalStorage } from 'utilities/localStorage'
 
 const useRefreshToken = () => {
   const { auth, setAuth } = useContext(AllPagesContext)
 
   const refreshToken = async () => {
-    const responseRefreshToken = await postRefreshToken(auth?.refreshToken)
+    const resultRefreshToken = await postRefreshToken(auth?.refreshToken)
 
-    if (responseRefreshToken.status === 200) {
+    if (resultRefreshToken.status === 200) {
+      setUserProfileToLocalStorage({
+        ...auth,
+        accessToken: resultRefreshToken?.data?.data?.accessToken,
+      })
+
       setAuth(current => {
         return {
           ...current,
-          accessToken: responseRefreshToken?.data?.data?.accessToken,
+          accessToken: resultRefreshToken?.data?.data?.accessToken,
         }
       })
 
-      return responseRefreshToken?.data?.data?.accessToken
+      return resultRefreshToken?.data?.data?.accessToken
     }
-    else signOutUser(setAuth)
+    else if (resultRefreshToken.status === 400) signOutUser(setAuth)
   }
 
   return refreshToken
