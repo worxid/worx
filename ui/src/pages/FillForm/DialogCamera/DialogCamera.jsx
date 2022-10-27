@@ -1,4 +1,4 @@
-import { useContext, useState, useRef, useCallback, useMemo } from 'react'
+import { useContext, useState, useRef, useCallback, useMemo, useEffect } from 'react'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -11,6 +11,7 @@ import Webcam from 'react-webcam'
 
 // MUIS
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -39,6 +40,7 @@ const DialogCamera = (props) => {
   // STATES
   const [resultPhoto, setResultPhoto] = useState('') // BASE64 IMAGE
   const [cameraPosition, setCameraPosition] = useState('user')
+  const [isLoading, setIsLoading] = useState(true)
 
   // CONSTRAINT SETTING
   const constraintsSetting = useMemo(() => {
@@ -68,7 +70,7 @@ const DialogCamera = (props) => {
 
     const imageInBase64 = webcamRef.current.getScreenshot({
       width: resolutionWidth,
-      height: resolutionHeight,
+      height: resolutionHeight
     })
 
     setResultPhoto(imageInBase64)
@@ -88,9 +90,16 @@ const DialogCamera = (props) => {
      * user: is selfie/forward/webcam camera
      * environtment: is front camera
      */
+    setIsLoading(true)
     if(cameraPosition === 'user') setCameraPosition('environtment')
     else if(cameraPosition === 'environtment') setCameraPosition('user')
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 3000)
+  }, [cameraPosition])
 
   return (
     <DialogForm
@@ -99,9 +108,10 @@ const DialogCamera = (props) => {
     >
       <Stack width='100%' height='100%' alignItems='center'>
         {/* CAMERA */}
-        <Stack alignItems='center' width='100%' flex={1} className={classes.webcamWrapper}>
+        <Stack justifyContent='center' alignItems='center' width='100%' flex={1} className={classes.webcamWrapper}>
+          {isLoading && (<CircularProgress />)}
           {/* CAMERA PREVIEW */}
-          {!resultPhoto && (
+          {(!resultPhoto && !isLoading) && (
             <Webcam
               ref={webcamRef}
               audio={false}
