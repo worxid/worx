@@ -26,7 +26,7 @@ public class JwtUtils {
     }
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * worxProperties.getToken().getAccess()))
+            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
             .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
     public String generateJwt(Users users){
@@ -35,7 +35,7 @@ public class JwtUtils {
             .setSubject(users.getId() + ", "+ users.getEmail())
             .setIssuer("AUTH")
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess() * 60 * 60 * 1000))
+            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();
     }
