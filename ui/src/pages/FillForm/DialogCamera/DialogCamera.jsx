@@ -5,7 +5,6 @@ import DialogForm from 'components/DialogForm/DialogForm'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
-import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // LIBRARY
 import Webcam from 'react-webcam'
@@ -36,7 +35,6 @@ const DialogCamera = (props) => {
 
   // CONTEXT
   const { breakpointType } = useContext(AllPagesContext)
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
   const [resultPhoto, setResultPhoto] = useState('') // BASE64 IMAGE
@@ -45,7 +43,7 @@ const DialogCamera = (props) => {
   // CONSTRAINT SETTING
   const constraintsSetting = useMemo(() => {
     return {
-      facingMode: cameraPosition
+      facingMode: cameraPosition === 'user' ? cameraPosition : {exact: 'environment' },
     }
   }, [breakpointType, cameraPosition])
 
@@ -54,8 +52,12 @@ const DialogCamera = (props) => {
     const getMediaCamera = await navigator.mediaDevices.getUserMedia({
       audio: false,
       video: {
-        width: { ideal: 1200 },
-        height: { ideal: 720 }
+        width: {
+          ideal: 1028
+        },
+        height: {
+          ideal: 720,
+        }
       }
     })
 
@@ -103,10 +105,10 @@ const DialogCamera = (props) => {
             <Webcam
               ref={webcamRef}
               audio={false}
-              className={classes.webcam}
-              width='100%'
+              //className={classes.webcam}
+              //width='100%'
               screenshotFormat='image/jpeg'
-              mirrored={true}
+              mirrored={cameraPosition === 'user' ? true : false}
               videoConstraints={constraintsSetting}
             ></Webcam>
           )}

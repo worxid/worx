@@ -35,9 +35,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   resultPhoto: {
-    height: 'fit-content',
-    maxWidth: '100%',
-    width: 'fit-content',
+    height: '438px',
   },
   buttonTakePhoto: {
     backgroundColor: theme.palette.error.main,
