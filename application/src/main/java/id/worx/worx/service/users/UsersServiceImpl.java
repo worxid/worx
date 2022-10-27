@@ -9,6 +9,7 @@ import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
@@ -24,6 +25,7 @@ import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -68,7 +70,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
-    private static final int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
+    @Autowired
+    private WorxProperties worxProperties;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -349,6 +352,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public String createRefreshToken(String email){
 
+        Integer expiredTimeRefreshToken = worxProperties.getToken().getRefresh();
         Optional<Users> getByEmail = usersRepository.findByEmail(email);
 
         if(!getByEmail.isPresent()){
@@ -357,7 +361,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(getByEmail.get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(expiredTimeRefreshToken));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);
 

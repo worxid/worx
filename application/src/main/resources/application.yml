@@ -39,3 +39,6 @@ worx:
     access-key: ${WORX_STORAGE_ACCESS_KEY}
     secret-key: ${WORX_STORAGE_SECRET_KEY}
     bucket-name: ${WORX_STORAGE_BUCKET_NAME}
+  token:
+    access: ${WORX_ACCESS_TOKEN_EXPIRED_IN_MS}
+    refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}
