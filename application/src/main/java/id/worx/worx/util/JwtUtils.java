@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -26,10 +25,9 @@ public class JwtUtils {
     UsersRepository usersRepository;
 
     public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, email);
+        return createToken(email);
     }
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(String subject) {
 
         Users getUsers = usersRepository.findByEmail(subject).get();
 
