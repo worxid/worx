@@ -75,9 +75,12 @@ const Toolbox = () => {
             put: false
           }}
           clone={(item) => {
+            // INIT NEW OPTION LIST
             if(item.type === 'checkbox_group' || item.type === 'radio_group' || item.type === 'dropdown') {
-              // INIT NEW OPTION LIST
-              return { ...item, id: uuid(), optionList: initOptionList } 
+              let tempItem = { ...item, id: uuid() } 
+              if (item.type === 'checkbox_group') tempItem['group'] = initOptionList
+              else tempItem['options'] = initOptionList
+              return tempItem
             } else return { ...item, id: uuid() }
           }}
         >

@@ -1,5 +1,7 @@
 package id.worx.worx.service;
 
+import org.thymeleaf.context.Context;
+
 import id.worx.worx.common.model.dto.EmailDTO;
 
 public interface EmailService {
@@ -10,7 +12,8 @@ public interface EmailService {
 
     void sendResetPassword(String email, String content, String url);
 
-    void sendShareFormEmail(String email, String content);
+    void sendShareFormEmail(String email, Context context);
+
     void sendWelcomingEmail(String email, String content, String url);
 
 }

@@ -60,7 +60,7 @@ public class FormTemplate extends BaseEntity {
 
     private String urlCode;
 
-    @OneToMany(mappedBy = "template")
+    @OneToMany(mappedBy = "template", orphanRemoval = true)
     @Default
     private Set<Form> forms = new HashSet<>();
 

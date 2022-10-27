@@ -10,7 +10,7 @@ export const drawerNavigationList = [
     type: 'single',
     title: 'Home',
     icon: IconHome,
-    path: '/home',
+    path: '/',
   },
   {
     type: 'single',

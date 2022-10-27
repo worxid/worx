@@ -1,10 +1,13 @@
 package id.worx.worx.util;
 
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.users.Users;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -16,7 +19,8 @@ import java.util.Map;
 public class JwtUtils {
 
     private static String secret = "This_is_secret";
-    private static long expiryDuration = 24* 60 * 60 * 1000;
+    @Autowired
+    WorxProperties worxProperties;
 
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
@@ -24,7 +28,7 @@ public class JwtUtils {
     }
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * expiryDuration))
+            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
             .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
     public String generateJwt(Users users){
@@ -33,7 +37,7 @@ public class JwtUtils {
             .setSubject(users.getId() + ", " + users.getEmail())
             .setIssuer("AUTH")
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expiryDuration))
+            .setExpiration(new Date(System.currentTimeMillis() + worxProperties.getToken().getAccess()))
             .addClaims(Map.of(StandardClaimNames.PREFERRED_USERNAME, users.getEmail()))
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();
