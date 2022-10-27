@@ -1,9 +1,9 @@
 package id.worx.worx.service;
 
+import id.worx.worx.config.security.JWTokenFilter;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JWTValue;
-import id.worx.worx.util.JWTokenFilter;
 import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

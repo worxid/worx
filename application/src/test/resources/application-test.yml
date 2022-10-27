@@ -40,5 +40,5 @@ worx:
     secret-key: worxtest
     bucket-name: worx-dev-test
   token:
-    access: ${WORX_ACCESS_TOKEN_EXPIRED_AT_HOUR}
-    refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}
+    access: 10
+    refresh: 20
