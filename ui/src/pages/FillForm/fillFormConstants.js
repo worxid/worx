@@ -90,12 +90,10 @@ const convertToBytes = (size, type) => {
 
 // SIZE FILE VALIDATION
 export const sizeFileValidation = (fileObject, minSize, minFormat = 'byte', maxSize, maxFormat = 'byte') => {
-  console.log({ fileObject, minSize, minFormat, maxSize, maxFormat })
   let isValid = false
   const minInBytes = convertToBytes(minSize, minFormat)
   const maxInBytes = convertToBytes(maxSize, maxFormat)
   const fileInBytes = fileObject.size
-  console.log({fileInBytes, minInBytes, maxInBytes })
 
   if(fileInBytes >= minInBytes && fileInBytes <= maxInBytes) isValid = true
   return isValid
