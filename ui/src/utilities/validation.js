@@ -35,3 +35,8 @@ export const isFormatDateSearchValid = (date) => {
   if(pattern.test(date)) return true
   else return false
 }
+
+export const wasRequestCanceled = (inputStatus) => {
+  if (inputStatus === 'Canceled') return true
+  else return false
+}
