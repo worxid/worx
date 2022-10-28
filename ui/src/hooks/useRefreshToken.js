@@ -11,7 +11,10 @@ import { signOutUser } from 'utilities/authentication'
 import { setUserProfileToLocalStorage } from 'utilities/localStorage'
 
 const useRefreshToken = () => {
-  const { auth, setAuth } = useContext(AllPagesContext)
+  const { 
+    auth, setAuth, 
+    setSnackbarObject,
+  } = useContext(AllPagesContext)
 
   const refreshToken = async () => {
     const resultRefreshToken = await postRefreshToken(auth?.refreshToken)
@@ -31,7 +34,16 @@ const useRefreshToken = () => {
 
       return resultRefreshToken?.data?.data?.accessToken
     }
-    else if (resultRefreshToken.status === 400) signOutUser(setAuth)
+    else if (resultRefreshToken.status === 400) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Sorry, your session has expired',
+      })
+      
+      signOutUser(setAuth)
+    }
   }
 
   return refreshToken
