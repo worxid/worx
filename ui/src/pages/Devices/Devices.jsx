@@ -38,7 +38,10 @@ import { deleteDevices, postGetListDevices } from 'services/devices'
 import useLayoutStyles from './devicesUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 import { getDeviceStatusColor } from 'utilities/component'
 
 const Devices = () => { 
@@ -190,13 +193,14 @@ const Devices = () => {
       axiosPrivate,
     )
 
-    if(didSuccessfullyCallTheApi(response?.status) && isMounted) {
+    if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
       setTableData(response.data.rows)
       setTotalRow(response.data.totalElements)
-    } else {
+    }
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
-        severity:'error',
+        severity: 'error',
         title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
         message: response?.data?.error?.message || 'Something went wrong',
       })
@@ -221,19 +225,22 @@ const Devices = () => {
         axiosPrivate,
       )
 
-      if(didSuccessfullyCallTheApi(response?.status)) {
+      if (didSuccessfullyCallTheApi(response?.status)) {
         fetchingDevicesList(abortController.signal, true)
+
         setSnackbarObject({
           open: true,
-          severity:'success',
-          title:'',
-          message:'Device deleted successfully'
+          severity: 'success',
+          title: '',
+          message: 'Device deleted successfully'
         })
+
         setSelectionModel([])
-      } else {
+      }
+      else if (!wasRequestCanceled(response?.status)) {
         setSnackbarObject({
           open: true,
-          severity:'error',
+          severity: 'error',
           title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
           message: response?.data?.error?.message || 'Something went wrong',
         })
