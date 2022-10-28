@@ -3,12 +3,12 @@ package id.worx.worx.service.users;
 import id.worx.worx.common.enums.EmailTokenStatus;
 import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.common.enums.UserStatus;
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.auth.*;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
@@ -24,13 +24,9 @@ import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,8 +46,10 @@ import java.util.regex.Pattern;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class UsersServiceImpl implements UsersService, UserDetailsService {
+public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
+
+    private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -66,26 +64,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Autowired
     private UsersMapper usersMapper;
 
-    private static final int JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS = 1209600000;
+    @Autowired
+    private WorxProperties worxProperties;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Users> users = usersRepository.findByEmail(email);
-
-        if(users.isEmpty()){
-            throw new WorxException(WorxErrorCode.USERNAME_EXIST);
-        }else{
-            log.info("User found in the database : {} ", email);
-        }
-        Collection<SimpleGrantedAuthority> authotities = new ArrayList<>();
-
-        return new User(users.get().getEmail(), users.get().getPassword(), authotities);
-    }
     @Transactional
     public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
         String regexNumberOnly = "\\d+";
@@ -172,8 +157,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         String message = "";
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(updatePasswordRequest.getNewPassword());
 
         if (!matcher.matches()) {
@@ -192,20 +176,15 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         boolean matchPassword = passwordEncoder.matches(updatePasswordRequest.getOldPassword(), encodedPassword);
         log.info("Match Password user : {} ", matchPassword);
 
-        if(optionalUsers.isPresent()){
+        if (matchPassword){
+            getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+            usersRepository.save(getUsers);
 
-            if (matchPassword){
-                getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
-                usersRepository.save(getUsers);
+            message = "Update Password Success";
 
-                message = "Update Password Success";
-
-                return message;
-            }else{
-                throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
-            }
+            return message;
         }else{
-            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+            throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
         }
     }
 
@@ -242,8 +221,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken){
 
 
-        String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–:;',?/*~$^+=<>_]).{8,20}$";
-        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
 
         if (!matcher.matches()) {
@@ -355,9 +333,16 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     public String createRefreshToken(String email){
 
+        Integer expiredTimeRefreshToken = worxProperties.getToken().getRefresh();
+        Optional<Users> getByEmail = usersRepository.findByEmail(email);
+
+        if(!getByEmail.isPresent()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
+
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(usersRepository.findByEmail(email).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(JWT_REFRESH_EXPIRATIOIN_DATE_IN_MS));
+        refreshToken.setUser(getByEmail.get());
+        refreshToken.setExpiryDate(Instant.now().plusMillis(expiredTimeRefreshToken));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);
 

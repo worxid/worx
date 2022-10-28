@@ -27,7 +27,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
               '& .MuiMenuItem-root': {
                 fontSize: 12,
               },
-              '@media only screen and (max-height: 820px)': {
+              [values.zoomBoundary]: {
                 '& .MuiPaper-root': {
                   zoom: 1 / values.zoomValue,
                 },
@@ -134,7 +134,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   },
 
   // ZOOM EFFECT
-  '@media only screen and (max-height: 820px)': {
+  [values.zoomBoundary]: {
     '& .MuiToolbar-root': {
       zoom: 1 / values.zoomValue,
     },

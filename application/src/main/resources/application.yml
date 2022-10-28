@@ -29,6 +29,8 @@ spring:
 
 # Application Properties
 worx:
+  web:
+    endpoint: ${WORX_WEB_ENDPOINT}
   mail:
     from-address: ${WORX_EMAIL_FROM_ADDRESS}
     from-name: ${WORX_EMAIL_FROM_NAME}
@@ -37,3 +39,6 @@ worx:
     access-key: ${WORX_STORAGE_ACCESS_KEY}
     secret-key: ${WORX_STORAGE_SECRET_KEY}
     bucket-name: ${WORX_STORAGE_BUCKET_NAME}
+  token:
+    access: ${WORX_ACCESS_TOKEN_EXPIRED_IN_MS}
+    refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}

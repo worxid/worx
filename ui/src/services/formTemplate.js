@@ -1,3 +1,6 @@
+//APIS
+import axios from 'apis/axios'
+
 // QUERY
 import { stringify } from 'query-string'
 
@@ -89,6 +92,18 @@ export const postShareFormTemplate = async (formTemplateId, inputSignal, inputPa
   } catch (error) {
     if (error.message === 'canceled') return { status: 'Canceled' }
     else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
+export const getReadFormTemplate = async (formCode, inputSignal) => {
+  try {
+    const response = await axios.get(`/form/template/read?code=${formCode}`, {
+      signal: inputSignal,
+    })
+    return response
+  } catch (error) {
+    if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
