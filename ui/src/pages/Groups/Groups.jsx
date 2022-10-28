@@ -28,7 +28,7 @@ import {
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
-const SettingsGroup = () => {
+const Groups = () => {
   const initialColumns = [
     {
       field: 'name',
@@ -260,4 +260,4 @@ const SettingsGroup = () => {
   )
 }
 
-export default SettingsGroup
+export default Groups
