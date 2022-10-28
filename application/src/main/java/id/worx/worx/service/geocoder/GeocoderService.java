@@ -1,11 +1,13 @@
 package id.worx.worx.service.geocoder;
 
-import com.google.maps.model.GeocodingResult;
+import java.util.List;
+
+import id.worx.worx.common.model.dto.geocoder.LocationDTO;
 
 public interface GeocoderService {
 
-    GeocodingResult[] search(String address);
+    List<LocationDTO> search(String address, boolean withDetails);
 
-    String reverse(Double lat, Double lng);
+    List<LocationDTO> reverse(Double lat, Double lng, boolean withDetails);
 
 }

@@ -2,6 +2,8 @@ package id.worx.worx.common.model.dto.geocoder;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressDetails implements Serializable {
 
     private static final long serialVersionUID = -7129901261905429299L;
@@ -23,5 +26,6 @@ public class AddressDetails implements Serializable {
     private String street;
     private String house;
     private String postcode;
+    private Bounds bounds;
 
 }

@@ -16,13 +16,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LocationDTO implements Serializable {
+public class Bounds implements Serializable {
 
-    private static final long serialVersionUID = 5448564473829461368L;
+    private static final long serialVersionUID = -8603400572928903519L;
 
-    private String address;
-    private Double lat;
-    private Double lng;
-    private AddressDetails details;
+    private LatLng nw;
+    private LatLng se;
 
 }
