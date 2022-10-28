@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import id.worx.worx.service.AuthenticationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     private final GroupRepository groupRepository;
     private final DeviceMapper deviceMapper;
     private final DeviceSpecification deviceSpecification;
+
+    private final AuthenticationContext authContext;
 
     @Override
     public Device getById(Long id) {
@@ -112,7 +115,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
             Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by(getDirection(pageable), getSortBy(pageable)));
-        Page<Device> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest),
+        Page<Device> devices = deviceRepository.findAll(deviceSpecification.fromSearchRequest(deviceSearchRequest,authContext.getUsers().getOrganizationCode()),
                 customPageable);
         return new PagingResponseModel<>(devices.map(this::toDto));
     }
