@@ -4,9 +4,17 @@ import PropTypes from 'prop-types'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MuiSnackbar from '@mui/material/Snackbar'
+import Slide from '@mui/material/Slide'
 
 // STYLES
 import useStyles from './snackBarUseStyles'
+
+const SlideTransition = (props) => (
+  <Slide 
+    {...props} 
+    direction='left' 
+  />
+)
 
 const Snackbar = (props) => {
   const {
@@ -40,6 +48,7 @@ const Snackbar = (props) => {
         vertical: 'top', 
         horizontal: 'right', 
       }}
+      TransitionComponent={SlideTransition}
     >
       <Alert 
         elevation={6}
