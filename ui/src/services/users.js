@@ -13,7 +13,8 @@ export const getUserDetails = async (
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -31,7 +32,8 @@ export const postForgotPasswordUser = async (
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -49,7 +51,8 @@ export const postLoginUser = async (
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -64,7 +67,8 @@ export const postRefreshToken = async (inputRefreshToken) => {
     return response
   }
   catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -82,7 +86,8 @@ export const postRegisterUser = async (
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -100,7 +105,8 @@ export const postResetPasswordUser = async (
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }

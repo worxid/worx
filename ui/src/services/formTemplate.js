@@ -8,7 +8,8 @@ export const postCreateFormTemplate = async (inputSignal, inputParams, inputAxio
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -20,7 +21,8 @@ export const getDetailFormTemplate = async (formTemplateId, inputSignal, inputAx
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -32,7 +34,8 @@ export const putUpdateFormTemplate = async (formTemplateId, inputSignal, inputPa
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -45,7 +48,8 @@ export const postGetListFormTemplate = async (inputSignal, inputQuery, inputPara
     )
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -57,7 +61,8 @@ export const deleteFormTemplate = async (formTemplateId, inputSignal, inputAxios
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -69,7 +74,8 @@ export const putAssignGroupFormTemplate = async (formTemplateId, inputSignal, in
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -81,7 +87,8 @@ export const postShareFormTemplate = async (formTemplateId, inputSignal, inputPa
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }

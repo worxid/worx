@@ -7,7 +7,8 @@ export const deleteGroup = async (inputSignal, inputId, inputAxiosPrivate) => {
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -22,7 +23,8 @@ export const getGroupList = async (inputSignal, inputAxiosPrivate) => {
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -37,7 +39,8 @@ export const postCreateGroup = async (inputSignal, inputBodyParams, inputAxiosPr
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -52,7 +55,8 @@ export const putEditGroup = async (inputSignal, inputId, inputBodyParams, inputA
 
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }

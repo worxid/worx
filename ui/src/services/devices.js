@@ -5,7 +5,8 @@ export const postGetListDevices = async (inputSignal, inputParams, inputAxiosPri
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -17,7 +18,8 @@ export const putApprovedDevices = async (deviceId, inputSignal, inputParams, inp
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -29,7 +31,8 @@ export const putAssignGroupDevices = async (deviceId, inputSignal, inputParams, 
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -41,7 +44,8 @@ export const putUpdateLabelDevices = async (deviceId, inputSignal, inputParams, 
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
@@ -53,7 +57,8 @@ export const deleteDevices = async (deviceId, inputSignal, inputAxiosPrivate) =>
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
