@@ -34,7 +34,10 @@ import { putUpdateLabelDevices } from 'services/devices'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogAddOrEditDevice = (props) => {
   const layoutClasses = useLayoutStyles()
@@ -52,7 +55,7 @@ const DialogAddOrEditDevice = (props) => {
     const abortController = new AbortController()
 
     if (inputType === 'save') {
-      if(label.length) {
+      if (label.length) {
         const response = await putUpdateLabelDevices(
           dataDialogEdit?.id,
           abortController.signal,
@@ -62,7 +65,7 @@ const DialogAddOrEditDevice = (props) => {
           axiosPrivate,
         )
   
-        if(didSuccessfullyCallTheApi(response?.status)) {
+        if (didSuccessfullyCallTheApi(response?.status)) {
           setSnackbarObject({
             open: true,
             severity:'success',
@@ -71,7 +74,8 @@ const DialogAddOrEditDevice = (props) => {
           })
           reloadData(abortController.signal, true)
           handleClose()
-        } else {
+        } 
+        else if (!wasRequestCanceled(response?.status)) {
           setSnackbarObject({
             open: true,
             severity:'error',
@@ -79,7 +83,8 @@ const DialogAddOrEditDevice = (props) => {
             message: response?.data?.error?.message || 'Something went wrong',
           })
         }
-      } else {
+      } 
+      else {
         setSnackbarObject({
           open: true,
           severity:'error',
@@ -87,7 +92,8 @@ const DialogAddOrEditDevice = (props) => {
           message: 'Label field must be filled',
         })
       }
-    } else {
+    } 
+    else {
       handleClose()
     }
   }
