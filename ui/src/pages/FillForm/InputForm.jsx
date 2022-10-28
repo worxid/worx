@@ -1,13 +1,16 @@
 import { useContext, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
+import DialogCamera from './DialogCamera/DialogCamera'
 import DialogForm from 'components/DialogForm/DialogForm'
 
 // CONTEXT
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { checkboxErrorMessage, formatBytes, getKeyValue } from './fillFormConstants'
+import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObject, formatBytes, formatFileValidation, getKeyValue, sizeFileValidation } from './fillFormConstants'
 
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
@@ -53,53 +56,246 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 
+// SERVICES
+import { getMediaPresignedUrl } from 'services/media'
+
 // STYLES
 import useStyles from './fillFormUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
-/**
- * next to-do:
- * - handle error message input upload
- * - handle value input upload
- */
 const InputForm = (props) => {
-  const { item, handleInputChange, formObject, formObjectError } = props
+  const { item, handleInputChange, formObject, formObjectError, setFormObjectError } = props
 
   // CONTEXT
+  const { setSnackbarObject, breakpointType } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [signatureRef, setSignatureRef] = useState()
-  const [selectedSignature, setSelectedSignature] = useState('')
+  const [selectedDialog, setSelectedDialog] = useState('')
 
   // STYLES
   const classes = useStyles()
 
+  // HANDLE ERROR MESSAGE
+  const handleErrorMessage = (fieldId, message) => {
+    let tempErrorMessage = formObjectError
+    tempErrorMessage[fieldId] = message
+    setFormObjectError({...tempErrorMessage})
+  }
+
   // HANDLE SIGANTURE ACTION BUTTON CLICK
-  const handleSignatureActionButtonClick = (inputType, fieldId, fieldType) => {
+  const handleSignatureActionButtonClick = async (inputType, fieldId, fieldType) => {
     if (inputType === 'save') {
-      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), signatureRef?.toDataURL())
+      const fileObject = dataURLtoFileObject(signatureRef?.toDataURL(), `signature-${uuid()}.png`)
+
+      // UPLOAD MEDIA
+      const abortController = new AbortController()
+      const response = await getMediaPresignedUrl(abortController.signal, {
+        filename: fileObject.name
+      }, fileObject)
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Success upload a signature',
+        })
+
+        handleInputChange(fieldId, fieldType, getKeyValue(fieldType), fileObject)
+        handleInputChange(fieldId, fieldType, 'file_id', response.data.fileId)
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: '',
+          message: 'Failed upload a signature',
+        })
+      }
     }
 
-    setSelectedSignature('')
+    setSelectedDialog('')
+    setIsDialogFormOpen(false)
+  }
+
+  // HANDLE DELETE SIGNATURE
+  const handleDeleteSignature = (fieldId, fieldType) => {
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), null)
+    handleInputChange(fieldId, fieldType, 'file_id', null)
+
+    setSelectedDialog('')
     setIsDialogFormOpen(false)
   }
 
   // HANDLE GALLERY CHANGE
-  const handleGalleryChange = (event, fieldId, fieldType) => {
-    let temp = formObject[fieldId]?.value || []
-    temp.push(event.target.files[0])
-    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+  const handleGalleryChange = async (event, fieldId, fieldType) => {
+    let temp = formObject[fieldId]?.values || []
+
+    // CHECK MAX FILES
+    if(temp.length >= Number(item.max_files)) {
+      handleErrorMessage(
+        fieldId,
+        `Max files is ${item.max_files}`
+      )
+      return
+    }
+
+    // CHECK FILE FORMAT
+    if(!formatFileValidation(event.target.files[0], anyFormatImage)) {
+      handleErrorMessage(
+        fieldId,
+        `Only accept format ${anyFormatImage.join(', ').replace(/, ([^,]*)$/, ' and $1')}`
+      )
+      return
+    }
+
+    // CLEAR ERROR MESSAGE
+    handleErrorMessage(fieldId, '')
+
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: event.target.files[0].name
+    }, event.target.files[0])
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a image',
+      })
+
+      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a image',
+      })
+    }
+  }
+
+  // HANDLE CAMERA CHANGE
+  const handleCamera = async (fieldId, fieldType, resultPhoto) => {
+    setSelectedDialog('')
+    setIsDialogFormOpen(false)
+
+    let temp = formObject[fieldId]?.values || []
+    const imageInObject = dataURLtoFileObject(resultPhoto, `photo-${uuid()}.jpeg`)
+
+    // CHECK MAX FILES
+    if(temp.length >= Number(item.max_files)) {
+      handleErrorMessage(
+        fieldId,
+        `Max files is ${item.max_files}`
+      )
+      return
+    }
+
+    // CHECK FILE FORMAT
+    if(!formatFileValidation(imageInObject, anyFormatImage)) {
+      handleErrorMessage(
+        fieldId,
+        `Only accept format ${anyFormatImage.join(', ').replace(/, ([^,]*)$/, ' and $1')}`
+      )
+      return
+    }
+
+    // CLEAR ERROR MESSAGE
+    handleErrorMessage(fieldId, '')
+
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: imageInObject.name
+    }, imageInObject)
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a image',
+      })
+
+      temp.push({ file: imageInObject, idFile: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a image',
+      })
+    }
   }
 
   // HANDLE FILE CHANGE
-  const handleFileChange = (event, fieldId, fieldType) => {
-    let temp = formObject[fieldId]?.value || []
-    temp.push(event.target.files[0])
-    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+  const handleFileChange = async (event, fieldId, fieldType, allowedExtensions) => {
+    let temp = formObject[fieldId]?.values || []
+
+    const acceptEtensions = allowedExtensions[0] === 'any' ? anyFormatFile : allowedExtensions
+
+    // CHECK MAX FILES
+    if(temp.length >= Number(item.max_files)) {
+      handleErrorMessage(
+        fieldId,
+        `Max files is ${item.max_files}`
+      )
+      return
+    }
+
+    // CHECK FILE FORMAT
+    if(!formatFileValidation(event.target.files[0], acceptEtensions)) {
+      handleErrorMessage(
+        fieldId,
+        `Only accept format ${acceptEtensions.join(', ').replace(/, ([^,]*)$/, ' and $1')}`
+      )
+      return
+    }
+
+    // CHECK FILE SIZE
+    if(!sizeFileValidation(
+      event.target.files[0], item.min_file_size, item.file_min_size_type, item.max_file_size, item.file_max_size_type
+    )) {
+      handleErrorMessage(
+        fieldId,
+        `Min size is ${item.min_file_size} ${item.file_min_size_type} & max size is ${item.max_file_size} ${item.file_max_size_type}`
+      )
+      return
+    }
+
+    // CLEAR ERROR MESSAGE
+    handleErrorMessage(fieldId, '')
+
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: event.target.files[0].name
+    }, event.target.files[0])
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a file',
+      })
+
+      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a file',
+      })
+    }
   }
 
   // HANDLE CHECKBOX CHANGE
@@ -370,27 +566,42 @@ const InputForm = (props) => {
 
       {/* IMAGE */}
       {item.type === 'photo' && (
-        <FormControl className={classes.formControl} required={item.required}>
-          {formObject[item.id]?.value && <List className={`${classes.listFile} padding0`}>
-            {formObject[item.id]?.value?.map((itemImg, index) => (
+        <FormControl
+          className={classes.formControl}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
+          {selectedDialog === item.id && (
+            <DialogCamera
+              handleCancel={() => {
+                setSelectedDialog('')
+                setIsDialogFormOpen(false)
+              }}
+              handleUsePhoto={(result) => handleCamera(item.id, item.type, result)}
+              handleBackdropClick={() => setSelectedDialog('')}
+            />
+          )}
+
+          {formObject[item.id]?.values && <List className={`${classes.listFile} padding0`}>
+            {formObject[item.id]?.values?.map((itemImg, index) => (
               <ListItem className={classes.listItem} key={index}>
                 <ListItemAvatar className={classes.listFileAvatar}>
                   <Box
                     className={classes.listImage}
                     component='img'
-                    src={URL.createObjectURL(itemImg)}
+                    src={URL.createObjectURL(itemImg.file)}
                   />
                 </ListItemAvatar>
 
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemImg.name}
-                  secondary={formatBytes(itemImg.size)}
+                  primary={itemImg.file.name}
+                  secondary={formatBytes(itemImg.file.size)}
                 />
 
                 <IconButton
                   className='heightFitContent'
-                  onClick={() => handleRemoveFile(item.id, item.label, index)}
+                  onClick={() => handleRemoveFile(item.id, item.type, index)}
                 >
                   <IconCancel fontSize='small'/>
                 </IconButton>
@@ -399,7 +610,15 @@ const InputForm = (props) => {
           </List>}
 
           <Stack direction='row'>
-            <Button size='small' className={`${classes.buttonRedPrimary} buttonCamera heightFitContent`} startIcon={<IconCameraAlt fontSize='small'/>}>
+            <Button
+              size='small'
+              className={`${classes.buttonRedPrimary} buttonCamera heightFitContent`}
+              startIcon={<IconCameraAlt fontSize='small'/>}
+              onClick={() => {
+                setSelectedDialog(item.id)
+                setIsDialogFormOpen(true)
+              }}
+            >
               Camera
             </Button>
 
@@ -413,21 +632,31 @@ const InputForm = (props) => {
                 Gallery
                 <input
                   hidden
-                  accept='image/*'
+                  accept='image/png,image/jpeg'
                   type='file'
-                  onChange={handleGalleryChange}
+                  onChange={(event) => handleGalleryChange(event, item.id, item.type)}
                 />
               </Button>
             )}
           </Stack>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
       {/* FILE */}
       {item.type === 'file' && (
-        <FormControl className={classes.formControl} required={item.required}>
-          {formObject[item.id]?.value && <List className={`${classes.listFile} padding0`}>
-            {formObject[item.id]?.value.map((itemFile, index) => (
+        <FormControl
+          error={Boolean(formObjectError?.[item.id])}
+          className={classes.formControl}
+          required={item.required}
+        >
+          {formObject[item.id]?.values && <List className={`${classes.listFile} padding0`}>
+            {formObject[item.id]?.values.map((itemFile, index) => (
               <ListItem className={classes.listItem} key={index}>
                 <ListItemAvatar className={classes.listFileAvatar}>
                   <IconInsertDriveFile className={classes.listFileIcon}/>
@@ -435,13 +664,13 @@ const InputForm = (props) => {
   
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemFile.name}
-                  secondary={formatBytes(itemFile.size)}
+                  primary={itemFile.file.name}
+                  secondary={formatBytes(itemFile.file.size)}
                 />
 
                 <IconButton
                   className='heightFitContent'
-                  onClick={() => handleRemoveFile(item.id, item.label, index)}
+                  onClick={() => handleRemoveFile(item.id, item.type, index)}
                 >
                   <IconCancel fontSize='small'/>
                 </IconButton>
@@ -459,49 +688,83 @@ const InputForm = (props) => {
             <input
               hidden
               type='file'
-              onChange={handleFileChange}
+              onChange={(event) => handleFileChange(event, item.id, item.type, item.allowed_extensions)}
             />
           </Button>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
 
       {/* SIGNATURE */}
       {item.type === 'signature' && (
         <>
-          {selectedSignature === item.id && (<DialogForm
-            classNames={`${classes.dialogSignature} neutralize-dialog-form`}
-            title='Create Signature'
-            handleActionButtonClick={(inputType) => {
-              handleSignatureActionButtonClick(inputType)
-            }}
-          >
-            <Stack className={classes.dialogSignatureContent}>
-              <Stack className={classes.signatureCanvas}>
-                <SignatureCanvas
-                  canvasProps={{
-                    height: 200,
-                    width: 350,
-                  }}
-                  ref={(ref) => {
-                    setSignatureRef(ref)
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </DialogForm>)}
+          {selectedDialog === item.id && (
+            <DialogForm
+              classNames={`${classes.dialogSignature} neutralize-dialog-form`}
+              title={breakpointType !== 'xs' && 'Create Signature'}
+              handleActionButtonClick={(inputType) => {
+                handleSignatureActionButtonClick(inputType, item.id, item.type)
+              }}
+              onBackdropClick={() => setSelectedDialog('')}
+              areActionsAvailable={breakpointType !== 'xs' ? true : false}
+            >
+              <Stack className={classes.dialogSignatureContent} height='100%'>
+                <Stack flex={1} justifyContent='center'>
+                  <Stack className={classes.signatureCanvas}>
+                    <SignatureCanvas
+                      canvasProps={{
+                        height: 200,
+                        width: 350,
+                      }}
+                      ref={(ref) => {
+                        setSignatureRef(ref)
+                      }}
+                    />
+                  </Stack>
+                </Stack>
 
-          <FormControl className={classes.formControl} required={item.required}>
-            {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
+                {breakpointType === 'xs' && (
+                  <Stack direction='row' flexWrap='nowrap'>
+                    {/* DELETE */}
+                    <Button
+                      className={classes.buttonDeleteSignature}
+                      variant='contained'
+                      onClick={() => handleDeleteSignature(item.id, item.type)}
+                    >Delete</Button>
+
+                    {/* SAVE */}
+                    <Button
+                      className={classes.buttonSaveSignature}
+                      variant='contained'
+                      onClick={() => handleSignatureActionButtonClick('save', item.id, item.type)}
+                    >Save</Button>
+                  </Stack>
+                )}
+              </Stack>
+            </DialogForm>
+          )}
+
+          <FormControl
+            className={classes.formControl}
+            required={item.required}
+            error={Boolean(formObjectError?.[item.id])}
+          >
+            {formObject[item.id]?.[getKeyValue(item.type)]&& (<Stack direction='row' justifyContent='flex-end'>
               <Box
                 component='img'
                 className={classes.signatureImage}
-                src={formObject[item.id]?.value}
+                src={formObject[item.id]?.[getKeyValue(item.type)] && URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)])}
               />
 
               <IconButton
                 className='heightFitContent'
                 onClick={() => {
-                  setSelectedSignature(item.id)
+                  setSelectedDialog(item.id)
                   setIsDialogFormOpen(true)
                 }}
               >
@@ -509,17 +772,23 @@ const InputForm = (props) => {
               </IconButton>
             </Stack>)}
 
-            {!formObject[item.id]?.value && (<Button
+            {!formObject[item.id]?.[getKeyValue(item.type)] && (<Button
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}
               onClick={() => {
-                setSelectedSignature(item.id)
+                setSelectedDialog(item.id)
                 setIsDialogFormOpen(true)
               }}
             >
               Add Signature
             </Button>)}
+
+            {formObjectError?.[item.id] && (
+              <FormHelperText variant='error' className={classes.formHelperText}>
+                {formObjectError?.[item.id]}
+              </FormHelperText>
+            )}
           </FormControl>
         </>
       )}

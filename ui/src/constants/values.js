@@ -2,6 +2,7 @@ export const values = {
   // ALL PAGES
   fontFamilyDmMono: [ 'DM Mono', 'monospace', 'sans-serif' ].join(','),
   fontFamilySpaceMono: [ 'Space Mono', 'monospace', 'sans-serif' ].join(','),
+  zoomBoundary: '@media only screen and (max-height: 800px) and (min-width: 1200px)',
 
   // DRAWER
   drawerWidth: 256,

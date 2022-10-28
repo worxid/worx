@@ -27,6 +27,7 @@ const DialogForm = (props) => {
     handleActionButtonClick,
     classNames,
     areActionsAvailable,
+    onBackdropClick,
   } = props
 
   const { isDialogFormOpen, setIsDialogFormOpen } = useContext(PrivateLayoutContext)
@@ -36,11 +37,12 @@ const DialogForm = (props) => {
       open={isDialogFormOpen}
       onClose={() => setIsDialogFormOpen(false)}
       className={`${classes.dialogForm} ${classNames}`}
+      onBackdropClick={onBackdropClick}
     >
       {/* TITLE */}
-      <DialogTitle className={classes.dialogFormTitle}>
+      {title && (<DialogTitle className={classes.dialogFormTitle}>
         {title}
-      </DialogTitle>
+      </DialogTitle>)}
 
       {/* CONTENT */}
       <DialogContent className='width100 padding0'>
@@ -79,6 +81,7 @@ DialogForm.propTypes = {
   children: PropTypes.node.isRequired,
   handleActionButtonClick: PropTypes.func,
   areActionsAvailable: PropTypes.bool,
+  onBackdropClick: PropTypes.func
 }
 
 export default DialogForm
