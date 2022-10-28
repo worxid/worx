@@ -18,7 +18,6 @@ import ResetPassword from 'pages/ResetPassword/ResetPassword'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
 
-
 const routes = [
   // AUTHENTICATION
   {
