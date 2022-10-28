@@ -27,7 +27,7 @@ public class WorxUserDetailsService implements UserDetailsService {
         Optional<Users> users = usersRepository.findByEmail(username);
 
         if (users.isEmpty()) {
-            throw new WorxException(WorxErrorCode.USERNAME_EXIST);
+            throw new WorxException(WorxErrorCode.USERNAME_EMPTY);
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();
