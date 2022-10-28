@@ -5,10 +5,11 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   dialogCamera: {
     '& .MuiDialog-paper': {
-      maxWidth: 1104,
+      maxWidth: '100%',
       width: '100%',
-      borderRadius: 10,
-      height: 704,
+      height: '100vh !important',
+      margin: 0,
+      maxHeight: '100%',
     }
   },
   actionWrapper: {
@@ -16,23 +17,39 @@ const useStyles = makeStyles((theme) => ({
     padding: 16,
     height: 104,
     flex: '0 0 auto',
+    [theme.breakpoints.down('sm')]: {
+      backgroundColor: alpha(theme.palette.common.black, 0.4),
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      padding: '16px 8px',
+    }
   },
   actionLeft: {
-    width: '40%'
+    width: '40%',
+    justifyContent: 'flex-end',
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center'
+    }
   },
   actionCenter: {
     width: '20%',
   },
   actionRight: {
+    alignItems: 'flex-start',
     width: '40%',
+    [theme.breakpoints.down('sm')]: {
+      alignItems: 'center'
+    }
   },
   webcamWrapper: {
-    height: 438,
     overflow: 'hidden',
     backgroundColor: theme.palette.additional.drawer.background,
   },
   webcam: {
     height: '100%',
+    objectFit: 'cover',
   },
   resultPhoto: {
     height: '438px',
@@ -50,6 +67,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: 60,
       height: 60,
+    },
+    [theme.breakpoints.down('sm')]: {
+      backgroundColor: 'transparent',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      }
     }
   },
   buttonCancel: {
@@ -69,9 +92,17 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonRetake: {
     color:theme.palette.common.white,
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 'auto',
+      marginLeft: 32,
+    }
   },
   buttonUsePhoto: {
     color:theme.palette.common.white,
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 'auto',
+      marginRight: 32,
+    }
   },
   buttonSwitchCamera: {
     marginRight: 20,

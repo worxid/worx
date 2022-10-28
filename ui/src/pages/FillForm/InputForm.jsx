@@ -2,9 +2,11 @@ import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
+import DialogCamera from './DialogCamera/DialogCamera'
 import DialogForm from 'components/DialogForm/DialogForm'
 
 // CONTEXT
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
@@ -63,12 +65,12 @@ import useStyles from './fillFormUseStyles'
 // UTILITIES
 import { convertDate } from 'utilities/date'
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
-import DialogCamera from './DialogCamera/DialogCamera'
 
 const InputForm = (props) => {
   const { item, handleInputChange, formObject, formObjectError, setFormObjectError } = props
 
   // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
@@ -87,14 +89,37 @@ const InputForm = (props) => {
   }
 
   // HANDLE SIGANTURE ACTION BUTTON CLICK
-  const handleSignatureActionButtonClick = (inputType, fieldId, fieldType) => {
+  const handleSignatureActionButtonClick = async (inputType, fieldId, fieldType) => {
     if (inputType === 'save') {
-      handleInputChange(
-        fieldId,
-        fieldType,
-        getKeyValue(fieldType),
-        dataURLtoFileObject(signatureRef?.toDataURL(), `signature-${uuid()}.png`)
-      )
+      const fileObject = dataURLtoFileObject(signatureRef?.toDataURL(), `signature-${uuid()}.png`)
+
+      // UPLOAD MEDIA
+      const abortController = new AbortController()
+      const response = await getMediaPresignedUrl(abortController.signal, {
+        filename: fileObject.name
+      })
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Success upload a signature',
+        })
+
+        handleInputChange(
+          fieldId,
+          fieldType,
+          getKeyValue(fieldType),
+          { file: fileObject, idFile: response.data.fileId }
+        )
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: '',
+          message: 'Failed upload a signature',
+        })
+      }
     }
 
     setSelectedDialog('')
@@ -102,7 +127,7 @@ const InputForm = (props) => {
   }
 
   // HANDLE GALLERY CHANGE
-  const handleGalleryChange = (event, fieldId, fieldType) => {
+  const handleGalleryChange = async (event, fieldId, fieldType) => {
     let temp = formObject[fieldId]?.values || []
 
     // CHECK MAX FILES
@@ -126,16 +151,35 @@ const InputForm = (props) => {
     // CLEAR ERROR MESSAGE
     handleErrorMessage(fieldId, '')
 
-    temp.push(event.target.files[0])
-    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: event.target.files[0].name
+    })
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a image',
+      })
+
+      temp.push({ file: event.target.files[0], id: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a image',
+      })
+    }
   }
 
   // HANDLE CAMERA CHANGE
-  const handleCamera = (fieldId, fieldType, resultPhoto) => {
+  const handleCamera = async (fieldId, fieldType, resultPhoto) => {
     setSelectedDialog('')
     setIsDialogFormOpen(false)
-
-    console.log({selectedDialog})
 
     let temp = formObject[fieldId]?.values || []
     const imageInObject = dataURLtoFileObject(resultPhoto, `photo-${uuid()}.jpeg`)
@@ -161,13 +205,35 @@ const InputForm = (props) => {
     // CLEAR ERROR MESSAGE
     handleErrorMessage(fieldId, '')
 
-    temp.push(imageInObject)
-    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: imageInObject.name
+    })
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a image',
+      })
+
+      temp.push({ file: imageInObject, id: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a image',
+      })
+    }
   }
 
   // HANDLE FILE CHANGE
   const handleFileChange = async (event, fieldId, fieldType, allowedExtensions) => {
     let temp = formObject[fieldId]?.values || []
+
     const acceptEtensions = allowedExtensions[0] === 'any' ? anyFormatFile : allowedExtensions
 
     // CHECK MAX FILES
@@ -208,13 +274,23 @@ const InputForm = (props) => {
       filename: event.target.files[0].name
     })
     if(didSuccessfullyCallTheApi(response?.status)) {
-      console.log('success: ', response)
-    } else {
-      console.log('failed: ', response)
-    }
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a file',
+      })
 
-    temp.push(event.target.files[0])
-    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
+      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a file',
+      })
+    }
   }
 
   // HANDLE CHECKBOX CHANGE
@@ -508,14 +584,14 @@ const InputForm = (props) => {
                   <Box
                     className={classes.listImage}
                     component='img'
-                    src={URL.createObjectURL(itemImg)}
+                    src={URL.createObjectURL(itemImg.file)}
                   />
                 </ListItemAvatar>
 
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemImg.name}
-                  secondary={formatBytes(itemImg.size)}
+                  primary={itemImg.file.name}
+                  secondary={formatBytes(itemImg.file.size)}
                 />
 
                 <IconButton
@@ -583,8 +659,8 @@ const InputForm = (props) => {
   
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemFile.name}
-                  secondary={formatBytes(itemFile.size)}
+                  primary={itemFile.file.name}
+                  secondary={formatBytes(itemFile.file.size)}
                 />
 
                 <IconButton
@@ -656,7 +732,7 @@ const InputForm = (props) => {
               <Box
                 component='img'
                 className={classes.signatureImage}
-                src={URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)])}
+                src={URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)]?.file)}
               />
 
               <IconButton
