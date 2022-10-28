@@ -38,7 +38,10 @@ import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DevicesFlyout = (props) => {
   const { rows, setGroupData, reloadData } = props
@@ -102,8 +105,8 @@ const DevicesFlyout = (props) => {
       axiosPrivate,
     )
 
-    if(didSuccessfullyCallTheApi(response?.status)) {
-      if(response?.data?.value?.device_status === 'APPROVED') {
+    if (didSuccessfullyCallTheApi(response?.status)) {
+      if (response?.data?.value?.device_status === 'APPROVED') {
         message = {
           severity:'success',
           title: '',
@@ -118,7 +121,8 @@ const DevicesFlyout = (props) => {
       }
 
       reloadData(abortController.signal, true)
-    } else {
+    } 
+    else if (!wasRequestCanceled(response?.status)) {
       message = {
         severity:'error',
         title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
