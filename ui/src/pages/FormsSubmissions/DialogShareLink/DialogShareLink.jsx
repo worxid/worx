@@ -32,7 +32,11 @@ import { postShareFormTemplate } from 'services/formTemplate'
 import useStyles from './dialogShareLinkUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi, isEmailFormatValid } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  isEmailFormatValid, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogShareLink = (props) => {
   const { id } = props
@@ -57,12 +61,13 @@ const DialogShareLink = (props) => {
     let message = {}
     let isValidEmail
 
-    if(receivers.length) {
+    if (receivers.length) {
       // VALIDATE EMAIL EVERY ITEM
-      for(let item of receivers) {
-        if(isEmailFormatValid(item)) {
+      for (let item of receivers) {
+        if (isEmailFormatValid(item)) {
           isValidEmail = true
-        } else {
+        } 
+        else {
           isValidEmail = false
           break
         }
@@ -74,29 +79,33 @@ const DialogShareLink = (props) => {
           axiosPrivate,
         )
   
-        if(didSuccessfullyCallTheApi(response?.status)) {
+        if (didSuccessfullyCallTheApi(response?.status)) {
           message = {
             severity: 'success',
             title: '',
             message: 'Successfully sent the form via email'
           }
+
           setReceivers([])
           setIsDialogFormOpen(false)
-        } else {
+        } 
+        else if (!wasRequestCanceled(response?.status)) {
           message = {
             severity: 'error',
             title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
             message: response?.data?.error?.message || 'Something went wrong',
           }
         }
-      } else {
+      } 
+      else {
         message = {
           severity: 'error',
           title: '',
           message: 'Email format must be valid',
         }
       }
-    } else {
+    } 
+    else {
       message = {
         severity:'error',
         title:'',
