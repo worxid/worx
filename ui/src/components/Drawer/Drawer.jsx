@@ -78,7 +78,8 @@ const Drawer = () => {
   }
 
   const isNavigationActive = (inputPath) => {
-    if (location.pathname.includes(inputPath)) return true
+    if (inputPath === '/' && location.pathname === '/') return true 
+    else if (inputPath !== '/' && location.pathname.includes(inputPath)) return true
     else return false
   }
 
