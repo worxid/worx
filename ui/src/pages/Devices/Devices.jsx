@@ -275,6 +275,7 @@ const Devices = () => {
         position='relative'
         flex='1'
         height='100%'
+        className='contentContainer'
         sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
         {/* MAIN CONTENT */}

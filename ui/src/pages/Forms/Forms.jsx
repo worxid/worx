@@ -29,9 +29,6 @@ import Stack from '@mui/material/Stack'
 // SERVICES
 import { deleteFormTemplate, postCreateFormTemplate, postGetListFormTemplate } from 'services/formTemplate'
 
-// STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
-
 // UTILITIES
 import { didSuccessfullyCallTheApi, isFormatDateSearchValid } from 'utilities/validation'
 import { convertDate } from 'utilities/date'
@@ -39,8 +36,6 @@ import { convertDate } from 'utilities/date'
 const Forms = () => {
   // CONTEXT
   const { setSnackbarObject, auth } = useContext(AllPagesContext)
-
-  const layoutClasses = useLayoutStyles()
 
   const initialColumns = [
     {
@@ -299,6 +294,7 @@ const Forms = () => {
         position='relative'
         flex='1'
         height='100%'
+        className='contentContainer'
         sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
         {/* MAIN CONTENT */}
