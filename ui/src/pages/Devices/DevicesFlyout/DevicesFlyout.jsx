@@ -122,7 +122,7 @@ const DevicesFlyout = (props) => {
       message = {
         severity:'error',
         title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something gone wrong',
+        message: response?.data?.error?.message || 'Something went wrong',
       }
     }
 
