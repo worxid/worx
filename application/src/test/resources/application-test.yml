@@ -39,3 +39,6 @@ worx:
     access-key: worxtest
     secret-key: worxtest
     bucket-name: worx-dev-test
+  token:
+    access: 10
+    refresh: 20
