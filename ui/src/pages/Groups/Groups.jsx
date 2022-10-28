@@ -12,6 +12,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -77,8 +80,9 @@ const Groups = () => {
   ]
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const axiosPrivate = useAxiosPrivate()
 
   const initialFilters = {}
 
@@ -126,7 +130,10 @@ const Groups = () => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(inputAbortController.signal, auth.accessToken)
+    const resultGroupList = await getGroupList(
+      inputAbortController.signal, 
+      axiosPrivate,
+    )
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setTableData(resultGroupList.data.list)
@@ -142,9 +149,12 @@ const Groups = () => {
     if (inputType === 'continue') {
       const abortController = new AbortController()
 
-      const resultDeleteGroup = await deleteGroup(abortController.signal, dialogDeleteObject.id, auth.accessToken)
-      abortController.abort()
-
+      const resultDeleteGroup = await deleteGroup(
+        abortController.signal, 
+        dialogDeleteObject.id, 
+        axiosPrivate,
+      )
+      
       if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
         setMustReloadDataGrid(true)
         
@@ -155,6 +165,8 @@ const Groups = () => {
           message: 'Successfully delete the selected group'
         })
       }
+
+      abortController.abort()
     }
   }
 

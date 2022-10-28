@@ -105,6 +105,7 @@ const SignIn = () => {
         const userProfileObject = {
           email: formObject?.email,
           accessToken: resultLoginUser?.data?.data?.accessToken,
+          refreshToken: resultLoginUser?.data?.data?.refreshToken,
         }
         
         setUserProfileToLocalStorage(userProfileObject)

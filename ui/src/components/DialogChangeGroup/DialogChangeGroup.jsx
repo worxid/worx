@@ -8,6 +8,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Input from '@mui/material/Input'
 import Stack from '@mui/material/Stack'
@@ -30,15 +33,21 @@ import { putAssignGroupFormTemplate } from 'services/formTemplate'
 import useLayoutStyles from './dialogChangeGroupUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogChangeGroup = (props) => {
   const { dataChecked, page, selectedItemId, reloadData } = props
+
   const layoutClasses = useLayoutStyles()
 
   // CONTEXTS
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const axiosPrivate = useAxiosPrivate()
 
   // STATES
   const [ search, setSearch ] = useState('')
@@ -60,7 +69,7 @@ const DialogChangeGroup = (props) => {
           {
             assignedGroups: listSelectedGroupId
           },
-          auth.accessToken
+          axiosPrivate,
         )
       } else if (page === 'devices') {
         response = await putAssignGroupDevices(
@@ -69,22 +78,24 @@ const DialogChangeGroup = (props) => {
           {
             group_ids: listSelectedGroupId
           },
-          auth.accessToken,
+          axiosPrivate,
         )
       }
 
-      if(didSuccessfullyCallTheApi(response?.status)) {
+      if (didSuccessfullyCallTheApi(response?.status)) {
         message = {
           severity:'success',
           title:'',
           message:'Change group success'
         }
+
         reloadData(abortController, true)
-      } else {
+      } 
+      else if (!wasRequestCanceled(response?.status)) {
         message = {
           severity: 'error',
           title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something gone wrong',
+          message: response?.data?.error?.message || 'Something went wrong',
         }
       }
 
@@ -123,7 +134,10 @@ const DialogChangeGroup = (props) => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(inputAbortController.signal, auth.accessToken)
+    const resultGroupList = await getGroupList(
+      inputAbortController.signal, 
+      axiosPrivate,
+    )
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setGroupList(resultGroupList.data.list)

@@ -12,6 +12,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -20,25 +23,34 @@ import Stack from '@mui/material/Stack'
 import { getDetailFormTemplate, putUpdateFormTemplate } from 'services/formTemplate'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const FormsCreateOrEdit = () => {
   // PARAMS
   const { formTemplateId } = useParams()
 
   // CONTEXT
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const {
     formObject, listFields, setFormObject,
     setListFields, isFormLoading, setIsFormLoading,
     hasFormChanged, setHasFormChanged
   } = useContext(PageFormsCreateOrEditContext)
 
+  const axiosPrivate = useAxiosPrivate()
+
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
-    const response = await getDetailFormTemplate(Number(formTemplateId), abortController.signal, auth.accessToken)
+    const response = await getDetailFormTemplate(
+      Number(formTemplateId), 
+      abortController.signal, 
+      axiosPrivate,
+    )
 
-    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
       const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
 
@@ -49,12 +61,12 @@ const FormsCreateOrEdit = () => {
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
     }
-    else {
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
         severity:'error',
         title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something gone wrong',
+        message: response?.data?.error?.message || 'Something went wrong',
       })
     }
   }
@@ -78,23 +90,24 @@ const FormsCreateOrEdit = () => {
         submit_in_zone: false,
         default: false
       },
-      auth.accessToken
+      axiosPrivate,
     )
 
     // SUCCESS
-    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setSnackbarObject({
         open: true,
         severity:'success',
         title:'',
         message:'Change have been save'
       })
-    } else {
+    } 
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
         severity:'error',
         title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something gone wrong',
+        message: response?.data?.error?.message || 'Something went wrong',
       })
     }
 

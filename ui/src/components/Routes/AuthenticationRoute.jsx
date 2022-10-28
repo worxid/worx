@@ -22,7 +22,7 @@ function AuthenticationRoute(props) {
       </Authentication> :
       <Navigate 
         replace 
-        to='/home'
+        to='/'
       />
   )
 }
