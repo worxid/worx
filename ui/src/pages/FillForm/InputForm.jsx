@@ -70,7 +70,7 @@ const InputForm = (props) => {
   const { item, handleInputChange, formObject, formObjectError, setFormObjectError } = props
 
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject, breakpointType } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
@@ -121,6 +121,19 @@ const InputForm = (props) => {
         })
       }
     }
+
+    setSelectedDialog('')
+    setIsDialogFormOpen(false)
+  }
+
+  // HANDLE DELETE SIGNATURE
+  const handleDeleteSignature = (fieldId, fieldType) => {
+    handleInputChange(
+      fieldId,
+      fieldType,
+      getKeyValue(fieldType),
+      { file: null }
+    )
 
     setSelectedDialog('')
     setIsDialogFormOpen(false)
@@ -701,24 +714,45 @@ const InputForm = (props) => {
           {selectedDialog === item.id && (
             <DialogForm
               classNames={`${classes.dialogSignature} neutralize-dialog-form`}
-              title='Create Signature'
+              title={breakpointType !== 'xs' && 'Create Signature'}
               handleActionButtonClick={(inputType) => {
                 handleSignatureActionButtonClick(inputType, item.id, item.type)
               }}
               onBackdropClick={() => setSelectedDialog('')}
+              areActionsAvailable={breakpointType !== 'xs' ? true : false}
             >
-              <Stack className={classes.dialogSignatureContent}>
-                <Stack className={classes.signatureCanvas}>
-                  <SignatureCanvas
-                    canvasProps={{
-                      height: 200,
-                      width: 350,
-                    }}
-                    ref={(ref) => {
-                      setSignatureRef(ref)
-                    }}
-                  />
+              <Stack className={classes.dialogSignatureContent} height='100%'>
+                <Stack flex={1} justifyContent='center'>
+                  <Stack className={classes.signatureCanvas}>
+                    <SignatureCanvas
+                      canvasProps={{
+                        height: 200,
+                        width: 350,
+                      }}
+                      ref={(ref) => {
+                        setSignatureRef(ref)
+                      }}
+                    />
+                  </Stack>
                 </Stack>
+
+                {breakpointType === 'xs' && (
+                  <Stack direction='row' flexWrap='nowrap'>
+                    {/* DELETE */}
+                    <Button
+                      className={classes.buttonDeleteSignature}
+                      variant='contained'
+                      onClick={() => handleDeleteSignature(item.id, item.type)}
+                    >Delete</Button>
+
+                    {/* SAVE */}
+                    <Button
+                      className={classes.buttonSaveSignature}
+                      variant='contained'
+                      onClick={() => handleSignatureActionButtonClick('save', item.id, item.type)}
+                    >Save</Button>
+                  </Stack>
+                )}
               </Stack>
             </DialogForm>
           )}
@@ -728,11 +762,11 @@ const InputForm = (props) => {
             required={item.required}
             error={Boolean(formObjectError?.[item.id])}
           >
-            {formObject[item.id]?.value && (<Stack direction='row' justifyContent='flex-end'>
+            {formObject[item.id]?.[getKeyValue(item.type)]?.file && (<Stack direction='row' justifyContent='flex-end'>
               <Box
                 component='img'
                 className={classes.signatureImage}
-                src={URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)]?.file)}
+                src={formObject[item.id]?.[getKeyValue(item.type)]?.file && URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)]?.file)}
               />
 
               <IconButton
@@ -746,7 +780,7 @@ const InputForm = (props) => {
               </IconButton>
             </Stack>)}
 
-            {!formObject[item.id]?.value && (<Button
+            {!formObject[item.id]?.[getKeyValue(item.type)]?.file && (<Button
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}
