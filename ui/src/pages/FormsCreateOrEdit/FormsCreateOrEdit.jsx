@@ -23,7 +23,10 @@ import Stack from '@mui/material/Stack'
 import { getDetailFormTemplate, putUpdateFormTemplate } from 'services/formTemplate'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const FormsCreateOrEdit = () => {
   // PARAMS
@@ -47,7 +50,7 @@ const FormsCreateOrEdit = () => {
       axiosPrivate,
     )
 
-    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
       const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
 
@@ -58,7 +61,7 @@ const FormsCreateOrEdit = () => {
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
     }
-    else {
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
         severity:'error',
@@ -91,14 +94,15 @@ const FormsCreateOrEdit = () => {
     )
 
     // SUCCESS
-    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setSnackbarObject({
         open: true,
         severity:'success',
         title:'',
         message:'Change have been save'
       })
-    } else {
+    } 
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
         severity:'error',
