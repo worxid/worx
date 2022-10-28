@@ -1,8 +1,5 @@
 import { useContext, useState, useRef, useCallback, useMemo, useEffect } from 'react'
 
-// ASSETS
-import iconCaptureMobile from 'assets/images/icons/icon-capture-mobile.svg'
-
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
 
@@ -188,10 +185,9 @@ const DialogCamera = (props) => {
               <IconButton className={classes.buttonTakePhoto} onClick={handleCaptureClick}>
                 {breakpointType !== 'xs' && (<IconCameraAlt fontSize='medium'/>)}
                 {breakpointType === 'xs' && (
-                  <Box
-                    component='img'
-                    src={iconCaptureMobile}
-                  />
+                  <Box className={classes.iconCaptureMobile}>
+                    <Box className='iconCaptureMobile-inside'></Box>
+                  </Box>
                 )}
               </IconButton>
             )}

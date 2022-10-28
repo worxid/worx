@@ -110,6 +110,20 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       marginRight: 16
     }
+  },
+  iconCaptureMobile: {
+    border: `4px solid ${theme.palette.common.white}`,
+    borderRadius: '50%',
+    height: '100%',
+    maxHeigh: 72,
+    width: 72,
+    padding: 4,
+    '& .iconCaptureMobile-inside': {
+      height: '100%',
+      width: '100%',
+      backgroundColor: theme.palette.common.white,
+      borderRadius: '50%'
+    }
   }
 }))
 
