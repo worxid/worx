@@ -37,7 +37,11 @@ import {
 } from 'services/formTemplate'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi, isFormatDateSearchValid } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  isFormatDateSearchValid, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 import { convertDate } from 'utilities/date'
 
 const Forms = () => {
@@ -162,9 +166,10 @@ const Forms = () => {
       axiosPrivate,
     )
 
-    if(didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
-    } else {
+    } 
+    else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
         open: true,
         severity:'error',
@@ -245,16 +250,19 @@ const Forms = () => {
         axiosPrivate,
       )
 
-      if(didSuccessfullyCallTheApi(response?.status)) {
+      if (didSuccessfullyCallTheApi(response?.status)) {
         fetchingFormsList(abortController.signal, true)
+
         setSnackbarObject({
           open: true,
           severity:'success',
           title:'',
           message:'Form deleted successfully'
         })
+
         setSelectionModel([])
-      } else {
+      } 
+      else if (!wasRequestCanceled(response?.status)) {
         setSnackbarObject({
           open: true,
           severity:'error',
