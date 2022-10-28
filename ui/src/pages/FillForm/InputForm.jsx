@@ -97,7 +97,7 @@ const InputForm = (props) => {
       const abortController = new AbortController()
       const response = await getMediaPresignedUrl(abortController.signal, {
         filename: fileObject.name
-      })
+      }, fileObject)
       if(didSuccessfullyCallTheApi(response?.status)) {
         setSnackbarObject({
           open: true,
@@ -106,12 +106,8 @@ const InputForm = (props) => {
           message: 'Success upload a signature',
         })
 
-        handleInputChange(
-          fieldId,
-          fieldType,
-          getKeyValue(fieldType),
-          { file: fileObject, idFile: response.data.fileId }
-        )
+        handleInputChange(fieldId, fieldType, getKeyValue(fieldType), fileObject)
+        handleInputChange(fieldId, fieldType, 'file_id', response.data.fileId)
       } else {
         setSnackbarObject({
           open: true,
@@ -128,12 +124,8 @@ const InputForm = (props) => {
 
   // HANDLE DELETE SIGNATURE
   const handleDeleteSignature = (fieldId, fieldType) => {
-    handleInputChange(
-      fieldId,
-      fieldType,
-      getKeyValue(fieldType),
-      { file: null }
-    )
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), null)
+    handleInputChange(fieldId, fieldType, 'file_id', null)
 
     setSelectedDialog('')
     setIsDialogFormOpen(false)
@@ -168,7 +160,7 @@ const InputForm = (props) => {
     const abortController = new AbortController()
     const response = await getMediaPresignedUrl(abortController.signal, {
       filename: event.target.files[0].name
-    })
+    }, event.target.files[0])
     if(didSuccessfullyCallTheApi(response?.status)) {
       setSnackbarObject({
         open: true,
@@ -177,7 +169,7 @@ const InputForm = (props) => {
         message: 'Success upload a image',
       })
 
-      temp.push({ file: event.target.files[0], id: response.data.fileId })
+      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
       handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
     } else {
       setSnackbarObject({
@@ -222,7 +214,7 @@ const InputForm = (props) => {
     const abortController = new AbortController()
     const response = await getMediaPresignedUrl(abortController.signal, {
       filename: imageInObject.name
-    })
+    }, imageInObject)
     if(didSuccessfullyCallTheApi(response?.status)) {
       setSnackbarObject({
         open: true,
@@ -231,7 +223,7 @@ const InputForm = (props) => {
         message: 'Success upload a image',
       })
 
-      temp.push({ file: imageInObject, id: response.data.fileId })
+      temp.push({ file: imageInObject, idFile: response.data.fileId })
       handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
     } else {
       setSnackbarObject({
@@ -285,7 +277,7 @@ const InputForm = (props) => {
     const abortController = new AbortController()
     const response = await getMediaPresignedUrl(abortController.signal, {
       filename: event.target.files[0].name
-    })
+    }, event.target.files[0])
     if(didSuccessfullyCallTheApi(response?.status)) {
       setSnackbarObject({
         open: true,
@@ -762,11 +754,11 @@ const InputForm = (props) => {
             required={item.required}
             error={Boolean(formObjectError?.[item.id])}
           >
-            {formObject[item.id]?.[getKeyValue(item.type)]?.file && (<Stack direction='row' justifyContent='flex-end'>
+            {formObject[item.id]?.[getKeyValue(item.type)]&& (<Stack direction='row' justifyContent='flex-end'>
               <Box
                 component='img'
                 className={classes.signatureImage}
-                src={formObject[item.id]?.[getKeyValue(item.type)]?.file && URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)]?.file)}
+                src={formObject[item.id]?.[getKeyValue(item.type)] && URL.createObjectURL(formObject[item.id]?.[getKeyValue(item.type)])}
               />
 
               <IconButton
@@ -780,7 +772,7 @@ const InputForm = (props) => {
               </IconButton>
             </Stack>)}
 
-            {!formObject[item.id]?.[getKeyValue(item.type)]?.file && (<Button
+            {!formObject[item.id]?.[getKeyValue(item.type)] && (<Button
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}

@@ -32,13 +32,6 @@ import useStyles from './fillFormUseStyles'
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
-/**
- * next to-do:
- * - implement api upload
- * - handle error message input upload
- * - handle value input upload
- * - implement ui input upload
- */
 const FillForm = () => {
   // STYLES
   const classes = useStyles()
@@ -62,6 +55,7 @@ const FillForm = () => {
     let tempFormObject = formObject
 
     tempFormObject[fieldId] = {
+      ...tempFormObject[fieldId],
       type,
       [keyValue]: value
     }
@@ -84,11 +78,22 @@ const FillForm = () => {
   const handleSubmitSubmission = async () => {
     setIsPageLoading(true)
     const abortController = new AbortController()
+    let tempFormObject = formObject
+
+    // RESTRUCTURE PHOTO & FILES PARAM
+    for (let key of Object.keys(formObject)) {
+      if (formObject[key].type === 'photo' || formObject[key].type === 'file') {
+        if (formObject[key]?.values) {
+          tempFormObject[key]['file_ids'] = formObject[key]?.values.map((item) => item.idFile)
+        }
+      }
+    }
+
     const params = {
       label: dataFormTemplate.label,
       description: dataFormTemplate.description,
       fields: dataFormTemplate.fields,
-      values: formObject,
+      values: tempFormObject,
       template_id: dataFormTemplate.id,
       submit_in_zone: false,
       submit_location: {
@@ -122,9 +127,6 @@ const FillForm = () => {
 
     setIsPageLoading(false)
   }
-
-  console.log({ formObject, formObjectError })
-  console.log(dataFormTemplate.fields)
 
   useEffect(() => {
     const abortController = new AbortController()
