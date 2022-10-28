@@ -33,7 +33,10 @@ import { putAssignGroupFormTemplate } from 'services/formTemplate'
 import useLayoutStyles from './dialogChangeGroupUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogChangeGroup = (props) => {
   const { dataChecked, page, selectedItemId, reloadData } = props
@@ -79,14 +82,16 @@ const DialogChangeGroup = (props) => {
         )
       }
 
-      if(didSuccessfullyCallTheApi(response?.status)) {
+      if (didSuccessfullyCallTheApi(response?.status)) {
         message = {
           severity:'success',
           title:'',
           message:'Change group success'
         }
+
         reloadData(abortController, true)
-      } else {
+      } 
+      else if (!wasRequestCanceled(response?.status)) {
         message = {
           severity: 'error',
           title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
