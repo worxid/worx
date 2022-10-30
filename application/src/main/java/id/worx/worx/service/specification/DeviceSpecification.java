@@ -19,7 +19,7 @@ import java.util.Set;
 @Component
 public class DeviceSpecification implements BaseSpecification<Device>{
 
-    public Specification<Device> fromSearchRequest(DeviceSearchRequest searchRequest){
+    public Specification<Device> fromSearchRequest(DeviceSearchRequest searchRequest, String organizationCode){
         Specification<Device> spec= Specification.where(null);
 
         if (Objects.nonNull(searchRequest.getLabel())){
@@ -55,6 +55,8 @@ public class DeviceSpecification implements BaseSpecification<Device>{
         if (Objects.nonNull(searchRequest.getGlobalSearch())){
             spec= spec.and(globalSearch(searchRequest.getGlobalSearch()));
         }
+
+        spec= spec.and(equalTo(Device_.ORGANIZATION_CODE,organizationCode));
 
 
         return spec;

@@ -123,6 +123,15 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiPaper-root': {
       width: 380,
       height: 'auto !important',
+    },
+    [theme.breakpoints.down('sm')]: {
+      '& .MuiPaper-root': {
+        maxWidth: '100%',
+        width: '100%',
+        height: '100vh !important',
+        margin: 0,
+        maxHeight: '100%',
+      }
     }
   },
   dialogSignatureContent: {
@@ -211,6 +220,21 @@ const useStyles = makeStyles((theme) => ({
   },
   formHelperText: {
     marginTop: 4,
+  },
+  buttonDeleteSignature: {
+    width: '50%',
+    backgroundColor: alpha(theme.palette.common.white, 0.1),
+    color: theme.palette.text.secondary,
+    fontWeight: 500,
+    marginRight: 8,
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.common.white, 0.34),
+    }
+  },
+  buttonSaveSignature: {
+    width: '50%',
+    fontWeight: 500,
+    marginLeft: 8,
   }
 }))
 

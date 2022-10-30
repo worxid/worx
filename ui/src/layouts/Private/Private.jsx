@@ -6,6 +6,9 @@ import Drawer from 'components/Drawer/Drawer'
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import CssBaseline from '@mui/material/CssBaseline'
 import Stack from '@mui/material/Stack'
@@ -27,15 +30,18 @@ const Private = (props) => {
 
   const { auth, setAuth } = useContext(AllPagesContext)
 
+  const axiosPrivate = useAxiosPrivate()
+
   const loadUserDetailsData = async (inputIsMounted, inputAbortController) => {
     const resultUserDetails = await getUserDetails(
       inputAbortController.signal,
-      auth.accessToken,
+      axiosPrivate,
     )
 
     if (didSuccessfullyCallTheApi(resultUserDetails.status) && inputIsMounted) {
       const userProfileObject = {
         accessToken: auth.accessToken,
+        refreshToken: auth.refreshToken,
         user: resultUserDetails.data?.value
       }
       

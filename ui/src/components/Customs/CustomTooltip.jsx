@@ -18,7 +18,7 @@ const StyledTooltip = styled(({ className, ...props }) => (
     fontSize: 14,
     borderRadius: 0,
   },
-  '@media only screen and (max-height: 820px)': {
+  [values.zoomBoundary]: {
     [`& .${tooltipClasses.tooltip}`]: {
       zoom: values.zoomValue,
     },
