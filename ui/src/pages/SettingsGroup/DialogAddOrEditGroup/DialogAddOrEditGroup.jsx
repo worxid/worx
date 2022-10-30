@@ -16,6 +16,9 @@ import CustomDialogActionButton from 'components/Customs/CustomDialogActionButto
 import CustomDialogContent from 'components/DialogAddOrEdit/Customs/CustomDialogContent'
 import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTitle'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Input from '@mui/material/Input'
@@ -56,7 +59,9 @@ const DialogAddOrEditGroup = (props) => {
 
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
 
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
+  const axiosPrivate = useAxiosPrivate()
 
   const initialFormObject = {
     groupName: '',
@@ -100,7 +105,7 @@ const DialogAddOrEditGroup = (props) => {
             name: groupName,
             color: groupColor,
           },
-          auth.accessToken
+          axiosPrivate,
         )
       }
       // EDIT AN EXISTING GROUP ITEM
@@ -112,7 +117,7 @@ const DialogAddOrEditGroup = (props) => {
             name: groupName,
             color: groupColor,
           },
-          auth.accessToken
+          axiosPrivate,
         )
       }
 

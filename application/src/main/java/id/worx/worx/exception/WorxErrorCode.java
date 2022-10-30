@@ -39,6 +39,7 @@ public enum WorxErrorCode {
     EMAIL_NOT_FOUND(17, "Email Not Found", HttpStatus.NOT_FOUND),
     PASSWORD_NOT_MATCH(18, "Old Password Doesnt Match", HttpStatus.BAD_REQUEST),
     USERNAME_EXIST(19, "Username already exist", HttpStatus.NOT_FOUND),
+    USERNAME_EMPTY(23, "Username doesnt exist", HttpStatus.NOT_FOUND),
     EMAIL_EXIST(20, "Email already exist", HttpStatus.NOT_FOUND),
     REQUEST_DATA(21, "Please check your request data", HttpStatus.BAD_REQUEST),
     FAILED_SEND_EMAIL(22, "Failed send email", HttpStatus.BAD_REQUEST),

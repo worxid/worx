@@ -1,67 +1,64 @@
-//APIS
-import { axiosPrivate } from 'apis/axios'
-
-export const postGetListDevices = async (inputSignal, inputParams, inputToken) => {
+export const postGetListDevices = async (inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.post('/devices/search', inputParams, {
+    const response = await inputAxiosPrivate.post('/devices/search', inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}`}
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
 
-export const putApprovedDevices = async (deviceId, inputSignal, inputParams, inputToken) => {
+export const putApprovedDevices = async (deviceId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(`/devices/${deviceId}/approve`, inputParams, {
+    const response = await inputAxiosPrivate.put(`/devices/${deviceId}/approve`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}`}
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
 
-export const putAssignGroupDevices = async (deviceId, inputSignal, inputParams, inputToken) => {
+export const putAssignGroupDevices = async (deviceId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(`/devices/${deviceId}/group`, inputParams, {
+    const response = await inputAxiosPrivate.put(`/devices/${deviceId}/group`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}`}
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
 
-export const putUpdateLabelDevices = async (deviceId, inputSignal, inputParams, inputToken) => {
+export const putUpdateLabelDevices = async (deviceId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.put(`/devices/${deviceId}/label`, inputParams, {
+    const response = await inputAxiosPrivate.put(`/devices/${deviceId}/label`, inputParams, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}`}
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
 
-export const deleteDevices = async (deviceId, inputSignal, inputToken) => {
+export const deleteDevices = async (deviceId, inputSignal, inputAxiosPrivate) => {
   try {
-    const response = await axiosPrivate.delete(`/devices/${deviceId}`, {
+    const response = await inputAxiosPrivate.delete(`/devices/${deviceId}`, {
       signal: inputSignal,
-      headers: { 'Authorization': `Bearer ${inputToken}`}
     })
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }

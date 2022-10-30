@@ -7,6 +7,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
@@ -29,7 +32,11 @@ import { postShareFormTemplate } from 'services/formTemplate'
 import useStyles from './dialogShareLinkUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi, isEmailFormatValid } from 'utilities/validation'
+import { 
+  didSuccessfullyCallTheApi, 
+  isEmailFormatValid, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogShareLink = (props) => {
   const { id } = props
@@ -38,12 +45,14 @@ const DialogShareLink = (props) => {
   const classes = useStyles()
 
   // CONTEXTS
-  const { setSnackbarObject, auth } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
+
+  const axiosPrivate = useAxiosPrivate()
 
   // HANDLE BUTTON SEND CLICK
   const handleButtonSendClick = async () => {
@@ -52,12 +61,13 @@ const DialogShareLink = (props) => {
     let message = {}
     let isValidEmail
 
-    if(receivers.length) {
+    if (receivers.length) {
       // VALIDATE EMAIL EVERY ITEM
-      for(let item of receivers) {
-        if(isEmailFormatValid(item)) {
+      for (let item of receivers) {
+        if (isEmailFormatValid(item)) {
           isValidEmail = true
-        } else {
+        } 
+        else {
           isValidEmail = false
           break
         }
@@ -65,35 +75,37 @@ const DialogShareLink = (props) => {
 
       if(isValidEmail) {
         const response = await postShareFormTemplate(id, abortController.signal,
-          {
-            recipients: receivers
-          },
-          auth.accessToken,
+          { recipients: receivers },
+          axiosPrivate,
         )
   
-        if(didSuccessfullyCallTheApi(response?.status)) {
+        if (didSuccessfullyCallTheApi(response?.status)) {
           message = {
             severity: 'success',
             title: '',
             message: 'Successfully sent the form via email'
           }
+
           setReceivers([])
           setIsDialogFormOpen(false)
-        } else {
+        } 
+        else if (!wasRequestCanceled(response?.status)) {
           message = {
             severity: 'error',
             title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-            message: response?.data?.error?.message || 'Something gone wrong',
+            message: response?.data?.error?.message || 'Something went wrong',
           }
         }
-      } else {
+      } 
+      else {
         message = {
           severity: 'error',
           title: '',
           message: 'Email format must be valid',
         }
       }
-    } else {
+    } 
+    else {
       message = {
         severity:'error',
         title:'',

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import id.worx.worx.service.AuthenticationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,6 +39,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     private final GroupRepository groupRepository;
     private final DeviceMapper deviceMapper;
     private final DeviceSpecification deviceSpecification;
+
+    private final AuthenticationContext authContext;
 
     @Override
     public Device getById(Long id) {
@@ -108,7 +111,8 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
     @Override
     public Page<Device> getAllDeviceWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable){
 
-        Specification<Device> spec = deviceSpecification.fromSearchRequest(deviceSearchRequest);
+
+        Specification<Device> spec = deviceSpecification.fromSearchRequest(deviceSearchRequest,authContext.getUsers().getOrganizationCode());
 
         return deviceRepository.findAll(spec, pageable);
     }
