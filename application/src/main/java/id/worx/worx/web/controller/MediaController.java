@@ -1,6 +1,5 @@
 package id.worx.worx.web.controller;
 
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.errors.*;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("media")
