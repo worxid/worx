@@ -35,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
     width: 8,
     marginLeft: 8,
   },
+  avatarLogOut: {
+    width: 32,
+    height: 32,
+    backgroundColor: theme.palette.primary.outlinedHoverBackground,
+  },
 }))
 
 export default useStyles

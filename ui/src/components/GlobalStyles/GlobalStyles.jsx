@@ -68,6 +68,9 @@ const GlobalStyles = () => {
         '.marginRightAuto': {
           marginRight: 'auto !important',
         },
+        '.marginTopAuto': {
+          marginTop: 'auto !important',
+        },
         '.overflowXhidden': {
           overflowX: 'hidden !important'
         },

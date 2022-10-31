@@ -15,6 +15,7 @@ import CustomDrawer, { DrawerHeader } from 'components/Customs/CustomDrawer'
 import { drawerNavigationList } from './drawerNavigationList'
 
 // MUIS
+import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
@@ -25,10 +26,12 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconAccountCircle from '@mui/icons-material/AccountCircle'
 import IconArrowDropDown from '@mui/icons-material/ArrowDropDown'
 import IconArrowDropUp from '@mui/icons-material/ArrowDropUp'
 import IconCircle from '@mui/icons-material/Circle'
 import IconContentCopy from '@mui/icons-material/ContentCopy'
+import IconLogout from '@mui/icons-material/Logout'
 import IconMenuOpen from '@mui/icons-material/MenuOpen'
 
 // STYLES
@@ -235,6 +238,40 @@ const Drawer = () => {
             </Collapse>
           </Fragment>
         ))}
+      </List>
+
+      {/* LOGOUT BUTTON */}
+      <List className='marginTopAuto'>
+        <ListItemButton
+          className={classes.navigationItem}
+          onClick={() => signOutUser(setAuth)}
+        >
+          {/* ICON */}
+          <ListItemIcon>
+            <Avatar className={classes.avatarLogOut}>
+              <IconAccountCircle 
+                fontSize='small'
+                color='primary'
+              />
+            </Avatar>
+          </ListItemIcon>
+
+          {/* TEXT */}
+          <ListItemText primary={
+            <Typography
+              variant='inherit'
+              className={classes.navigationItemContentActive}
+            >
+              Log Out
+            </Typography>
+          }/>
+          
+          {/* ICON */}
+          <IconLogout
+            fontSize='small' 
+            className={classes.navigationItemContentActive}
+          />
+        </ListItemButton>
       </List>
     </CustomDrawer>
   )

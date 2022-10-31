@@ -1,5 +1,4 @@
 // MUI ICONS
-import IconAccountCircle from '@mui/icons-material/AccountCircle'
 import IconDynamicForm from '@mui/icons-material/DynamicForm'
 import IconGroups from '@mui/icons-material/Groups'
 import IconHome from '@mui/icons-material/Home'
@@ -42,16 +41,4 @@ export const drawerNavigationList = [
   //     },
   //   ],
   // },
-  {
-    type: 'collection',
-    title: 'Profile',
-    icon: IconAccountCircle,
-    path: '/profile',
-    children: [
-      {
-        path: '/profile/logout',
-        title: 'Log Out',
-      },
-    ],
-  },
 ]
