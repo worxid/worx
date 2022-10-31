@@ -269,15 +269,16 @@ const Drawer = () => {
         ))}
       </List>
 
-      {/* LOGOUT BUTTON */}
+      {/* BOTTOM NAVIGATION */}
       <List className='marginTopAuto'>
+        {/* LOGOUT BUTTON */}
         <ListItemButton
-          className={classes.navigationItem}
+          className={`${classes.navigationItem} ${classes.logOutItemButton}`}
           onClick={() => signOutUser(setAuth)}
         >
           {/* ICON */}
           <ListItemIcon>
-            <Avatar className={classes.avatarLogOut}>
+            <Avatar className={classes.logOutAvatar}>
               <IconAccountCircle 
                 fontSize='small'
                 color='primary'
