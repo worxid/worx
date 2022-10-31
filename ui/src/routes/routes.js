@@ -12,12 +12,11 @@ import Forms from 'pages/Forms/Forms'
 import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
 import FormsSubmissions from 'pages/FormsSubmissions/FormsSubmissions'
 import FormsView from 'pages/FormsView/FormsView'
+import Groups from 'pages/Groups/Groups'
 import Home from 'pages/Home/Home'
 import ResetPassword from 'pages/ResetPassword/ResetPassword'
-import SettingsGroup from 'pages/SettingsGroup/SettingsGroup'
 import SignIn from 'pages/SignIn/SignIn'
 import SignUp from 'pages/SignUp/SignUp'
-
 
 const routes = [
   // AUTHENTICATION
@@ -82,8 +81,8 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/settings/groups',
-    element: <SettingsGroup/>,
+    path: '/groups',
+    element: <Groups/>,
     routeType: 'private',
   },
   // FREE

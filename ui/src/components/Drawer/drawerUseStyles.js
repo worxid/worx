@@ -35,6 +35,17 @@ const useStyles = makeStyles((theme) => ({
     width: 8,
     marginLeft: 8,
   },
+  logOutItemButton: {
+    paddingLeft: 20,
+  },
+  logOutAvatar: {
+    width: 32,
+    height: 32,
+    backgroundColor: theme.palette.primary.outlinedHoverBackground,
+  },
+  navigationTooltipItem: {
+    paddingLeft: 16,
+  },
 }))
 
 export default useStyles

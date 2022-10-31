@@ -20,6 +20,11 @@ const GlobalStyles = () => {
           clipRule: 'evenodd',
         },
 
+        // CONTENT CONTAINER
+        '.contentContainer': {
+          transition: 'all 0.25s ease-in-out',
+        },
+
         // GENERAL
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,
@@ -62,6 +67,9 @@ const GlobalStyles = () => {
         },
         '.marginRightAuto': {
           marginRight: 'auto !important',
+        },
+        '.marginTopAuto': {
+          marginTop: 'auto !important',
         },
         '.overflowXhidden': {
           overflowX: 'hidden !important'
