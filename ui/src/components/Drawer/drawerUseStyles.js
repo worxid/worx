@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     height: 32,
     backgroundColor: theme.palette.primary.outlinedHoverBackground,
   },
+  navigationTooltipItem: {
+    paddingLeft: 16,
+  },
 }))
 
 export default useStyles

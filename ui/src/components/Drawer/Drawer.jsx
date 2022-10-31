@@ -4,6 +4,9 @@ import { useLocation, useNavigate } from 'react-router-dom'
 // ASSETS
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
 
+// COMPONENTS
+import NavigationTooltip from './NavigationTooltip'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -56,6 +59,7 @@ const Drawer = () => {
     ? location.state.expandParent
     : null
   )
+  const [ hoveredParent, setHoveredParent ] = useState(null)
 
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
@@ -172,38 +176,63 @@ const Drawer = () => {
       <List>
         {drawerNavigationList.map((parentItem, parentIndex) => (
           <Fragment key={parentIndex}>
-            {/* PARENT */}
-            <ListItemButton
-              href={parentItem.type === 'single' ? parentItem.path : null}
-              className={getListItemButtonClassName(parentItem.path)}
-              onClick={(event) => handleParentItemClick(event, parentItem)}
-            >
-              {/* ICON */}
-              <ListItemIcon>
-                <parentItem.icon className={isNavigationActive(parentItem.path)
-                  ? classes.navigationItemContentActive
-                  : classes.navigationItemContentInactive
-                }/>
-              </ListItemIcon>
-
-              <ListItemText primary={
-                <Typography
-                  variant='inherit'
-                  className={getListItemTextClassName(parentItem.path)}
+            {/* EXTRA ITEMS FOR PARENT IF IT'S HOVERED AND THE DRAWER IS COLLAPSED */}
+            <NavigationTooltip 
+              open={Boolean(!isDrawerExpanded && hoveredParent === parentIndex)}
+              placement='right'
+              title={parentItem.type === 'single' &&
+                <ListItemButton
+                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem}`}
+                  onClick={(event) => handleParentItemClick(event, parentItem)}
                 >
-                  {parentItem.title}
-                </Typography>
-              }/>
-              
-              {/* EXPAND/COLLAPSE ICON */}
-              {(parentItem.type === 'collection' && isDrawerExpanded) &&
-              (expandParent === parentItem.text
-                ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
-                : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
-              )}
-            </ListItemButton>
+                  {/* TEXT */}
+                  <ListItemText primary={
+                    <Typography
+                      variant='inherit'
+                      className={getListItemTextClassName(parentItem.path)}
+                    >
+                      {parentItem.title}
+                    </Typography>
+                  }/>
+                </ListItemButton>
+              }
+            >
+              {/* NAVIGATION ITEM - PARENT */}
+              <ListItemButton
+                href={parentItem.type === 'single' ? parentItem.path : null}
+                className={getListItemButtonClassName(parentItem.path)}
+                onClick={(event) => handleParentItemClick(event, parentItem)}
+                onMouseEnter={() => setHoveredParent(parentIndex)}
+                onMouseLeave={() => setHoveredParent(null)}
+              >
+                {/* ICON */}
+                <ListItemIcon>
+                  <parentItem.icon className={isNavigationActive(parentItem.path)
+                    ? classes.navigationItemContentActive
+                    : classes.navigationItemContentInactive
+                  }/>
+                </ListItemIcon>
 
-            {/* CHILDREN */}
+                {/* TEXT */}
+                <ListItemText primary={
+                  <Typography
+                    variant='inherit'
+                    className={getListItemTextClassName(parentItem.path)}
+                  >
+                    {parentItem.title}
+                  </Typography>
+                }/>
+                
+                {/* EXPAND/COLLAPSE ICON */}
+                {(parentItem.type === 'collection' && isDrawerExpanded) &&
+                (expandParent === parentItem.text
+                  ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
+                  : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
+                )}
+              </ListItemButton>
+            </NavigationTooltip>
+
+            {/* NAVIGATION ITEM - CHILDREN */}
             <Collapse 
               in={(parentItem.children && expandParent === parentItem.title) && isDrawerExpanded} 
               timeout='auto' 
