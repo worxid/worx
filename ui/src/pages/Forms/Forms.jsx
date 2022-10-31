@@ -26,7 +26,6 @@ import moment from 'moment'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
@@ -104,16 +103,6 @@ const Forms = () => {
       minWidth: 200,
       hide: false,
       areFilterAndSortShown: true,
-      renderCell: (params) =>
-        params.value && (
-          <Link 
-            href={`/forms/${params.row.id}/submissions`} 
-            // className={layoutClasses.muiLinks}
-            color='primary'
-          >
-            {params.value}
-          </Link>
-        )
     },
     {
       field: 'fields_size',
@@ -366,6 +355,8 @@ const Forms = () => {
             // SELECTION
             selectionModel={selectionModel} 
             setSelectionModel={setSelectionModel}
+            // ACTIONS
+            onRowDoubleClick={(params, event, details) => navigate(`/forms/${params.row.id}/submissions`)}
           />
         </LoadingPaper>
 
