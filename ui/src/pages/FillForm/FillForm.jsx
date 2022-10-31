@@ -114,7 +114,7 @@ const FillForm = () => {
 
       // CLEAR MESSAGE ERROR
       setFormObjectError(structureErrorMessage(dataFormTemplate.fields))
-    } else {
+    } else if(response?.data?.error?.details) {
       // HANDLE ERROR MESSAGE
       let tempErrorMessage = formObjectError
       for(let keys of Object.keys(tempErrorMessage)) {
@@ -123,6 +123,13 @@ const FillForm = () => {
         else tempErrorMessage[keys] = ''
       }
       setFormObjectError(tempErrorMessage)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
+      })
     }
 
     setIsPageLoading(false)
