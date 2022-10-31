@@ -142,12 +142,20 @@ public class MinioService implements FileStorageService {
 
                 File files = file.get();
 
-                UrlPresignedResponse url = new UrlPresignedResponse();
-                url.setFileId(ids);
-                url.setPath(files.getPath());
-                url.setUrl(clientService.getPresignedObjectUrl(Method.PUT,files.getPath()));
 
-                responses.add(url);
+                boolean objectExist = clientService.isObjectExist(files.getPath());
+
+                if(objectExist){
+
+                    UrlPresignedResponse url = new UrlPresignedResponse();
+                    url.setFileId(ids);
+                    url.setPath(files.getPath());
+                    url.setUrl(clientService.getDownloadPresignedObjectUrl(files.getPath()));
+
+                    responses.add(url);
+
+                }
+
             }
         }
 
