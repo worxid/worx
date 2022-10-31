@@ -149,11 +149,9 @@ public class MinioService implements FileStorageService {
 
                 responses.add(url);
             }
-
-            return responses;
         }
 
-        return null;
+        return responses;
     }
 
     private File findByIdorElseThrowNotFound(Long id) {
