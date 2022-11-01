@@ -78,10 +78,16 @@ const FillForm = () => {
 
     // RESTRUCTURE PHOTO & FILES PARAM
     for (let key of Object.keys(formObject)) {
-      if (formObject[key].type === 'photo' || formObject[key].type === 'file') {
+      if (formObject[key]?.type === 'photo' || formObject[key]?.type === 'file') {
         if (formObject[key]?.values) {
           tempFormObject[key]['file_ids'] = formObject[key]?.values.map((item) => item.idFile)
+        } else {
+          delete tempFormObject[key]
         }
+      }
+
+      if (formObject[key]?.type === 'signature') {
+        if(formObject[key]?.value === null) delete tempFormObject[key]
       }
     }
 
