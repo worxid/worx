@@ -14,6 +14,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // ROUTES
 import routes from 'routes/routes'
+import FillForm from 'layouts/FillForm/FillForm'
 
 const App = () => {
   const { snackbarObject, setSnackbarObject } = useContext(AllPagesContext)
@@ -31,6 +32,13 @@ const App = () => {
         <PrivateRoute>
           {inputItem.element}
         </PrivateRoute>
+      )
+    }
+    else if (inputItem.routeType === 'fillForm') {
+      return (
+        <FillForm>
+          {inputItem.element}
+        </FillForm>
       )
     }
     else if (inputItem.routeType === 'free') return inputItem.element
