@@ -3,8 +3,16 @@ package id.worx.worx.service.storage;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.entity.Group;
+import id.worx.worx.entity.devices.Device;
+import id.worx.worx.web.model.request.FileRequestDTO;
+import io.minio.http.Method;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.response.UrlPresignedResponse;
@@ -120,6 +128,38 @@ public class MinioService implements FileStorageService {
     public long getObjectSize(String path) {
         StatObjectResponse response = clientService.getStatObjectResponse(path);
         return response.size();
+    }
+
+    @Override
+    public List<UrlPresignedResponse> getFiles(FileRequestDTO fileRequestDTO)  throws IOException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException, ServerException, ErrorResponseException, XmlParserException, InsufficientDataException, InternalException {
+
+        List<UrlPresignedResponse> responses = new ArrayList<>();
+
+        for (Long ids:fileRequestDTO.getFileIds()){
+
+            Optional<File> file = fileRepository.findById(ids);
+            if(file.isPresent()){
+
+                File files = file.get();
+
+
+                boolean objectExist = clientService.isObjectExist(files.getPath());
+
+                if(objectExist){
+
+                    UrlPresignedResponse url = new UrlPresignedResponse();
+                    url.setFileId(ids);
+                    url.setPath(files.getPath());
+                    url.setUrl(clientService.getDownloadPresignedObjectUrl(files.getPath()));
+
+                    responses.add(url);
+
+                }
+
+            }
+        }
+
+        return responses;
     }
 
     private File findByIdorElseThrowNotFound(Long id) {
