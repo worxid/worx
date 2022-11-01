@@ -99,7 +99,7 @@ const routes = [
   },
   {
     path: '/fill-form-finish',
-    element: (<FillFormFinish />),
+    element: <FillFormFinish />,
     routeType: 'fillForm'
   },
   // FREE
