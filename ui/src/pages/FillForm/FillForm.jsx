@@ -153,6 +153,8 @@ const FillForm = () => {
     }
   }, [dataFormTemplate])
 
+  console.log({ formObject })
+
   return (
     <Stack className={classes.root}>
       {dataFormTemplate?.fields && (
@@ -177,6 +179,7 @@ const FillForm = () => {
                   formObject={formObject}
                   formObjectError={formObjectError}
                   setFormObjectError={setFormObjectError}
+                  setFormObject={setFormObject}
                 />
               ))}
             </Stack>

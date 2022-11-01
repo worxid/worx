@@ -217,6 +217,15 @@ const useStyles = makeStyles((theme) => ({
   loading: {
     width: '48px !important',
     height: '48px !important',
+  },
+  progressBarUpload: {
+    height: 8,
+    marginLeft: 8,
+    maxWidth: 120,
+  },
+  iconSuccessUpload: {
+    fontSize: 14,
+    marginLeft: 8,
   }
 }))
 
