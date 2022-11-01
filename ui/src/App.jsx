@@ -6,6 +6,7 @@ import LogoProductLogoOnly from 'assets/images/logos/product-logo-only.svg'
 
 // COMPONENTS
 import AuthenticationRoute from 'components/Routes/AuthenticationRoute'
+import FillForm from 'layouts/FillForm/FillForm'
 import PrivateRoute from 'components/Routes/PrivateRoute'
 import Snackbar from 'components/Snackbar/Snackbar'
 
@@ -14,7 +15,6 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // ROUTES
 import routes from 'routes/routes'
-import FillForm from 'layouts/FillForm/FillForm'
 
 const App = () => {
   const { snackbarObject, setSnackbarObject } = useContext(AllPagesContext)
