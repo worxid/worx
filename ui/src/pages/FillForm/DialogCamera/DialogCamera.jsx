@@ -44,6 +44,7 @@ const DialogCamera = (props) => {
   const [cameraPosition, setCameraPosition] = useState('user')
   const [isLoading, setIsLoading] = useState(true)
   const [isFlashligtOn, setIsFlashLightOn] = useState(false)
+  const [realResolution, setRealResolution] = useState({})
 
   // CONSTRAINT SETTING
   const constraintsSetting = useMemo(() => {
@@ -52,8 +53,7 @@ const DialogCamera = (props) => {
     }
   }, [breakpointType, cameraPosition])
 
-  // HANDLE CAPTURE
-  const handleCaptureClick = useCallback(async () => {
+  const fetchCameraResolution = async () => {
     const cameraDevice = await navigator.mediaDevices.getUserMedia({
       audio: false,
       video: {
@@ -66,20 +66,23 @@ const DialogCamera = (props) => {
       }
     })
 
-    // GET ACTUAL RESOLUTION OF CAMERA
     const cameraSettings = cameraDevice.getVideoTracks()[0]?.getSettings()
-    const resolutionWidth = cameraSettings.width
-    const resolutionHeight = cameraSettings.height
+    setRealResolution({
+      width: cameraSettings.width,
+      height: cameraSettings.height
+    })
 
+    cameraDevice?.getTracks().forEach(track => track.stop())
+  }
+
+  // HANDLE CAPTURE
+  const handleCaptureClick = useCallback(async () => {
     const imageInBase64 = webcamRef.current?.getScreenshot({
-      width: resolutionWidth,
-      height: resolutionHeight
+      width: realResolution.width,
+      height: realResolution.height,
     })
 
     setResultPhoto(imageInBase64)
-
-    // DESTROY MEDIA AFTER TAKE PHOTO
-    cameraDevice?.getTracks().forEach(track => track.stop())
   }, [webcamRef])
 
   // HANDLE RETAKE
@@ -101,6 +104,10 @@ const DialogCamera = (props) => {
     if(cameraPosition === 'user') setCameraPosition('environtment')
     else if(cameraPosition === 'environtment') setCameraPosition('user')
   }
+
+  useEffect(() => {
+    fetchCameraResolution()
+  }, [])
 
   useEffect(() => {
     if(isFlashligtOn) {

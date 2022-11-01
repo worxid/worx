@@ -7,6 +7,7 @@ import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinis
 import Devices from 'pages/Devices/Devices'
 import Error from 'pages/Error'
 import FillForm from 'pages/FillForm/FillForm'
+import FillFormFinish from 'pages/FillFormFinish/FillFormFinish'
 import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
 import Forms from 'pages/Forms/Forms'
 import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
@@ -85,7 +86,7 @@ const routes = [
     element: <Groups/>,
     routeType: 'private',
   },
-  // FREE
+  // FILL FORM
   {
     path: '/fill-form',
     element: (
@@ -93,8 +94,14 @@ const routes = [
         <FillForm />
       </PrivateLayoutContextProvider>
     ),
-    routeType: 'free'
+    routeType: 'fillForm'
   },
+  {
+    path: '/fill-form-finish',
+    element: <FillFormFinish />,
+    routeType: 'fillForm'
+  },
+  // FREE
   {
     path: '/error',
     element: <Error />,

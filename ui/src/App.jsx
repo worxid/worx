@@ -6,6 +6,7 @@ import LogoProductLogoOnly from 'assets/images/logos/product-logo-only.svg'
 
 // COMPONENTS
 import AuthenticationRoute from 'components/Routes/AuthenticationRoute'
+import FillForm from 'layouts/FillForm/FillForm'
 import PrivateRoute from 'components/Routes/PrivateRoute'
 import Snackbar from 'components/Snackbar/Snackbar'
 
@@ -31,6 +32,13 @@ const App = () => {
         <PrivateRoute>
           {inputItem.element}
         </PrivateRoute>
+      )
+    }
+    else if (inputItem.routeType === 'fillForm') {
+      return (
+        <FillForm>
+          {inputItem.element}
+        </FillForm>
       )
     }
     else if (inputItem.routeType === 'free') return inputItem.element
