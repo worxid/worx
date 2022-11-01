@@ -763,10 +763,7 @@ const InputForm = (props) => {
 
               <IconButton
                 className='heightFitContent'
-                onClick={() => {
-                  setSelectedDialog(item.id)
-                  setIsDialogFormOpen(true)
-                }}
+                onClick={() => handleDeleteSignature(item.id, item.type)}
               >
                 <IconCancel fontSize='small'/>
               </IconButton>
