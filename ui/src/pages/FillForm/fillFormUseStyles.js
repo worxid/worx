@@ -4,20 +4,10 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '48px 20px 40px 20px',
-    backgroundColor: theme.palette.background.default,
-    minHeight: '100vh',
-    [theme.breakpoints.down('md')]: {
-      padding: '8px 8px 20px 8px',
-    }
-  },
-  content: {
-    maxWidth: 740,
-    width: '100%',
-    backgroundColor: theme.palette.common.white,
-    padding: '24px 0',
-    [theme.breakpoints.down('md')]: {
-      padding: '12px 0',
+    position: 'relative',
+    padding: '32px 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: '12px 0'
     }
   },
   header: {
@@ -99,11 +89,6 @@ const useStyles = makeStyles((theme) => ({
     },
     '&.buttonAddFile': {
       maxWidth: 100,
-    },
-    '&.buttonGetStarted': {
-      border: `2px solid ${theme.palette.common.black}`,
-      borderRadius: 0,
-      marginLeft: 12,
     },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
@@ -198,26 +183,6 @@ const useStyles = makeStyles((theme) => ({
       padding: 0,
     }
   },
-  footer: {
-    marginTop: 40,
-    maxWidth: 740,
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      marginTop: 20,
-      padding: '0 8px'
-    }
-  },
-  footerDescription: {
-    [theme.breakpoints.down('md')]: {
-      display: 'none'
-    }
-  },
-  footerLogo: {
-    maxWidth: 88,
-    [theme.breakpoints.down('md')]: {
-      maxWidth: 60,
-    }
-  },
   formHelperText: {
     marginTop: 4,
   },
@@ -235,6 +200,23 @@ const useStyles = makeStyles((theme) => ({
     width: '50%',
     fontWeight: 500,
     marginLeft: 8,
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 2,
+    backgroundColor: alpha(theme.palette.common.white, 0.7),
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderRadius: 'inherit',
+  },
+  loading: {
+    width: '48px !important',
+    height: '48px !important',
   }
 }))
 
