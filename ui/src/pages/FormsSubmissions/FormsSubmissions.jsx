@@ -91,6 +91,16 @@ const FormsSubmissions = () => {
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
     },
+    {
+      field: 'templateId',
+      headerName: 'Template Id',
+      flex: 0,
+      minWidth: 180,
+      hide: false,
+      areFilterAndSortShown: true,
+      headerClassName: 'cell-source-custom',
+      cellClassName: 'cell-source-custom',
+    },
   ]
   // TO DO: FIX THIS LATER
   // Object.keys(dummyTableData[0].dynamicFields)
