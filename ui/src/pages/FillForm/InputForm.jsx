@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
@@ -725,17 +725,22 @@ const InputForm = (props) => {
   
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemFile.file.name}
+                  primaryTypographyProps={{
+                    noWrap: false,
+                  }}
+                  primary={`${itemFile.file.name} (${formatBytes(itemFile.file.size)})`}
                   secondary={(
                     <Stack direction='row' alignItems='center'>
-                      <Typography>{formatBytes(itemFile.file.size)}</Typography>
                       {itemFile.isLoadingUpload
                         ? (
                           <Stack width='100%'>
                             <LinearProgress className={classes.progressBarUpload} color='info'/>
                           </Stack>
                         )
-                        : (<IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />)
+                        : (<>
+                          <Typography variant='caption' className='textDone'>Done</Typography>
+                          <IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />
+                        </>)
                       }
                     </Stack>
                   )}
