@@ -11,9 +11,6 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
-// CONSTANTS
-import { dummyTableData } from './FormsSubmissionsConstants'
-
 // LIBRARY
 import * as XLSX from 'xlsx'
 
