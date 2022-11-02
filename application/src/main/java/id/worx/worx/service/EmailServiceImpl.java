@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailServiceImpl implements EmailService {
 
     private final WorxProperties worxProps;
-    private static final String RESET_PASSWORD_EMAIL = "email-reset-passsword";
+    private static final String RESET_PASSWORD_EMAIL = "email-reset-password";
     private static final String EMAIL_CONFIRMATION = "email-confirmation";
     private static final String SHARE_TEMPLATE = "email-share-link";
 
