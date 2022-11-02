@@ -644,17 +644,19 @@ const InputForm = (props) => {
 
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemImg.file.name}
+                  primary={`${itemImg.file.name} (${formatBytes(itemImg.file.size)})`}
                   secondary={(
                     <Stack direction='row' alignItems='center'>
-                      <Typography>{formatBytes(itemImg.file.size)}</Typography>
                       {itemImg.isLoadingUpload
                         ? (
                           <Stack width='100%'>
                             <LinearProgress className={classes.progressBarUpload} color='info'/>
                           </Stack>
                         )
-                        : (<IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />)
+                        : (<>
+                          <Typography variant='caption' className='textDone'>Done</Typography>
+                          <IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />
+                        </>)
                       }
                     </Stack>
                   )}
