@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
@@ -27,6 +27,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
+import LinearProgress from '@mui/material/LinearProgress'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
@@ -44,6 +45,7 @@ import Typography from '@mui/material/Typography'
 import IconAttachFile from '@mui/icons-material/AttachFile'
 import IconCameraAlt from '@mui/icons-material/CameraAlt'
 import IconCancel from '@mui/icons-material/Cancel'
+import IconCheckCircle from '@mui/icons-material/CheckCircle'
 import IconCreate from '@mui/icons-material/Create'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconImage from '@mui/icons-material/Image'
@@ -67,7 +69,10 @@ import { convertDate } from 'utilities/date'
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const InputForm = (props) => {
-  const { item, handleInputChange, formObject, formObjectError, setFormObjectError } = props
+  const {
+    item, handleInputChange, formObject, setFormObject,
+    formObjectError, setFormObjectError
+  } = props
 
   // CONTEXT
   const { setSnackbarObject, breakpointType } = useContext(AllPagesContext)
@@ -156,6 +161,14 @@ const InputForm = (props) => {
     // CLEAR ERROR MESSAGE
     handleErrorMessage(fieldId, '')
 
+    // FIRST PUSH
+    temp.push({ file: event.target.files[0], idFile: null, isLoadingUpload: true })
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    temp = formObject
+
+    // FIND INDEX CURRENT FILE
+    const currentIndexFile = temp[fieldId].values.findIndex(itemFile => itemFile.file.name === event.target.files[0].name)
+
     // UPLOAD MEDIA
     const abortController = new AbortController()
     const response = await getMediaPresignedUrl(abortController.signal, {
@@ -169,8 +182,11 @@ const InputForm = (props) => {
         message: 'Success upload a image',
       })
 
-      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
-      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+      // UPDATE CURRENT FILE LOADING AND FILE ID
+      temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+
+      setFormObject(temp)
     } else {
       setSnackbarObject({
         open: true,
@@ -178,6 +194,10 @@ const InputForm = (props) => {
         title: '',
         message: 'Failed upload a image',
       })
+
+      // DELETE CURRENT FILE IF FAILED UPLOAD
+      temp[fieldId].values = temp[fieldId].values.filter((itemFile, index) => index !== currentIndexFile)
+      setFormObject(temp)
     }
   }
 
@@ -210,6 +230,14 @@ const InputForm = (props) => {
     // CLEAR ERROR MESSAGE
     handleErrorMessage(fieldId, '')
 
+    // FIRST PUSH
+    temp.push({ file: imageInObject, idFile: null, isLoadingUpload: true })
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    temp = formObject
+
+    // FIND INDEX CURRENT FILE
+    const currentIndexFile = temp[fieldId].values.findIndex(itemFile => itemFile.file.name === imageInObject.name)
+
     // UPLOAD MEDIA
     const abortController = new AbortController()
     const response = await getMediaPresignedUrl(abortController.signal, {
@@ -223,8 +251,11 @@ const InputForm = (props) => {
         message: 'Success upload a image',
       })
 
-      temp.push({ file: imageInObject, idFile: response.data.fileId })
-      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+      // UPDATE CURRENT FILE LOADING AND FILE ID
+      temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+
+      setFormObject(temp)
     } else {
       setSnackbarObject({
         open: true,
@@ -232,13 +263,16 @@ const InputForm = (props) => {
         title: '',
         message: 'Failed upload a image',
       })
+
+      // DELETE CURRENT FILE IF FAILED UPLOAD
+      temp[fieldId].values = temp[fieldId].values.filter((itemFile, index) => index !== currentIndexFile)
+      setFormObject(temp)
     }
   }
 
   // HANDLE FILE CHANGE
   const handleFileChange = async (event, fieldId, fieldType, allowedExtensions) => {
     let temp = formObject[fieldId]?.values || []
-
     const acceptEtensions = allowedExtensions[0] === 'any' ? anyFormatFile : allowedExtensions
 
     // CHECK MAX FILES
@@ -270,6 +304,14 @@ const InputForm = (props) => {
       return
     }
 
+    // FIRST PUSH
+    temp.push({ file: event.target.files[0], idFile: null, isLoadingUpload: true })
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+    temp = formObject
+
+    // FIND INDEX CURRENT FILE
+    const currentIndexFile = temp[fieldId].values.findIndex(itemFile => itemFile.file.name === event.target.files[0].name)
+
     // CLEAR ERROR MESSAGE
     handleErrorMessage(fieldId, '')
 
@@ -286,8 +328,11 @@ const InputForm = (props) => {
         message: 'Success upload a file',
       })
 
-      temp.push({ file: event.target.files[0], idFile: response.data.fileId })
-      handleInputChange(fieldId, fieldType, getKeyValue(fieldType), temp)
+      // UPDATE CURRENT FILE LOADING AND FILE ID
+      temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+
+      setFormObject(temp)
     } else {
       setSnackbarObject({
         open: true,
@@ -295,6 +340,10 @@ const InputForm = (props) => {
         title: '',
         message: 'Failed upload a file',
       })
+
+      // DELETE CURRENT FILE IF FAILED UPLOAD
+      temp[fieldId].values = temp[fieldId].values.filter((itemFile, index) => index !== currentIndexFile)
+      setFormObject(temp)
     }
   }
 
@@ -595,8 +644,22 @@ const InputForm = (props) => {
 
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemImg.file.name}
-                  secondary={formatBytes(itemImg.file.size)}
+                  primary={`${itemImg.file.name} (${formatBytes(itemImg.file.size)})`}
+                  secondary={(
+                    <Stack direction='row' alignItems='center'>
+                      {itemImg.isLoadingUpload
+                        ? (
+                          <Stack width='100%'>
+                            <LinearProgress className={classes.progressBarUpload} color='info'/>
+                          </Stack>
+                        )
+                        : (<>
+                          <Typography variant='caption' className='textDone'>Done</Typography>
+                          <IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />
+                        </>)
+                      }
+                    </Stack>
+                  )}
                 />
 
                 <IconButton
@@ -664,8 +727,25 @@ const InputForm = (props) => {
   
                 <ListItemText
                   className={classes.listItemText}
-                  primary={itemFile.file.name}
-                  secondary={formatBytes(itemFile.file.size)}
+                  primaryTypographyProps={{
+                    noWrap: false,
+                  }}
+                  primary={`${itemFile.file.name} (${formatBytes(itemFile.file.size)})`}
+                  secondary={(
+                    <Stack direction='row' alignItems='center'>
+                      {itemFile.isLoadingUpload
+                        ? (
+                          <Stack width='100%'>
+                            <LinearProgress className={classes.progressBarUpload} color='info'/>
+                          </Stack>
+                        )
+                        : (<>
+                          <Typography variant='caption' className='textDone'>Done</Typography>
+                          <IconCheckCircle color='success' fontSize='small' className={classes.iconSuccessUpload} />
+                        </>)
+                      }
+                    </Stack>
+                  )}
                 />
 
                 <IconButton

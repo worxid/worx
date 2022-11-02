@@ -177,6 +177,7 @@ const FillForm = () => {
                   formObject={formObject}
                   formObjectError={formObjectError}
                   setFormObjectError={setFormObjectError}
+                  setFormObject={setFormObject}
                 />
               ))}
             </Stack>

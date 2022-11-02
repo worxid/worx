@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary,
       fontSize: 12,
       display: 'block',
-      whiteSpace: 'nowrap',
+      whiteSpace: 'wrap',
       textOverflow: 'ellipsis',
       overflow: 'hidden',
     },
@@ -158,9 +158,12 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary,
       fontSize: 12,
       display: 'block',
-      whiteSpace: 'nowrap',
+      whiteSpace: 'wrap',
       textOverflow: 'ellipsis',
       overflow: 'hidden'
+    },
+    '& .textDone': {
+      fontSize: '12px !important'
     }
   },
   listImage: {
@@ -217,6 +220,16 @@ const useStyles = makeStyles((theme) => ({
   loading: {
     width: '48px !important',
     height: '48px !important',
+  },
+  progressBarUpload: {
+    height: 8,
+    marginLeft: 8,
+    maxWidth: 120,
+    marginTop: 8,
+  },
+  iconSuccessUpload: {
+    fontSize: 14,
+    marginLeft: 4,
   }
 }))
 
