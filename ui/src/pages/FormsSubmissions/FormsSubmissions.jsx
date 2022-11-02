@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
@@ -24,6 +24,9 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+// SERVICES
+import { postSearchFormSubmissionList } from 'services/form'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
@@ -72,18 +75,18 @@ const FormsSubmissions = () => {
       cellClassName: 'cell-source-custom',
     },
     {
-      field: 'submissionPlaces',
-      headerName: 'Submission Places',
-      flex: 1,
-      minWidth: 200,
+      field: 'formTitle',
+      headerName: 'Form Title',
+      flex: 0,
+      minWidth: 180,
       hide: false,
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
     },
     {
-      field: 'form',
-      headerName: 'Form',
+      field: 'formDescription',
+      headerName: 'Form Description',
       flex: 0,
       minWidth: 180,
       hide: false,
@@ -92,20 +95,21 @@ const FormsSubmissions = () => {
       cellClassName: 'cell-source-custom',
     },
   ]
-  Object.keys(dummyTableData[0].dynamicFields)
-    .forEach(item => {
-      initialColumns.push({
-        field: item,
-        headerName: item,
-        flex: 1,
-        minWidth: 150,
-        hide: false,
-        areFilterAndSortShown: true,
-        headerClassName: 'cell-source-custom',
-        cellClassName: 'cell-source-custom',
-        valueGetter: (params) => params.row.dynamicFields[item]
-      })
-    })
+  // TO DO: FIX THIS LATER
+  // Object.keys(dummyTableData[0].dynamicFields)
+  //   .forEach(item => {
+  //     initialColumns.push({
+  //       field: item,
+  //       headerName: item,
+  //       flex: 1,
+  //       minWidth: 150,
+  //       hide: false,
+  //       areFilterAndSortShown: true,
+  //       headerClassName: 'cell-source-custom',
+  //       cellClassName: 'cell-source-custom',
+  //       valueGetter: (params) => params.row.dynamicFields[item]
+  //     })
+  //   })
     
   const initialFilters = {}
 
@@ -113,7 +117,7 @@ const FormsSubmissions = () => {
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState(dummyTableData)
+  const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -151,6 +155,47 @@ const FormsSubmissions = () => {
       bookType: formatFile
     })
   }
+
+  const getSubmissionList = async (inputIsMounted, inputAbortController) => {
+    const resultSubmissionList = await postSearchFormSubmissionList(
+      inputAbortController.signal,
+      {
+        page: pageNumber,
+        size: pageSize,
+      },
+      // TO DO: CHANGE THIS WITH FILTERS VALUE
+      {},
+    )
+
+    if (resultSubmissionList.status === 200 && inputIsMounted) {
+      const submissionList = resultSubmissionList?.data?.content?.map((submissionItem, submissionIndex) => {
+        return {
+          id: submissionItem?.id,
+          source: submissionItem?.source ?? '-',
+          submissionDate: submissionItem?.submit_date ?? '-',
+          submissionAddress: submissionItem.submit_location?.address ?? '-',
+          formTitle: submissionItem?.label ?? '-',
+          formDescription: submissionItem?.description ?? '-',
+          templateId: submissionItem?.template_id,
+        }
+      })
+
+      setTableData(submissionList)
+      setTotalRow(resultSubmissionList?.data?.totalElements)
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    getSubmissionList(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [pageNumber, pageSize, filters, order, orderBy])
 
   return (
     <>
@@ -227,14 +272,6 @@ const FormsSubmissions = () => {
             // DOWNLOAD
             isDownloadButtonEnabled={true}
             handleDownloadButtonClick={(event) => setDownloadMenuAnchor(event.currentTarget)}
-            // TEXT
-            //contentTitle=''
-            // EDIT
-            //isEditButtonEnabled={selectionModel.length === 1}
-            //handleEditButtonClick={() => console.log('edit')}
-            // EDIT
-            //isDeleteButtonEnabled={selectionModel.length > 0}
-            //handleDeleteButtonClick={() => console.log('delete')}
           />
 
           <DataGridTable
