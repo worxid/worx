@@ -7,6 +7,7 @@ import DialogForm from 'components/DialogForm/DialogForm'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // LIBRARY
+import UAParser from 'ua-parser-js'
 import Webcam from 'react-webcam'
 
 // MUIS
@@ -34,6 +35,7 @@ const DialogCamera = (props) => {
   const classes = useStyles()
 
   // REFS
+  const uaParserRef = useRef(new UAParser())
   const webcamRef = useRef()
 
   // CONTEXT
@@ -105,6 +107,14 @@ const DialogCamera = (props) => {
     else if(cameraPosition === 'environtment') setCameraPosition('user')
   }
 
+  // DEVICE DETECTION
+  const detectDeviceType = () => {
+    const currentOs = uaParserRef.current.getResult().os.name
+    // IS DEKSTOP
+    if(currentOs === 'Windows' || currentOs === 'Mac OS') return true
+    else return false
+  }
+
   useEffect(() => {
     fetchCameraResolution()
   }, [])
@@ -161,10 +171,17 @@ const DialogCamera = (props) => {
         </Stack>
 
         {/* ACTION TAKE CAMERA */}
-        <Stack width='100%' flex={0} flexWrap='nowrap' className={classes.actionWrapper} direction='row' alignItems='center'>
-          <Stack direction='row' alignItems='center' className={classes.actionLeft}>
+        <Stack
+          width='100%'
+          flex={0}
+          flexWrap='nowrap'
+          className={`${classes.actionWrapper} ${!detectDeviceType() && 'mobile'}`}
+          direction='row'
+          alignItems='center'
+        >
+          <Stack direction='row' alignItems='center' className={`${classes.actionLeft} ${!detectDeviceType() && 'mobile'}`}>
             {/* BUTTON FLASHLIGHT */}
-            {(!isLoading && !resultPhoto && breakpointType === 'xs') && (
+            {(!isLoading && !resultPhoto && !detectDeviceType()) && (
               <IconButton className={classes.buttonSwitchCamera} onClick={() => setIsFlashLightOn(!isFlashligtOn)}>
                 {!isFlashligtOn && (<IconFlashOn fontSize='medium'/>)}
                 {isFlashligtOn && (<IconFlashOff fontSize='medium'/>)}
@@ -172,15 +189,15 @@ const DialogCamera = (props) => {
             )}
 
             {/* BUTTON SWITCH */}
-            {(!isLoading && !resultPhoto && breakpointType !== 'lg' && breakpointType !== 'xl') && (
-              <IconButton className={classes.buttonSwitchCamera} onClick={handleSwitchCamera}>
+            {(!isLoading && !resultPhoto && !detectDeviceType()) && (
+              <IconButton className={`${classes.buttonSwitchCamera} ${!detectDeviceType() && 'mobile'}`} onClick={handleSwitchCamera}>
                 <IconCameraswitch fontSize='medium'/>
               </IconButton>
             )}
 
             {/* BUTTON RETAKE */}
             {resultPhoto && (
-              <IconButton className={classes.buttonRetake} onClick={handleRetakeClick}>
+              <IconButton className={`${classes.buttonRetake} ${!detectDeviceType() && 'mobile'}`} onClick={handleRetakeClick}>
                 <IconReplay fontSize='medium'/>
               </IconButton>
             )}
@@ -189,9 +206,9 @@ const DialogCamera = (props) => {
           <Stack className={classes.actionCenter} alignItems='center'>
             {/* BUTTON TAKE CAMERA */}
             {(!resultPhoto && !isLoading) && (
-              <IconButton className={classes.buttonTakePhoto} onClick={handleCaptureClick}>
-                {breakpointType !== 'xs' && (<IconCameraAlt fontSize='medium'/>)}
-                {breakpointType === 'xs' && (
+              <IconButton className={`${classes.buttonTakePhoto} ${!detectDeviceType() && 'mobile'}`} onClick={handleCaptureClick}>
+                {detectDeviceType() && (<IconCameraAlt fontSize='medium'/>)}
+                {!detectDeviceType() && (
                   <Box className={classes.iconCaptureMobile}>
                     <Box className='iconCaptureMobile-inside'></Box>
                   </Box>
@@ -200,10 +217,10 @@ const DialogCamera = (props) => {
             )}
           </Stack>
 
-          <Stack className={classes.actionRight}>
+          <Stack className={`${classes.actionRight} ${!detectDeviceType() && 'mobile'}`}>
             {/* BUTTON CANCEL */}
             {!resultPhoto && (<Button
-              className={classes.buttonCancel}
+              className={`${classes.buttonCancel} ${!detectDeviceType() && 'mobile'}`}
               variant='text'
               disableRipple
               onClick={handleCancel}
@@ -213,7 +230,7 @@ const DialogCamera = (props) => {
 
             {/* BUTTON USE PHOTO */}
             {resultPhoto && (
-              <IconButton className={classes.buttonUsePhoto} onClick={() => handleUsePhoto(resultPhoto)}>
+              <IconButton className={`${classes.buttonUsePhoto} ${!detectDeviceType() && 'mobile'}`} onClick={() => handleUsePhoto(resultPhoto)}>
                 <IconCheck fontSize='medium'/>
               </IconButton>
             )}
