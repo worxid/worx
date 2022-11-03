@@ -141,4 +141,13 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
         return device.get();
     }
 
+    @Override
+    public void deleteAllById(List<Long> ids) {
+        List<Device> devices = deviceRepository.findByIds(ids);
+        for (Device device : devices) {
+            deviceRepository.deleteById(device.getId());
+        }
+    }
+
+
 }
