@@ -234,9 +234,9 @@ const Forms = () => {
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
       const response = await deleteFormTemplate(
-        selectionModel[0], 
         abortController.signal, 
         axiosPrivate,
+        { ids: selectionModel }, 
       )
 
       if (didSuccessfullyCallTheApi(response?.status)) {
