@@ -71,36 +71,6 @@ const FormsSubmissions = () => {
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
     },
-    {
-      field: 'formTitle',
-      headerName: 'Form Title',
-      flex: 0,
-      minWidth: 180,
-      hide: false,
-      areFilterAndSortShown: true,
-      headerClassName: 'cell-source-custom',
-      cellClassName: 'cell-source-custom',
-    },
-    {
-      field: 'formDescription',
-      headerName: 'Form Description',
-      flex: 0,
-      minWidth: 180,
-      hide: false,
-      areFilterAndSortShown: true,
-      headerClassName: 'cell-source-custom',
-      cellClassName: 'cell-source-custom',
-    },
-    {
-      field: 'templateId',
-      headerName: 'Template Id',
-      flex: 0,
-      minWidth: 180,
-      hide: false,
-      areFilterAndSortShown: true,
-      headerClassName: 'cell-source-custom',
-      cellClassName: 'cell-source-custom',
-    },
   ]
   // TO DO: FIX THIS LATER
   // Object.keys(dummyTableData[0].dynamicFields)
@@ -164,6 +134,8 @@ const FormsSubmissions = () => {
   }
 
   const getSubmissionList = async (inputIsMounted, inputAbortController) => {
+    setIsDataGridLoading(true)
+
     const resultSubmissionList = await postSearchFormSubmissionList(
       inputAbortController.signal,
       {
@@ -181,15 +153,14 @@ const FormsSubmissions = () => {
           source: submissionItem?.source ?? '-',
           submissionDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem.submit_location?.address ?? '-',
-          formTitle: submissionItem?.label ?? '-',
-          formDescription: submissionItem?.description ?? '-',
-          templateId: submissionItem?.template_id,
         }
       })
 
       setTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
     }
+
+    setIsDataGridLoading(false)
   }
 
   useEffect(() => {
@@ -239,7 +210,7 @@ const FormsSubmissions = () => {
                 className={classes.headerTitle}
                 variant='subtitle1'
               >
-                Valid Form
+                Valid Form (Waiting for the API)
               </Typography>
 
               {/* DESCRIPTION */}
@@ -247,7 +218,7 @@ const FormsSubmissions = () => {
                 color='text.secondary'
                 variant='caption'
               >
-                Ini adalah deskripsi form
+                Ini adalah deskripsi form (Waiting for the API)
               </Typography>
             </Box>
 
