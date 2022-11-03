@@ -1,8 +1,15 @@
-export const deleteGroup = async (inputSignal, inputId, inputAxiosPrivate) => {
+export const deleteGroup = async (
+  inputSignal, 
+  inputAxiosPrivate, 
+  inputBodyParams,
+) => {
   try {
     const response = await inputAxiosPrivate.delete(
-      `/groups/${inputId}`, 
-      { signal: inputSignal },
+      '/groups', 
+      {
+        data: inputBodyParams,
+        signal: inputSignal,
+      },
     )
 
     return response

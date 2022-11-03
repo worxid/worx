@@ -151,8 +151,8 @@ const Groups = () => {
 
       const resultDeleteGroup = await deleteGroup(
         abortController.signal, 
-        dialogDeleteObject.id, 
         axiosPrivate,
+        { ids: selectionModel },
       )
       
       if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
