@@ -16,6 +16,8 @@ public interface UsersService {
     Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
 
 
+    String sendMailConfirmation(String email, HttpServletRequest httpServletRequest);
+
     String changePassword(ChangePasswordRequest updatePasswordRequest);
 
     String resetPassword(String email);

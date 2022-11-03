@@ -9,7 +9,6 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.config.properties.WorxProperties;
-import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
@@ -24,7 +23,6 @@ import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -120,6 +118,27 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
+    @Override
+    public String sendMailConfirmation(String email, HttpServletRequest httpServletResponse){
+
+        String message = "";
+            Optional<Users> checkEmail = usersRepository.findByEmail(email);
+            if(checkEmail.isPresent()){
+                Users users = checkEmail.get();
+
+                Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(email,EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
+
+                String url = String.format(httpServletResponse.getRequestURL() + "/account-confirmation?code=%s", getEmailToken);
+
+                emailService.sendWelcomingEmail(email, users.getFullname(), url);
+
+                message = "Mail successfully sent";
+            }else{
+                message = "Failed send email";
+            }
+
+        return message;
+    }
     public JwtResponse login(LoginRequest loginRequest) {
 
         JwtResponse jwtResponse = new JwtResponse();
@@ -277,6 +296,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
     }
+
 
     @Override
     public UserDetailsResponse getByEmail(String email) {
