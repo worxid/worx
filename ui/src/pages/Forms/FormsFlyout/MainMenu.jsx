@@ -47,34 +47,26 @@ const MainMenu = (props) => {
     IconDateRange,
     IconGroups,
     IconCheckCircle,
-    IconTextSnippet,
     IconViewHeadline,
   ]
 
-  const mainMenuTitleList = [
-    'Form Title', 'Description', 'Created', 'Modified', 'Groups', 'Submissions', 'Default Form', 'Fields'
-  ]
+  const mainMenuTitleList = [ 'Form Title', 'Description', 'Created', 'Modified', 'Groups', 'Submissions', 'Fields' ]
 
   let mainMenuList = []
   if (rows.length === 1) {
     mainMenuList = Object.keys(rows[0])
       .filter(key => {
-        return key !== 'id' && key !== 'fields' && key !== 'submit_in_zone'
+        return key !== 'id' && key !== 'fields' && key !== 'submit_in_zone' && key !== 'default'
       })
       .map((key, index) => {
-        if(key === 'default') {
-          return {
-            title: mainMenuTitleList[index],
-            value: rows[0][key] ? 'Yes' : 'No',
-            icon: mainMenuIconList[index],
-          }
-        } else if(key === 'modified_on' || key === 'created_on') {
+        if(key === 'modified_on' || key === 'created_on') {
           return {
             title: mainMenuTitleList[index],
             value: convertDate(rows[0][key]),
             icon: mainMenuIconList[index],
           }
-        } else {
+        } 
+        else {
           return {
             title: mainMenuTitleList[index],
             value: rows[0][key],
