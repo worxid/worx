@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
 
 // COMPONENTS
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import NavigationTooltip from './NavigationTooltip'
 
 // CONTEXTS
@@ -60,6 +61,7 @@ const Drawer = () => {
     : null
   )
   const [ hoveredParent, setHoveredParent ] = useState(null)
+  const [ dialogLogOut, setDialogLogOut ] = useState({})
 
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
@@ -274,7 +276,7 @@ const Drawer = () => {
         {/* LOGOUT BUTTON */}
         <ListItemButton
           className={`${classes.navigationItem} ${classes.logOutItemButton}`}
-          onClick={() => signOutUser(setAuth)}
+          onClick={() => setDialogLogOut({ show: true })}
         >
           {/* ICON */}
           <ListItemIcon>
@@ -303,6 +305,18 @@ const Drawer = () => {
           />
         </ListItemButton>
       </List>
+
+      {/* DIALOG LOG OUT */}
+      <DialogConfirmation
+        title='Log Out'
+        caption='Are you sure you want to leave this app?'
+        dialogConfirmationObject={dialogLogOut}
+        setDialogConfirmationObject={setDialogLogOut}
+        cancelButtonText='Cancel'
+        continueButtonText='Leave'
+        onContinueButtonClick={() => signOutUser(setAuth)}
+        onCancelButtonClick={() => setDialogLogOut({})}
+      />
     </CustomDrawer>
   )
 }
