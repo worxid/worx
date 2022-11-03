@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogShareLink from './DialogShareLink/DialogShareLink'
+import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
@@ -263,7 +263,9 @@ const FormsSubmissions = () => {
                 variant='contained'
                 className={`${classes.buttonRedPrimary} heightFitContent`}
                 onClick={() => setIsDialogFormOpen(true)}
-              >Share</Button>
+              >
+                Share
+              </Button>
             </Stack>
           </Stack>
 
