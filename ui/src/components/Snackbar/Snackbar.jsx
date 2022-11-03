@@ -5,9 +5,13 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MuiSnackbar from '@mui/material/Snackbar'
 import Slide from '@mui/material/Slide'
+import Typography from '@mui/material/Typography'
 
 // STYLES
 import useStyles from './snackBarUseStyles'
+
+// UTILITIES
+import { capitalizeEachWord } from 'utilities/string'
 
 const SlideTransition = (props) => (
   <Slide 
@@ -49,6 +53,7 @@ const Snackbar = (props) => {
         horizontal: 'right', 
       }}
       TransitionComponent={SlideTransition}
+      className={classes.root}
     >
       <Alert 
         elevation={6}
@@ -59,12 +64,17 @@ const Snackbar = (props) => {
       >
         {/* TITLE */}
         {title !== '' &&
-        <AlertTitle>
-          {title}
+        <AlertTitle className={classes.title}>
+          {capitalizeEachWord(title)}
         </AlertTitle>}
 
         {/* MESSAGE */}
-        {message !== '' && message}
+        <Typography 
+          variant='body2'
+          className={classes.message}
+        >
+          {message}
+        </Typography>
       </Alert>
     </MuiSnackbar>
   )

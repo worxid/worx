@@ -91,15 +91,12 @@ const ForgotPassword = () => {
       }
       // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
       else {
-        // UNREGISTERED EMAIL
-        if (resultForgotPasswordUser.status === 400) {
-          setSnackbarObject({
-            open: true,
-            severity: 'error',
-            title: '',
-            message: 'Unregistered email',
-          })
-        }
+        setSnackbarObject({
+          open: true,
+          severity: 'error',
+          title: resultForgotPasswordUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultForgotPasswordUser?.data?.error?.message || 'Something went wrong',
+        })
       }
 
       abortController.abort()

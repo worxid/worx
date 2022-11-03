@@ -8,6 +8,7 @@ import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
+import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -18,6 +19,7 @@ import { values } from 'constants/values'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // DATE
 import moment from 'moment'
@@ -46,6 +48,7 @@ import { convertDate } from 'utilities/date'
 const Forms = () => {
   // CONTEXT
   const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -234,9 +237,9 @@ const Forms = () => {
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
       const response = await deleteFormTemplate(
-        selectionModel[0], 
         abortController.signal, 
         axiosPrivate,
+        { ids: selectionModel }, 
       )
 
       if (didSuccessfullyCallTheApi(response?.status)) {
@@ -324,6 +327,9 @@ const Forms = () => {
             setIsFilterOn={setIsFilterOn}
             // TEXT
             contentTitle='Form List'
+            // SHARE
+            isShareButtonEnabled={selectionModel.length === 1}
+            handleShareButtonClick={() => setIsDialogFormOpen(true)}
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
@@ -388,6 +394,9 @@ const Forms = () => {
         selectedItemId={selectionModel[0]}
         reloadData={fetchingFormsList}
       />
+
+      {/* DIALOG SHARE LINK */}
+      <DialogShareLink id={Number(selectionModel[0])} />
     </>
   )
 }

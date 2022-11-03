@@ -123,15 +123,12 @@ const SignUp = () => {
       }
       // SHOW AN ERROR MESSAGE IF THE ACCOUNT IS NOT SUCCESSFULLY CREATED
       else {
-        // PASSWORD VALIDATION
-        if (resultRegisterUser.status === 400) {
-          setSnackbarObject({
-            open: true,
-            severity: 'error',
-            title: resultRegisterUser?.data?.error?.status?.replaceAll('_', ' '),
-            message: resultRegisterUser?.data?.error?.message,
-          })
-        }
+        setSnackbarObject({
+          open: true,
+          severity: 'error',
+          title: resultRegisterUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultRegisterUser?.data?.error?.message || 'Something went wrong',
+        })
       }
 
       abortController.abort()
