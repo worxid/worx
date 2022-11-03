@@ -94,8 +94,8 @@ const ForgotPassword = () => {
         setSnackbarObject({
           open: true,
           severity: 'error',
-          title: '',
-          message: resultForgotPasswordUser?.data?.error?.message,
+          title: resultForgotPasswordUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultForgotPasswordUser?.data?.error?.message || 'Something went wrong',
         })
       }
 

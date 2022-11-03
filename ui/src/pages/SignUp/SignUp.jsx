@@ -126,8 +126,8 @@ const SignUp = () => {
         setSnackbarObject({
           open: true,
           severity: 'error',
-          title: '',
-          message: resultRegisterUser?.data?.error?.message,
+          title: resultRegisterUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultRegisterUser?.data?.error?.message || 'Something went wrong',
         })
       }
 
