@@ -153,6 +153,7 @@ const DialogShareLink = (props) => {
 
   return (
     <DialogForm
+      isLoading={isLoading}
       dialogName='dialogShareLink'
       title={<Stack direction='row' alignItems='center'>
         <Typography variant='subtitle1' fontWeight={500} flex={1}>Share Form</Typography>
@@ -237,11 +238,7 @@ const DialogShareLink = (props) => {
           <Stack direction='row' alignItems='center' className={classes.boxLink}>
             <IconLink className={classes.iconLink} fontSize='small'/>
 
-            <Typography
-              variant='caption'
-              color='text.secondary'
-              noWrap
-            >
+            <Typography variant='caption' color='text.secondary' noWrap>
               http://ww.worx.id//validformsid12345hajsdsddsds
             </Typography>
           </Stack>
@@ -276,9 +273,9 @@ const DialogShareLink = (props) => {
               size='small'
               variant='contained'
               className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={(event) => handleButtonCopyClick(event, 'https://dev.worx.id/fill-form?code=dummy')}
+              onClick={(event) => handleButtonCopyClick(event, '<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>')}
             >
-              Copy Link
+              Copy Code
             </Button>
           </Stack>
         </Stack>
