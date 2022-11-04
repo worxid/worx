@@ -60,7 +60,6 @@ const Drawer = () => {
     ? location.state.expandParent
     : null
   )
-  const [ hoveredParent, setHoveredParent ] = useState(null)
   const [ dialogLogOut, setDialogLogOut ] = useState({})
 
   const handleIdButtonClick = () => {
@@ -180,7 +179,6 @@ const Drawer = () => {
           <Fragment key={parentIndex}>
             {/* EXTRA ITEMS FOR PARENT IF IT'S HOVERED AND THE DRAWER IS COLLAPSED */}
             <NavigationTooltip 
-              open={Boolean(!isDrawerExpanded && hoveredParent === parentIndex)}
               placement='right'
               title={parentItem.type === 'single' &&
                 <ListItemButton
@@ -198,14 +196,13 @@ const Drawer = () => {
                   }/>
                 </ListItemButton>
               }
+              sx={isDrawerExpanded ? { display: 'none' } : {}}
             >
               {/* NAVIGATION ITEM - PARENT */}
               <ListItemButton
                 href={parentItem.type === 'single' ? parentItem.path : null}
                 className={getListItemButtonClassName(parentItem.path)}
                 onClick={(event) => handleParentItemClick(event, parentItem)}
-                onMouseEnter={() => setHoveredParent(parentIndex)}
-                onMouseLeave={() => setHoveredParent(null)}
               >
                 {/* ICON */}
                 <ListItemIcon>
