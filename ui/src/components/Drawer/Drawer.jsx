@@ -152,25 +152,46 @@ const Drawer = () => {
 
       {/* ID BUTTON */}
       <List disablePadding>
-        <ListItemButton 
-          className={classes.navigationItem}
-          onClick={handleIdButtonClick}
-        >
-          {/* ICON */}
-          <ListItemIcon>
-            <IconContentCopy className={classes.navigationItemContentInactive}/>
-          </ListItemIcon>
-
-          {/* TEXT */}
-          <ListItemText primary={
-            <Typography
-              variant='inherit'
-              className={classes.navigationItemContentInactive}
+        <NavigationTooltip 
+          placement='right'
+          sx={isDrawerExpanded ? { display: 'none' } : {}}
+          title={
+            <ListItemButton
+              className={`${classes.navigationItem} ${classes.navigationTooltipItem}`}
+              onClick={handleIdButtonClick}
             >
-              Code: {auth?.user?.organization_code}
-            </Typography>
-          }/>
-        </ListItemButton>
+              {/* TEXT */}
+              <ListItemText primary={
+                <Typography
+                  variant='inherit'
+                  className={classes.navigationItemContentInactive}
+                >
+                  Code: {auth?.user?.organization_code}
+                </Typography>
+              }/>
+            </ListItemButton>
+          }
+        >
+          <ListItemButton 
+            className={classes.navigationItem}
+            onClick={handleIdButtonClick}
+          >
+            {/* ICON */}
+            <ListItemIcon>
+              <IconContentCopy className={classes.navigationItemContentInactive}/>
+            </ListItemIcon>
+
+            {/* TEXT */}
+            <ListItemText primary={
+              <Typography
+                variant='inherit'
+                className={classes.navigationItemContentInactive}
+              >
+                Code: {auth?.user?.organization_code}
+              </Typography>
+            }/>
+          </ListItemButton>
+        </NavigationTooltip>
       </List>
 
       {/* NAVIGATION LIST */}
