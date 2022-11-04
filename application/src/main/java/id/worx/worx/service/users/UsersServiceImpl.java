@@ -392,6 +392,10 @@ public class UsersServiceImpl implements UsersService {
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
+    @Override
+    public Optional<Users> findByOrganizationCode(String token) {
+        return usersRepository.findByOrganizationCode(token);
+    }
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
     }
