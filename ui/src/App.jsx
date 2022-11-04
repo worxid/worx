@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react'
+import { Suspense, useEffect, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 // ASSETS
@@ -51,7 +51,7 @@ const App = () => {
   }, [])
 
   return (
-    <>
+    <Suspense fallback={<div/>}>
       <Routes>
         {routes.map((item, index) => (
           <Route 
@@ -70,7 +70,7 @@ const App = () => {
         title={snackbarObject.title}
         message={snackbarObject.message}
       />
-    </>
+    </Suspense>
   )
 }
 
