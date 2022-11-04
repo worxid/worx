@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     fontWeight: 400,
     fontSize: 12,
+    height: 36,
+    minHeight: 36,
     '&:hover': {
       boxShadow: 'none'
     },
@@ -66,10 +68,41 @@ const useStyles = makeStyles((theme) => ({
     border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
     padding: '8px 16px',
     maxWidth: 344,
+    width: '100%',
   },
   iconLink: {
     color: theme.palette.text.secondary,
     marginRight: 12,
+  },
+  tabs: {
+    borderBottom: `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
+    '& .MuiButtonBase-root': {
+      textTransform: 'capitalize',
+      minHeight: 'auto',
+    }
+  },
+  footer: {
+    padding: 24,
+  },
+  buttonSocialMedia: {
+    marginRight: 12,
+    height: 18,
+    '& circle': {
+      fill: alpha(theme.palette.common.black, 0.7),
+    }
+  },
+  buttonQrCode: {
+    width: 96,
+    fontSize: 12,
+    height: 32,
+    border: 'none',
+    boxShadow: 'none',
+    color: theme.palette.common.black,
+    fontWeight: 400,
+    '&:hover': {
+      boxShadow: 'none',
+      backgroundColor: 'transparent'
+    }
   }
 }))
 
