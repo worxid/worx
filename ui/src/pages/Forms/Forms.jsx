@@ -113,7 +113,7 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: false,
+      areFilterAndSortShown: true,
     },
   ]
 
@@ -198,12 +198,16 @@ const Forms = () => {
     let createdDate = handleDateSearchValue(filters?.created_on)
     let modifiedDate = handleDateSearchValue(filters?.modified_on)
 
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+
+    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+
     const response = await postGetListFormTemplate(
       abortController.signal,
-      {
-        size: pageSize,
-        page: pageNumber,
-      },
+      requestParams,
       {
         label: filters?.label || '',
         description: filters?.description || '',
@@ -287,7 +291,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   return (
     <>
