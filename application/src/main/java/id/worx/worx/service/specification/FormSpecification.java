@@ -48,7 +48,20 @@ public class FormSpecification implements BaseSpecification<Form> {
             spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getRespondentLabel()));
         }
 
+        if(Objects.nonNull(request.getGlobalSearch())){
+            spec = spec.and(getGlobalSearch(request.getGlobalSearch()));
+        }
+
         return spec;
+    }
+
+    public Specification<Form> getGlobalSearch(String globalSearch){
+        Specification<Form> spec = Specification.where(null);
+        return spec
+            .or(like(Form_.LABEL, globalSearch))
+            .or(like(Form_.DESCRIPTION, globalSearch))
+            .or(like(Form_.SUBMIT_ADDRESS, globalSearch))
+            .or(like(Form_.RESPONDENT_LABEL, globalSearch));
     }
 
 }
