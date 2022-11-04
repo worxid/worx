@@ -62,7 +62,7 @@ const DialogShareLink = (props) => {
   const classes = useStyles()
 
   // CONTEXTS
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointType, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
@@ -168,9 +168,9 @@ const DialogShareLink = (props) => {
       classNames={classes.dialogShareLink}
     >
       <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
-        <Tab icon={<IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />
-        <Tab icon={<IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />
-        <Tab icon={<IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} />
+        <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />
+        <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />
+        <Tab icon={breakpointType !== 'xs' && <IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} />
       </Tabs>
 
       {/* CONTENT SHARE EMAIL */}
@@ -179,7 +179,7 @@ const DialogShareLink = (props) => {
           <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
           <Typography variant='caption' color='text.secondary'>Share a direct link to your form via email</Typography>
 
-          <Stack direction='row' alignItems='center' marginTop={'20px'}>
+          <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
             {/* RECEVIVERS EMAIL */}
             <Autocomplete
               className={classes.inputEmailAutocomplete}
@@ -213,7 +213,7 @@ const DialogShareLink = (props) => {
             />
       
             {/* BUTTON SEND FORM */}
-            <Stack paddingLeft={'12px'}>
+            <Stack className={classes.actionWrap}>
               <LoadingButton
                 size='small'
                 variant='contained'
@@ -233,7 +233,7 @@ const DialogShareLink = (props) => {
         <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
         <Typography variant='caption' color='text.secondary'>You can share the direct link to your form</Typography>
 
-        <Stack direction='row' alignItems='center' marginTop={'20px'}>
+        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
           <Stack direction='row' alignItems='center' className={classes.boxLink}>
             <IconLink className={classes.iconLink} fontSize='small'/>
 
@@ -246,7 +246,7 @@ const DialogShareLink = (props) => {
             </Typography>
           </Stack>
 
-          <Stack paddingLeft={'12px'}>
+          <Stack className={classes.actionWrap}>
             <Button
               size='small'
               variant='contained'
@@ -264,15 +264,14 @@ const DialogShareLink = (props) => {
         <Typography variant='subtitle2' className='fontWeight400'>Embed</Typography>
         <Typography variant='caption' color='text.secondary'>Copy and paste this snippet into your code</Typography>
 
-        <Stack direction='row' alignItems='center' marginTop={'20px'}>
+        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
           <Stack direction='row' alignItems='center' className={classes.boxLink}>
-
             <Typography variant='caption' color='text.secondary' noWrap>
               {'<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>'}
             </Typography>
           </Stack>
 
-          <Stack paddingLeft={'12px'}>
+          <Stack className={classes.actionWrap}>
             <Button
               size='small'
               variant='contained'

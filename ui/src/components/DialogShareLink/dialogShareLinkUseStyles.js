@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputEmailAutocomplete: {
-    maxWidth: 344,
+    maxWidth: '100%',
     flex: 1,
     '& .MuiInputBase-input': {
       fontSize: 12,
@@ -68,7 +68,9 @@ const useStyles = makeStyles((theme) => ({
     border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
     padding: '8px 16px',
     maxWidth: 344,
-    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100%',
+    }
   },
   iconLink: {
     color: theme.palette.text.secondary,
@@ -79,6 +81,8 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiButtonBase-root': {
       textTransform: 'capitalize',
       minHeight: 'auto',
+      paddingLeft: 24,
+      paddingRight: 24,
     }
   },
   footer: {
@@ -102,6 +106,20 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       boxShadow: 'none',
       backgroundColor: 'transparent'
+    }
+  },
+  inputWrap: {
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    }
+  },
+  actionWrap: {
+    paddingLeft: 12,
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: 24,
+      alignItems: 'flex-end',
+      flex: 1,
+      width: '100%'
     }
   }
 }))
