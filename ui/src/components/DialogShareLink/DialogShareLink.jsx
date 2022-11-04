@@ -308,6 +308,7 @@ const DialogShareLink = (props) => {
             disableRipple
             className={classes.buttonQrCode}
             startIcon={<IconQrCode2 />}
+            onClick={() => setIsDialogFormOpen('dialogQrCode')}
           >QR Code</Button>
         </Stack>
       </Stack>
