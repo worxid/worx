@@ -28,13 +28,14 @@ const DialogForm = (props) => {
     classNames,
     areActionsAvailable,
     onBackdropClick,
+    dialogName
   } = props
 
   const { isDialogFormOpen, setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   return (
     <Dialog
-      open={isDialogFormOpen}
+      open={(typeof isDialogFormOpen === 'string') ? isDialogFormOpen === dialogName : isDialogFormOpen}
       onClose={() => setIsDialogFormOpen(false)}
       className={`${classes.dialogForm} ${classNames}`}
       onBackdropClick={onBackdropClick}
@@ -81,7 +82,8 @@ DialogForm.propTypes = {
   children: PropTypes.node.isRequired,
   handleActionButtonClick: PropTypes.func,
   areActionsAvailable: PropTypes.bool,
-  onBackdropClick: PropTypes.func
+  onBackdropClick: PropTypes.func,
+  dialogName: PropTypes.string,
 }
 
 export default DialogForm

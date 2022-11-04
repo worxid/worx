@@ -329,7 +329,7 @@ const Forms = () => {
             contentTitle='Form List'
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
-            handleShareButtonClick={() => setIsDialogFormOpen(true)}
+            handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
@@ -396,7 +396,7 @@ const Forms = () => {
       />
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(selectionModel[0])} />
+      <DialogShareLink id={Number(selectionModel[0])}/>
     </>
   )
 }
