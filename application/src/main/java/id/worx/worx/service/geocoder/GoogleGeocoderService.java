@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
-
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -25,7 +23,6 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
 public class GoogleGeocoderService implements GeocoderService {
 
