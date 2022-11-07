@@ -39,4 +39,7 @@ public class FormSubmissionSearchRequest implements Serializable {
     @JsonProperty("respondent_label")
     private String respondentLabel;
 
+    @JsonProperty("global_search")
+    private String globalSearch;
+
 }
