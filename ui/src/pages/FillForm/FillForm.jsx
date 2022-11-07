@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
+import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import InputForm from './InputForm'
 
 // CONTEXTS
@@ -32,7 +34,6 @@ import useStyles from './fillFormUseStyles'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
-import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 
 const FillForm = () => {
   // STYLES
@@ -212,6 +213,9 @@ const FillForm = () => {
 
       {/* DIALOG SHARE LINK */}
       <DialogShareLink id={dataFormTemplate?.id}/>
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={dataFormTemplate?.id}/>
     </>
   )
 }

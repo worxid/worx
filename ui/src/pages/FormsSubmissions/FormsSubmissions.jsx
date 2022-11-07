@@ -6,6 +6,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
@@ -233,7 +234,7 @@ const FormsSubmissions = () => {
                 size='small'
                 variant='contained'
                 className={`${classes.buttonRedPrimary} heightFitContent`}
-                onClick={() => setIsDialogFormOpen(true)}
+                onClick={() => setIsDialogFormOpen('dialogShareLink')}
               >
                 Share
               </Button>
@@ -289,6 +290,9 @@ const FormsSubmissions = () => {
 
       {/* DIALOG SHARE LINK */}
       <DialogShareLink id={Number(id)} />
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={Number(id)} />
 
       {/* DOWNLOAD MENU */}
       <Menu

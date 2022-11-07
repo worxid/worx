@@ -139,6 +139,7 @@ const DialogCamera = (props) => {
 
   return (
     <DialogForm
+      dialogName='dialogCamera'
       classNames={`${classes.dialogCamera} neutralize-dialog-form`}
       areActionsAvailable={false}
       onBackdropClick={handleBackdropClick}
