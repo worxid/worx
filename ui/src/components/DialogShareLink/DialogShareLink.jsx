@@ -171,7 +171,7 @@ const DialogShareLink = (props) => {
       <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
         <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />
         <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />
-        <Tab icon={breakpointType !== 'xs' && <IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} />
+        {/* <Tab icon={breakpointType !== 'xs' && <IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} /> */}
       </Tabs>
 
       {/* CONTENT SHARE EMAIL */}
@@ -257,7 +257,7 @@ const DialogShareLink = (props) => {
       </Stack>)}
 
       {/* CONTENT EMBED */}
-      {currentTab === 2 && (<Stack className={classes.content}>
+      {/* {currentTab === 2 && (<Stack className={classes.content}>
         <Typography variant='subtitle2' className='fontWeight400'>Embed</Typography>
         <Typography variant='caption' color='text.secondary'>Copy and paste this snippet into your code</Typography>
 
@@ -279,7 +279,7 @@ const DialogShareLink = (props) => {
             </Button>
           </Stack>
         </Stack>
-      </Stack>)}
+      </Stack>)} */}
 
       <Divider className={classes.dividerContent}/>
 
