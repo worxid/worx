@@ -22,9 +22,13 @@ import id.worx.worx.common.model.dto.geocoder.LocationDTO;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class GoogleGeocoderService implements GeocoderService {
+
+    private static final String GEOCODING_API_ERROR_MESSAGE = "There is something wrong with the GeocodingApi.";
 
     private final GeoApiContext geoApiContext;
 
@@ -50,10 +54,10 @@ public class GoogleGeocoderService implements GeocoderService {
         try {
             results = GeocodingApi.geocode(geoApiContext, address).await();
         } catch (ApiException | IOException e) {
-            e.printStackTrace();
+            log.error(GEOCODING_API_ERROR_MESSAGE, e);
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(GEOCODING_API_ERROR_MESSAGE, e);
             Thread.currentThread().interrupt();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -67,10 +71,10 @@ public class GoogleGeocoderService implements GeocoderService {
         try {
             results = GeocodingApi.reverseGeocode(geoApiContext, new com.google.maps.model.LatLng(lat, lng)).await();
         } catch (ApiException | IOException e) {
-            e.printStackTrace();
+            log.error(GEOCODING_API_ERROR_MESSAGE, e);
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(GEOCODING_API_ERROR_MESSAGE, e);
             Thread.currentThread().interrupt();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }
