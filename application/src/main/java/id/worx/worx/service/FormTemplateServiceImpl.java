@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import id.worx.worx.data.dto.LinkFormDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -203,4 +204,18 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         return template.get();
     }
 
+    @Override
+    public LinkFormDTO generateLink(FormTemplate template) {
+
+        String code = template.getUrlCode();
+        String url = String.format(
+            "%s/fill-form?code=%s",
+            worxProps.getWeb().getEndpoint(),
+            code);
+
+        LinkFormDTO linkFormDTO = new LinkFormDTO();
+        linkFormDTO.setLink(url);
+
+        return linkFormDTO;
+    }
 }
