@@ -18,6 +18,7 @@ import IconDownload from '@mui/icons-material/Download'
 import IconEdit from '@mui/icons-material/Edit'
 import IconFilterAlt from '@mui/icons-material/FilterAlt'
 import IconSettings from '@mui/icons-material/Settings'
+import IconShare from '@mui/icons-material/Share'
 
 // STYLES
 import useStyles from './dataGridFiltersUseStyles'
@@ -33,6 +34,9 @@ const DataGridFilters = (props) => {
     setIsFilterOn,
     // TEXT
     contentTitle,
+    // SHARE
+    isShareButtonEnabled,
+    handleShareButtonClick,
     // EDIT
     isEditButtonEnabled,
     handleEditButtonClick,
@@ -82,10 +86,24 @@ const DataGridFilters = (props) => {
         </IconButton>
       </CustomTooltip>}
 
-      {/* EDIT ROW ICON */}
+      {/* SHARE ICON */}
+      {isShareButtonEnabled &&
+      <CustomTooltip 
+        title='Share' 
+        placement='top'
+      >
+        <IconButton 
+          className={classes.iconButton}
+          onClick={handleShareButtonClick}
+        >
+          <IconShare/>
+        </IconButton>
+      </CustomTooltip>}
+
+      {/* EDIT ICON */}
       {isEditButtonEnabled &&
       <CustomTooltip 
-        title='Edit Row' 
+        title='Edit' 
         placement='top'
       >
         <IconButton 
@@ -96,10 +114,10 @@ const DataGridFilters = (props) => {
         </IconButton>
       </CustomTooltip>}
 
-      {/* DELETE ROW ICON */}
+      {/* DELETE ICON */}
       {isDeleteButtonEnabled &&
       <CustomTooltip 
-        title='Delete Row' 
+        title='Delete' 
         placement='top'
       >
         <IconButton 
@@ -189,6 +207,8 @@ DataGridFilters.defaultProps = {
   isFilterOn: false,
   // TEXT
   contentTitle: '',
+  // SHARE
+  isShareButtonEnabled: false,
   // EDIT
   isEditButtonEnabled: false,
   // DELETE
@@ -207,6 +227,9 @@ DataGridFilters.propTypes = {
   setIsFilterOn: PropTypes.func.isRequired,
   // TEXT
   contentTitle: PropTypes.string.isRequired,
+  // SHARE
+  isShareButtonEnabled: PropTypes.bool,
+  handleShareButtonClick: PropTypes.func,
   // EDIT
   isEditButtonEnabled: PropTypes.bool,
   handleEditButtonClick: PropTypes.func,

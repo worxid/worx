@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
 
 // COMPONENTS
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import NavigationTooltip from './NavigationTooltip'
 
 // CONTEXTS
@@ -59,7 +60,7 @@ const Drawer = () => {
     ? location.state.expandParent
     : null
   )
-  const [ hoveredParent, setHoveredParent ] = useState(null)
+  const [ dialogLogOut, setDialogLogOut ] = useState({})
 
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
@@ -151,25 +152,46 @@ const Drawer = () => {
 
       {/* ID BUTTON */}
       <List disablePadding>
-        <ListItemButton 
-          className={classes.navigationItem}
-          onClick={handleIdButtonClick}
-        >
-          {/* ICON */}
-          <ListItemIcon>
-            <IconContentCopy className={classes.navigationItemContentInactive}/>
-          </ListItemIcon>
-
-          {/* TEXT */}
-          <ListItemText primary={
-            <Typography
-              variant='inherit'
-              className={classes.navigationItemContentInactive}
+        <NavigationTooltip 
+          placement='right'
+          sx={isDrawerExpanded ? { display: 'none' } : {}}
+          title={
+            <ListItemButton
+              className={`${classes.navigationItem} ${classes.navigationTooltipItem}`}
+              onClick={handleIdButtonClick}
             >
-              Code: {auth?.user?.organization_code}
-            </Typography>
-          }/>
-        </ListItemButton>
+              {/* TEXT */}
+              <ListItemText primary={
+                <Typography
+                  variant='inherit'
+                  className={classes.navigationItemContentInactive}
+                >
+                  Code: {auth?.user?.organization_code}
+                </Typography>
+              }/>
+            </ListItemButton>
+          }
+        >
+          <ListItemButton 
+            className={classes.navigationItem}
+            onClick={handleIdButtonClick}
+          >
+            {/* ICON */}
+            <ListItemIcon>
+              <IconContentCopy className={classes.navigationItemContentInactive}/>
+            </ListItemIcon>
+
+            {/* TEXT */}
+            <ListItemText primary={
+              <Typography
+                variant='inherit'
+                className={classes.navigationItemContentInactive}
+              >
+                Code: {auth?.user?.organization_code}
+              </Typography>
+            }/>
+          </ListItemButton>
+        </NavigationTooltip>
       </List>
 
       {/* NAVIGATION LIST */}
@@ -178,9 +200,9 @@ const Drawer = () => {
           <Fragment key={parentIndex}>
             {/* EXTRA ITEMS FOR PARENT IF IT'S HOVERED AND THE DRAWER IS COLLAPSED */}
             <NavigationTooltip 
-              open={Boolean(!isDrawerExpanded && hoveredParent === parentIndex)}
               placement='right'
-              title={parentItem.type === 'single' &&
+              sx={isDrawerExpanded ? { display: 'none' } : {}}
+              title={
                 <ListItemButton
                   className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem}`}
                   onClick={(event) => handleParentItemClick(event, parentItem)}
@@ -202,8 +224,6 @@ const Drawer = () => {
                 href={parentItem.type === 'single' ? parentItem.path : null}
                 className={getListItemButtonClassName(parentItem.path)}
                 onClick={(event) => handleParentItemClick(event, parentItem)}
-                onMouseEnter={() => setHoveredParent(parentIndex)}
-                onMouseLeave={() => setHoveredParent(null)}
               >
                 {/* ICON */}
                 <ListItemIcon>
@@ -272,37 +292,70 @@ const Drawer = () => {
       {/* BOTTOM NAVIGATION */}
       <List className='marginTopAuto'>
         {/* LOGOUT BUTTON */}
-        <ListItemButton
-          className={`${classes.navigationItem} ${classes.logOutItemButton}`}
-          onClick={() => signOutUser(setAuth)}
-        >
-          {/* ICON */}
-          <ListItemIcon>
-            <Avatar className={classes.logOutAvatar}>
-              <IconAccountCircle 
-                fontSize='small'
-                color='primary'
-              />
-            </Avatar>
-          </ListItemIcon>
-
-          {/* TEXT */}
-          <ListItemText primary={
-            <Typography
-              variant='inherit'
-              className={classes.navigationItemContentActive}
+        <NavigationTooltip 
+          placement='right'
+          sx={isDrawerExpanded ? { display: 'none' } : {}}
+          title={
+            <ListItemButton
+              className={`${classes.navigationItem} ${classes.navigationTooltipItem}`}
+              onClick={() => setDialogLogOut({ show: true })}
             >
-              Log Out
-            </Typography>
-          }/>
-          
-          {/* ICON */}
-          <IconLogout
-            fontSize='small' 
-            className={classes.navigationItemContentActive}
-          />
-        </ListItemButton>
+              {/* TEXT */}
+              <ListItemText primary={
+                <Typography
+                  variant='inherit'
+                  className={classes.navigationItemContentInactive}
+                >
+                  Log Out
+                </Typography>
+              }/>
+            </ListItemButton>
+          }
+        >
+          <ListItemButton
+            className={`${classes.navigationItem} ${classes.logOutItemButton}`}
+            onClick={() => setDialogLogOut({ show: true })}
+          >
+            {/* ICON */}
+            <ListItemIcon>
+              <Avatar className={classes.logOutAvatar}>
+                <IconAccountCircle 
+                  fontSize='small'
+                  color='primary'
+                />
+              </Avatar>
+            </ListItemIcon>
+
+            {/* TEXT */}
+            <ListItemText primary={
+              <Typography
+                variant='inherit'
+                className={classes.navigationItemContentActive}
+              >
+                Log Out
+              </Typography>
+            }/>
+            
+            {/* ICON */}
+            <IconLogout
+              fontSize='small' 
+              className={classes.navigationItemContentActive}
+            />
+          </ListItemButton>
+        </NavigationTooltip>
       </List>
+
+      {/* DIALOG LOG OUT */}
+      <DialogConfirmation
+        title='Log Out'
+        caption='Are you sure you want to leave this app?'
+        dialogConfirmationObject={dialogLogOut}
+        setDialogConfirmationObject={setDialogLogOut}
+        cancelButtonText='Cancel'
+        continueButtonText='Leave'
+        onContinueButtonClick={() => signOutUser(setAuth)}
+        onCancelButtonClick={() => setDialogLogOut({})}
+      />
     </CustomDrawer>
   )
 }

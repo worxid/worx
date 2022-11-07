@@ -113,15 +113,12 @@ const SignIn = () => {
       }
       // SHOW AN ERROR MESSAGE IF THE UNSUCCESSFULLY LOGGED IN
       else {
-        // UNREGISTERED EMAIL OR PASSWORD
-        if (resultLoginUser.status === 401) {
-          setSnackbarObject({
-            open: true,
-            severity: 'error',
-            title: '',
-            message: 'Wrong email or password',
-          })
-        }
+        setSnackbarObject({
+          open: true,
+          severity: 'error',
+          title: resultLoginUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultLoginUser?.data?.error?.message || 'Something went wrong',
+        })
       }
 
       abortController.abort()

@@ -1,5 +1,8 @@
 package id.worx.worx.mobile.controller;
 
+import id.worx.worx.common.model.response.users.UserResponse;
+import id.worx.worx.entity.users.Users;
+import id.worx.worx.service.users.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +21,16 @@ import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("mobile/devices")
 public class MobileDeviceController {
 
     private final DeviceService deviceService;
+
+    private final UsersService usersService;
 
     @PostMapping("/register")
     public ResponseEntity<BaseValueResponse<DeviceDTO>> registerDevice(@RequestBody MobileRegisterRequest request) {
@@ -69,6 +76,12 @@ public class MobileDeviceController {
         Device devices = deviceService.getByDeviceCode(deviceCode);
         DeviceDTO dto = deviceService.toDTO(devices);
 
+        Optional<Users> userResponse = usersService.findByOrganizationCode(dto.getOrganizationCode());
+        if(userResponse.isPresent()){
+            Users users = userResponse.get();
+            dto.setOrganizationCode(users.getOrganizationCode());
+            dto.setOrganizationName(users.getOrganizationName());
+        }
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()
                 .value(dto)
                 .build();

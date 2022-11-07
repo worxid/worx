@@ -47,12 +47,18 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.additional.drawer.background,
   },
-  webcam: {
+  webcamDesktop: {
     height: '100%',
-    objectFit: 'cover',
   },
-  resultPhoto: {
-    height: '438px',
+  resultPhotoDesktop: {
+    height: '100%'
+  },
+  resultPhotoMobile: {
+    maxWidth: '100%',
+    // result for tablet
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '75%',
+    }
   },
   buttonTakePhoto: {
     backgroundColor: theme.palette.error.main,

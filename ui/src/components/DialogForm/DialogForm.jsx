@@ -8,6 +8,8 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
 
 // MUIS
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -28,13 +30,15 @@ const DialogForm = (props) => {
     classNames,
     areActionsAvailable,
     onBackdropClick,
+    dialogName,
+    isLoading,
   } = props
 
   const { isDialogFormOpen, setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   return (
     <Dialog
-      open={isDialogFormOpen}
+      open={(typeof isDialogFormOpen === 'string') ? isDialogFormOpen === dialogName : isDialogFormOpen}
       onClose={() => setIsDialogFormOpen(false)}
       className={`${classes.dialogForm} ${classNames}`}
       onBackdropClick={onBackdropClick}
@@ -67,6 +71,12 @@ const DialogForm = (props) => {
           </CustomDialogActionButton>
         </DialogActions>
       )}
+
+      {/* LOADING */}
+      {isLoading &&
+      <Box className={classes.loadingContainer}>
+        <CircularProgress className={classes.loading}/>
+      </Box>}
     </Dialog>
   )
 }
@@ -74,6 +84,7 @@ const DialogForm = (props) => {
 DialogForm.defaultProps = {
   title: '',
   areActionsAvailable: true,
+  isLoading: false,
 }
 
 DialogForm.propTypes = {
@@ -81,7 +92,9 @@ DialogForm.propTypes = {
   children: PropTypes.node.isRequired,
   handleActionButtonClick: PropTypes.func,
   areActionsAvailable: PropTypes.bool,
-  onBackdropClick: PropTypes.func
+  onBackdropClick: PropTypes.func,
+  dialogName: PropTypes.string,
+  isLoading: PropTypes.bool,
 }
 
 export default DialogForm

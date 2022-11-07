@@ -2,10 +2,13 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
+import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import InputForm from './InputForm'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
 import { structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
@@ -15,8 +18,12 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+// MUI ICONS
+import IconShare from '@mui/icons-material/Share'
 
 // SERVICES
 import { getReadFormTemplate } from 'services/formTemplate'
@@ -34,6 +41,7 @@ const FillForm = () => {
 
   // CONTEXTS
   const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // ROUTING
   const [ searchParams ] = useSearchParams()
@@ -154,45 +162,61 @@ const FillForm = () => {
   }, [dataFormTemplate])
 
   return (
-    <Stack className={classes.root}>
-      {dataFormTemplate?.fields && (
-        <>{/* HEADER */}
-          <Stack className={classes.header}>
-            <Typography variant='h5' className='fontWeight500'>{dataFormTemplate.label}</Typography>
-            {dataFormTemplate.description && (
-              <Typography className={classes.headerDescription} color='text.secondary' variant='body2'>{dataFormTemplate.description}</Typography>
-            )}
-          </Stack>
+    <>
+      <Stack className={classes.root}>
+        {dataFormTemplate?.fields && (
+          <>{/* HEADER */}
+            <Stack alignItems='center' className={classes.header} direction='row'>
+              <Stack flex={1}>
+                <Typography variant='h5' className='fontWeight500'>{dataFormTemplate.label}</Typography>
+                {dataFormTemplate.description && (
+                  <Typography className={classes.headerDescription} color='text.secondary' variant='body2'>{dataFormTemplate.description}</Typography>
+                )}
+              </Stack>
 
-          <Divider />
-
-          {/* FORM */}
-          <Stack className={classes.form} flex={1} component='form'>
-            <Stack flex={1} height={'100%'}>
-              {dataFormTemplate?.fields?.map(item => (
-                <InputForm
-                  key={item.id}
-                  item={item}
-                  handleInputChange={handleInputChange}
-                  formObject={formObject}
-                  formObjectError={formObjectError}
-                  setFormObjectError={setFormObjectError}
-                  setFormObject={setFormObject}
-                />
-              ))}
+              <Stack>
+                <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
+                  <IconShare />
+                </IconButton>
+              </Stack>
             </Stack>
 
-            <Stack>
-              <Button onClick={() => handleSubmitSubmission()} variant='contained' className={classes.buttonSubmit}>Submit</Button>
-            </Stack>
-          </Stack>
-        </>
-      )}
+            <Divider />
 
-      {isPageLoading && (<Box className={classes.loadingContainer}>
-        <CircularProgress className={classes.loading}/>
-      </Box>)}
-    </Stack>
+            {/* FORM */}
+            <Stack className={classes.form} flex={1} component='form'>
+              <Stack flex={1} height={'100%'}>
+                {dataFormTemplate?.fields?.map(item => (
+                  <InputForm
+                    key={item.id}
+                    item={item}
+                    handleInputChange={handleInputChange}
+                    formObject={formObject}
+                    formObjectError={formObjectError}
+                    setFormObjectError={setFormObjectError}
+                    setFormObject={setFormObject}
+                  />
+                ))}
+              </Stack>
+
+              <Stack>
+                <Button onClick={() => handleSubmitSubmission()} variant='contained' className={classes.buttonSubmit}>Submit</Button>
+              </Stack>
+            </Stack>
+          </>
+        )}
+
+        {isPageLoading && (<Box className={classes.loadingContainer}>
+          <CircularProgress className={classes.loading}/>
+        </Box>)}
+      </Stack>
+
+      {/* DIALOG SHARE LINK */}
+      <DialogShareLink id={dataFormTemplate?.id}/>
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={dataFormTemplate?.id}/>
+    </>
   )
 }
 
