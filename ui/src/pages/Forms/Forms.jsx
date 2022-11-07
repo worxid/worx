@@ -9,6 +9,7 @@ import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -333,7 +334,7 @@ const Forms = () => {
             contentTitle='Form List'
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
-            handleShareButtonClick={() => setIsDialogFormOpen(true)}
+            handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
@@ -400,7 +401,10 @@ const Forms = () => {
       />
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(selectionModel[0])} />
+      <DialogShareLink id={Number(selectionModel[0])}/>
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={Number(selectionModel[0])}/>
     </>
   )
 }

@@ -679,7 +679,7 @@ const InputForm = (props) => {
               startIcon={<IconCameraAlt fontSize='small'/>}
               onClick={() => {
                 setSelectedDialog(item.id)
-                setIsDialogFormOpen(true)
+                setIsDialogFormOpen('dialogCamera')
               }}
             >
               Camera
@@ -785,6 +785,7 @@ const InputForm = (props) => {
         <>
           {selectedDialog === item.id && (
             <DialogForm
+              dialogName='dialogSignature'
               classNames={`${classes.dialogSignature} neutralize-dialog-form`}
               title={breakpointType !== 'xs' && 'Create Signature'}
               handleActionButtonClick={(inputType) => {
@@ -855,7 +856,7 @@ const InputForm = (props) => {
               startIcon={<IconCreate fontSize='small'/>}
               onClick={() => {
                 setSelectedDialog(item.id)
-                setIsDialogFormOpen(true)
+                setIsDialogFormOpen('dialogSignature')
               }}
             >
               Add Signature

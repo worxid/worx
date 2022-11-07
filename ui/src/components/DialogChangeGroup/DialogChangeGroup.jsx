@@ -170,7 +170,8 @@ const DialogChangeGroup = (props) => {
   }, [dataChecked, groupList])
 
   return (
-    <DialogForm 
+    <DialogForm
+      dialogName='dialogChangeGroup'
       title={'Select Group'} 
       handleActionButtonClick={handleActionButtonClick}
       classNames='dialogChangeGroup'
