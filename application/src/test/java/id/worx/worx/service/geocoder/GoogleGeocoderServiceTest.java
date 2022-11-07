@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,11 @@ class GoogleGeocoderServiceTest {
 
     private GoogleGeocoderService geocoderService;
 
+    @BeforeAll
+    static void prepare() {
+        mockStatic(GeocodingApi.class);
+    }
+
     @BeforeEach
     void init() {
         geocoderService = new GoogleGeocoderService(geoApiContext);
@@ -59,8 +65,6 @@ class GoogleGeocoderServiceTest {
 
         GeocodingApiRequest geocodingApiRequest = mock(GeocodingApiRequest.class);
         when(geocodingApiRequest.await()).thenReturn(expectedResults);
-
-        mockStatic(GeocodingApi.class);
 
         when(GeocodingApi.geocode(geoApiContext, address)).thenReturn(geocodingApiRequest);
 
@@ -91,8 +95,6 @@ class GoogleGeocoderServiceTest {
 
         GeocodingApiRequest geocodingApiRequest = mock(GeocodingApiRequest.class);
         when(geocodingApiRequest.await()).thenReturn(expectedResults);
-
-        mockStatic(GeocodingApi.class);
 
         when(GeocodingApi.reverseGeocode(geoApiContext, latLng)).thenReturn(geocodingApiRequest);
 
