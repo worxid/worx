@@ -8,7 +8,7 @@ import {
   mainMenuIconList,
   mainMenuKeyList,
   mainMenuTitleList,
-} from './devicesFlyoutConstants'
+} from './deviceFlyoutConstants'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
