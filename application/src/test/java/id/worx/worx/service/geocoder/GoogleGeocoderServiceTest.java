@@ -79,7 +79,7 @@ class GoogleGeocoderServiceTest {
         GeocodingResult detailGeocodingResult = new GeocodingResult();
         detailGeocodingResult.types = new AddressType[] { AddressType.LOCALITY };
         detailGeocodingResult.formattedAddress = address;
-        detailGeocodingResult.geometry = geometry;
+        detailGeocodingResult.geometry = geometry2;
         detailGeocodingResult.addressComponents = new AddressComponent[] { component };
 
         GeocodingResult[] expectedResults = new GeocodingResult[] { simpleGeocodingResult, detailGeocodingResult };
@@ -101,7 +101,7 @@ class GoogleGeocoderServiceTest {
         String address = "Monumen Nasional";
         double lat = -6.1753924;
         double lng = 106.8271528;
-        boolean withDetails = true;
+        boolean withDetails = false;
 
         LatLng latLng = new LatLng(lat, lng);
         Geometry geometry = new Geometry();
