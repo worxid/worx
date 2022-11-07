@@ -83,10 +83,16 @@ const useStyles = makeStyles((theme) => ({
       minHeight: 'auto',
       paddingLeft: 24,
       paddingRight: 24,
+    },
+    [theme.breakpoints.down('sm')]: {
+      borderTop: `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
     }
   },
   footer: {
     padding: 24,
+    [theme.breakpoints.down('sm')]: {
+      padding: 20,
+    }
   },
   buttonSocialMedia: {
     marginRight: 12,

@@ -141,13 +141,13 @@ const DialogShareLink = (props) => {
   }
 
   // HANDLE BUTTON COPY CLICK
-  const handleButtonCopyClick = (event, url) => {
-    navigator.clipboard.writeText(url)
+  const handleButtonCopyClick = (event, text) => {
+    navigator.clipboard.writeText(text)
     setSnackbarObject({
       open: true,
       severity:'success',
       title:'',
-      message:'Successfully copied the link'
+      message:'Copied to clipboard'
     })
   }
 
