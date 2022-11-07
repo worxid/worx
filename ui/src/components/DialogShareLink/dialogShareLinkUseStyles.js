@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 348,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
+      width: '100%'
     }
   },
   iconLink: {

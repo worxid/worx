@@ -235,14 +235,12 @@ const DialogShareLink = (props) => {
         <Typography variant='caption' color='text.secondary'>You can share the direct link to your form</Typography>
 
         <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
-          <Stack>
-            <Stack direction='row' alignItems='center' className={classes.boxLink}>
-              <IconLink className={classes.iconLink} fontSize='small'/>
+          <Stack direction='row' alignItems='center' className={classes.boxLink}>
+            <IconLink className={classes.iconLink} fontSize='small'/>
 
-              <Typography variant='caption' color='text.secondary' noWrap>
-                http://ww.worx.id//validformsid12345hajsdsddsds
-              </Typography>
-            </Stack>
+            <Typography variant='caption' color='text.secondary' noWrap>
+              http://ww.worx.id//validformsid12345hajsdsddsds
+            </Typography>
           </Stack>
 
           <Stack className={classes.actionWrap} width='100%'>
