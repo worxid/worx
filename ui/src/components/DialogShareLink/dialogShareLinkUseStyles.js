@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     height: 36,
     minHeight: 36,
+    width: 90,
+    padding: '4px 4px',
     '&:hover': {
       boxShadow: 'none'
     },
@@ -40,10 +42,14 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputEmailAutocomplete: {
-    maxWidth: '100%',
+    maxWidth: 348,
     flex: 1,
     '& .MuiInputBase-input': {
       fontSize: 12,
+    },
+    '& .MuiOutlinedInput-root': {
+      paddingTop: 3.2,
+      paddingBottom: 3.2,
     },
     '& .MuiChip-root': {
       borderRadius: 0,
@@ -58,10 +64,17 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiFormLabel-root': {
       fontSize: 12,
+      top: -4,
+    },
+    '& .MuiFormLabel-root[data-shrink="true"]': {
+      top: 0
     },
     '& .MuiOutlinedInput-notchedOutline': {
       border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
       fontSize: 12,
+    },
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100%',
     }
   },
   dividerContent: {
@@ -70,7 +83,8 @@ const useStyles = makeStyles((theme) => ({
   boxLink: {
     border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
     padding: '8px 16px',
-    maxWidth: 344,
+    width: '100%',
+    maxWidth: 348,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
     }
@@ -80,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
   },
   tabs: {
+    minHeight: 39,
     borderBottom: `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
     '& .MuiButtonBase-root': {
       textTransform: 'capitalize',
@@ -89,6 +104,10 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
       borderTop: `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
+      '& .MuiButtonBase-root': {
+        paddingLeft: 20,
+        paddingRight: 20,
+      },
     }
   },
   footer: {
@@ -118,6 +137,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   inputWrap: {
+    width: '100%',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
     }
