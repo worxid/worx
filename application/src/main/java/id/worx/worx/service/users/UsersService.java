@@ -6,6 +6,7 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.common.model.request.EmailRequestDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ public interface UsersService {
     Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
 
 
-    String sendMailConfirmation(String email, HttpServletRequest httpServletRequest);
+    void sendMailConfirmation(EmailRequestDTO emailRequestDTO);
 
     String changePassword(ChangePasswordRequest updatePasswordRequest);
 

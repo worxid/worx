@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.response.BaseResponse;
+import id.worx.worx.common.model.request.EmailRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -148,10 +150,13 @@ public class UsersController {
         usersService.logout(request);
         return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
     }
-    @PostMapping("/send-mail-confirmation/{email}")
-    public ResponseEntity<String> sendMailConfirmation(@PathVariable String email, HttpServletRequest httpServletRequest) {
-        usersService.sendMailConfirmation(email,httpServletRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("Successfully Deleted Refresh Token");
+    @PostMapping("/email-verify")
+    public ResponseEntity<BaseResponse> sendMailConfirmation(@Valid @RequestBody EmailRequestDTO email) {
+
+        usersService.sendMailConfirmation(email);
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.builder().build());
     }
     @GetMapping("/user-details")
     public ResponseEntity<BaseValueResponse<UserDetailsResponse>> getInfoDevice() {

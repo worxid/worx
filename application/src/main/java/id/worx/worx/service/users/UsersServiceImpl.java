@@ -20,6 +20,7 @@ import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.util.JwtUtils;
+import id.worx.worx.common.model.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
+
+    private final WorxProperties worxProps;
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
@@ -119,25 +122,24 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public String sendMailConfirmation(String email, HttpServletRequest httpServletResponse){
+    public void sendMailConfirmation(EmailRequestDTO emailRequestDTO){
 
-        String message = "";
-            Optional<Users> checkEmail = usersRepository.findByEmail(email);
+            Optional<Users> checkEmail = usersRepository.findByEmail(emailRequestDTO.getEmail());
             if(checkEmail.isPresent()){
                 Users users = checkEmail.get();
 
-                Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(email,EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
+                Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(emailRequestDTO.getEmail(),EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
 
-                String url = String.format(httpServletResponse.getRequestURL() + "/account-confirmation?code=%s", getEmailToken);
+                if(getEmailToken.isEmpty()){
+                    throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
+                }
+                String url = String.format(worxProps.getWeb().getEndpoint() + "/account-confirmation?code=%s", getEmailToken.get().getToken());
 
-                emailService.sendWelcomingEmail(email, users.getFullname(), url);
+                emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
 
-                message = "Mail successfully sent";
             }else{
-                message = "Failed send email";
+                throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
             }
-
-        return message;
     }
     public JwtResponse login(LoginRequest loginRequest) {
 
