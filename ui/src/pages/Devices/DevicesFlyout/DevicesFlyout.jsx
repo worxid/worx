@@ -3,6 +3,13 @@ import { useState, useContext } from 'react'
 // COMPONENTS
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 
+// CONSTANTS
+import { 
+  mainMenuIconList,
+  mainMenuKeyList,
+  mainMenuTitleList,
+} from './devicesFlyoutConstants'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -20,15 +27,6 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
-// MUI ICONS
-import IconAdjust from '@mui/icons-material/Adjust'
-import IconAssignmentInd from '@mui/icons-material/AssignmentInd'
-import IconReceipt from '@mui/icons-material/Receipt'
-import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
-import IconSecurityUpdate from '@mui/icons-material/SecurityUpdate'
-import IconSmartphone from '@mui/icons-material/Smartphone'
-import IconGroups from '@mui/icons-material/Groups'
 
 // SERVICES
 import { putApprovedDevices } from 'services/devices'
@@ -53,37 +51,16 @@ const DevicesFlyout = (props) => {
 
   const axiosPrivate = useAxiosPrivate()
 
-  const mainMenuIconList = [
-    IconAdjust,
-    IconAssignmentInd,
-    IconGroups,
-    IconReceipt,
-    IconPhoneIphone,
-    IconSecurityUpdate,
-    IconSmartphone,
-  ]
-
-  const excludeKey = ['id', 'port', 'ip', 'joined_time', 'device_language', 'device_status']
-  const mainMenuTitleList = [
-    'Status', 'Label', 'Groups', 'Identifier', 'Device Model', 'Device Version', 'Device App Version'
-  ]
-
   let mainMenuList = []
+
   if (rows.length === 1) {
-    mainMenuList = Object.keys(rows[0])
-      .filter(key => {
-        const find = excludeKey.find(itemExclude => itemExclude === key)
-        if(!Boolean(find)) return true
-        else return false
-      })
-    mainMenuList.unshift('device_status')
-    mainMenuList = mainMenuList.map((key, index) => {
+    mainMenuList = mainMenuTitleList.map(((item, index) => {
       return {
-        title: mainMenuTitleList[index],
-        value: rows[0][key],
+        title: item,
+        value: rows[0][mainMenuKeyList[index]],
         icon: mainMenuIconList[index],
       }
-    })
+    }))
   }
 
   const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
@@ -188,7 +165,7 @@ const DevicesFlyout = (props) => {
                         limitShowGroup={false}
                       />
                     </Stack>
-                    : <Typography variant='body2' className='textCapitalize'>
+                    : <Typography variant='body2'>
                       {item.value}
                     </Typography>
                 }
