@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     padding: 24,
+    [theme.breakpoints.down('sm')]: {
+      padding: 20,
+    }
   },
   buttonRedPrimary: {
     boxShadow: 'none',
