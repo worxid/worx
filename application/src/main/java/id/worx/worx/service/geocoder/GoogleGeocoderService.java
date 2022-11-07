@@ -50,8 +50,10 @@ public class GoogleGeocoderService implements GeocoderService {
         try {
             results = GeocodingApi.geocode(geoApiContext, address).await();
         } catch (ApiException | IOException e) {
+            e.printStackTrace();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
+            e.printStackTrace();
             Thread.currentThread().interrupt();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -65,8 +67,10 @@ public class GoogleGeocoderService implements GeocoderService {
         try {
             results = GeocodingApi.reverseGeocode(geoApiContext, new com.google.maps.model.LatLng(lat, lng)).await();
         } catch (ApiException | IOException e) {
+            e.printStackTrace();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         } catch (InterruptedException e) {
+            e.printStackTrace();
             Thread.currentThread().interrupt();
             throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }

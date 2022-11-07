@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.google.maps.GeoApiContext;
 
+import id.worx.worx.config.condition.DisabledGeocoderCondition;
 import id.worx.worx.config.condition.GoogleGeocoderCondition;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.service.geocoder.DisabledGeocoderService;
@@ -26,6 +27,7 @@ public class GeocoderConfiguration {
     }
 
     @Bean
+    @Conditional(DisabledGeocoderCondition.class)
     public GeocoderService getDisabledGeocoderService() {
         return new DisabledGeocoderService();
     }
