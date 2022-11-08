@@ -113,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
             emailTokenRepository.save(emailToken);
 
-            String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
+            String url = String.format("%s/account-confirmation?code=%s",httpServletRequest.getRequestURL(), random);
 
             emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
@@ -133,7 +133,7 @@ public class UsersServiceImpl implements UsersService {
                 if(getEmailToken.isEmpty()){
                     throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
                 }
-                String url = String.format(worxProps.getWeb().getEndpoint() + "/account-confirmation?code=%s", getEmailToken.get().getToken());
+                String url = String.format("%s/account-confirmation?code=%s",worxProps.getWeb().getEndpoint(), getEmailToken.get().getToken());
 
                 emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
 
