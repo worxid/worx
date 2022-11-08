@@ -15,4 +15,5 @@ public class WorxProperties {
     private MailProperties mail;
     private StorageProperties storage;
     private ExpiredTokenProperties token;
+    private GeocoderProperties geocoder;
 }
