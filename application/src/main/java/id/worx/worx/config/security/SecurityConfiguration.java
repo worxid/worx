@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                         "/api/users/refresh-token",
                         "/api/users/reset-password/verify",
                         "/api/users/register/account-confirmation",
+                        "/api/users/email-verify",
                         "/form/template/read",
                         "/form/submit",
                         "/media/presigned-url")
