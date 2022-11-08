@@ -42,3 +42,7 @@ worx:
   token:
     access: ${WORX_ACCESS_TOKEN_EXPIRED_IN_MS}
     refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}
+  geocoder:
+    enabled: ${WORX_GEOCODER_ENABLED:false}
+    default-option: ${WORX_GEOCODER_DEFAULT:google}
+    google-api-key: ${WORX_GEOCODER_GOOGLE_API_KEY}

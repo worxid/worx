@@ -67,7 +67,21 @@ public enum WorxErrorCode {
     DEVICE_CODE_INVALID(25, "Invalid device code", HttpStatus.BAD_REQUEST),
 
     ALREADY_VERIRIED(26, "Account has been verified", HttpStatus.BAD_REQUEST),
-    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
+
+    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Feature disabled error}
+     * This error is used to notify disabled feature error.
+     */
+    FEATURE_DISABLED(26, "This feature is disabled.", HttpStatus.FORBIDDEN),
+
+    /**
+     * {@code Internal server error}
+     * This error is used to notify unhandled internal server error.
+     */
+    INTERNAL_SERVER_ERROR(26, "There is something wrong with the Server", HttpStatus.INTERNAL_SERVER_ERROR);
+
 
     private final int errorCode;
 
