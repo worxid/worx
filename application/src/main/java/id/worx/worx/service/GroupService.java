@@ -26,6 +26,8 @@ public interface GroupService {
 
     GroupDTO toDTO(Group group);
 
+    GroupDTO toDTO(GroupSearchProjection groupSearchProjection);
+
     Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
 
 }

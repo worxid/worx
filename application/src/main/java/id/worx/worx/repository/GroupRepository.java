@@ -18,7 +18,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM worx_groups WHERE id in(:groupIds)")
     List<Group> getAllByIds(List<Long> groupIds);
 
-    @Query(nativeQuery = true, value = "SELECT wG.id,group_name as name, group_color as color, coalesce(form_group_cnt,0) as form_count, coalesce(dev_group_cnt,0) as device_count " +
+    @Query(nativeQuery = true, value = "SELECT wG.id,group_name as name, group_color as color, coalesce(form_group_cnt,0) as formCount, coalesce(dev_group_cnt,0) as deviceCount " +
         "FROM " +
         "(SELECT * " +
         "FROM worx_groups " +

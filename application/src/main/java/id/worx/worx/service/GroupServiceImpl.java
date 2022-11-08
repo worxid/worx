@@ -86,16 +86,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public GroupDTO toDTO(GroupSearchProjection groupSearchProjection) {
+        return groupMapper.toDTO(groupSearchProjection);
+    }
+
+    @Override
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
-//        Pageable customPageable= PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-//            Sort.by(getDirection(pageable), mapOfSortField.get(getSortBy(pageable))));
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            Sort.by(getDirection(pageable), getSortBy(pageable)));
         return groupRepository.search(groupSearchRequest.getId(),
             groupSearchRequest.getName(),
             groupSearchRequest.getColor(),
             authContext.getUsers().getId(),
             groupSearchRequest.getDeviceCount(),
             groupSearchRequest.getFormCount(),
-            pageable);
+            customPageable);
     }
 
     private void delete(Group group) {
@@ -117,7 +122,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     public String getSortBy(Pageable pageable) {
-        return pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
+        String sortBy = pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
+        return sortBy.replaceFirst("_[a-z]",
+            String.valueOf(
+                Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))));
     }
 
     public Sort.Direction getDirection(Pageable pageable) {

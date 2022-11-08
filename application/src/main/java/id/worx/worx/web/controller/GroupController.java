@@ -64,12 +64,12 @@ public class GroupController implements SecuredRestController {
     }
 
     @PostMapping("search")
-    public ResponseEntity<Page<GroupSearchProjection>> create(@RequestBody GroupSearchRequest searchRequest, @ParameterObject Pageable pageable) {
-//        Page<Group> groups = groupService.searchGroup(searchRequest,pageable);
-//        List<GroupDTO> dtos = groups.stream().map(groupService::toDTO).collect(Collectors.toList());
-//        Page<GroupDTO> page= new BasePageResponse<>(dtos,groups.getPageable(),groups.getTotalElements());
+    public ResponseEntity<Page<GroupDTO>> search(@RequestBody GroupSearchRequest searchRequest, @ParameterObject Pageable pageable) {
+        Page<GroupSearchProjection> groups = groupService.searchGroup(searchRequest,pageable);
+        List<GroupDTO> dtos = groups.stream().map(groupService::toDTO).collect(Collectors.toList());
+        Page<GroupDTO> page= new BasePageResponse<>(dtos,groups.getPageable(),groups.getTotalElements());
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(groupService.searchGroup(searchRequest,pageable));
+            .body(page);
     }
 
     @DeleteMapping
