@@ -63,7 +63,19 @@ public enum WorxErrorCode {
     REFRESH_TOKEN_NOT_FOUND(24, "Refresh token is not in database!", HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_INVALID(25, "Refresh token was expired. Please make a new signin request", HttpStatus.BAD_REQUEST),
     DEVICE_CODE_INVALID(25, "Invalid device code", HttpStatus.BAD_REQUEST),
-    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
+    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Feature disabled error}
+     * This error is used to notify disabled feature error.
+     */
+    FEATURE_DISABLED(26, "This feature is disabled.", HttpStatus.FORBIDDEN),
+
+    /**
+     * {@code Internal server error}
+     * This error is used to notify unhandled internal server error.
+     */
+    INTERNAL_SERVER_ERROR(26, "There is something wrong with the Server", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final int errorCode;
 

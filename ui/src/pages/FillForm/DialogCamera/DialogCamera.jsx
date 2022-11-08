@@ -139,6 +139,7 @@ const DialogCamera = (props) => {
 
   return (
     <DialogForm
+      dialogName='dialogCamera'
       classNames={`${classes.dialogCamera} neutralize-dialog-form`}
       areActionsAvailable={false}
       onBackdropClick={handleBackdropClick}
@@ -152,7 +153,7 @@ const DialogCamera = (props) => {
             <Webcam
               ref={webcamRef}
               audio={false}
-              className={classes.webcam}
+              className={classes.webcamDesktop}
               width='100%'
               screenshotFormat='image/jpeg'
               mirrored={cameraPosition === 'user' ? true : false}
@@ -163,7 +164,7 @@ const DialogCamera = (props) => {
           {/* RESULT PHOTO */}
           {resultPhoto && (
             <Box
-              className={classes.resultPhoto}
+              className={detectDeviceType() ? classes.resultPhotoDesktop : classes.resultPhotoMobile}
               component='img'
               src={resultPhoto}
             />

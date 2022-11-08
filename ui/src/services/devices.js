@@ -1,8 +1,18 @@
-export const postGetListDevices = async (inputSignal, inputParams, inputAxiosPrivate) => {
+// QUERY STRING
+import { stringify } from 'query-string'
+
+export const postGetDeviceList = async (
+  inputSignal,
+  inputRequestParams, 
+  inputBodyParams, 
+  inputAxiosPrivate,
+) => {
   try {
-    const response = await inputAxiosPrivate.post('/devices/search', inputParams, {
-      signal: inputSignal,
-    })
+    const response = await inputAxiosPrivate.post(
+      `/devices/search?${stringify(inputRequestParams)}`, 
+      inputBodyParams, 
+      { signal: inputSignal }
+    )
     return response
   } catch (error) {
     if (error.message === 'canceled') return { status: 'Canceled' }

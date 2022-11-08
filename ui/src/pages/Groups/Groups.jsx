@@ -25,7 +25,7 @@ import IconCircle from '@mui/icons-material/Circle'
 // SERVICES
 import {
   deleteGroup, 
-  getGroupList, 
+  postGetGroupList, 
 } from 'services/group'
 
 // UTILITIES
@@ -84,7 +84,11 @@ const Groups = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
-  const initialFilters = {}
+  const initialFilters = {
+    name: '',
+    device_count: '',
+    form_count: '',
+  }
 
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
@@ -130,13 +134,23 @@ const Groups = () => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+    
+    if (orderBy && order) requestParams.sort = `${orderBy},${order}`
+
+    const resultGroupList = await postGetGroupList(
       inputAbortController.signal, 
+      requestParams,
+      filters,
       axiosPrivate,
     )
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
-      setTableData(resultGroupList.data.list)
+      setTableData(resultGroupList.data.content)
+      setTotalRow(resultGroupList.data.totalElements)
     }
 
     setMustReloadDataGrid(false)
@@ -151,8 +165,8 @@ const Groups = () => {
 
       const resultDeleteGroup = await deleteGroup(
         abortController.signal, 
-        dialogDeleteObject.id, 
         axiosPrivate,
+        { ids: selectionModel },
       )
       
       if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
@@ -181,6 +195,10 @@ const Groups = () => {
       abortController.abort()
     }
   }, [mustReloadDataGrid])
+
+  useEffect(() => {
+    setMustReloadDataGrid(true)
+  }, [filters, pageNumber, pageSize, order, orderBy, pageSearch])
 
   return (
     <>

@@ -1,8 +1,18 @@
-export const deleteGroup = async (inputSignal, inputId, inputAxiosPrivate) => {
+// QUERY STRING
+import { stringify } from 'query-string'
+
+export const deleteGroup = async (
+  inputSignal, 
+  inputAxiosPrivate, 
+  inputBodyParams,
+) => {
   try {
     const response = await inputAxiosPrivate.delete(
-      `/groups/${inputId}`, 
-      { signal: inputSignal },
+      '/groups', 
+      {
+        data: inputBodyParams,
+        signal: inputSignal,
+      },
     )
 
     return response
@@ -33,6 +43,27 @@ export const postCreateGroup = async (inputSignal, inputBodyParams, inputAxiosPr
   try {
     const response = await inputAxiosPrivate.post(
       '/groups', 
+      inputBodyParams, 
+      { signal: inputSignal },
+    )
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
+export const postGetGroupList = async (
+  inputSignal, 
+  inputRequestParams,
+  inputBodyParams, 
+  inputAxiosPrivate,
+) => {
+  try {
+    const response = await inputAxiosPrivate.post(
+      `/groups/search?${stringify(inputRequestParams)}`, 
       inputBodyParams, 
       { signal: inputSignal },
     )

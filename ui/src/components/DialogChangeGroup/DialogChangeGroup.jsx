@@ -170,7 +170,8 @@ const DialogChangeGroup = (props) => {
   }, [dataChecked, groupList])
 
   return (
-    <DialogForm 
+    <DialogForm
+      dialogName='dialogChangeGroup'
       title={'Select Group'} 
       handleActionButtonClick={handleActionButtonClick}
       classNames='dialogChangeGroup'
@@ -196,7 +197,10 @@ const DialogChangeGroup = (props) => {
         }
       </Stack>
       <List disablePadding className='width100 padding0'>
-        <ListItemButton className={layoutClasses.groupItem} dense>
+        <ListItemButton 
+          className={layoutClasses.groupItem} dense
+          sx={!'Default'.toLowerCase().includes(search.toLowerCase()) ? { display: 'none' } : {}}
+        >
           {/* RADIO */}
           <ListItemIcon>
             <Checkbox checked={groupChecked?.length <= 0}/>
