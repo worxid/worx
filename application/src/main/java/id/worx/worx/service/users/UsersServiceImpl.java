@@ -9,7 +9,6 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.config.properties.WorxProperties;
-import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
@@ -21,10 +20,10 @@ import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.util.JwtUtils;
+import id.worx.worx.common.model.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,6 +47,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
+
+    private final WorxProperties worxProps;
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
@@ -112,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
             emailTokenRepository.save(emailToken);
 
-            String url = String.format(httpServletRequest.getRequestURL() + "/account-confirmation?code=%s", random);
+            String url = String.format("%s/account-confirmation?code=%s",httpServletRequest.getRequestURL(), random);
 
             emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
@@ -120,6 +121,26 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
+    @Override
+    public void sendMailConfirmation(EmailRequestDTO emailRequestDTO){
+
+            Optional<Users> checkEmail = usersRepository.findByEmail(emailRequestDTO.getEmail());
+            if(checkEmail.isPresent()){
+                Users users = checkEmail.get();
+
+                Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(emailRequestDTO.getEmail(),EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
+
+                if(getEmailToken.isEmpty()){
+                    throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
+                }
+                String url = String.format("%s/account-confirmation?code=%s",worxProps.getWeb().getEndpoint(), getEmailToken.get().getToken());
+
+                emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
+
+            }else{
+                throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+            }
+    }
     public JwtResponse login(LoginRequest loginRequest) {
 
         JwtResponse jwtResponse = new JwtResponse();
@@ -277,6 +298,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
     }
+
 
     @Override
     public UserDetailsResponse getByEmail(String email) {
