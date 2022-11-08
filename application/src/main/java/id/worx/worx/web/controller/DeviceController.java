@@ -89,7 +89,7 @@ public class DeviceController implements SecuredRestController {
 
     @DeleteMapping
     public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
-        deviceWebService.deleteAllById(request.getIds());
+        deviceWebService.deleteDevice(request.getIds());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(BaseResponse.builder().build());
     }

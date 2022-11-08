@@ -1,6 +1,5 @@
 package id.worx.worx.repository;
 
-import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +39,6 @@ public interface DeviceRepository extends BaseRepository<Device, Long> {
     Optional<Device> findByDeviceCodeAndDeleted(String deviceCode, boolean deleted);
 
     Optional<Device> findByIdAndDeleted(Long deviceNo, boolean deleted);
-
-    @Query(nativeQuery = true,value = "SELECT * FROM devices WHERE id in(:ids)")
-    List<Device> findByIds(List<Long> ids);
 
 }
 

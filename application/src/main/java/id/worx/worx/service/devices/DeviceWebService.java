@@ -25,7 +25,7 @@ public interface DeviceWebService {
 
     void deleteDevice(Long id);
 
-    void deleteAllById(List<Long> ids);
+    void deleteDevice(List<Long> ids);
 
     DeviceDTO toDto(Device devices);
 
