@@ -32,6 +32,8 @@ public abstract class FormMapper {
     @Mapping(source = "submitLat", target = "submitLocation.lat")
     @Mapping(source = "submitLng", target = "submitLocation.lng")
     @Mapping(source = "submitAddress", target = "submitLocation.address")
+    @Mapping(source = "respondentType", target = "source.type")
+    @Mapping(source = "respondentLabel", target = "source.label")
     public abstract FormDTO toDTO(Form form);
 
     @Mapping(source = "template.id", target = "templateId")
@@ -40,6 +42,8 @@ public abstract class FormMapper {
     @Mapping(source = "submitLat", target = "submitLocation.lat")
     @Mapping(source = "submitLng", target = "submitLocation.lng")
     @Mapping(source = "submitLng", target = "submitLocation.address")
+    @Mapping(source = "respondentType", target = "source.type")
+    @Mapping(source = "respondentLabel", target = "source.label")
     public abstract MobileFormDTO toMobileDTO(Form form);
 
     @Mapping(source = "submitLocation.lat", target = "submitLat", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

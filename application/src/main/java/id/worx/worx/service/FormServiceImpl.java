@@ -31,10 +31,12 @@ import id.worx.worx.entity.FileSubmission;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.RespondentType;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
+import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.FileSubmissionRepository;
 import id.worx.worx.repository.FormRepository;
@@ -50,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FormServiceImpl implements FormService {
 
+    private final DeviceRepository deviceRepository;
     private final FormRepository formRepository;
     private final FormTemplateRepository templateRepository;
 
@@ -82,12 +85,16 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Form submit(MobileFormSubmitRequest request) {
-        // TODO validate device code
+        Optional<Device> optDevice = deviceRepository.findByDeviceCode(request.getDeviceCode());
+        if (optDevice.isEmpty()) {
+            throw new WorxException(WorxErrorCode.DEVICE_NOT_REGISTERED);
+        }
+        Device device = optDevice.get();
+
         Form form = this.submitOrElseThrowInvalid(request);
-        // TODO set respondent label with device label
         form.setRespondentType(RespondentType.MOBILE_APP);
-        form.setRespondentLabel(RespondentType.MOBILE_APP.getName());
-        form.setRespondentDeviceCode(request.getDeviceCode());
+        form.setRespondentLabel(device.getLabel());
+        form.setRespondentDeviceCode(device.getDeviceCode());
 
         form = formRepository.save(form);
         updateFileState(form, request.getFields(), request.getValues());
