@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import id.worx.worx.data.dto.LinkFormDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -168,10 +169,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     @Override
     public void share(FormTemplate template, List<String> recipients) {
         String code = template.getUrlCode();
-        String url = String.format(
-                "%s/fill-form?code=%s",
-                worxProps.getWeb().getEndpoint(),
-                code);
+        String url = linkForm(code);
         Context context = new Context();
         context.setVariable("confirmationUrl", url);
         context.setVariable("formTitle", template.getLabel());
@@ -203,4 +201,22 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         return template.get();
     }
 
+    @Override
+    public LinkFormDTO generateLink(FormTemplate template) {
+
+        String code = template.getUrlCode();
+        String urlForm = linkForm(code);
+
+        LinkFormDTO linkFormDTO = new LinkFormDTO();
+        linkFormDTO.setLink(urlForm);
+
+        return linkFormDTO;
+    }
+
+    public String linkForm(String urlCode){
+        return String.format(
+            "%s/fill-form?code=%s",
+            worxProps.getWeb().getEndpoint(),
+            urlCode);
+    }
 }
