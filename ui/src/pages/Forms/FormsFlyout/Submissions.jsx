@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -9,6 +9,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -16,37 +17,58 @@ import Typography from '@mui/material/Typography'
 import IconAssignment from '@mui/icons-material/Assignment'
 import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
 
+// SERVICES
+import { postSearchFormSubmissionList } from 'services/form'
+
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
+import { convertDate } from 'utilities/date'
 
 const Submissions = (props) => {
   const { rows } = props
 
+  const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
-  const dummySubmissionList = [
-    {
-      id: 1,
-      title: 'Identifier',
-      value: 'Device 1 20-07-2022, 10:10 PM',
-    },
-    {
-      id: 2,
-      title: 'Identifier',
-      value: 'Device 1 20-07-2022, 10:10 PM',
-    },
-  ]
-
+  // STATES
+  const [ currentForm, setCurrentForm ] = useState(0)
+  const [ currentPage, setCurrentPage ] = useState(1)
   const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
+  const [ submissionData, setSubmissionData ] = useState([])
 
   // GET SUBMISSIONS VIEW ALL URL
   const getSubmissionsViewAllUrl = () => {
     if(rows.length === 1) return `/forms/${rows[0].id}/submissions`
     else return '#'
   }
+
+  // GET SUBMISSION LIST
+  const getSubmissionList = async (inputSignal) => {
+    const response = await postSearchFormSubmissionList(inputSignal.signal, {
+      page: currentPage-1,
+      size: 10
+    }, {
+      template_id: rows[0].id,
+    })
+
+    setSubmissionData(response?.data)
+  }
+
+  useEffect(() => {
+    if(currentForm !== rows[0]?.id) {
+      setCurrentForm(rows[0]?.id)
+      setCurrentPage(1)
+    }
+
+    const abortController = new AbortController()
+    rows.length === 1 && getSubmissionList(abortController)
+
+    return () => abortController.abort()
+  }, [rows, currentPage])
 
   return (
     <>
@@ -58,10 +80,7 @@ const Submissions = (props) => {
         marginBottom='8px'
       >
         {/* TITLE */}
-        <Typography
-          variant='subtitle1'
-          className='fontWeight500'
-        >
+        <Typography variant='subtitle1' className='fontWeight500'>
           Submissions
         </Typography>
 
@@ -99,7 +118,7 @@ const Submissions = (props) => {
             }
             secondary={
               <Typography variant='body2'>
-                10
+                {rows[0]?.submission_count}
               </Typography>
             }
           />
@@ -116,7 +135,7 @@ const Submissions = (props) => {
 
         {/* LIST */}
         <List>
-          {dummySubmissionList.map((item, index) => (
+          {submissionData?.content?.map((item, index) => (
             <ListItem 
               key={index}
               disablePadding
@@ -129,16 +148,13 @@ const Submissions = (props) => {
               {/* TEXT */}
               <ListItemText
                 primary={
-                  <Typography 
-                    variant='caption'
-                    className='colorTextSecondary'
-                  >
-                    {item.title}
+                  <Typography variant='caption' className='colorTextSecondary'>
+                    Device X*
                   </Typography>
                 }
                 secondary={
                   <Typography variant='body2'>
-                    {item.value}
+                    {convertDate(item.submit_date)}
                   </Typography>
                 }
               />
@@ -154,6 +170,16 @@ const Submissions = (props) => {
             </ListItem>
           ))}
         </List>
+
+        {/* PAGINATION */}
+        {submissionData?.content?.length ? (<Pagination
+          className={classes.pagination}
+          count={submissionData?.totalPages}
+          defaultPage={1}
+          siblingCount={0}
+          onChange={(event, page) => setCurrentPage(page)}
+          shape='rounded'
+        />) : ''}
       </Collapse>
     </>
   )

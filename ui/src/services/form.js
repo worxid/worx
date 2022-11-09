@@ -18,11 +18,11 @@ export const postSubmitFormSubmission = async (inputSignal, inputParams) => {
 
 export const postSearchFormSubmissionList = async (
   inputSignal, 
-  inputRequestPearams,
+  inputRequestParams,
   inputBodyParams,
 ) => {
   try {
-    const response = await axiosPrivate.post(`/form/search?${stringify(inputRequestPearams)}`, 
+    const response = await axiosPrivate.post(`/form/search?${stringify(inputRequestParams)}`, 
       inputBodyParams, 
       { signal: inputSignal },
     )
