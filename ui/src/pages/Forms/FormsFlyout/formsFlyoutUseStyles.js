@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'transparent',
       }
     }
+  },
+  textSource: {
+    textTransform: 'capitalize'
   }
 }))
 
