@@ -179,10 +179,12 @@ const FormsSubmissions = () => {
   }
 
   const updateColumnsDynamically = () => {
-    if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
+    if (
+      formTemplateDetail && formTemplateDetail?.fields?.length > 0 &&
+      !areDynamicColumnTitlesAdded
+    ) {
       const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
-          // DATA GRID OBJECTS
           field: item.id,
           headerName: item.label,
           flex: 1,
@@ -191,8 +193,6 @@ const FormsSubmissions = () => {
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
           cellClassName: 'cell-source-custom',
-          // DYNAMIC FIELD OBJECTS
-          fieldType: item.type,
         }
       })]
 
@@ -207,20 +207,19 @@ const FormsSubmissions = () => {
       columnList.length > 3 && tableData.length > 0 && 
       areDynamicColumnTitlesAdded && !areDynamicColumnsValuesAdded
     ) {
-      const dynamicColumnList = columnList.filter((item, index) => index >= 3)
+      const dynamicColumnList = columnList.filter((item, index) => index > 2)
 
-      const newTableData = tableData.map((tableRow, tableIndex) => {
-        console.log(tableRow)
+      const newTableData = tableData.map((tableRowItem) => {
+        const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
+          result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
+          return result
+        }, {})
+
         return {
-          ...tableRow,
-          ...dynamicColumnList.reduce((result, columnItem, columnIndex) => {
-            // TO DO: ADD FUNCTION TO GET THE VALUE
-            return { [columnItem.field]: tableRow?.values?.[columnItem.field]?.file_ids }
-          })
+          ...tableRowItem,
+          ...columnWithValueObject,
         }
       })
-
-      console.log(newTableData)
 
       setAreDynamicColumnsValuesAdded(true)
       setTableData(newTableData)
@@ -258,8 +257,6 @@ const FormsSubmissions = () => {
   useEffect(() => {
     updateTableDataDynamically()
   }, [columnList, tableData, areDynamicColumnTitlesAdded])
-
-  // console.log(tableData)
 
   return (
     <>
