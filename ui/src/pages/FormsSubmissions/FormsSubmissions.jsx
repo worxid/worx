@@ -179,6 +179,15 @@ const FormsSubmissions = () => {
     setIsDataGridLoading(false)
   }
 
+  const getValueByColumnType = (inputParams) => {
+    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date' || inputParams?.value?.type === 'rating') return inputParams?.value?.value
+    else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
+      const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
+      return selectedOption.label
+    }
+  }
+
   const updateColumnsDynamically = () => {
     if (
       formTemplateDetail && formTemplateDetail?.fields?.length > 0 &&
@@ -194,6 +203,7 @@ const FormsSubmissions = () => {
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
           cellClassName: 'cell-source-custom',
+          valueGetter: (params) => getValueByColumnType(params),
         }
       })]
 
