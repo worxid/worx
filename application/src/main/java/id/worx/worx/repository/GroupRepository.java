@@ -34,9 +34,11 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Page<Group> search(Long id, String name, String color, Long userId,Integer deviceCount, Integer templateCount, Pageable pageable);
 
     Optional<Group> findByIdAndUserId(Long id, Long userId);
+    Optional<Group> findByIsDefaultTrueAndUserId(Long userId);
 
     List<Group> findAllByUserId(Long userId);
 
     @Query(nativeQuery = true,value = "SELECT * FROM worx_groups WHERE id in(:ids) AND user_id=:userId")
     List<Group> findByIdsAndUserId(List<Long> ids, Long userId);
+
 }
