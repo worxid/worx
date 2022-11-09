@@ -60,6 +60,7 @@ const FormsSubmissions = () => {
       width: 140,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => params.row.source.label,
     },
     {
       field: 'submissionDate',
