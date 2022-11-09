@@ -368,7 +368,7 @@ const FormsSubmissions = () => {
             // CLASSES
             className={classes.tableFormsSubmissions}
             // CELL
-            onCellClick={(event, params, details) => navigate(`/forms/${event.row.id}/view`)}
+            onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
           />
         </LoadingPaper>
       </Stack>
