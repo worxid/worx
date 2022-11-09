@@ -33,6 +33,9 @@ import { getDetailFormTemplate } from 'services/formTemplate'
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
 
+// UTILITIES
+import { convertDate } from 'utilities/date'
+
 const FormsSubmissions = () => {
   // CONTEXT
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
@@ -67,6 +70,7 @@ const FormsSubmissions = () => {
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
+      valueGetter: (params) => convertDate(params.value),
     },
     {
       field: 'submissionAddress',
@@ -79,29 +83,14 @@ const FormsSubmissions = () => {
       cellClassName: 'cell-source-custom',
     },
   ]
-  // TO DO: FIX THIS LATER
-  // Object.keys(dummyTableData[0].dynamicFields)
-  //   .forEach(item => {
-  //     initialColumns.push({
-  //       field: item,
-  //       headerName: item,
-  //       flex: 1,
-  //       minWidth: 150,
-  //       hide: false,
-  //       areFilterAndSortShown: true,
-  //       headerClassName: 'cell-source-custom',
-  //       cellClassName: 'cell-source-custom',
-  //       valueGetter: (params) => params.row.dynamicFields[item]
-  //     })
-  //   })
     
   const initialFilters = {}
 
   // CONTENT
-  const [ formTemplateDetail, setFormTemplateDetail ] = useState({ label: '', description: '' })
+  const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
   // DATA GRID - BASE
-  const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
+  const [ columnList, setColumnList ] = useState(initialColumns)
   const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
@@ -151,10 +140,7 @@ const FormsSubmissions = () => {
     )
 
     if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
-      setFormTemplateDetail({
-        label: resultFormTemplateDetail.data.value.label,
-        description: resultFormTemplateDetail.data.value.description,
-      })
+      setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
     }
 
     setIsDataGridLoading(false)
@@ -169,12 +155,11 @@ const FormsSubmissions = () => {
         page: pageNumber,
         size: pageSize,
       },
-      // TO DO: CHANGE THIS WITH FILTERS VALUE
-      {},
+      { template_id: formTemplateId },
     )
 
     if (resultSubmissionList.status === 200 && inputIsMounted) {
-      const submissionList = resultSubmissionList?.data?.content?.map((submissionItem, submissionIndex) => {
+      const submissionList = resultSubmissionList?.data?.content?.map(submissionItem => {
         return {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
@@ -188,6 +173,25 @@ const FormsSubmissions = () => {
     }
 
     setIsDataGridLoading(false)
+  }
+
+  const updateColumnsDynamically = () => {
+    if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
+      const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
+        return {
+          field: item.id,
+          headerName: item.label,
+          flex: 1,
+          minWidth: 150,
+          hide: false,
+          areFilterAndSortShown: false,
+          headerClassName: 'cell-source-custom',
+          cellClassName: 'cell-source-custom',
+        }
+      })]
+
+      setColumnList(newColumnList)
+    }
   }
   
   useEffect(() => {
@@ -213,6 +217,10 @@ const FormsSubmissions = () => {
       abortController.abort()
     }
   }, [pageNumber, pageSize, filters, order, orderBy])
+
+  useEffect(() => {
+    updateColumnsDynamically()
+  }, [formTemplateDetail])
 
   return (
     <>
@@ -249,7 +257,7 @@ const FormsSubmissions = () => {
                 className={classes.headerTitle}
                 variant='subtitle1'
               >
-                {formTemplateDetail.label}
+                {formTemplateDetail?.label ?? 'No Title for This Form'}
               </Typography>
 
               {/* DESCRIPTION */}
@@ -257,8 +265,8 @@ const FormsSubmissions = () => {
                 color='text.secondary'
                 variant='caption'
               >
-                {formTemplateDetail.description !== '' 
-                  ? formTemplateDetail.description 
+                {formTemplateDetail?.description !== '' 
+                  ? formTemplateDetail?.description 
                   : 'No Description for This Form'}
               </Typography>
             </Box>
@@ -285,8 +293,8 @@ const FormsSubmissions = () => {
             contentTitle='Submission List'
             // COLUMN
             columns={initialColumns}
-            selectedColumnList={selectedColumnList}
-            setSelectedColumnList={setSelectedColumnList}
+            selectedColumnList={columnList}
+            setSelectedColumnList={setColumnList}
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
@@ -298,8 +306,8 @@ const FormsSubmissions = () => {
           <DataGridTable
             // BASE
             initialColumns={initialColumns}
-            selectedColumnList={selectedColumnList}
-            setSelectedColumnList={setSelectedColumnList}
+            selectedColumnList={columnList}
+            setSelectedColumnList={setColumnList}
             rows={tableData}
             // PAGINATION
             total={totalRow}
@@ -349,10 +357,10 @@ const FormsSubmissions = () => {
         }}
         className={`${classes.downloadMenu} neutralize-zoom-menu`}
       >
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
+        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'xlsx')}>
           <Typography variant='caption'>Excel</Typography>
         </MenuItem>
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
+        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'csv')}>
           <Typography variant='caption'>CSV</Typography>
         </MenuItem>
       </Menu>
