@@ -367,7 +367,7 @@ const Forms = () => {
             selectionModel={selectionModel} 
             setSelectionModel={setSelectionModel}
             // ACTIONS
-            onRowDoubleClick={(params, event, details) => navigate(`/forms/${params.row.id}/submissions`)}
+            onRowDoubleClick={(params, event, details) => navigate(`/forms/submissions/${params.row.id}`)}
           />
         </LoadingPaper>
 
