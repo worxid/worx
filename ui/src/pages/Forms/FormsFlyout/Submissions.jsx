@@ -9,6 +9,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -21,6 +22,7 @@ import { postSearchFormSubmissionList } from 'services/form'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
@@ -29,11 +31,14 @@ import { convertDate } from 'utilities/date'
 const Submissions = (props) => {
   const { rows } = props
 
+  const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
   // STATES
+  const [ currentForm, setCurrentForm ] = useState(0)
+  const [ currentPage, setCurrentPage ] = useState(1)
   const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
-  const [ submissionList, setSubmissionList ] = useState([])
+  const [ submissionData, setSubmissionData ] = useState([])
 
   // GET SUBMISSIONS VIEW ALL URL
   const getSubmissionsViewAllUrl = () => {
@@ -44,23 +49,26 @@ const Submissions = (props) => {
   // GET SUBMISSION LIST
   const getSubmissionList = async (inputSignal) => {
     const response = await postSearchFormSubmissionList(inputSignal.signal, {
-      page: 0,
+      page: currentPage-1,
       size: 10
     }, {
       template_id: rows[0].id,
     })
 
-    setSubmissionList(response?.data?.content)
+    setSubmissionData(response?.data)
   }
 
-  console.log({ submissionList })
-
   useEffect(() => {
+    if(currentForm !== rows[0]?.id) {
+      setCurrentForm(rows[0]?.id)
+      setCurrentPage(1)
+    }
+
     const abortController = new AbortController()
     rows.length === 1 && getSubmissionList(abortController)
 
     return () => abortController.abort()
-  }, [rows])
+  }, [rows, currentPage])
 
   return (
     <>
@@ -127,7 +135,7 @@ const Submissions = (props) => {
 
         {/* LIST */}
         <List>
-          {submissionList?.map((item, index) => (
+          {submissionData?.content?.map((item, index) => (
             <ListItem 
               key={index}
               disablePadding
@@ -162,6 +170,16 @@ const Submissions = (props) => {
             </ListItem>
           ))}
         </List>
+
+        {/* PAGINATION */}
+        {submissionData?.content?.length ? (<Pagination
+          className={classes.pagination}
+          count={submissionData?.totalPages}
+          defaultPage={1}
+          siblingCount={0}
+          onChange={(event, page) => setCurrentPage(page)}
+          shape='rounded'
+        />) : ''}
       </Collapse>
     </>
   )
