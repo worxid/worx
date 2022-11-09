@@ -225,9 +225,11 @@ const Devices = () => {
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
       const response = await deleteDevices(
-        selectionModel[0], 
         abortController.signal, 
         axiosPrivate,
+        {
+          ids: selectionModel
+        }
       )
 
       if (didSuccessfullyCallTheApi(response?.status)) {
@@ -374,8 +376,8 @@ const Devices = () => {
 
       {/* DIALOG DELETE DEVICES */}
       <DialogConfirmation
-        title='Delete Device'
-        caption='Are you sure you want to delete this device?'
+        title={`Delete ${selectionModel.length >= 2 ? 'Devices' : 'Device'}`}
+        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these devices' : 'this device'}?`}
         dialogConfirmationObject={dialogDeleteDevice}
         setDialogConfirmationObject={setDialogDeleteDevice}
         cancelButtonText='Cancel'
