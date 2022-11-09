@@ -74,7 +74,7 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/:id/view',
+    path: '/forms/submission-detail',
     element: <FormsView/>,
     routeType: 'private',
   },

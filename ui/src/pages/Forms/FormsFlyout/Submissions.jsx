@@ -161,7 +161,7 @@ const Submissions = (props) => {
 
               {/* ACTION */}
               <Link
-                href={`/forms/${item.id}/view`}
+                href={`/forms/submission-detail?formTemplateId=${rows[0]?.id}&submissionId=${item.id}`}
                 underline='none'
                 className={layoutClasses.flyoutListItemActionLink}
               >
