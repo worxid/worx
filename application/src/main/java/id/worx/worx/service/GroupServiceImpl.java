@@ -3,6 +3,7 @@ package id.worx.worx.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -122,14 +123,20 @@ public class GroupServiceImpl implements GroupService {
     }
 
     public String getSortBy(Pageable pageable) {
-        String sortBy = pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList()).get(0);
+        List<String> sortBys=pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList());
+        if(sortBys.isEmpty())
+            return "name";
+        String sortBy = sortBys.get(0);
         return sortBy.replaceFirst("_[a-z]",
             String.valueOf(
                 Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))));
     }
 
     public Sort.Direction getDirection(Pageable pageable) {
-        return pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList()).get(0);
+        List<Sort.Direction> directions=pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList());
+        if(directions.isEmpty())
+            return Sort.Direction.valueOf("ASC");
+        return directions.get(0);
     }
 
 }
