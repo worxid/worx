@@ -277,8 +277,8 @@ const Groups = () => {
 
       {/* DIALOG DELETE GROUP NAME */}
       <DialogConfirmation
-        title='Delete Group'
-        caption='Are you sure you want to delete this group?'
+        title={`Delete ${selectionModel.length >= 2 ? 'Groups' : 'Group'}`}
+        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these groups' : 'this group'}?`}
         dialogConfirmationObject={dialogDeleteObject}
         setDialogConfirmationObject={setDialogDeleteObject}
         cancelButtonText='Cancel'
