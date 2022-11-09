@@ -1,5 +1,6 @@
 package id.worx.worx.mapper;
 
+import id.worx.worx.common.model.projection.GroupSearchProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,6 +13,8 @@ import id.worx.worx.entity.Group;
 public interface GroupMapper {
 
     GroupDTO toDTO(Group group);
+
+    GroupDTO toDTO(GroupSearchProjection groupSearchProjection);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)

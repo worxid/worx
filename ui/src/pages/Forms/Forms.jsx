@@ -382,8 +382,8 @@ const Forms = () => {
 
       {/* DIALOG DELETE FORMS */}
       <DialogConfirmation
-        title='Delete Form'
-        caption='Are you sure you want to delete this form?'
+        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
+        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
         dialogConfirmationObject={dialogDeleteForms}
         setDialogConfirmationObject={setDialogDeleteForms}
         cancelButtonText='Cancel'

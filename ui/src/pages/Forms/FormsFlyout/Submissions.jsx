@@ -148,8 +148,8 @@ const Submissions = (props) => {
               {/* TEXT */}
               <ListItemText
                 primary={
-                  <Typography variant='caption' className='colorTextSecondary'>
-                    Device X*
+                  <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`}>
+                    {item?.source?.label?.replace(/_/g, ' ')}
                   </Typography>
                 }
                 secondary={

@@ -9,7 +9,7 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { postResendEmailConfirmation } from 'services/users'
+import { postResendEmailConfirmation, postForgotPasswordUser } from 'services/users'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
@@ -32,9 +32,7 @@ const AppBarText = () => {
     if(type === 'sign-up' && email) {
       const response = await postResendEmailConfirmation(
         abortController.signal,
-        {
-          email,
-        }
+        { email }
       )
 
       if(didSuccessfullyCallTheApi(response?.status)) {
@@ -43,6 +41,27 @@ const AppBarText = () => {
           severity:'success',
           title: '',
           message: 'Successfully requested to resend the confirmation email',
+        })
+      } else {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: response?.data?.error?.message || 'Something went wrong',
+        })
+      }
+    } else if(type === 'forgot-password' && email) {
+      const response = await await postForgotPasswordUser(
+        abortController.signal,
+        { email }
+      )
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Successfully requested to resend the forgot password email',
         })
       } else {
         setSnackbarObject({

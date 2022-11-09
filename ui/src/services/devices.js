@@ -60,9 +60,10 @@ export const putUpdateLabelDevices = async (deviceId, inputSignal, inputParams, 
   }
 }
 
-export const deleteDevices = async (deviceId, inputSignal, inputAxiosPrivate) => {
+export const deleteDevices = async (inputSignal, inputAxiosPrivate, inputBodyParams) => {
   try {
-    const response = await inputAxiosPrivate.delete(`/devices/${deviceId}`, {
+    const response = await inputAxiosPrivate.delete('/devices', {
+      data: inputBodyParams,
       signal: inputSignal,
     })
     return response
