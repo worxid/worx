@@ -1,26 +1,29 @@
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-// ASSETS
-import logoWorx from 'assets/images/logos/product-logo-with-text-black.svg'
-
 // COMPONENTS
+import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import InputForm from './InputForm'
-import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
 import { structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
 
 // MUIS
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
-import Link from '@mui/material/Link'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+// MUI ICONS
+import IconShare from '@mui/icons-material/Share'
 
 // SERVICES
 import { getReadFormTemplate } from 'services/formTemplate'
@@ -38,6 +41,7 @@ const FillForm = () => {
 
   // CONTEXTS
   const { setSnackbarObject } = useContext(AllPagesContext)
+  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // ROUTING
   const [ searchParams ] = useSearchParams()
@@ -82,10 +86,16 @@ const FillForm = () => {
 
     // RESTRUCTURE PHOTO & FILES PARAM
     for (let key of Object.keys(formObject)) {
-      if (formObject[key].type === 'photo' || formObject[key].type === 'file') {
+      if (formObject[key]?.type === 'photo' || formObject[key]?.type === 'file') {
         if (formObject[key]?.values) {
           tempFormObject[key]['file_ids'] = formObject[key]?.values.map((item) => item.idFile)
+        } else {
+          delete tempFormObject[key]
         }
+      }
+
+      if (formObject[key]?.type === 'signature') {
+        if(formObject[key]?.value === null) delete tempFormObject[key]
       }
     }
 
@@ -105,16 +115,11 @@ const FillForm = () => {
     const response = await postSubmitFormSubmission(abortController.signal, params)
 
     if(didSuccessfullyCallTheApi(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'success',
-        title: '',
-        message: 'Form has been submitted',
-      })
-
       // CLEAR MESSAGE ERROR
       setFormObjectError(structureErrorMessage(dataFormTemplate.fields))
-    } else {
+
+      navigate(`/fill-form-finish?code=${searchParams.get('code')}`)
+    } else if(response?.data?.error?.details) {
       // HANDLE ERROR MESSAGE
       let tempErrorMessage = formObjectError
       for(let keys of Object.keys(tempErrorMessage)) {
@@ -123,6 +128,13 @@ const FillForm = () => {
         else tempErrorMessage[keys] = ''
       }
       setFormObjectError(tempErrorMessage)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something gone wrong',
+      })
     }
 
     setIsPageLoading(false)
@@ -150,70 +162,61 @@ const FillForm = () => {
   }, [dataFormTemplate])
 
   return (
-    <Stack direction='column' alignItems='center' className={`${classes.root} no-zoom`}>
-      {/* CONTENT */}
-      <LoadingPaper isLoading={isPageLoading} className={`${classes.content} zoom`}>
-        {/* HEADER */}
-        <Stack className={classes.header}>
-          <Typography variant='h5' className='fontWeight500'>{dataFormTemplate.label}</Typography>
-          {dataFormTemplate.description && (
-            <Typography className={classes.headerDescription} color='text.secondary' variant='body2'>{dataFormTemplate.description}</Typography>
-          )}
-        </Stack>
+    <>
+      <Stack className={classes.root}>
+        {dataFormTemplate?.fields && (
+          <>{/* HEADER */}
+            <Stack alignItems='center' className={classes.header} direction='row'>
+              <Stack flex={1}>
+                <Typography variant='h5' className='fontWeight500'>{dataFormTemplate.label}</Typography>
+                {dataFormTemplate.description && (
+                  <Typography className={classes.headerDescription} color='text.secondary' variant='body2'>{dataFormTemplate.description}</Typography>
+                )}
+              </Stack>
 
-        <Divider />
+              <Stack>
+                <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
+                  <IconShare />
+                </IconButton>
+              </Stack>
+            </Stack>
 
-        {/* FORM */}
-        <Stack className={classes.form} flex={1} component='form'>
-          <Stack flex={1} height={'100%'}>
-            {dataFormTemplate?.fields?.map(item => (
-              <InputForm
-                key={item.id}
-                item={item}
-                handleInputChange={handleInputChange}
-                formObject={formObject}
-                formObjectError={formObjectError}
-                setFormObjectError={setFormObjectError}
-              />
-            ))}
-          </Stack>
+            <Divider />
 
-          <Stack>
-            <Button onClick={() => handleSubmitSubmission()} variant='contained' className={classes.buttonSubmit}>Submit</Button>
-          </Stack>
-        </Stack>
-      </LoadingPaper>
+            {/* FORM */}
+            <Stack className={classes.form} flex={1} component='form'>
+              <Stack flex={1} height={'100%'}>
+                {dataFormTemplate?.fields?.map(item => (
+                  <InputForm
+                    key={item.id}
+                    item={item}
+                    handleInputChange={handleInputChange}
+                    formObject={formObject}
+                    formObjectError={formObjectError}
+                    setFormObjectError={setFormObjectError}
+                    setFormObject={setFormObject}
+                  />
+                ))}
+              </Stack>
 
-      {/* FOOTER */}
-      <Stack className={`${classes.footer} zoom`} direction='row' alignItems='center'>
-        <Stack flex={1}>
-          <Link href='/'>
-            <Box
-              component='img'
-              src={logoWorx}
-              className={classes.footerLogo}
-            />
-          </Link>
-        </Stack>
+              <Stack>
+                <Button onClick={() => handleSubmitSubmission()} variant='contained' className={classes.buttonSubmit}>Submit</Button>
+              </Stack>
+            </Stack>
+          </>
+        )}
 
-        <Typography
-          variant='caption'
-          color='text.secondary'
-          className={classes.footerDescription}
-        >
-          Now create your own form - Free!
-        </Typography>
-
-        <Button
-          variant='contained'
-          size='small'
-          className={`${classes.buttonRedPrimary} buttonGetStarted heightFitContent`}
-          href='/sign-up'
-        >
-          Get Started
-        </Button>
+        {isPageLoading && (<Box className={classes.loadingContainer}>
+          <CircularProgress className={classes.loading}/>
+        </Box>)}
       </Stack>
-    </Stack>
+
+      {/* DIALOG SHARE LINK */}
+      <DialogShareLink id={dataFormTemplate?.id}/>
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={dataFormTemplate?.id}/>
+    </>
   )
 }
 

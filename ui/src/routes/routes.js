@@ -1,23 +1,25 @@
+import { lazy } from 'react'
+
 // CONTEXTS
 import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOrEditContext'
 import { PrivateLayoutContextProvider } from 'contexts/PrivateLayoutContext'
 
 // PAGES
-import AuthenticationFinish from 'pages/AuthenticationFinish/AuthenticationFinish'
-import Devices from 'pages/Devices/Devices'
-import Error from 'pages/Error'
-import FillForm from 'pages/FillForm/FillForm'
-import ForgotPassword from 'pages/ForgotPassword/ForgotPassword'
-import Forms from 'pages/Forms/Forms'
-import FormsCreateOrEdit from 'pages/FormsCreateOrEdit/FormsCreateOrEdit'
-import FormsSubmissions from 'pages/FormsSubmissions/FormsSubmissions'
-import FormsView from 'pages/FormsView/FormsView'
-import Home from 'pages/Home/Home'
-import ResetPassword from 'pages/ResetPassword/ResetPassword'
-import SettingsGroup from 'pages/SettingsGroup/SettingsGroup'
-import SignIn from 'pages/SignIn/SignIn'
-import SignUp from 'pages/SignUp/SignUp'
-
+const AuthenticationFinish = lazy(() => import('pages/AuthenticationFinish/AuthenticationFinish'))
+const Devices = lazy(() => import('pages/Devices/Devices'))
+const Error = lazy(() => import('pages/Error'))
+const FillForm = lazy(() => import('pages/FillForm/FillForm'))
+const FillFormFinish = lazy(() => import('pages/FillFormFinish/FillFormFinish'))
+const ForgotPassword = lazy(() => import('pages/ForgotPassword/ForgotPassword'))
+const Forms = lazy(() => import('pages/Forms/Forms'))
+const FormsCreateOrEdit = lazy(() => import('pages/FormsCreateOrEdit/FormsCreateOrEdit'))
+const FormsSubmissions = lazy(() => import('pages/FormsSubmissions/FormsSubmissions'))
+const FormsView = lazy(() => import('pages/FormsView/FormsView'))
+const Groups = lazy(() => import('pages/Groups/Groups'))
+const Home = lazy(() => import('pages/Home/Home'))
+const ResetPassword = lazy(() => import('pages/ResetPassword/ResetPassword'))
+const SignIn = lazy(() => import('pages/SignIn/SignIn'))
+const SignUp = lazy(() => import('pages/SignUp/SignUp'))
 
 const routes = [
   // AUTHENTICATION
@@ -82,11 +84,11 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/settings/groups',
-    element: <SettingsGroup/>,
+    path: '/groups',
+    element: <Groups/>,
     routeType: 'private',
   },
-  // FREE
+  // FILL FORM
   {
     path: '/fill-form',
     element: (
@@ -94,8 +96,14 @@ const routes = [
         <FillForm />
       </PrivateLayoutContextProvider>
     ),
-    routeType: 'free'
+    routeType: 'fillForm'
   },
+  {
+    path: '/fill-form-finish',
+    element: <FillFormFinish />,
+    routeType: 'fillForm'
+  },
+  // FREE
   {
     path: '/error',
     element: <Error />,

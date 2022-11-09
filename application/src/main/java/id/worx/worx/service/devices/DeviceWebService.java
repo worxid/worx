@@ -25,6 +25,8 @@ public interface DeviceWebService {
 
     void deleteDevice(Long id);
 
+    void deleteDevice(List<Long> ids);
+
     DeviceDTO toDto(Device devices);
 
     Page<Device> getAllDeviceWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable);

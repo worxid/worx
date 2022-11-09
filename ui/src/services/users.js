@@ -110,3 +110,17 @@ export const postResetPasswordUser = async (
     else return error.response
   }
 }
+
+export const postResendEmailConfirmation = async (inputSignal, inputBodyParams) => {
+  try {
+    const response = await axios.post('/api/users/email-verify', inputBodyParams, {
+      signal: inputSignal,
+    })
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}

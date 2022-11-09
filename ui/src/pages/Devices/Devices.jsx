@@ -5,11 +5,11 @@ import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
+import DeviceFlyout from './DeviceFlyout/DeviceFlyout'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
-import DeviceFlyout from './DevicesFlyout/DevicesFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
@@ -32,7 +32,10 @@ import IconWarning from '@mui/icons-material/Warning'
 import IconVerified from '@mui/icons-material/Verified'
 
 // SERVICES
-import { deleteDevices, postGetListDevices } from 'services/devices'
+import { 
+  deleteDevices, 
+  postGetDeviceList, 
+} from 'services/devices'
 
 // STYLES
 import useLayoutStyles from './devicesUseStyles'
@@ -56,7 +59,7 @@ const Devices = () => {
       flex: 1,
       minWidth: 125,
       hide: false,
-      areFilterAndSortShown: true,
+      areFilterAndSortShown: false,
       renderCell: (params) =>
         params.value && (
           <Stack direction={'row'} alignItems='center'>
@@ -131,7 +134,14 @@ const Devices = () => {
   const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
-  const initialFilters = {}
+  const initialFilters = {
+    label: '',
+    device_code: '',
+    device_model: '',
+    device_os_version: '',
+    device_app_version: '',
+    groups: [],
+  }
 
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
@@ -168,27 +178,21 @@ const Devices = () => {
     setIsDialogAddOrEditOpen(true)
   }
 
-  // FETCHING DATA TABLE DEVICES
-  const fetchingDevicesList = async (abortController, isMounted) => {
-    const response = await postGetListDevices(
+  // FETCH TABLE DATA
+  const fetchDeviceList = async (abortController, isMounted) => {
+    let requestParams = {
+      page: pageNumber,
+      size: pageSize,
+    }
+
+    if (orderBy && order) requestParams.sort = `${orderBy},${order}`
+
+    const response = await postGetDeviceList(
       abortController.signal,
+      requestParams,
       {
-        request: {
-          label: '',
-          groups: null,
-          device_code: '',
-          device_model: '',
-          device_language: '',
-          device_os_version: '',
-          device_app_version: '',
-          global_search: '',
-          joined_time: null
-        },
-        pageable: {
-          page: pageNumber,
-          size: pageSize,
-          sort: null
-        }
+        ...filters,
+        global_search: pageSearch,
       },
       axiosPrivate,
     )
@@ -212,6 +216,7 @@ const Devices = () => {
   // HANDLE DELETE BUTTON CLICKED
   const handleDeleteDevicesClick = async () => {
     setIsDataGridLoading(true)
+
     const abortController = new AbortController()
 
     setDialogDeleteDevice({})
@@ -226,7 +231,7 @@ const Devices = () => {
       )
 
       if (didSuccessfullyCallTheApi(response?.status)) {
-        fetchingDevicesList(abortController.signal, true)
+        fetchDeviceList(abortController.signal, true)
 
         setSnackbarObject({
           open: true,
@@ -254,20 +259,18 @@ const Devices = () => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
-    fetchingDevicesList(abortController, isMounted)
+
+    fetchDeviceList(abortController, isMounted)
 
     return () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   useEffect(() => {
-    if (selectionModel.length === 1) {
-      setIsFlyoutShown(true)
-    } else {
-      setIsFlyoutShown(false)
-    }
+    if (selectionModel.length === 1) setIsFlyoutShown(true)
+    else setIsFlyoutShown(false)
   }, [selectionModel])
 
   return (
@@ -292,6 +295,7 @@ const Devices = () => {
         position='relative'
         flex='1'
         height='100%'
+        className='contentContainer'
         sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
         {/* MAIN CONTENT */}
@@ -347,7 +351,7 @@ const Devices = () => {
         >
           <DeviceFlyout
             rows={tableData.filter(item => selectionModel.includes(item.id))}
-            reloadData={fetchingDevicesList}
+            reloadData={fetchDeviceList}
             setGroupData={setGroupData}
           />
         </Flyout>
@@ -358,14 +362,14 @@ const Devices = () => {
         dataChecked={groupData.map(item => ({ name: item }))}
         page='devices'
         selectedItemId={selectionModel[0]}
-        reloadData={fetchingDevicesList}
+        reloadData={fetchDeviceList}
       />
       
       {/* DIALOG EDIT DEVICES */}
       <DialogAddOrEditDevice 
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit} 
-        reloadData={fetchingDevicesList}
+        reloadData={fetchDeviceList}
       />
 
       {/* DIALOG DELETE DEVICES */}

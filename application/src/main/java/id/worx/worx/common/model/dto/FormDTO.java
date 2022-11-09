@@ -41,4 +41,6 @@ public class FormDTO implements Serializable {
     @JsonProperty("submit_location")
     private LocationDTO submitLocation;
 
+    private FormSource source;
+
 }

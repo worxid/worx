@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import id.worx.worx.data.dto.LinkFormDTO;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -161,4 +162,16 @@ public class FormTemplateController implements SecuredRestController {
                 .body(BaseResponse.builder().build());
     }
 
+    @PostMapping("{id}/share-link")
+    public ResponseEntity<BaseValueResponse<LinkFormDTO>> shareFormToLink(@PathVariable("id") Long id) {
+
+        FormTemplate template = templateService.read(id);
+        LinkFormDTO dto = templateService.generateLink(template);
+
+        BaseValueResponse<LinkFormDTO> response = BaseValueResponse.<LinkFormDTO>builder()
+            .value(dto)
+            .build();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
+    }
 }

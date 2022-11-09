@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 16,
     height: 104,
     flex: '0 0 auto',
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       backgroundColor: alpha(theme.palette.common.black, 0.4),
       position: 'absolute',
       bottom: 0,
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   actionLeft: {
     width: '40%',
     justifyContent: 'flex-end',
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       justifyContent: 'center'
     }
   },
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   actionRight: {
     alignItems: 'flex-start',
     width: '40%',
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       alignItems: 'center'
     }
   },
@@ -47,12 +47,18 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.additional.drawer.background,
   },
-  webcam: {
+  webcamDesktop: {
     height: '100%',
-    objectFit: 'cover',
   },
-  resultPhoto: {
-    height: '438px',
+  resultPhotoDesktop: {
+    height: '100%'
+  },
+  resultPhotoMobile: {
+    maxWidth: '100%',
+    // result for tablet
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '75%',
+    }
   },
   buttonTakePhoto: {
     backgroundColor: theme.palette.error.main,
@@ -64,11 +70,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: alpha(theme.palette.error.main, 0.84)
     },
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       width: 60,
       height: 60,
-    },
-    [theme.breakpoints.down('sm')]: {
       backgroundColor: 'transparent',
       '&:hover': {
         backgroundColor: 'transparent',
@@ -86,20 +90,20 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none',
       background: 'none',
     },
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       marginLeft: 16
     }
   },
   buttonRetake: {
     color:theme.palette.common.white,
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       marginRight: 'auto',
       marginLeft: 32,
     }
   },
   buttonUsePhoto: {
     color:theme.palette.common.white,
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       marginLeft: 'auto',
       marginRight: 32,
     }
@@ -107,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
   buttonSwitchCamera: {
     marginRight: 20,
     color:theme.palette.common.white,
-    [theme.breakpoints.down('sm')]: {
+    '&.mobile': {
       marginRight: 16
     }
   },

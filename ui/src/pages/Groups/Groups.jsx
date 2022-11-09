@@ -25,13 +25,13 @@ import IconCircle from '@mui/icons-material/Circle'
 // SERVICES
 import {
   deleteGroup, 
-  getGroupList, 
+  postGetGroupList, 
 } from 'services/group'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
-const SettingsGroup = () => {
+const Groups = () => {
   const initialColumns = [
     {
       field: 'name',
@@ -84,7 +84,11 @@ const SettingsGroup = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
-  const initialFilters = {}
+  const initialFilters = {
+    name: '',
+    device_count: '',
+    form_count: '',
+  }
 
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
@@ -130,13 +134,23 @@ const SettingsGroup = () => {
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
-    const resultGroupList = await getGroupList(
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+    
+    if (orderBy && order) requestParams.sort = `${orderBy},${order}`
+
+    const resultGroupList = await postGetGroupList(
       inputAbortController.signal, 
+      requestParams,
+      filters,
       axiosPrivate,
     )
 
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
-      setTableData(resultGroupList.data.list)
+      setTableData(resultGroupList.data.content)
+      setTotalRow(resultGroupList.data.totalElements)
     }
 
     setMustReloadDataGrid(false)
@@ -151,8 +165,8 @@ const SettingsGroup = () => {
 
       const resultDeleteGroup = await deleteGroup(
         abortController.signal, 
-        dialogDeleteObject.id, 
         axiosPrivate,
+        { ids: selectionModel },
       )
       
       if (didSuccessfullyCallTheApi(resultDeleteGroup.status)) {
@@ -181,6 +195,10 @@ const SettingsGroup = () => {
       abortController.abort()
     }
   }, [mustReloadDataGrid])
+
+  useEffect(() => {
+    setMustReloadDataGrid(true)
+  }, [filters, pageNumber, pageSize, order, orderBy, pageSearch])
 
   return (
     <>
@@ -272,4 +290,4 @@ const SettingsGroup = () => {
   )
 }
 
-export default SettingsGroup
+export default Groups

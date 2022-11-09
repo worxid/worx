@@ -57,11 +57,19 @@ export const postGetListFormTemplate = async (inputSignal, inputQuery, inputPara
   }
 }
 
-export const deleteFormTemplate = async (formTemplateId, inputSignal, inputAxiosPrivate) => {
+export const deleteFormTemplate = async (
+  inputSignal, 
+  inputAxiosPrivate,
+  inputBodyParams,
+) => {
   try {
-    const response = await inputAxiosPrivate.delete(`/form/template/${formTemplateId}`, {
-      signal: inputSignal,
-    })
+    const response = await inputAxiosPrivate.delete(
+      '/form/template', 
+      {
+        data: inputBodyParams,
+        signal: inputSignal,
+      },
+    )
     return response
   } catch (error) {
     if (error.message === 'canceled') return { status: 'Canceled' }

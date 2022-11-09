@@ -1,12 +1,19 @@
 package id.worx.worx.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.GroupDTO;
@@ -28,6 +35,11 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
 
     private final AuthenticationContext authContext;
+
+    private final static Map<String,String> mapOfSortField= Map.ofEntries(
+        Map.entry("name","group_name"),
+        Map.entry("color", "group_color")
+    );
 
     @Override
     public List<Group> list() {
@@ -75,14 +87,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Page<Group> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
+    public GroupDTO toDTO(GroupSearchProjection groupSearchProjection) {
+        return groupMapper.toDTO(groupSearchProjection);
+    }
+
+    @Override
+    public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            Sort.by(getDirection(pageable), getSortBy(pageable)));
         return groupRepository.search(groupSearchRequest.getId(),
             groupSearchRequest.getName(),
             groupSearchRequest.getColor(),
             authContext.getUsers().getId(),
             groupSearchRequest.getDeviceCount(),
             groupSearchRequest.getFormCount(),
-            pageable);
+            customPageable);
     }
 
     private void delete(Group group) {
@@ -101,6 +120,23 @@ public class GroupServiceImpl implements GroupService {
         }
 
         return group.get();
+    }
+
+    public String getSortBy(Pageable pageable) {
+        List<String> sortBys=pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList());
+        if(sortBys.isEmpty())
+            return "name";
+        String sortBy = sortBys.get(0);
+        return sortBy.replaceFirst("_[a-z]",
+            String.valueOf(
+                Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))));
+    }
+
+    public Sort.Direction getDirection(Pageable pageable) {
+        List<Sort.Direction> directions=pageable.getSort().stream().map(Sort.Order::getDirection).collect(Collectors.toList());
+        if(directions.isEmpty())
+            return Sort.Direction.valueOf("ASC");
+        return directions.get(0);
     }
 
 }

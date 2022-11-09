@@ -1,9 +1,11 @@
 package id.worx.worx.web.controller;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
+import id.worx.worx.common.model.request.MultipleDeleteRequest;
 import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
+import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.service.devices.DeviceWebService;
@@ -90,5 +92,12 @@ public class DeviceController implements SecuredRestController {
     public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
         deviceWebService.deleteDevice(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
+        deviceWebService.deleteDevice(request.getIds());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+            .body(BaseResponse.builder().build());
     }
 }

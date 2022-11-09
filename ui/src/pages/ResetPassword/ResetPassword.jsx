@@ -95,7 +95,7 @@ const ResetPassword = () => {
     else {
       const abortController = new AbortController()
   
-      const resultForgotPasswordUser = await postResetPasswordUser(
+      const resultResetPasswordUser = await postResetPasswordUser(
         abortController.signal,
         {
           token: searchParams.get('code'),
@@ -104,7 +104,7 @@ const ResetPassword = () => {
       )
 
       // REDIRECT THE USER IF SUCCESSFULLY CALLING THE API
-      if (didSuccessfullyCallTheApi(resultForgotPasswordUser.status)) {
+      if (didSuccessfullyCallTheApi(resultResetPasswordUser.status)) {
         setSnackbarObject({
           open: true,
           severity: 'success',
@@ -116,12 +116,11 @@ const ResetPassword = () => {
       }
       // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
       else {
-        // TO DO: FINISH THIS LATER
         setSnackbarObject({
           open: true,
           severity: 'error',
-          title: '',
-          message: 'Somethings went wrong. Please try again.',
+          title: resultResetPasswordUser?.data?.error?.status?.replaceAll('_', ' ') || '',
+          message: resultResetPasswordUser?.data?.error?.message || 'Something went wrong',
         })
       }
 

@@ -44,6 +44,7 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
+import { capitalizeEachWord } from 'utilities/string'
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const DialogAddOrEditGroup = (props) => {
@@ -174,7 +175,7 @@ const DialogAddOrEditGroup = (props) => {
 
           {/* TITLE */}
           <Typography variant='h6' className='fontWeight500'>
-            {dialogType} Group
+            {capitalizeEachWord(dialogType)} Group
           </Typography>
         </Stack>
       </CustomDialogTitle>

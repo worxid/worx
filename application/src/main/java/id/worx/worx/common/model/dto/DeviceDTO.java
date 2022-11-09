@@ -40,6 +40,10 @@ public class DeviceDTO implements Serializable {
     private Integer port;
     @JsonProperty("joined_time")
     private Instant joinedDate;
+    @JsonProperty("organization_code")
+    private String organizationCode;
+    @JsonProperty("organization_name")
+    private String organizationName;
     private List<String> groups;
 
 }
