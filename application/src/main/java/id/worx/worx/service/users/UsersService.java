@@ -6,15 +6,19 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.common.model.request.EmailRequestDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public interface UsersService {
 
     Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest);
 
+
+    void sendMailConfirmation(EmailRequestDTO emailRequestDTO);
 
     String changePassword(ChangePasswordRequest updatePasswordRequest);
 
@@ -33,5 +37,7 @@ public interface UsersService {
     UserDetailsResponse getByEmail(String email);
 
     Users findByEmail(String email);
+
+    Optional<Users> findByOrganizationCode(String organizationCode);
 
 }

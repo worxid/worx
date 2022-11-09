@@ -9,6 +9,7 @@ import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
+import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -113,7 +114,7 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: false,
+      areFilterAndSortShown: true,
     },
   ]
 
@@ -198,12 +199,16 @@ const Forms = () => {
     let createdDate = handleDateSearchValue(filters?.created_on)
     let modifiedDate = handleDateSearchValue(filters?.modified_on)
 
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+
+    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+
     const response = await postGetListFormTemplate(
       abortController.signal,
-      {
-        size: pageSize,
-        page: pageNumber,
-      },
+      requestParams,
       {
         label: filters?.label || '',
         description: filters?.description || '',
@@ -287,7 +292,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   return (
     <>
@@ -329,7 +334,7 @@ const Forms = () => {
             contentTitle='Form List'
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
-            handleShareButtonClick={() => setIsDialogFormOpen(true)}
+            handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
             // EDIT
             isEditButtonEnabled={selectionModel.length === 1}
             handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
@@ -396,7 +401,10 @@ const Forms = () => {
       />
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(selectionModel[0])} />
+      <DialogShareLink id={Number(selectionModel[0])}/>
+
+      {/* DIALOG QR CODE */}
+      <DialogQrCode id={Number(selectionModel[0])}/>
     </>
   )
 }

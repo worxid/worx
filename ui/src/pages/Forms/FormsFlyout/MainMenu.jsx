@@ -81,7 +81,7 @@ const MainMenu = (props) => {
 
   const handleChangeGroup = () => {
     setGroupData(rows[0].assigned_groups)
-    setIsDialogFormOpen(true)
+    setIsDialogFormOpen('dialogChangeGroup')
   }
 
   return (

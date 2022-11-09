@@ -38,9 +38,11 @@ public enum WorxErrorCode {
     TOKEN_EMAIL_ERROR(16, "Invalid Validation Token & Email", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND(17, "Email Not Found", HttpStatus.NOT_FOUND),
     PASSWORD_NOT_MATCH(18, "Old Password Doesnt Match", HttpStatus.BAD_REQUEST),
+
     USERNAME_EXIST(19, "Username already exist", HttpStatus.NOT_FOUND),
     USERNAME_EMPTY(23, "Username doesnt exist", HttpStatus.NOT_FOUND),
     EMAIL_EXIST(20, "Email already exist", HttpStatus.NOT_FOUND),
+
     REQUEST_DATA(21, "Please check your request data", HttpStatus.BAD_REQUEST),
     FAILED_SEND_EMAIL(22, "Failed send email", HttpStatus.BAD_REQUEST),
 
@@ -63,7 +65,23 @@ public enum WorxErrorCode {
     REFRESH_TOKEN_NOT_FOUND(24, "Refresh token is not in database!", HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_INVALID(25, "Refresh token was expired. Please make a new signin request", HttpStatus.BAD_REQUEST),
     DEVICE_CODE_INVALID(25, "Invalid device code", HttpStatus.BAD_REQUEST),
-    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST);
+
+    ALREADY_VERIRIED(26, "Account has been verified", HttpStatus.BAD_REQUEST),
+
+    TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST),
+
+    /**
+     * {@code Feature disabled error}
+     * This error is used to notify disabled feature error.
+     */
+    FEATURE_DISABLED(26, "This feature is disabled.", HttpStatus.FORBIDDEN),
+
+    /**
+     * {@code Internal server error}
+     * This error is used to notify unhandled internal server error.
+     */
+    INTERNAL_SERVER_ERROR(26, "There is something wrong with the Server", HttpStatus.INTERNAL_SERVER_ERROR);
+
 
     private final int errorCode;
 

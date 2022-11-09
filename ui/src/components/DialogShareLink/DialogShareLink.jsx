@@ -18,12 +18,24 @@ import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Stack from '@mui/material/Stack'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconClose from '@mui/icons-material/Close'
+import IconCode from '@mui/icons-material/Code'
 import IconLink from '@mui/icons-material/Link'
+import IconMailOutline from '@mui/icons-material/MailOutline'
+import IconQrCode2 from '@mui/icons-material/QrCode2'
+
+// REACT SHARE
+import {
+  FacebookShareButton, FacebookIcon,
+  LinkedinShareButton, LinkedinIcon,
+  TwitterShareButton, TwitterIcon,
+} from 'react-share'
 
 // SERVICES
 import { postShareFormTemplate } from 'services/formTemplate'
@@ -38,6 +50,11 @@ import {
   wasRequestCanceled,
 } from 'utilities/validation'
 
+const a11yProps = (index) => ({
+  id: `simple-tab-${index}`,
+  'aria-controls': `simple-tabpanel-${index}`,
+})
+
 const DialogShareLink = (props) => {
   const { id } = props
 
@@ -45,10 +62,11 @@ const DialogShareLink = (props) => {
   const classes = useStyles()
 
   // CONTEXTS
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointType, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
+  const [currentTab, setCurrentTab] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
 
@@ -123,20 +141,22 @@ const DialogShareLink = (props) => {
   }
 
   // HANDLE BUTTON COPY CLICK
-  const handleButtonCopyClick = (event, url) => {
-    navigator.clipboard.writeText(url)
+  const handleButtonCopyClick = (event, text) => {
+    navigator.clipboard.writeText(text)
     setSnackbarObject({
       open: true,
       severity:'success',
       title:'',
-      message:'Successfully copied the link'
+      message:'Copied to clipboard'
     })
   }
 
   return (
     <DialogForm
+      isLoading={isLoading}
+      dialogName='dialogShareLink'
       title={<Stack direction='row' alignItems='center'>
-        <Typography variant='subtitle1' flex={1}>Share Form</Typography>
+        <Typography variant='subtitle1' fontWeight={500} flex={1}>Share Form</Typography>
 
         <IconButton onClick={() => {
           setReceivers([])
@@ -148,91 +168,144 @@ const DialogShareLink = (props) => {
       areActionsAvailable={false}
       classNames={classes.dialogShareLink}
     >
-      <Divider />
+      <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
+        <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />
+        <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />
+        {/* <Tab icon={breakpointType !== 'xs' && <IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} /> */}
+      </Tabs>
 
       {/* CONTENT SHARE EMAIL */}
-      <Stack className={classes.content}>
-        <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
-        <Typography variant='caption' color='text.secondary'>Share a direct link to your form via email</Typography>
+      {currentTab === 0 && (
+        <Stack className={classes.content}>
+          <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
+          <Typography variant='caption' color='text.secondary'>Share a direct link to your form via email</Typography>
 
-        <Stack direction='row' alignItems='center' marginTop={'20px'}>
-          {/* RECEVIVERS EMAIL */}
-          <Autocomplete
-            className={classes.inputEmailAutocomplete}
-            fullWidth
-            disableClearable
-            multiple
-            options={[]}
-            defaultValue={[]}
-            freeSolo
-            onChange={(event, value) => setReceivers((state) => value)}
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => {
-                return (
-                  <Chip
-                    className={`${classes.chipCustom} heightFitContent`}
-                    size='small'
-                    key={index}
-                    label={option}
-                    {...getTagProps({ index })}
-                  />
-                )
-              })
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label='Add email'
-                color='secondary'
-              />
-            )}
-          />
-    
-          {/* BUTTON SEND FORM */}
-          <Stack paddingLeft={'12px'}>
-            <LoadingButton
-              size='small'
-              variant='contained'
-              className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={() => handleButtonSendClick()}
-              loading={isLoading}
-            >
-              Send Form
-            </LoadingButton>
+          <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
+            {/* RECEVIVERS EMAIL */}
+            <Autocomplete
+              className={classes.inputEmailAutocomplete}
+              fullWidth
+              disableClearable
+              multiple
+              options={[]}
+              defaultValue={[]}
+              freeSolo
+              onChange={(event, value) => setReceivers((state) => value)}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => {
+                  return (
+                    <Chip
+                      className={`${classes.chipCustom} heightFitContent`}
+                      size='small'
+                      key={index}
+                      label={option}
+                      {...getTagProps({ index })}
+                    />
+                  )
+                })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label='Add email'
+                  color='secondary'
+                />
+              )}
+            />
+      
+            {/* BUTTON SEND FORM */}
+            <Stack className={classes.actionWrap}>
+              <LoadingButton
+                size='small'
+                variant='contained'
+                className={`${classes.buttonRedPrimary} heightFitContent`}
+                onClick={() => handleButtonSendClick()}
+                loading={isLoading}
+              >
+                Send Form
+              </LoadingButton>
+            </Stack>
           </Stack>
         </Stack>
-      </Stack>
-
-      <Divider className={classes.dividerContent}/>
+      )}
 
       {/* CONTENT DIRECT LINK */}
-      <Stack className={classes.content}>
+      {currentTab === 1 && (<Stack className={classes.content}>
         <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
         <Typography variant='caption' color='text.secondary'>You can share the direct link to your form</Typography>
 
-        <Stack direction='row' alignItems='center' marginTop={'20px'}>
+        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
           <Stack direction='row' alignItems='center' className={classes.boxLink}>
             <IconLink className={classes.iconLink} fontSize='small'/>
 
-            <Typography
-              variant='caption'
-              color='text.secondary'
-              noWrap
-            >
+            <Typography variant='caption' color='text.secondary' noWrap>
               http://ww.worx.id//validformsid12345hajsdsddsds
             </Typography>
           </Stack>
 
-          <Stack paddingLeft={'12px'}>
+          <Stack className={classes.actionWrap} width='100%'>
             <Button
               size='small'
               variant='contained'
-              className={`${classes.buttonRedLight} heightFitContent`}
+              className={`${classes.buttonRedPrimary} heightFitContent`}
               onClick={(event) => handleButtonCopyClick(event, 'http://ww.worx.id//validformsid12345hajsdsddsds')}
             >
               Copy Link
             </Button>
           </Stack>
+        </Stack>
+      </Stack>)}
+
+      {/* CONTENT EMBED */}
+      {/* {currentTab === 2 && (<Stack className={classes.content}>
+        <Typography variant='subtitle2' className='fontWeight400'>Embed</Typography>
+        <Typography variant='caption' color='text.secondary'>Copy and paste this snippet into your code</Typography>
+
+        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
+          <Stack direction='row' alignItems='center' className={classes.boxLink}>
+            <Typography variant='caption' color='text.secondary' noWrap>
+              {'<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>'}
+            </Typography>
+          </Stack>
+
+          <Stack className={classes.actionWrap}>
+            <Button
+              size='small'
+              variant='contained'
+              className={`${classes.buttonRedPrimary} heightFitContent`}
+              onClick={(event) => handleButtonCopyClick(event, '<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>')}
+            >
+              Copy Code
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>)} */}
+
+      <Divider className={classes.dividerContent}/>
+
+      {/* FOOTER */}
+      <Stack alignItems='center' direction='row' className={classes.footer} flexWrap='nowrap'>
+        <Stack direction='row' flex={1}>
+          <FacebookShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+            <FacebookIcon round={true} size={18}/>
+          </FacebookShareButton>
+
+          <TwitterShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+            <TwitterIcon round={true} size={18}/>
+          </TwitterShareButton>
+
+          <LinkedinShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+            <LinkedinIcon round={true} size={18}/>
+          </LinkedinShareButton>
+        </Stack>
+
+        <Stack flex={0}>
+          <Button
+            disableRipple
+            className={classes.buttonQrCode}
+            startIcon={<IconQrCode2 />}
+            onClick={() => setIsDialogFormOpen('dialogQrCode')}
+          >QR Code</Button>
         </Stack>
       </Stack>
     </DialogForm>

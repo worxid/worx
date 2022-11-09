@@ -42,3 +42,5 @@ worx:
   token:
     access: 10
     refresh: 20
+  geocoder:
+    enabled: false
