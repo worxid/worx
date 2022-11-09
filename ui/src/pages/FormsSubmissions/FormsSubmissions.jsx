@@ -89,6 +89,8 @@ const FormsSubmissions = () => {
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ areDynamicColumnTitlesAdded, setAreDynamicColumnTitlesAdded ] = useState(false)
+  const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
   const [ tableData, setTableData ] = useState([])
@@ -165,6 +167,7 @@ const FormsSubmissions = () => {
           source: submissionItem?.source ?? '-',
           submissionDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem.submit_location?.address ?? '-',
+          values: submissionItem.values,
         }
       })
 
@@ -179,6 +182,7 @@ const FormsSubmissions = () => {
     if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
       const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
+          // DATA GRID OBJECTS
           field: item.id,
           headerName: item.label,
           flex: 1,
@@ -187,10 +191,39 @@ const FormsSubmissions = () => {
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
           cellClassName: 'cell-source-custom',
+          // DYNAMIC FIELD OBJECTS
+          fieldType: item.type,
         }
       })]
 
       setColumnList(newColumnList)
+      setAreDynamicColumnTitlesAdded(true)
+    }
+  }
+
+  const updateTableDataDynamically = () => {
+    // NOTE: DYNAMIC COLUMNS START FROM THE 3RD INDEX
+    if (
+      columnList.length > 3 && tableData.length > 0 && 
+      areDynamicColumnTitlesAdded && !areDynamicColumnsValuesAdded
+    ) {
+      const dynamicColumnList = columnList.filter((item, index) => index >= 3)
+
+      const newTableData = tableData.map((tableRow, tableIndex) => {
+        console.log(tableRow)
+        return {
+          ...tableRow,
+          ...dynamicColumnList.reduce((result, columnItem, columnIndex) => {
+            // TO DO: ADD FUNCTION TO GET THE VALUE
+            return { [columnItem.field]: tableRow?.values?.[columnItem.field]?.file_ids }
+          })
+        }
+      })
+
+      console.log(newTableData)
+
+      setAreDynamicColumnsValuesAdded(true)
+      setTableData(newTableData)
     }
   }
   
@@ -221,6 +254,12 @@ const FormsSubmissions = () => {
   useEffect(() => {
     updateColumnsDynamically()
   }, [formTemplateDetail])
+
+  useEffect(() => {
+    updateTableDataDynamically()
+  }, [columnList, tableData, areDynamicColumnTitlesAdded])
+
+  // console.log(tableData)
 
   return (
     <>
