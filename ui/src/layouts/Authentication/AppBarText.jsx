@@ -42,17 +42,19 @@ const AppBarText = () => {
           open: true,
           severity:'success',
           title: '',
-          message: 'Successfully requested to resend confirmation email',
+          message: 'Successfully requested to resend the confirmation email',
         })
       } else {
         setSnackbarObject({
           open: true,
           severity:'error',
           title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something gone wrong',
+          message: response?.data?.error?.message || 'Something went wrong',
         })
       }
     }
+
+    abortController.abort()
   }
 
   if (
