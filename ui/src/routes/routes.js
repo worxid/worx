@@ -69,7 +69,7 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/:id/submissions',
+    path: '/forms/:formTemplateId/submissions',
     element: <FormsSubmissions/>,
     routeType: 'private',
   },

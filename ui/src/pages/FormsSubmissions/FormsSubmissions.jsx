@@ -12,6 +12,9 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // LIBRARY
 import * as XLSX from 'xlsx'
 
@@ -25,6 +28,7 @@ import Typography from '@mui/material/Typography'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
+import { getDetailFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
@@ -38,7 +42,9 @@ const FormsSubmissions = () => {
 
   // NAVIGATE
   const navigate = useNavigate()
-  const { id } = useParams()
+  const { formTemplateId } = useParams()
+
+  const axiosPrivate = useAxiosPrivate()
 
   // INITS
   let initialColumns = [
@@ -92,6 +98,7 @@ const FormsSubmissions = () => {
   const initialFilters = {}
 
   // CONTENT
+  const [ formTemplateDetail, setFormTemplateDetail ] = useState({ label: '', description: '' })
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
   // DATA GRID - BASE
   const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
@@ -134,6 +141,25 @@ const FormsSubmissions = () => {
     })
   }
 
+  const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
+    setIsDataGridLoading(true)
+
+    const resultFormTemplateDetail = await getDetailFormTemplate(
+      formTemplateId,
+      inputAbortController.signal,
+      axiosPrivate,
+    )
+
+    if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
+      setFormTemplateDetail({
+        label: resultFormTemplateDetail.data.value.label,
+        description: resultFormTemplateDetail.data.value.description,
+      })
+    }
+
+    setIsDataGridLoading(false)
+  }
+
   const getSubmissionList = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
 
@@ -163,6 +189,18 @@ const FormsSubmissions = () => {
 
     setIsDataGridLoading(false)
   }
+  
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    getFormTemplateDetail(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -211,7 +249,7 @@ const FormsSubmissions = () => {
                 className={classes.headerTitle}
                 variant='subtitle1'
               >
-                Valid Form (Waiting for the API)
+                {formTemplateDetail.label}
               </Typography>
 
               {/* DESCRIPTION */}
@@ -219,7 +257,9 @@ const FormsSubmissions = () => {
                 color='text.secondary'
                 variant='caption'
               >
-                Ini adalah deskripsi form (Waiting for the API)
+                {formTemplateDetail.description !== '' 
+                  ? formTemplateDetail.description 
+                  : 'No Description for This Form'}
               </Typography>
             </Box>
 
@@ -289,10 +329,10 @@ const FormsSubmissions = () => {
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(id)} />
+      <DialogShareLink id={Number(formTemplateId)} />
 
       {/* DIALOG QR CODE */}
-      <DialogQrCode id={Number(id)} />
+      <DialogQrCode id={Number(formTemplateId)} />
 
       {/* DOWNLOAD MENU */}
       <Menu
