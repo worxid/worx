@@ -10,4 +10,6 @@ public interface UsersRepository extends BaseRepository<Users, Long> {
 
     Optional<Users> findByOrganizationCode(String organizationCode);
 
+
+
 }

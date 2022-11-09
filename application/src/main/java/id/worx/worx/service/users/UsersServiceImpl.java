@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -429,4 +431,28 @@ public class UsersServiceImpl implements UsersService {
         }
         return getUser.get();
     }
+
+    @Scheduled(cron = "* * * * * ?")
+    public void deleteEmailToken() throws Exception{
+
+        //Email token expired after 15 minutes when token generated
+        ZonedDateTime zonedDateTime = ZonedDateTime.now().minusDays(1);
+        String date = zonedDateTime.toLocalDate().toString();
+        String actualDate = date + " 23:59:59";
+        emailTokenRepository.deleteAllByDate(actualDate);
+
+    }
+
+    @Scheduled(cron = "* * * * * ?")
+    public void deleteRefreshToken() throws Exception{
+
+        //Email token expired after 15 minutes when token generated
+        ZonedDateTime zonedDateTime = ZonedDateTime.now().minusDays(1);
+        String date = zonedDateTime.toLocalDate().toString();
+        String actualDate = date + " 23:59:59";
+        refreshTokenRepository.deleteAllByDate(actualDate);
+
+    }
+
+
 }
