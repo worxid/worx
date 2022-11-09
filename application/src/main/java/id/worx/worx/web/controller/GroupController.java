@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 import org.springdoc.api.annotations.ParameterObject;
@@ -63,8 +64,9 @@ public class GroupController implements SecuredRestController {
     }
 
     @PostMapping("search")
-    public ResponseEntity<Page<GroupDTO>> create(@RequestBody GroupSearchRequest searchRequest, @ParameterObject Pageable pageable) {
-        Page<Group> groups = groupService.searchGroup(searchRequest,pageable);
+    public ResponseEntity<Page<GroupDTO>> search(@RequestBody GroupSearchRequest searchRequest,
+                                                 @ParameterObject Pageable pageable) {
+        Page<GroupSearchProjection> groups = groupService.searchGroup(searchRequest,pageable);
         List<GroupDTO> dtos = groups.stream().map(groupService::toDTO).collect(Collectors.toList());
         Page<GroupDTO> page= new BasePageResponse<>(dtos,groups.getPageable(),groups.getTotalElements());
         return ResponseEntity.status(HttpStatus.CREATED)
