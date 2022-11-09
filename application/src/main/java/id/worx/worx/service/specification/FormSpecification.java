@@ -1,7 +1,10 @@
 package id.worx.worx.service.specification;
 
 import java.util.Objects;
+import java.util.Set;
 
+import id.worx.worx.entity.FormTemplate;
+import id.worx.worx.entity.FormTemplate_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +13,18 @@ import id.worx.worx.entity.Form;
 import id.worx.worx.entity.Form_;
 import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
 @Component
 public class FormSpecification implements BaseSpecification<Form> {
 
-    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request) {
+    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId) {
         Specification<Form> spec = Specification.where(null);
 
+        spec= spec.and(getByUserId(userId));
         if (Objects.nonNull(request.getTemplateId())) {
             spec = spec.and(equalTo(Form_.TEMPLATE, request.getTemplateId()));
         }
@@ -62,6 +71,13 @@ public class FormSpecification implements BaseSpecification<Form> {
             .or(like(Form_.DESCRIPTION, globalSearch))
             .or(like(Form_.SUBMIT_ADDRESS, globalSearch))
             .or(like(Form_.RESPONDENT_LABEL, globalSearch));
+    }
+
+    public Specification<Form> getByUserId(Long userId){
+        return (root, query, criteriaBuilder) -> {
+            Join<Form,FormTemplate> formFormTemplate= root.join("template");
+            return criteriaBuilder.equal(formFormTemplate.get("userId"),userId);
+        };
     }
 
 }
