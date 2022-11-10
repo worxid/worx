@@ -1,5 +1,5 @@
 //APIS
-import axios, { axiosPrivate } from 'apis/axios'
+import axios from 'apis/axios'
 
 // QUERY STRING
 import { stringify } from 'query-string'
@@ -20,15 +20,17 @@ export const postSearchFormSubmissionList = async (
   inputSignal, 
   inputRequestParams,
   inputBodyParams,
+  inputAxiosPrivate
 ) => {
   try {
-    const response = await axiosPrivate.post(`/form/search?${stringify(inputRequestParams)}`, 
+    const response = await inputAxiosPrivate.post(`/form/search?${stringify(inputRequestParams)}`, 
       inputBodyParams, 
       { signal: inputSignal },
     )
     return response
   } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }

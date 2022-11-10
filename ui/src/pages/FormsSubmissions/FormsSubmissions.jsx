@@ -159,6 +159,7 @@ const FormsSubmissions = () => {
         size: pageSize,
       },
       { template_id: formTemplateId },
+      axiosPrivate
     )
 
     if (resultSubmissionList.status === 200 && inputIsMounted) {
