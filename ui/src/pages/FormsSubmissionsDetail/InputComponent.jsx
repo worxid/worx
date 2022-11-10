@@ -191,7 +191,6 @@ const InputComponent = (props) => {
               <ListItemText
                 className={classes.listItemText}
                 primary={getFileName(itemFile?.path)}
-                secondary='- KB*'
               />
             </ListItem>
           ))}
@@ -214,7 +213,6 @@ const InputComponent = (props) => {
               <ListItemText
                 className={classes.listItemText}
                 primary={getFileName(itemPhoto?.path)}
-                secondary='- KB*'
               />
             </ListItem>
           ))}
