@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
@@ -16,6 +16,9 @@ import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 
+// REACT TO PRINT
+import { useReactToPrint } from 'react-to-print'
+
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
 
@@ -28,6 +31,7 @@ import { didSuccessfullyCallTheApi } from 'utilities/validation'
 const FormsSubmissionsDetail = () => {
   const axiosPrivate = useAxiosPrivate()
   const [ searchParams ] = useSearchParams()
+  const downloadComponentRef = useRef()
 
   // STYLES
   const classes = useStyles()
@@ -65,6 +69,30 @@ const FormsSubmissionsDetail = () => {
     }
   }
 
+  const handleDownloadButtonClick = useReactToPrint({
+    content: () => downloadComponentRef.current.cloneNode(true),
+    documentTitle: submissionDetail?.label,
+    pageStyle: `
+      @page {
+        size: 210mm 297mm;
+        margin: 2.54cm,
+      }
+      @media all {
+        .pagebreak {
+          display: none;
+        }
+      }
+      @media print {
+        .pagebreak {
+          page-break-before: always;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    `,
+  })
+
   useEffect(() => {
     const abortController = new AbortController()
     getSubmissionDetail(
@@ -89,12 +117,15 @@ const FormsSubmissionsDetail = () => {
       {/* MAIN CONTENT */}
       <LoadingPaper isLoading={isFormLoading} className='overflowYauto'>
         {/* HEADER */}
-        <Header title={submissionDetail?.label}/>
+        <Header
+          title={submissionDetail?.label}
+          onClickDownload={() => handleDownloadButtonClick()}
+        />
 
         <Divider />
 
         {/* CONTENT FORM */}
-        <Grid container spacing={0} className={classes.contentForms}>
+        <Grid ref={downloadComponentRef} container spacing={0} className={classes.contentForms}>
           {submissionDetail?.fields?.map((item, index) => (
             <ItemGrid
               label={item.label}
