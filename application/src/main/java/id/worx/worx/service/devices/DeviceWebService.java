@@ -2,11 +2,11 @@ package id.worx.worx.service.devices;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
-import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
@@ -29,5 +29,5 @@ public interface DeviceWebService {
 
     DeviceDTO toDto(Device devices);
 
-    PagingResponseModel<DeviceDTO> getAllDevicesWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
+    Page<Device> search(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
 }

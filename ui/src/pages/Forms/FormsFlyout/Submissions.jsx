@@ -46,7 +46,7 @@ const Submissions = (props) => {
 
   // GET SUBMISSIONS VIEW ALL URL
   const getSubmissionsViewAllUrl = () => {
-    if(rows.length === 1) return `/forms/${rows[0].id}/submissions`
+    if(rows.length === 1) return `/forms/submissions/${rows[0].id}`
     else return '#'
   }
 
