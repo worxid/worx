@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -8,21 +8,30 @@ import ItemGrid from './ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
-import { dummyData } from './formsViewConstants'
+import { dummyData } from './formsSubmissionsDetailConstants'
 
 // MUIS
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 
 // STYLES
-import useStyles from './formsViewUseStyles'
+import useStyles from './formsSubmissionsDetailUseStyles'
 
-const FormsView = () => {
+const FormsSubmissionsDetail = () => {
   // STYLES
   const classes = useStyles()
 
   // CONTENT
   const [ isFormLoading, setIsFormLoading ] = useState(false)
+
+  // HANDLE GET SUBMISSION DETAIL
+  const getSubmissionDetail = async () => {
+
+  }
+
+  useEffect(() => {
+    getSubmissionDetail()
+  }, [])
 
   return (
     <>
@@ -62,4 +71,4 @@ const FormsView = () => {
   )
 }
 
-export default FormsView
+export default FormsSubmissionsDetail
