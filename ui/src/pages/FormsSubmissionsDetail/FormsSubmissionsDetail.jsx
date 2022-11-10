@@ -8,15 +8,13 @@ import InputComponent from './InputComponent'
 import ItemGrid from './ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
-// CONSTANTS
-import { dummyData } from './formsSubmissionsDetailConstants'
-
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
@@ -104,11 +102,13 @@ const FormsSubmissionsDetail = () => {
               key={index}
               isSeparator={item.type === 'separator'}
             >
-              <InputComponent
-                item={item}
-                type={item.type}
-                defaultValue={findValuesByFieldId(item.id)}
-              />
+              <Stack width='100%' maxWidth='400px'>
+                <InputComponent
+                  item={item}
+                  type={item.type}
+                  defaultValue={findValuesByFieldId(item.id)}
+                />
+              </Stack>
             </ItemGrid>
           ))}
           {/* ITEM */}

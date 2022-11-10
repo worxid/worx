@@ -1,6 +1,7 @@
-// ASSETS
-import imgScreenshot from 'assets/images/pictures/Screenshot_20220809-172011_Permission.png'
-import imgSignature from 'assets/images/pictures/signature.png'
+import { useEffect, useState } from 'react'
+
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Box from '@mui/material/Box'
@@ -26,15 +27,26 @@ import TextField from '@mui/material/TextField'
 import IconCalendarMonth from '@mui/icons-material/CalendarMonth'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
+// SERVICES
+import { postDetailMediaFiles } from 'services/media'
+
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
+
+// UTILITIES
 import { convertDate } from 'utilities/date'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const InputComponent = (props) => {
   const { item, type, defaultValue } = props
+  const axiosPrivate = useAxiosPrivate()
+
   // STYLES
   const classes = useStyles()
 
+  const [currentFiles, setCurrentFiles] = useState([])
+
+  // FIND VALUES BY KEY
   const findValuesKey = (type) => {
     if(type === 'text' || type === 'rating' || type === 'date') return 'value' // string
     else if (type === 'checkbox_group') return 'values' // array<boolean>
@@ -42,6 +54,40 @@ const InputComponent = (props) => {
     else if (type === 'file' || type === 'photo') return 'file_ids' // array<number>
     else if (type === 'signature') return 'file_id' // number
   }
+
+  // GET FILE/MEDIA URL
+  const getMediaURL = async (fileIds = []) => {
+    const abortController = new AbortController()
+    const response = await postDetailMediaFiles(
+      abortController.signal,
+      {
+        file_ids: [...fileIds]
+      },
+      axiosPrivate
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setCurrentFiles(response.data.list)
+    } else setCurrentFiles([])
+
+    abortController.abort()
+  }
+
+  // GET NAME FILE
+  const getFileName = (name) => {
+    const splitName = name.split('/')
+    return splitName[splitName.length-1]
+  }
+
+  useEffect(() => {
+    if(type === 'file' || type === 'photo' && defaultValue?.[findValuesKey(type)]) {
+      getMediaURL(defaultValue?.[findValuesKey(type)])
+    }
+
+    if(type === 'signature' && defaultValue?.[findValuesKey(type)]) {
+      getMediaURL([defaultValue?.[findValuesKey(type)]])
+    }
+  }, [type])
 
   return (
     <>
@@ -136,58 +182,51 @@ const InputComponent = (props) => {
       {/* LIST FILE */}
       {type === 'file' && (
         <List className='padding0'>
-          <ListItem className={classes.listItem}>
-            <ListItemAvatar className={classes.listFileAvatar}>
-              <IconInsertDriveFile className={classes.listFileIcon}/>
-            </ListItemAvatar>
+          {currentFiles?.map((itemFile, index) => (
+            <ListItem className={classes.listItem} key={index}>
+              <ListItemAvatar className={classes.listFileAvatar}>
+                <IconInsertDriveFile className={classes.listFileIcon}/>
+              </ListItemAvatar>
 
-            <ListItemText
-              className={classes.listItemText}
-              primary='Screenshot_20220809-172011_Permission'
-              secondary='107,8 KB'
-            />
-          </ListItem>
-
-          <ListItem className={classes.listItem}>
-            <ListItemAvatar className={classes.listFileAvatar}>
-              <IconInsertDriveFile className={classes.listFileIcon}/>
-            </ListItemAvatar>
-
-            <ListItemText
-              className={classes.listItemText}
-              primary='Screenshot_20220809-172011_Permission'
-              secondary='107,8 KB'
-            />
-          </ListItem>
+              <ListItemText
+                className={classes.listItemText}
+                primary={getFileName(itemFile?.path)}
+                secondary='- KB*'
+              />
+            </ListItem>
+          ))}
         </List>
       )}
 
       {/* LIST IMAGE */}
       {type === 'photo' && (
         <List className='padding0'>
-          <ListItem className={classes.listItem}>
-            <ListItemAvatar className={classes.listFileAvatar}>
-              <Box
-                className={classes.listImage}
-                component='img'
-                src={imgScreenshot}
-              />
-            </ListItemAvatar>
+          {currentFiles?.map((itemPhoto, index) => (
+            <ListItem className={classes.listItem} key={index}>
+              <ListItemAvatar className={classes.listFileAvatar}>
+                <Box
+                  className={classes.listImage}
+                  component='img'
+                  src={itemPhoto?.url}
+                />
+              </ListItemAvatar>
 
-            <ListItemText
-              className={classes.listItemText}
-              primary='Screenshot_20220809-172011_Permission'
-              secondary='107,8 KB'
-            />
-          </ListItem>
+              <ListItemText
+                className={classes.listItemText}
+                primary={getFileName(itemPhoto?.path)}
+                secondary='- KB*'
+              />
+            </ListItem>
+          ))}
         </List>
       )}
 
       {/* SIGNATURE */}
-      {type === 'signature' && (
+      {(type === 'signature' && currentFiles[0]?.url) && (
         <Box
+          className={classes.signatureBox}
           component='img'
-          src={imgSignature}
+          src={currentFiles[0]?.url}
         />
       )}
     </>
