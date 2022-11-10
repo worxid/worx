@@ -29,5 +29,5 @@ public interface DeviceWebService {
 
     DeviceDTO toDto(Device devices);
 
-    Page<Device> getAllDeviceWithPage(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
+    Page<Device> search(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
 }

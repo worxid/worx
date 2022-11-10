@@ -40,18 +40,18 @@ public class DeviceController implements SecuredRestController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<DeviceDTO>> list(@RequestBody DeviceSearchRequest request,
-                                                @ParameterObject Pageable pageable) {
-        Page<Device> devices = deviceWebService.getAllDeviceWithPage(request,pageable);
+    public ResponseEntity<Page<DeviceDTO>> search(
+            @RequestBody DeviceSearchRequest request,
+            @ParameterObject Pageable pageable) {
+        Page<Device> devices = deviceWebService.search(request, pageable);
 
         List<DeviceDTO> deviceDTOS = devices.stream()
-            .map(deviceWebService::toDto)
-            .collect(Collectors.toList());
-
+                .map(deviceWebService::toDto)
+                .collect(Collectors.toList());
 
         Page<DeviceDTO> page = new BasePageResponse<>(deviceDTOS, devices.getPageable(), devices.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
-            .body(page);
+                .body(page);
     }
 
     @GetMapping("/{id}")
@@ -98,6 +98,6 @@ public class DeviceController implements SecuredRestController {
     public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
         deviceWebService.deleteDevice(request.getIds());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(BaseResponse.builder().build());
+                .body(BaseResponse.builder().build());
     }
 }

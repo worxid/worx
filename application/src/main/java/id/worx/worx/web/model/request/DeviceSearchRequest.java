@@ -32,6 +32,8 @@ public class DeviceSearchRequest implements Serializable {
     @JsonProperty("device_app_version")
     private String deviceAppVersion;
     private List<String> groups;
+    @JsonProperty("global_search")
+    private String globalSearch;
     @JsonProperty("joined_time")
     private Instant joinedTime;
 }
