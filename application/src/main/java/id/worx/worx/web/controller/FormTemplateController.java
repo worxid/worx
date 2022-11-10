@@ -48,13 +48,10 @@ public class FormTemplateController implements SecuredRestController {
     public ResponseEntity<Page<FormTemplateDTO>> search(
             @RequestBody @Valid FormTemplateSearchRequest request,
             @ParameterObject Pageable pageable) {
-
         Page<FormTemplate> templates = templateService.search(request, pageable);
-
         List<FormTemplateDTO> dtos = templates.stream()
                 .map(templateService::toDTO)
                 .collect(Collectors.toList());
-
         Page<FormTemplateDTO> page = new BasePageResponse<>(dtos, templates.getPageable(), templates.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(page);
