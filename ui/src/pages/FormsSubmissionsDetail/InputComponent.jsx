@@ -28,11 +28,20 @@ import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
+import { convertDate } from 'utilities/date'
 
 const InputComponent = (props) => {
-  const { type, defaultValue } = props
+  const { item, type, defaultValue } = props
   // STYLES
   const classes = useStyles()
+
+  const findValuesKey = (type) => {
+    if(type === 'text' || type === 'rating' || type === 'date') return 'value' // string
+    else if (type === 'checkbox_group') return 'values' // array<boolean>
+    else if (type === 'radio_group' || type === 'dropdown') return 'value_index' // number
+    else if (type === 'file' || type === 'photo') return 'file_ids' // array<number>
+    else if (type === 'signature') return 'file_id' // number
+  }
 
   return (
     <>
@@ -45,14 +54,14 @@ const InputComponent = (props) => {
           color='secondary'
         >
           <InputLabel shrink={true}>
-            Textfield
+            {item?.label}
           </InputLabel>
         
           <OutlinedInput
             autoFocus
             type='text'
-            label='Textfield'
-            defaultValue='textfield'
+            label={item?.label}
+            defaultValue={defaultValue?.[findValuesKey(type)] || '-'}
           />
         </FormControl>
       )}
@@ -60,36 +69,43 @@ const InputComponent = (props) => {
       {/* CHECKBOX GROUP */}
       {type === 'checkbox_group' && (
         <FormGroup className={classes.checkboxGroup} disabled>
-          <FormControlLabel disabled control={<Checkbox defaultChecked />} label='Label' />
-          <FormControlLabel disabled control={<Checkbox />} label='Disabled' />
+          {item?.group?.map((itemCheckbox, index) => (
+            <FormControlLabel
+              key={index}
+              disabled
+              control={<Checkbox
+                defaultChecked={defaultValue?.[findValuesKey(type)][index] || false}
+              />}
+              label={itemCheckbox.label}
+            />
+          ))}
         </FormGroup>
       )}
 
       {/* RADIO GROUP */}
       {type === 'radio_group' && (
-        <RadioGroup
-          className={classes.radioGroup}
-          defaultValue='female'
-          name='radio-buttons-group'
-          disabled
-        >
-          <FormControlLabel disabled value='female' control={<Radio />} label='Female' />
-          <FormControlLabel disabled value='male' control={<Radio />} label='Male' />
+        <RadioGroup className={classes.radioGroup} disabled>
+          {item?.options?.map((itemRadio, index) => (
+            <FormControlLabel
+              control={<Radio checked={Number(defaultValue?.[findValuesKey(type)]) === index}/>}
+              key={index}
+              disabled
+              value={index}
+              label={itemRadio.label}
+            />
+          ))}
         </RadioGroup>
       )}
 
       {/* DROPDOWN */}
       {type === 'dropdown' && (
         <FormControl fullWidth disabled>
-          <Select
-            labelId='demo-simple-select-label'
-            id='demo-simple-select'
-            value={10}
-            disabled
-          >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+          <Select defaultValue={Number(defaultValue?.[findValuesKey(type)])} disabled>
+            {item?.options?.map((itemDropdown, index) => (
+              <MenuItem key={index} value={index}>
+                {itemDropdown.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       )}
@@ -99,7 +115,7 @@ const InputComponent = (props) => {
         <TextField
           fullWidth
           disabled
-          value='25-09-2022'
+          value={convertDate(defaultValue?.[findValuesKey(type)], 'dd-MM-yyyy')}
           InputProps={{
             startAdornment: (<InputAdornment position='start'>
               <Box className={classes.textfieldDateAdornment}><IconCalendarMonth /></Box>
@@ -109,7 +125,13 @@ const InputComponent = (props) => {
       )}
 
       {/* RATING */}
-      {type === 'rating' && (<Rating name='read-only' value={4} readOnly />)}
+      {type === 'rating' && (
+        <Rating
+          value={Number(defaultValue?.[findValuesKey(type)])}
+          readOnly
+          max={item?.max_stars}
+        />
+      )}
 
       {/* LIST FILE */}
       {type === 'file' && (

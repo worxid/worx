@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -33,6 +36,7 @@ const Submissions = (props) => {
 
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
+  const axiosPrivate = useAxiosPrivate()
 
   // STATES
   const [ currentForm, setCurrentForm ] = useState(0)
@@ -53,7 +57,7 @@ const Submissions = (props) => {
       size: 10
     }, {
       template_id: rows[0].id,
-    })
+    }, axiosPrivate)
 
     setSubmissionData(response?.data)
   }
