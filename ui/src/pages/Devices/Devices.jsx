@@ -198,7 +198,7 @@ const Devices = () => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
-      setTableData(response.data.rows)
+      setTableData(response.data.content)
       setTotalRow(response.data.totalElements)
     }
     else if (!wasRequestCanceled(response?.status)) {
