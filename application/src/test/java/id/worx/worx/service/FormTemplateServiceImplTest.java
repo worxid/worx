@@ -85,6 +85,11 @@ class FormTemplateServiceImplTest {
     }
 
     @Test
+    void givenFormTemplateRequest_whenCreate_thenReturn() {
+
+    }
+
+    @Test
     void givenFormTemplateId_whenRead_thenReturn() {
         Long formTemplateId = 1L;
         Long userId = 1L;
@@ -160,9 +165,9 @@ class FormTemplateServiceImplTest {
     @Test
     void givenNonExistentFormTemplateId_whenDelete_thenThrowWorxException() {
         Long nonExistentFormTemplateId = 1L;
-        Users user= Users.builder()
-            .id(1L)
-            .build();
+        Users user = Users.builder()
+                .id(1L)
+                .build();
         lenient().when(templateRepository.findById(nonExistentFormTemplateId)).thenReturn(Optional.empty());
         when(authContext.getUsers()).thenReturn(user);
         Assertions.assertThrows(WorxException.class, () -> templateService.delete(nonExistentFormTemplateId));
