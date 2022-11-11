@@ -117,6 +117,11 @@ public class FormServiceImpl implements FormService {
         return formMapper.toDTO(form);
     }
 
+    @Override
+    public Form getById(Long id) {
+        return formRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+    }
+
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
         Optional<FormTemplate> optTemplate = templateRepository.findById(request.getTemplateId());
 
