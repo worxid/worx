@@ -1,11 +1,13 @@
 package id.worx.worx.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,10 +16,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import id.worx.worx.common.model.request.FormTemplateRequest;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
@@ -25,6 +32,7 @@ import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormTemplateMapper;
+import id.worx.worx.mapper.FormTemplateMapperImpl;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
@@ -36,6 +44,9 @@ class FormTemplateServiceImplTest {
 
     @Autowired
     WorxProperties worxProps = new WorxProperties();
+
+    @InjectMocks
+    FormTemplateMapper templateMapper = new FormTemplateMapperImpl();
 
     @Mock
     EmailService emailService;
@@ -50,10 +61,10 @@ class FormTemplateServiceImplTest {
     UsersRepository usersRepository;
 
     @Mock
-    FormTemplateSpecification specification;
+    ObjectMapper objectMapper;
 
     @Mock
-    FormTemplateMapper templateMapper;
+    FormTemplateSpecification specification;
 
     private FormTemplateService templateService;
 
@@ -84,8 +95,49 @@ class FormTemplateServiceImplTest {
         return template;
     }
 
+    Users prepareUser() {
+        Long userId = 1L;
+        Users user = Users.builder()
+                .id(userId)
+                .build();
+        when(authContext.getUsers()).thenReturn(user);
+        return user;
+    }
+
     @Test
-    void givenFormTemplateRequest_whenCreate_thenReturn() {
+    void givenFormTemplateRequest_whenCreate_thenReturn() throws JsonProcessingException {
+        String formLabel = "My New Form";
+        FormTemplateRequest request = FormTemplateRequest.builder()
+                .label(formLabel)
+                .description("My Form Description")
+                .fields(List.of())
+                .submitInZone(false)
+                .isDefaultForm(false)
+                .build();
+
+        FormTemplate template = FormTemplate.builder()
+                .label(formLabel)
+                .build();
+
+        Users user = prepareUser();
+
+        when(objectMapper.writeValueAsString(List.of())).thenReturn("[]");
+        when(templateRepository.save(any(FormTemplate.class))).thenReturn(template);
+
+        FormTemplate actualTemplate = templateService.create(request);
+
+        verify(templateRepository, times(1)).save(actualTemplate);
+
+        Group userDefaultGroup = Group.builder()
+                .name("Main Group")
+                .color("#DA3630")
+                .isDefault(true)
+                .templates(new HashSet<>())
+                .build();
+        when(groupRepository.findByIsDefaultTrueAndUserId(user.getId())).thenReturn(Optional.of(userDefaultGroup));
+
+        actualTemplate = templateService.create(request);
+        verify(templateRepository, times(2)).save(actualTemplate);
 
     }
 
