@@ -31,6 +31,11 @@ import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+// MUI ICONS
+import IconGesture from '@mui/icons-material/Gesture'
+import IconImage from '@mui/icons-material/Image'
+import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
 import { getDetailFormTemplate } from 'services/formTemplate'
@@ -263,6 +268,62 @@ const FormsSubmissions = () => {
               size='small'
               className={classes.columnChip}
             />
+          ))}
+        </Stack>
+      )
+    }
+    else if (
+      inputParams?.value?.type === 'file' || 
+      inputParams?.value?.type === 'photo' || 
+      inputParams?.value?.type === 'signature'
+    ) {
+      let valueList = inputParams?.value?.file_ids
+      if (inputParams?.value?.type === 'signature') valueList = [ inputParams?.value?.file_id ]
+
+      let columnIcon
+      if (inputParams?.value?.type === 'file') columnIcon = (
+        <IconInsertDriveFile 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'photo') columnIcon = (
+        <IconImage 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'signature') columnIcon = (
+        <IconGesture 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      
+      return (
+        <Stack
+          spacing='8px'
+          padding='8px 0px'
+          className='cursorPointer'
+        >
+          {valueList.map((item, index) => (
+            <Stack
+              key={index}
+              direction='row'
+              spacing='8px'
+              alignItems='center'
+            >
+              {/* ICON */}
+              {columnIcon}
+
+              {/* TEXT */}
+              <Typography 
+                variant='inherit'
+                className='heightFitContent'
+              >
+                {item}
+              </Typography>
+            </Stack>
           ))}
         </Stack>
       )
