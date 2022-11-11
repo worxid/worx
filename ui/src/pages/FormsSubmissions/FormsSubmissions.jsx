@@ -23,6 +23,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -188,6 +189,22 @@ const FormsSubmissions = () => {
         </Typography>
       )
     }
+    else if (inputParams?.value?.type === 'rating') {
+      const maxStars = inputParams?.colDef?.fieldInformation?.max_stars
+
+      return (
+        <Rating
+          defaultValue={inputParams?.value?.value ?? 0} 
+          max={maxStars}
+          readOnly
+        />
+      )
+    }
+    // else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
+    //   const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
+    //   const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
+    //   return selectedOption.label
+    // }
   }
 
   const updateColumnsDynamically = () => {
@@ -205,6 +222,7 @@ const FormsSubmissions = () => {
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
           cellClassName: 'cell-source-custom',
+          fieldInformation: {...item},
           renderCell: (params) => getRenderCellByColumnType(params),
         }
       })]
