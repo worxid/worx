@@ -77,7 +77,10 @@ const FormsSubmissions = () => {
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
-        <Stack>
+        <Stack
+          minHeight={48}
+          justifyContent='center'
+        >
           {/* DATE */}
           <Typography variant='inherit'>
             {convertDate(params.value, 'dd-MM-yyyy')}
