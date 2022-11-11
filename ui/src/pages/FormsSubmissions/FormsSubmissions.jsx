@@ -199,6 +199,14 @@ const FormsSubmissions = () => {
     setIsDataGridLoading(false)
   }
 
+  const getMininumColumnWidthByColumnType = (inputItem) => {
+    if (inputItem.type === 'rating') {
+      if (inputItem.max_stars <= 5) return 30 * inputItem.max_stars
+      else return 28 * inputItem.max_stars
+    }
+    else return 150
+  }
+
   const getRenderCellByColumnType = (inputParams) => {
     if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
       return (
@@ -235,7 +243,7 @@ const FormsSubmissions = () => {
           field: item.id,
           headerName: item.label,
           flex: 1,
-          minWidth: 150,
+          minWidth: getMininumColumnWidthByColumnType(item),
           hide: false,
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
