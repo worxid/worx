@@ -102,10 +102,20 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public FormTemplate create(FormTemplateRequest request) {
+        Users user = authContext.getUsers();
         FormTemplate template = templateMapper.fromDTO(request);
         String urlCode = UrlUtils.generateUrlCode();
         template.setUrlCode(urlCode);
-        template.setUserId(authContext.getUsers().getId());
+        template.setUserId(user.getId());
+
+        Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
+        if (defaultUserGroupOptional.isPresent()) {
+            Group defaultGroup = defaultUserGroupOptional.get();
+            template.getAssignedGroups().add(defaultGroup);
+            defaultGroup.getTemplates().add(template);
+            groupRepository.save(defaultGroup);
+        }
+
         templateRepository.save(template);
         return template;
     }
@@ -213,10 +223,10 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         return linkFormDTO;
     }
 
-    public String linkForm(String urlCode){
+    public String linkForm(String urlCode) {
         return String.format(
-            "%s/fill-form?code=%s",
-            worxProps.getWeb().getEndpoint(),
-            urlCode);
+                "%s/fill-form?code=%s",
+                worxProps.getWeb().getEndpoint(),
+                urlCode);
     }
 }

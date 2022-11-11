@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import id.worx.worx.service.AuthenticationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,19 +19,19 @@ import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
+import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.specification.DeviceSpecification;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class DeviceWebWebServiceImpl implements DeviceWebService {
 
@@ -62,6 +61,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     @Override
     public Device approveDevice(Long id, ApproveRequest request) {
+        Users user = authContext.getUsers();
         Device device = getById(id);
         DeviceStatus status = device.getDeviceStatus();
 
@@ -71,6 +71,14 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
             } else {
                 device.setDeviceStatus(DeviceStatus.DENIED);
             }
+        }
+
+        Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
+        if (defaultUserGroupOptional.isPresent()) {
+            Group defaultGroup = defaultUserGroupOptional.get();
+            device.getAssignedGroups().add(defaultGroup);
+            defaultGroup.getDevices().add(device);
+            groupRepository.save(defaultGroup);
         }
 
         return deviceRepository.save(device);

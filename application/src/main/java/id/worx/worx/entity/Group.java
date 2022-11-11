@@ -46,7 +46,7 @@ public class Group extends BaseEntity {
 
     @Default
     @Column(nullable = false)
-    private boolean isDefault = false;
+    private Boolean isDefault = false;
 
     @ManyToMany(mappedBy = "assignedGroups", cascade = {
             CascadeType.PERSIST,
