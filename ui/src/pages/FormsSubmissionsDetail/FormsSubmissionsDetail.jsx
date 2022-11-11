@@ -109,7 +109,7 @@ const FormsSubmissionsDetail = () => {
       <AppBar
         hasFab={false}
         hasBack={true}
-        backLink='/forms'
+        backLink={`/forms/submissions/${searchParams.get('formTemplateId')}`}
         pageTitle='Form Submission Detail'
         hasSearch={false}
       />
