@@ -205,7 +205,11 @@ const FormsSubmissions = () => {
       if (inputItem.max_stars <= 5) return 30 * inputItem.max_stars
       else return 28 * inputItem.max_stars
     }
-    else if (inputItem.type === 'radio_group' || inputItem.type === 'dropdown') return 175
+    else if (
+      inputItem.type === 'radio_group' || 
+      inputItem.type === 'dropdown' || 
+      inputItem.type === 'checkbox_group'
+    ) return 175
     else return 150
   }
 
@@ -231,12 +235,33 @@ const FormsSubmissions = () => {
     else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
       const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
       const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
+
       return (
         <Chip
           label={selectedOption.label}
           size='small'
           className={classes.columnChip}
         />
+      )
+    }
+    else if (inputParams?.value?.type === 'checkbox_group') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.group
+      const selectedOptionList = optionList.filter((item, index) => inputParams?.value?.values[index])
+      
+      return (
+        <Stack 
+          spacing='8px'
+          padding='8px 0px'
+        >
+          {selectedOptionList.map((item, index) => (
+            <Chip
+              key={index}
+              label={item.label}
+              size='small'
+              className={classes.columnChip}
+            />
+          ))}
+        </Stack>
       )
     }
   }
@@ -431,8 +456,9 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
-            // CELL
+            // ROW
             onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
+            getRowHeight={() => 'auto'}
           />
         </LoadingPaper>
       </Stack>
