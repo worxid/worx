@@ -63,10 +63,11 @@ public class FormServiceImpl implements FormService {
     private final FileStorageService fileStorageService;
     private final FileRepository fileRepository;
     private final FileSubmissionRepository fileSubmissionRepository;
+    private final AuthenticationContext authContext;
 
     @Override
     public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
-        Specification<Form> spec = specification.fromSearchRequest(request);
+        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId());
         return formRepository.findAll(spec, pageable);
     }
 
