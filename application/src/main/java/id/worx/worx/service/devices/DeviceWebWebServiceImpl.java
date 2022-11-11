@@ -72,6 +72,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
                 device.setDeviceStatus(DeviceStatus.DENIED);
             }
         }
+        device = deviceRepository.save(device);
 
         Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
         if (defaultUserGroupOptional.isPresent()) {

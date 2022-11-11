@@ -107,6 +107,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         String urlCode = UrlUtils.generateUrlCode();
         template.setUrlCode(urlCode);
         template.setUserId(user.getId());
+        template = templateRepository.save(template);
 
         Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
         if (defaultUserGroupOptional.isPresent()) {
@@ -116,7 +117,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
             groupRepository.save(defaultGroup);
         }
 
-        templateRepository.save(template);
+        template = templateRepository.save(template);
         return template;
     }
 
