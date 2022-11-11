@@ -24,6 +24,7 @@ import lodash from 'lodash'
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Rating from '@mui/material/Rating'
@@ -204,6 +205,7 @@ const FormsSubmissions = () => {
       if (inputItem.max_stars <= 5) return 30 * inputItem.max_stars
       else return 28 * inputItem.max_stars
     }
+    else if (inputItem.type === 'radio_group' || inputItem.type === 'dropdown') return 175
     else return 150
   }
 
@@ -226,11 +228,17 @@ const FormsSubmissions = () => {
         />
       )
     }
-    // else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
-    //   const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
-    //   const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
-    //   return selectedOption.label
-    // }
+    else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
+      const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
+      return (
+        <Chip
+          label={selectedOption.label}
+          size='small'
+          className={classes.columnChip}
+        />
+      )
+    }
   }
 
   const updateColumnsDynamically = () => {
