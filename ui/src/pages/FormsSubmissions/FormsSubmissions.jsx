@@ -18,6 +18,9 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // LIBRARY
 import * as XLSX from 'xlsx'
 
+// LODASH
+import lodash from 'lodash'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -61,7 +64,7 @@ const FormsSubmissions = () => {
       width: 140,
       hide: false,
       areFilterAndSortShown: true,
-      valueGetter: (params) => params.row.source.label,
+      valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
       field: 'submissionDate',
@@ -72,7 +75,22 @@ const FormsSubmissions = () => {
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      valueGetter: (params) => convertDate(params.value),
+      renderCell: (params) => (
+        <Stack>
+          {/* DATE */}
+          <Typography variant='inherit'>
+            {convertDate(params.value, 'dd-MM-yyyy')}
+          </Typography>
+
+          {/* TIME */}
+          <Typography 
+            variant='inherit'
+            color='text.secondary'
+          >
+            {convertDate(params.value, 'hh:mm a')}
+          </Typography>
+        </Stack>
+      ),
     },
     {
       field: 'submissionAddress',
