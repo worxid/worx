@@ -64,7 +64,6 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
         Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             JpaUtils.replaceSort(pageable.getSort()));
-        System.out.println("SPEC "+ spec.toString());
         return templateRepository.findAll(spec, adjustedPageable);
     }
 
