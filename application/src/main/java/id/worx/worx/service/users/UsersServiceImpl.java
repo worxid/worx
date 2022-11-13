@@ -39,6 +39,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -112,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setStatus(EmailTokenStatus.UNUSED);
             emailToken.setEmail(userRequest.getEmail());
             emailToken.setType(EmailTokenType.NEWACC);
-            emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
             emailTokenRepository.save(emailToken);
 
             String url = String.format("%s/account-confirmation?code=%s",httpServletRequest.getRequestURL(), random);
@@ -227,7 +228,7 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setStatus(EmailTokenStatus.UNUSED);
             emailToken.setEmail(email);
             emailToken.setType(EmailTokenType.RESETPWD);
-            emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
             emailTokenRepository.save(emailToken);
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
@@ -257,7 +258,7 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
         }
 
-        if(checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
+        if(checkData.get().getExpiredToken().compareTo(Instant.now()) >= 0){
 
             Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
             if(users.isPresent()){
@@ -289,7 +290,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
         //check expired
-        if(checkToken.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0){
+        if(checkToken.get().getExpiredToken().compareTo(Instant.now()) >= 0){
             EmailToken updateData = checkToken.get();
             updateData.setStatus(EmailTokenStatus.USED);
             emailTokenRepository.save(updateData);
@@ -432,25 +433,20 @@ public class UsersServiceImpl implements UsersService {
         return getUser.get();
     }
 
-    @Scheduled(cron = "* * * * * ?")
+    @Scheduled(cron = "59 23 * * * ?")
     public void deleteEmailToken() throws Exception{
 
-        //Email token expired after 15 minutes when token generated
-        ZonedDateTime zonedDateTime = ZonedDateTime.now().minusDays(1);
-        String date = zonedDateTime.toLocalDate().toString();
-        String actualDate = date + " 23:59:59";
-        emailTokenRepository.deleteAllByDate(actualDate);
-
+        List<Long> ids = emailTokenRepository.getAllByLessThan(Instant.now());
+        log.info("Delete {} ",ids.size()," email token");
+        emailTokenRepository.deleteAllById(ids);
     }
 
-    @Scheduled(cron = "* * * * * ?")
+    @Scheduled(cron = "59 23 * * * ?")
     public void deleteRefreshToken() throws Exception{
 
-        //Email token expired after 15 minutes when token generated
-        ZonedDateTime zonedDateTime = ZonedDateTime.now().minusDays(1);
-        String date = zonedDateTime.toLocalDate().toString();
-        String actualDate = date + " 23:59:59";
-        refreshTokenRepository.deleteAllByDate(actualDate);
+        List<Long> ids = refreshTokenRepository.getAllByLessThan(Instant.now());
+        log.info("Delete {} ",ids.size()," refresh token");
+        refreshTokenRepository.deleteAllById(ids);
 
     }
 
