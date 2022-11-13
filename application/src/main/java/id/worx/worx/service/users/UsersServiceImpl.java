@@ -434,7 +434,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Scheduled(cron = "59 23 * * * ?")
-    public void deleteEmailToken() throws Exception{
+    public void deleteEmailToken(){
 
         List<Long> ids = emailTokenRepository.getAllByLessThan(Instant.now());
         log.info("Delete {} ",ids.size()," email token");
@@ -442,7 +442,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Scheduled(cron = "59 23 * * * ?")
-    public void deleteRefreshToken() throws Exception{
+    public void deleteRefreshToken(){
 
         List<Long> ids = refreshTokenRepository.getAllByLessThan(Instant.now());
         log.info("Delete {} ",ids.size()," refresh token");

@@ -40,7 +40,7 @@ public interface UsersService {
 
     Optional<Users> findByOrganizationCode(String organizationCode);
 
-    void deleteEmailToken() throws Exception;
-    void deleteRefreshToken() throws Exception;
+    void deleteEmailToken();
+    void deleteRefreshToken();
 
 }
