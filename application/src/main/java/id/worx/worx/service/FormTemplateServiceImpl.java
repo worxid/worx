@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import id.worx.worx.data.dto.LinkFormDTO;
+import id.worx.worx.util.JpaUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -56,8 +58,14 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
-        Specification<FormTemplate> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
-        return templateRepository.findAll(spec, pageable);
+
+        Specification<FormTemplate> spec = specification.fromSearchRequest(request,
+            authContext.getUsers().getId());
+
+        Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            JpaUtils.replaceSort(pageable.getSort()));
+        System.out.println("SPEC "+ spec.toString());
+        return templateRepository.findAll(spec, adjustedPageable);
     }
 
     @Override

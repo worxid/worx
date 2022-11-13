@@ -33,5 +33,7 @@ public class FormTemplateSearchRequest implements Serializable {
     private List<String> assignedGroups;
     @JsonProperty("submission_count")
     private Integer submissionCount;
+    @JsonProperty("global_search")
+    private String globalSearch;
 
 }
