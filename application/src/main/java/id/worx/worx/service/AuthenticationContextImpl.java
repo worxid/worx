@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationContextImpl implements AuthenticationContext {
 
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     public Authentication getAuthentication() {
