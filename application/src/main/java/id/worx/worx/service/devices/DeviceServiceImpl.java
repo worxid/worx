@@ -1,8 +1,22 @@
 package id.worx.worx.service.devices;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import id.worx.worx.common.model.request.device.ApproveRequest;
+import id.worx.worx.entity.Group;
+import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.service.AuthenticationContext;
+import id.worx.worx.service.specification.DeviceSpecification;
+import id.worx.worx.util.JpaUtils;
+import id.worx.worx.web.model.request.DeviceSearchRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +45,12 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceRepository deviceRepository;
     private final UsersRepository userRepository;
+
+    private final DeviceSpecification deviceSpecification;
+
+    private final AuthenticationContext authContext;
+
+    private final GroupRepository groupRepository;
 
     @Override
     public Device registerDevice(MobileRegisterRequest request) {
@@ -107,7 +127,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public DeviceDTO toDTO(Device devices) {
+    public DeviceDTO toDTOMobile(Device devices) {
         return mobileDeviceMapper.toDto(devices);
     }
 
@@ -119,6 +139,111 @@ public class DeviceServiceImpl implements DeviceService {
         }
 
         return devices.get();
+    }
+
+
+    @Override
+    public Device getById(Long id) {
+        return deviceRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+    }
+
+    @Override
+    public List<Device> getAllDevices() {
+        return deviceRepository.getAllDeviceByDeleted();
+    }
+
+    @Override
+    public Device updateDeviceLabel(Long id, UpdateDeviceRequest request) {
+        Device devices = getById(id);
+        devices.setLabel(request.getLabel());
+        return deviceRepository.save(devices);
+    }
+
+    @Override
+    public Device approveDevice(Long id, ApproveRequest request) {
+        Users user = authContext.getUsers();
+        Device device = getById(id);
+        DeviceStatus status = device.getDeviceStatus();
+
+        if (status.equals(DeviceStatus.PENDING)) {
+            if (request.getIsApproved().equals(Boolean.TRUE)) {
+                device.setDeviceStatus(DeviceStatus.APPROVED);
+            } else {
+                device.setDeviceStatus(DeviceStatus.DENIED);
+            }
+        }
+        device = deviceRepository.save(device);
+
+        Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
+        if (defaultUserGroupOptional.isPresent()) {
+            Group defaultGroup = defaultUserGroupOptional.get();
+            device.getAssignedGroups().add(defaultGroup);
+            defaultGroup.getDevices().add(device);
+            groupRepository.save(defaultGroup);
+        }
+
+        return deviceRepository.save(device);
+    }
+
+    @javax.transaction.Transactional
+    @Override
+    public Device updateGroup(Long id, List<Long> groupIds) {
+        Device device = this.findByIdorElseThrowNotFound(id);
+        List<Group> groups = groupRepository.findAllById(groupIds);
+        device.setAssignedGroups(new HashSet<>());
+        groups = groups.stream()
+            .map(group -> {
+                device.getAssignedGroups().add(group);
+                group.getDevices().add(device);
+                return group;
+            })
+            .collect(Collectors.toList());
+
+        groupRepository.saveAll(groups);
+        deviceRepository.save(device);
+        return device;
+    }
+
+    @Override
+    public void deleteDevice(Long id) {
+        Device device = this.findByIdorElseThrowNotFound(id);
+        deviceRepository.delete(device);
+    }
+
+    @Override
+    public DeviceDTO toDto(Device devices) {
+        DeviceDTO deviceResponse = deviceMapper.toResponse(devices);
+        List<String> groupNames = devices.getAssignedGroups().stream().map(Group::getName).collect(Collectors.toList());
+        if (groupNames != null)
+            deviceResponse.setGroups(groupNames);
+        return deviceResponse;
+    }
+
+    @Override
+    public Page<Device> search(DeviceSearchRequest deviceSearchRequest, Pageable pageable) {
+        Specification<Device> spec = deviceSpecification.fromSearchRequest(deviceSearchRequest,
+            authContext.getUsers().getOrganizationCode());
+        Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            JpaUtils.replaceSort(pageable.getSort()));
+        return deviceRepository.findAll(spec, adjustedPageable);
+    }
+
+    private Device findByIdorElseThrowNotFound(Long id) {
+        Optional<Device> device = deviceRepository.findById(id);
+
+        if (device.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        return device.get();
+    }
+
+    @Override
+    public void deleteDevice(List<Long> ids) {
+        List<Device> devices = deviceRepository.findAllById(ids);
+        for (Device device : devices) {
+            deviceRepository.deleteById(device.getId());
+        }
     }
 
 }
