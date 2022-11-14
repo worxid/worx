@@ -3,12 +3,10 @@ package id.worx.worx.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.GroupDTO;
@@ -78,6 +76,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Long id) {
         Group group = this.findByIdorElseThrowNotFound(id);
+
+        if (group.getIsDefault().equals(Boolean.TRUE)) {
+            throw new WorxException(WorxErrorCode.OPERATION_NOT_ALLOWED);
+        }
+
         this.delete(group);
     }
 
@@ -101,7 +104,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), JpaUtils.replaceSort(pageable.getSort()));
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                JpaUtils.replaceSort(pageable.getSort()));
         return groupRepository.search(groupSearchRequest.getId(),
                 groupSearchRequest.getName(),
                 groupSearchRequest.getColor(),
