@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +75,16 @@ public class FormController implements SecuredRestController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseValueResponse<FormDTO>> getById(@PathVariable("id")Long id){
+        Form form= formService.getById(id);
+        FormDTO formDTO= formService.toDTO(form);
+        BaseValueResponse<FormDTO> response= BaseValueResponse.<FormDTO>builder()
+            .value(formDTO)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
 }

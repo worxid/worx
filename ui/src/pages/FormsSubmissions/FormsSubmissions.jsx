@@ -18,13 +18,23 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // LIBRARY
 import * as XLSX from 'xlsx'
 
+// LODASH
+import lodash from 'lodash'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+// MUI ICONS
+import IconGesture from '@mui/icons-material/Gesture'
+import IconImage from '@mui/icons-material/Image'
+import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
@@ -60,7 +70,7 @@ const FormsSubmissions = () => {
       width: 140,
       hide: false,
       areFilterAndSortShown: true,
-      valueGetter: (params) => params.row.source.label,
+      valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
       field: 'submissionDate',
@@ -71,7 +81,25 @@ const FormsSubmissions = () => {
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      valueGetter: (params) => convertDate(params.value),
+      renderCell: (params) => (
+        <Stack
+          minHeight={48}
+          justifyContent='center'
+        >
+          {/* DATE */}
+          <Typography variant='inherit'>
+            {convertDate(params.value, 'dd-MM-yyyy')}
+          </Typography>
+
+          {/* TIME */}
+          <Typography 
+            variant='inherit'
+            color='text.secondary'
+          >
+            {convertDate(params.value, 'hh:mm a')}
+          </Typography>
+        </Stack>
+      ),
     },
     {
       field: 'submissionAddress',
@@ -180,12 +208,125 @@ const FormsSubmissions = () => {
     setIsDataGridLoading(false)
   }
 
-  const getValueByColumnType = (inputParams) => {
-    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date' || inputParams?.value?.type === 'rating') return inputParams?.value?.value
+  const getMininumColumnWidthByColumnType = (inputItem) => {
+    if (inputItem.type === 'rating') {
+      if (inputItem.max_stars <= 5) return 30 * inputItem.max_stars
+      else return 28 * inputItem.max_stars
+    }
+    else if (
+      inputItem.type === 'radio_group' || 
+      inputItem.type === 'dropdown' || 
+      inputItem.type === 'checkbox_group'
+    ) return 175
+    else return 150
+  }
+
+  const getRenderCellByColumnType = (inputParams) => {
+    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
+      return (
+        <Typography variant='inherit'>
+          {inputParams?.value?.value}
+        </Typography>
+      )
+    }
+    else if (inputParams?.value?.type === 'rating') {
+      const maxStars = inputParams?.colDef?.fieldInformation?.max_stars
+
+      return (
+        <Rating
+          defaultValue={inputParams?.value?.value ?? 0} 
+          max={maxStars}
+          readOnly
+        />
+      )
+    }
     else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
       const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
       const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
-      return selectedOption.label
+
+      return (
+        <Chip
+          label={selectedOption.label}
+          size='small'
+          className={classes.columnChip}
+        />
+      )
+    }
+    else if (inputParams?.value?.type === 'checkbox_group') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.group
+      const selectedOptionList = optionList.filter((item, index) => inputParams?.value?.values[index])
+      
+      return (
+        <Stack 
+          spacing='8px'
+          padding='8px 0px'
+        >
+          {selectedOptionList.map((item, index) => (
+            <Chip
+              key={index}
+              label={item.label}
+              size='small'
+              className={classes.columnChip}
+            />
+          ))}
+        </Stack>
+      )
+    }
+    else if (
+      inputParams?.value?.type === 'file' || 
+      inputParams?.value?.type === 'photo' || 
+      inputParams?.value?.type === 'signature'
+    ) {
+      let valueList = inputParams?.value?.file_ids
+      if (inputParams?.value?.type === 'signature') valueList = [ inputParams?.value?.file_id ]
+
+      let columnIcon
+      if (inputParams?.value?.type === 'file') columnIcon = (
+        <IconInsertDriveFile 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'photo') columnIcon = (
+        <IconImage 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'signature') columnIcon = (
+        <IconGesture 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      
+      return (
+        <Stack
+          spacing='8px'
+          padding='8px 0px'
+          className='cursorPointer'
+        >
+          {valueList.map((item, index) => (
+            <Stack
+              key={index}
+              direction='row'
+              spacing='8px'
+              alignItems='center'
+            >
+              {/* ICON */}
+              {columnIcon}
+
+              {/* TEXT */}
+              <Typography 
+                variant='inherit'
+                className='heightFitContent'
+              >
+                {item}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+      )
     }
   }
 
@@ -199,12 +340,13 @@ const FormsSubmissions = () => {
           field: item.id,
           headerName: item.label,
           flex: 1,
-          minWidth: 150,
+          minWidth: getMininumColumnWidthByColumnType(item),
           hide: false,
           areFilterAndSortShown: false,
           headerClassName: 'cell-source-custom',
           cellClassName: 'cell-source-custom',
-          valueGetter: (params) => getValueByColumnType(params),
+          fieldInformation: {...item},
+          renderCell: (params) => getRenderCellByColumnType(params),
         }
       })]
 
@@ -378,8 +520,9 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
-            // CELL
+            // ROW
             onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
+            getRowHeight={() => 'auto'}
           />
         </LoadingPaper>
       </Stack>

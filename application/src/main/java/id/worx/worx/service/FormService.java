@@ -27,5 +27,6 @@ public interface FormService {
     FormDTO toDTO(Form form);
 
     SearchFormDTO toSearchFormDTO(Form form);
+    Form getById(Long id);
 
 }
