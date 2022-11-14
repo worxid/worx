@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -115,6 +116,11 @@ public class FormServiceImpl implements FormService {
     @Override
     public FormDTO toDTO(Form form) {
         return formMapper.toDTO(form);
+    }
+
+    @Override
+    public SearchFormDTO toSearchFormDTO(Form form) {
+        return formMapper.toSearchFormDTO(form);
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
