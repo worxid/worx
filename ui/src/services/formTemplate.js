@@ -115,3 +115,16 @@ export const getReadFormTemplate = async (formCode, inputSignal) => {
     else return error.response
   }
 }
+
+export const postShareLinkFormTemplate = async (formTemplateId, inputSignal, inputAxiosPrivate) => {
+  try {
+    const response = await inputAxiosPrivate.post(`/form/template/${formTemplateId}/share-link`, null, {
+      signal: inputSignal
+    })
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
