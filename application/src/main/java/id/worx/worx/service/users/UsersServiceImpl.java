@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,6 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.config.properties.WorxProperties;
-import id.worx.worx.entity.Group;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
@@ -43,10 +41,10 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.UsersMapper;
 import id.worx.worx.repository.EmailTokenRepository;
-import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.service.EmailService;
+import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +56,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UsersServiceImpl implements UsersService {
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
-    private static final String DEFAULT_GROUP_NAME_STRING = "default";
-    private static final String DEFAULT_GROUP_COLOR_STRING = "#CF322C";
 
     private final UsersRepository usersRepository;
 
@@ -68,11 +64,11 @@ public class UsersServiceImpl implements UsersService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final EmailTokenRepository emailTokenRepository;
-    private final GroupRepository groupRepository;
 
     private final JwtUtils jwtUtils;
 
     private final EmailService emailService;
+    private final GroupService groupService;
 
     private final UsersMapper usersMapper;
 
@@ -122,13 +118,7 @@ public class UsersServiceImpl implements UsersService {
         emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
         emailTokenRepository.save(emailToken);
 
-        Group defaultGroup = Group.builder()
-                .name(DEFAULT_GROUP_NAME_STRING)
-                .color(DEFAULT_GROUP_COLOR_STRING)
-                .userId(users.getId())
-                .isDefault(true)
-                .build();
-        groupRepository.save(defaultGroup);
+        groupService.createDefaultGroup(users.getId());
 
         String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), random);
 

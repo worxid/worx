@@ -16,6 +16,8 @@ public interface GroupService {
 
     Group create(GroupRequest request);
 
+    Group createDefaultGroup(Long userId);
+
     Group read(Long id);
 
     Group update(Long id, GroupRequest request);
