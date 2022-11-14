@@ -4,13 +4,15 @@ import { useContext, useEffect, useState } from 'react'
 import DialogForm from 'components/DialogForm/DialogForm'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
-import Backdrop from '@mui/material/Backdrop'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -19,19 +21,30 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconClose from '@mui/icons-material/Close'
 
+// SERVICES
+import { postShareLinkFormTemplate } from 'services/formTemplate'
+
 // STYLES
 import useStyles from './dialogQrCodeUseStyles'
 
 // QR CODE
 import QRCode from 'qrcode'
 
+// UTILITIES
+import { 
+  didSuccessfullyCallTheApi,
+  wasRequestCanceled,
+} from 'utilities/validation'
+
 const DialogQrCode = (props) => {
   const { id } = props
+  const axiosPrivate = useAxiosPrivate()
 
   // STYLES
   const classes = useStyles()
 
   // CONTEXTS
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
@@ -48,9 +61,28 @@ const DialogQrCode = (props) => {
     }
   }
 
+  // FETCH SHARE LINK
+  const fetchShareLink = async (abortController) => {
+    const response = await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+
+    if (didSuccessfullyCallTheApi(response?.status)) {
+      generateQR(response.data.value.link)
+    } else if (!wasRequestCanceled(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something went wrong',
+      })
+    }
+  }
+
   useEffect(() => {
-    generateQR('https://dev.worx.id/fill-form?code=dummy')
-  }, [])
+    const abortController = new AbortController()
+    id && fetchShareLink(abortController)
+
+    return () => abortController.abort()
+  }, [id])
 
   return (
     <DialogForm

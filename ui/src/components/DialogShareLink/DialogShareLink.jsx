@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -25,7 +25,6 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconClose from '@mui/icons-material/Close'
-import IconCode from '@mui/icons-material/Code'
 import IconLink from '@mui/icons-material/Link'
 import IconMailOutline from '@mui/icons-material/MailOutline'
 import IconQrCode2 from '@mui/icons-material/QrCode2'
@@ -38,7 +37,7 @@ import {
 } from 'react-share'
 
 // SERVICES
-import { postShareFormTemplate } from 'services/formTemplate'
+import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useStyles from './dialogShareLinkUseStyles'
@@ -69,6 +68,7 @@ const DialogShareLink = (props) => {
   const [currentTab, setCurrentTab] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
+  const [formLink, setFormLink] = useState('')
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -150,6 +150,30 @@ const DialogShareLink = (props) => {
       message:'Copied to clipboard'
     })
   }
+
+  // FETCH SHARE LINK
+  const fetchShareLink = async (abortController) => {
+    const response = await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+
+    if (didSuccessfullyCallTheApi(response?.status)) {
+      setFormLink(response.data.value.link)
+    } else if (!wasRequestCanceled(response?.status)) {
+      setFormLink('')
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something went wrong',
+      })
+    }
+  }
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    id && fetchShareLink(abortController)
+
+    return () => abortController.abort()
+  }, [id])
 
   return (
     <DialogForm
@@ -239,7 +263,7 @@ const DialogShareLink = (props) => {
             <IconLink className={classes.iconLink} fontSize='small'/>
 
             <Typography variant='caption' color='text.secondary' noWrap>
-              http://ww.worx.id//validformsid12345hajsdsddsds
+              {formLink}
             </Typography>
           </Stack>
 
@@ -248,7 +272,7 @@ const DialogShareLink = (props) => {
               size='small'
               variant='contained'
               className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={(event) => handleButtonCopyClick(event, 'http://ww.worx.id//validformsid12345hajsdsddsds')}
+              onClick={(event) => handleButtonCopyClick(event, formLink)}
             >
               Copy Link
             </Button>
