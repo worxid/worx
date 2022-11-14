@@ -22,6 +22,7 @@ import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.service.EmailService;
+import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
 
 @ActiveProfiles({ "test" })
@@ -45,6 +46,8 @@ class UsersServiceImplTest {
     @Mock
     EmailService emailService;
     @Mock
+    GroupService groupService;
+    @Mock
     UsersMapper usersMapper;
 
     private UsersService usersService;
@@ -56,9 +59,9 @@ class UsersServiceImplTest {
                 worxProps,
                 refreshTokenRepository,
                 emailTokenRepository,
-                groupRepository,
                 jwtUtils,
                 emailService,
+                groupService,
                 usersMapper);
     }
 
