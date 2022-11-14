@@ -145,14 +145,12 @@ public class UsersServiceImpl implements UsersService {
         if (checkEmail.isPresent()) {
             Users users = checkEmail.get();
 
-            Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(
-                    emailRequestDTO.getEmail(), EmailTokenType.NEWACC, EmailTokenStatus.UNUSED);
+            Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(emailRequestDTO.getEmail(), EmailTokenType.NEWACC, EmailTokenStatus.UNUSED);
 
             if (getEmailToken.isEmpty()) {
                 throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
             }
-            String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(),
-                    getEmailToken.get().getToken());
+            String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), getEmailToken.get().getToken());
 
             emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
 
@@ -267,8 +265,7 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(
-                changePasswordToken.getToken(), EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(changePasswordToken.getToken(), EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
 
         if (!checkData.isPresent()) {
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
@@ -298,8 +295,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException {
 
-        Optional<EmailToken> checkToken = emailTokenRepository.findByTokenAndTypeAndStatus(code, EmailTokenType.NEWACC,
-                EmailTokenStatus.UNUSED);
+        Optional<EmailToken> checkToken = emailTokenRepository.findByTokenAndTypeAndStatus(code, EmailTokenType.NEWACC, EmailTokenStatus.UNUSED);
 
         if (!checkToken.isPresent()) {
             throw new WorxException(WorxErrorCode.TOKEN_INVALID_ERROR);
@@ -348,11 +344,6 @@ public class UsersServiceImpl implements UsersService {
         }
 
         return "WX" + sb;
-    }
-
-    public String defaultUrl(HttpServletRequest httpServletRequest) {
-
-        return httpServletRequest.getRequestURL().toString();
     }
 
     public String formatPhone(String phone, String country) {
