@@ -1,23 +1,16 @@
 package id.worx.worx.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import id.worx.worx.common.model.projection.GroupSearchProjection;
-import id.worx.worx.util.JpaUtils;
-import id.worx.worx.web.model.request.GroupSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
@@ -25,11 +18,16 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.util.JpaUtils;
+import id.worx.worx.web.model.request.GroupSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
+
+    private static final String DEFAULT_GROUP_NAME_STRING = "Main Group";
+    private static final String DEFAULT_GROUP_COLOR_STRING = "#DA3630";
 
     private final GroupRepository groupRepository;
 
@@ -51,6 +49,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Group createDefaultGroup(Long userId) {
+        Group group = Group.builder()
+                .name(DEFAULT_GROUP_NAME_STRING)
+                .color(DEFAULT_GROUP_COLOR_STRING)
+                .userId(userId)
+                .isDefault(true)
+                .build();
+        group = groupRepository.save(group);
+        return group;
+    }
+
+    @Override
     public Group read(Long id) {
         return this.findByIdorElseThrowNotFound(id);
     }
@@ -66,12 +76,17 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(Long id) {
         Group group = this.findByIdorElseThrowNotFound(id);
+
+        if (group.getIsDefault().equals(Boolean.TRUE)) {
+            throw new WorxException(WorxErrorCode.OPERATION_NOT_ALLOWED);
+        }
+
         this.delete(group);
     }
 
     @Override
     public void delete(List<Long> ids) {
-        List<Group> groups = groupRepository.findByIdsAndUserId(ids,authContext.getUsers().getId());
+        List<Group> groups = groupRepository.findByIdsAndUserId(ids, authContext.getUsers().getId());
         for (Group group : groups) {
             this.delete(group);
         }
@@ -89,14 +104,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), JpaUtils.replaceSort(pageable.getSort()));
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                JpaUtils.replaceSort(pageable.getSort()));
         return groupRepository.search(groupSearchRequest.getId(),
-            groupSearchRequest.getName(),
-            groupSearchRequest.getColor(),
-            authContext.getUsers().getId(),
-            groupSearchRequest.getDeviceCount(),
-            groupSearchRequest.getFormCount(),
-            customPageable);
+                groupSearchRequest.getName(),
+                groupSearchRequest.getColor(),
+                authContext.getUsers().getId(),
+                groupSearchRequest.getDeviceCount(),
+                groupSearchRequest.getFormCount(),
+                customPageable);
     }
 
     private void delete(Group group) {
@@ -108,7 +124,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {
-        Optional<Group> group = groupRepository.findByIdAndUserId(id,authContext.getUsers().getId());
+        Optional<Group> group = groupRepository.findByIdAndUserId(id, authContext.getUsers().getId());
 
         if (group.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);

@@ -18,17 +18,21 @@ public interface GroupMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "isDefault", ignore = true)
     @Mapping(target = "templates", ignore = true)
+    @Mapping(target = "devices", ignore = true)
     Group fromRequest(GroupRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "templates", ignore = true)
+    @Mapping(target = "devices", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdOn", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "modifiedOn", ignore = true)
     @Mapping(target = "modifiedBy", ignore = true)
+    @Mapping(target = "isDefault", ignore = true)
     void update(@MappingTarget Group group, GroupRequest request);
 
 }

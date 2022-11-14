@@ -18,6 +18,7 @@ import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
+import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
@@ -60,6 +61,7 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
 
     @Override
     public Device approveDevice(Long id, ApproveRequest request) {
+        Users user = authContext.getUsers();
         Device device = getById(id);
         DeviceStatus status = device.getDeviceStatus();
 
@@ -69,6 +71,15 @@ public class DeviceWebWebServiceImpl implements DeviceWebService {
             } else {
                 device.setDeviceStatus(DeviceStatus.DENIED);
             }
+        }
+        device = deviceRepository.save(device);
+
+        Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
+        if (defaultUserGroupOptional.isPresent()) {
+            Group defaultGroup = defaultUserGroupOptional.get();
+            device.getAssignedGroups().add(defaultGroup);
+            defaultGroup.getDevices().add(device);
+            groupRepository.save(defaultGroup);
         }
 
         return deviceRepository.save(device);

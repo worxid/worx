@@ -44,6 +44,10 @@ public class Group extends BaseEntity {
     @Column(name = "group_color", nullable = false, length = 10)
     private String color;
 
+    @Default
+    @Column(nullable = false)
+    private Boolean isDefault = false;
+
     @ManyToMany(mappedBy = "assignedGroups", cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE

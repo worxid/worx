@@ -18,7 +18,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM worx_groups WHERE id in(:groupIds)")
     List<Group> getAllByIds(List<Long> groupIds);
 
-    @Query(nativeQuery = true, value = "SELECT wG.id,group_name as name, group_color as color, coalesce(form_group_cnt,0) as formCount, coalesce(dev_group_cnt,0) as deviceCount " +
+    @Query(nativeQuery = true, value = "SELECT wG.id, group_name as name, group_color as color, is_default as isDefault," +
+        " coalesce(form_group_cnt,0) as formCount, coalesce(dev_group_cnt,0) as deviceCount " +
         "FROM " +
         "(SELECT * " +
         "FROM worx_groups " +
@@ -44,9 +45,11 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Page<GroupSearchProjection> search(Long id, String name, String color, Long userId, Integer deviceCount, Integer templateCount, Pageable pageable);
 
     Optional<Group> findByIdAndUserId(Long id, Long userId);
+    Optional<Group> findByIsDefaultTrueAndUserId(Long userId);
 
     List<Group> findAllByUserId(Long userId);
 
     @Query(nativeQuery = true,value = "SELECT * FROM worx_groups WHERE id in(:ids) AND user_id=:userId")
     List<Group> findByIdsAndUserId(List<Long> ids, Long userId);
+
 }

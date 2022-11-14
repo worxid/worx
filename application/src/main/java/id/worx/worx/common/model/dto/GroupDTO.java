@@ -22,6 +22,8 @@ public class GroupDTO implements Serializable {
     private Long id;
     private String name;
     private String color;
+    @JsonProperty("is_default")
+    private Boolean isDefault;
 
     @JsonProperty("form_count")
     private Integer formCount;

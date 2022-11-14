@@ -70,6 +70,12 @@ public enum WorxErrorCode {
 
     TOKEN_EXPIRED_ERROR(13, "There were errors during content validation", HttpStatus.BAD_REQUEST),
 
+     /**
+     * {@code Operation not allowed error}
+     * This error is used to notify not allowed operation.
+     */
+    OPERATION_NOT_ALLOWED(26, "This operation is not allowed by default.", HttpStatus.FORBIDDEN),
+
     /**
      * {@code Feature disabled error}
      * This error is used to notify disabled feature error.
