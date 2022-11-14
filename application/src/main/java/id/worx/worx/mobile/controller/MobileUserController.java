@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -24,13 +23,13 @@ public class MobileUserController {
 
     @PostMapping("/create-new-team")
     public ResponseEntity<BaseValueResponse<UserResponse>> createNewTeam(@RequestHeader("deviceCode") String deviceCode,
-            @RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest) {
+            @RequestBody @Valid UserRequest userRequest) {
 
         if (deviceCode.isEmpty()) {
             throw new WorxException(WorxErrorCode.DEVICE_CODE_INVALID);
         }
 
-        Users users = usersService.createUser(userRequest, httpServletRequest);
+        Users users = usersService.createUser(userRequest);
         UserResponse dto = usersService.toDTO(users);
 
         BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()

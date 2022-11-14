@@ -1,9 +1,35 @@
 package id.worx.worx.service.users;
 
+import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import id.worx.worx.common.enums.EmailTokenStatus;
 import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.common.enums.UserStatus;
-import id.worx.worx.common.model.request.auth.*;
+import id.worx.worx.common.model.request.EmailRequestDTO;
+import id.worx.worx.common.model.request.auth.ChangePasswordRequest;
+import id.worx.worx.common.model.request.auth.ChangePasswordToken;
+import id.worx.worx.common.model.request.auth.LoginRequest;
+import id.worx.worx.common.model.request.auth.TokenRefreshRequest;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
@@ -18,30 +44,12 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.UsersMapper;
 import id.worx.worx.repository.EmailTokenRepository;
 import id.worx.worx.repository.GroupRepository;
-import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.service.EmailService;
 import id.worx.worx.util.JwtUtils;
-import id.worx.worx.common.model.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -62,17 +70,15 @@ public class UsersServiceImpl implements UsersService {
     private final EmailTokenRepository emailTokenRepository;
     private final GroupRepository groupRepository;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private UsersMapper usersMapper;
+    private final UsersMapper usersMapper;
 
+    @Override
     @Transactional
-    public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest) {
+    public Users createUser(UserRequest userRequest) {
 
         Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
@@ -124,7 +130,7 @@ public class UsersServiceImpl implements UsersService {
                 .build();
         groupRepository.save(defaultGroup);
 
-        String url = String.format("%s/account-confirmation?code=%s", httpServletRequest.getRequestURL(), random);
+        String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), random);
 
         emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
