@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.config.properties.WebProperties;
@@ -25,7 +24,6 @@ import id.worx.worx.service.EmailService;
 import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
 
-@ActiveProfiles({ "test" })
 @ExtendWith(MockitoExtension.class)
 class UsersServiceImplTest {
 
