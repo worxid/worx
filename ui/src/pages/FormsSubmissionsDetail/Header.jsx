@@ -7,10 +7,10 @@ import Typography from '@mui/material/Typography'
 import IconDownload from '@mui/icons-material/Download'
 
 // STYLES
-import useStyles from './formsViewUseStyles'
+import useStyles from './formsSubmissionsDetailUseStyles'
 
 const Header = (props) => {
-  const { title } = props
+  const { title, onClickDownload } = props
 
   // STYLES
   const classes = useStyles()
@@ -30,7 +30,7 @@ const Header = (props) => {
       </Typography>
 
       {/* BUTTON DOWNLOAD */}
-      <IconButton>
+      <IconButton onClick={onClickDownload}>
         <IconDownload />
       </IconButton>
     </Stack>

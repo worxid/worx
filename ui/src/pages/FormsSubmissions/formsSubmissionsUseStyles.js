@@ -34,7 +34,10 @@ const useStyles = makeStyles((theme) => ({
       padding: 0,
       width: 92,
     },
-  }
+  },
+  columnChip: {
+    fontSize: 12,
+  },
 }))
 
 export default useStyles

@@ -1,4 +1,5 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +65,11 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main
     }
   },
+  signatureBox: {
+    border: `2px solid ${alpha(theme.palette.common.black, 0.26)}`,
+    maxWidth: 400,
+    width: '100%',
+  }
 }))
 
 export default useStyles

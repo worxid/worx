@@ -20,6 +20,7 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
+import id.worx.worx.util.JpaUtils;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -100,8 +101,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
-        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                Sort.by(getDirection(pageable), getSortBy(pageable)));
+        Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), JpaUtils.replaceSort(pageable.getSort()));
         return groupRepository.search(groupSearchRequest.getId(),
                 groupSearchRequest.getName(),
                 groupSearchRequest.getColor(),
@@ -127,24 +127,6 @@ public class GroupServiceImpl implements GroupService {
         }
 
         return group.get();
-    }
-
-    public String getSortBy(Pageable pageable) {
-        List<String> sortBys = pageable.getSort().stream().map(Sort.Order::getProperty).collect(Collectors.toList());
-        if (sortBys.isEmpty())
-            return "name";
-        String sortBy = sortBys.get(0);
-        return sortBy.replaceFirst("_[a-z]",
-                String.valueOf(
-                        Character.toUpperCase(sortBy.charAt(sortBy.indexOf("_") + 1))));
-    }
-
-    public Sort.Direction getDirection(Pageable pageable) {
-        List<Sort.Direction> directions = pageable.getSort().stream().map(Sort.Order::getDirection)
-                .collect(Collectors.toList());
-        if (directions.isEmpty())
-            return Sort.Direction.valueOf("ASC");
-        return directions.get(0);
     }
 
 }
