@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -29,5 +29,5 @@ public class EmailToken extends Audit {
     private EmailTokenStatus status;
     @Enumerated(EnumType.ORDINAL)
     private EmailTokenType type;
-    private ZonedDateTime expiredToken;
+    private Instant expiredToken;
 }

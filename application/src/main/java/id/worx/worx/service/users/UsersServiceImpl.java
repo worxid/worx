@@ -2,8 +2,6 @@ package id.worx.worx.service.users;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -48,6 +46,9 @@ import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -110,14 +111,12 @@ public class UsersServiceImpl implements UsersService {
         users.setOrganizationCode(organizationCode());
         users = usersRepository.save(users);
 
-        EmailToken emailToken = new EmailToken();
-        emailToken.setToken(random);
-        emailToken.setStatus(EmailTokenStatus.UNUSED);
-        emailToken.setEmail(userRequest.getEmail());
-        emailToken.setType(EmailTokenType.NEWACC);
-        emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
-        emailTokenRepository.save(emailToken);
-
+            EmailToken emailToken = new EmailToken();
+            emailToken.setToken(random);
+            emailToken.setStatus(EmailTokenStatus.UNUSED);
+            emailToken.setEmail(userRequest.getEmail());
+            emailToken.setType(EmailTokenType.NEWACC);
+            emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
         groupService.createDefaultGroup(users.getId());
 
         String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), random);
@@ -232,7 +231,7 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setStatus(EmailTokenStatus.UNUSED);
             emailToken.setEmail(email);
             emailToken.setType(EmailTokenType.RESETPWD);
-            emailToken.setExpiredToken(ZonedDateTime.now().plusMinutes(15));
+            emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
             emailTokenRepository.save(emailToken);
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
@@ -261,7 +260,7 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
         }
 
-        if (checkData.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0) {
+        if(checkData.get().getExpiredToken().isAfter(Instant.now())){
 
             Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
             if (users.isPresent()) {
@@ -291,8 +290,8 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.TOKEN_INVALID_ERROR);
         }
 
-        // check expired
-        if (checkToken.get().getExpiredToken().compareTo(ZonedDateTime.now(ZoneId.systemDefault())) >= 0) {
+        //check expired
+        if(checkToken.get().getExpiredToken().isAfter(Instant.now())){
             EmailToken updateData = checkToken.get();
             updateData.setStatus(EmailTokenStatus.USED);
             emailTokenRepository.save(updateData);
@@ -432,4 +431,23 @@ public class UsersServiceImpl implements UsersService {
         }
         return getUser.get();
     }
+
+    @Scheduled(cron = "59 59 23 * * ?")
+    public void deleteEmailToken(){
+
+        List<Long> ids = emailTokenRepository.getAllByLessThan(Instant.now());
+        log.info("Delete {} ",ids.size()," email token");
+        emailTokenRepository.deleteAllById(ids);
+    }
+
+    @Scheduled(cron = "59 59 23 * * ?")
+    public void deleteRefreshToken(){
+
+        List<Long> ids = refreshTokenRepository.getAllByLessThan(Instant.now());
+        log.info("Delete {} ",ids.size()," refresh token");
+        refreshTokenRepository.deleteAllById(ids);
+
+    }
+
+
 }

@@ -41,4 +41,7 @@ public interface UsersService {
 
     Optional<Users> findByOrganizationCode(String organizationCode);
 
+    void deleteEmailToken();
+    void deleteRefreshToken();
+
 }
