@@ -36,7 +36,7 @@ public class MobileDeviceController {
     public ResponseEntity<BaseValueResponse<DeviceDTO>> registerDevice(@RequestBody MobileRegisterRequest request) {
 
         Device devices = deviceService.registerDevice(request);
-        DeviceDTO dto = deviceService.toDTO(devices);
+        DeviceDTO dto = deviceService.toDTOMobile(devices);
 
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()
                 .value(dto)
@@ -58,7 +58,7 @@ public class MobileDeviceController {
             @RequestBody UpdateDeviceRequest deviceRequest) {
 
         Device devices = deviceService.updateInformation(deviceCode, deviceRequest);
-        DeviceDTO dto = deviceService.toDTO(devices);
+        DeviceDTO dto = deviceService.toDTOMobile(devices);
 
         BaseValueResponse<DeviceDTO> response = BaseValueResponse.<DeviceDTO>builder()
                 .value(dto)
@@ -74,7 +74,7 @@ public class MobileDeviceController {
             @RequestHeader(value = "deviceCode") String deviceCode) {
 
         Device devices = deviceService.getByDeviceCode(deviceCode);
-        DeviceDTO dto = deviceService.toDTO(devices);
+        DeviceDTO dto = deviceService.toDTOMobile(devices);
 
         Optional<Users> userResponse = usersService.findByOrganizationCode(dto.getOrganizationCode());
         if(userResponse.isPresent()){

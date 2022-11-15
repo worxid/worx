@@ -8,7 +8,7 @@ import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.devices.Device;
-import id.worx.worx.service.devices.DeviceWebService;
+import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import javax.validation.Valid;
 @RequestMapping("devices")
 @RequiredArgsConstructor
 public class DeviceController implements SecuredRestController {
-    private final DeviceWebService deviceWebService;
+    private final DeviceService deviceWebService;
 
     @GetMapping
     public ResponseEntity<BaseListResponse<DeviceDTO>> list() {
