@@ -2,6 +2,7 @@ package id.worx.worx.service;
 
 import java.util.List;
 
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,6 +26,7 @@ public interface FormService {
 
     FormDTO toDTO(Form form);
 
+    SearchFormDTO toSearchFormDTO(Form form);
     Form getById(Long id);
 
 }

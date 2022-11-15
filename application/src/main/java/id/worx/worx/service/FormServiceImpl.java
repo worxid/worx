@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -118,6 +119,10 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
+    public SearchFormDTO toSearchFormDTO(Form form) {
+        return formMapper.toSearchFormDTO(form);
+    }
+
     public Form getById(Long id) {
         return formRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }

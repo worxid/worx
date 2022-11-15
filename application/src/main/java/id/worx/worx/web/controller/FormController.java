@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,14 +51,14 @@ public class FormController implements SecuredRestController {
     }
 
     @PostMapping("search")
-    public ResponseEntity<Page<FormDTO>> search(
+    public ResponseEntity<Page<SearchFormDTO>> search(
             @RequestBody @Valid FormSubmissionSearchRequest request,
             @ParameterObject Pageable pageable) {
         Page<Form> forms = formService.search(request, pageable);
-        List<FormDTO> dtos = forms.stream()
-                .map(formService::toDTO)
+        List<SearchFormDTO> dtos = forms.stream()
+                .map(formService::toSearchFormDTO)
                 .collect(Collectors.toList());
-        Page<FormDTO> page = new BasePageResponse<>(dtos, forms.getPageable(), forms.getTotalElements());
+        Page<SearchFormDTO> page = new BasePageResponse<>(dtos, forms.getPageable(), forms.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(page);
     }
