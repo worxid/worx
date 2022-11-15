@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,14 +51,14 @@ public class FormController implements SecuredRestController {
     }
 
     @PostMapping("search")
-    public ResponseEntity<Page<FormDTO>> search(
+    public ResponseEntity<Page<SearchFormDTO>> search(
             @RequestBody @Valid FormSubmissionSearchRequest request,
             @ParameterObject Pageable pageable) {
         Page<Form> forms = formService.search(request, pageable);
-        List<FormDTO> dtos = forms.stream()
-                .map(formService::toDTO)
+        List<SearchFormDTO> dtos = forms.stream()
+                .map(formService::toSearchFormDTO)
                 .collect(Collectors.toList());
-        Page<FormDTO> page = new BasePageResponse<>(dtos, forms.getPageable(), forms.getTotalElements());
+        Page<SearchFormDTO> page = new BasePageResponse<>(dtos, forms.getPageable(), forms.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(page);
     }
@@ -73,6 +75,16 @@ public class FormController implements SecuredRestController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseValueResponse<FormDTO>> getById(@PathVariable("id")Long id){
+        Form form= formService.getById(id);
+        FormDTO formDTO= formService.toDTO(form);
+        BaseValueResponse<FormDTO> response= BaseValueResponse.<FormDTO>builder()
+            .value(formDTO)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
 }

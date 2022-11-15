@@ -54,8 +54,8 @@ public class UsersController {
     AuthenticationContext authenticationContext;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseValueResponse<UserResponse>> createUser(@RequestBody @Valid UserRequest userRequest, HttpServletRequest httpServletRequest){
-        Users users = usersService.createUser(userRequest,httpServletRequest);
+    public ResponseEntity<BaseValueResponse<UserResponse>> createUser(@RequestBody @Valid UserRequest userRequest){
+        Users users = usersService.createUser(userRequest);
         UserResponse dto = usersService.toDTO(users);
 
         BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()

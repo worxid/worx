@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import id.worx.worx.data.dto.LinkFormDTO;
+import id.worx.worx.util.JpaUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -56,8 +58,13 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
-        Specification<FormTemplate> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
-        return templateRepository.findAll(spec, pageable);
+
+        Specification<FormTemplate> spec = specification.fromSearchRequest(request,
+            authContext.getUsers().getId());
+
+        Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            JpaUtils.replaceSort(pageable.getSort()));
+        return templateRepository.findAll(spec, adjustedPageable);
     }
 
     @Override
@@ -102,11 +109,22 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     @Override
     public FormTemplate create(FormTemplateRequest request) {
+        Users user = authContext.getUsers();
         FormTemplate template = templateMapper.fromDTO(request);
         String urlCode = UrlUtils.generateUrlCode();
         template.setUrlCode(urlCode);
-        template.setUserId(authContext.getUsers().getId());
-        templateRepository.save(template);
+        template.setUserId(user.getId());
+        template = templateRepository.save(template);
+
+        Optional<Group> defaultUserGroupOptional = groupRepository.findByIsDefaultTrueAndUserId(user.getId());
+        if (defaultUserGroupOptional.isPresent()) {
+            Group defaultGroup = defaultUserGroupOptional.get();
+            template.getAssignedGroups().add(defaultGroup);
+            defaultGroup.getTemplates().add(template);
+            groupRepository.save(defaultGroup);
+        }
+
+        template = templateRepository.save(template);
         return template;
     }
 
@@ -213,10 +231,10 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         return linkFormDTO;
     }
 
-    public String linkForm(String urlCode){
+    public String linkForm(String urlCode) {
         return String.format(
-            "%s/fill-form?code=%s",
-            worxProps.getWeb().getEndpoint(),
-            urlCode);
+                "%s/fill-form?code=%s",
+                worxProps.getWeb().getEndpoint(),
+                urlCode);
     }
 }

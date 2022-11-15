@@ -8,7 +8,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -107,7 +106,19 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
             spec = spec.and(submissionCountEqualTo(request.getSubmissionCount()));
         }
 
+        if (Objects.nonNull(request.getGlobalSearch())){
+            spec= spec.and(globalSearch(request.getGlobalSearch()));
+        }
+
         return spec;
+    }
+
+    public Specification<FormTemplate> globalSearch(String globalSearch){
+        Specification<FormTemplate> spec= Specification.where(null);
+
+        return spec.or(like(FormTemplate_.LABEL,globalSearch))
+            .or(like(FormTemplate_.DESCRIPTION,globalSearch))
+            .or(isAssignedToGroup(globalSearch));
     }
 
 }

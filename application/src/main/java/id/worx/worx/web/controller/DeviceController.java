@@ -4,17 +4,17 @@ import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.request.MultipleDeleteRequest;
 import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
-import id.worx.worx.common.model.response.PagingResponseModel;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.service.devices.DeviceWebService;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,11 +40,18 @@ public class DeviceController implements SecuredRestController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PagingResponseModel<DeviceDTO>> list(@RequestBody DeviceSearchRequest request,
-            @SortDefault.SortDefaults({
-                    @SortDefault(sort = "created_on", direction = Sort.Direction.DESC)
-            }) Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(deviceWebService.getAllDevicesWithPage(request, pageable));
+    public ResponseEntity<Page<DeviceDTO>> search(
+            @RequestBody DeviceSearchRequest request,
+            @ParameterObject Pageable pageable) {
+        Page<Device> devices = deviceWebService.search(request, pageable);
+
+        List<DeviceDTO> deviceDTOS = devices.stream()
+                .map(deviceWebService::toDto)
+                .collect(Collectors.toList());
+
+        Page<DeviceDTO> page = new BasePageResponse<>(deviceDTOS, devices.getPageable(), devices.getTotalElements());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(page);
     }
 
     @GetMapping("/{id}")
@@ -91,6 +98,6 @@ public class DeviceController implements SecuredRestController {
     public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
         deviceWebService.deleteDevice(request.getIds());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(BaseResponse.builder().build());
+                .body(BaseResponse.builder().build());
     }
 }

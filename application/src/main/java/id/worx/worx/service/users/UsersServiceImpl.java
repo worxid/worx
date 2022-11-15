@@ -1,9 +1,32 @@
 package id.worx.worx.service.users;
 
+import java.io.IOException;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import id.worx.worx.common.enums.EmailTokenStatus;
 import id.worx.worx.common.enums.EmailTokenType;
 import id.worx.worx.common.enums.UserStatus;
-import id.worx.worx.common.model.request.auth.*;
+import id.worx.worx.common.model.request.EmailRequestDTO;
+import id.worx.worx.common.model.request.auth.ChangePasswordRequest;
+import id.worx.worx.common.model.request.auth.ChangePasswordToken;
+import id.worx.worx.common.model.request.auth.LoginRequest;
+import id.worx.worx.common.model.request.auth.TokenRefreshRequest;
 import id.worx.worx.common.model.request.users.UserRequest;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
@@ -16,70 +39,50 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.UsersMapper;
 import id.worx.worx.repository.EmailTokenRepository;
-import id.worx.worx.service.EmailService;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.service.EmailService;
+import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
-import id.worx.worx.common.model.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
+
+    private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
+
     private final UsersRepository usersRepository;
 
     private final WorxProperties worxProps;
-
-    private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final EmailTokenRepository emailTokenRepository;
 
-    @Autowired
-    private  JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+    private final GroupService groupService;
 
-    @Autowired
-    private UsersMapper usersMapper;
+    private final UsersMapper usersMapper;
 
-    @Autowired
-    private WorxProperties worxProperties;
-
+    @Override
     @Transactional
-    public Users createUser(UserRequest userRequest, HttpServletRequest httpServletRequest){
+    public Users createUser(UserRequest userRequest) {
 
         Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(userRequest.getPassword());
 
         String regexNumberOnly = "\\d+";
 
-        if(!userRequest.getPhoneNo().matches(regexNumberOnly)){
+        if (!userRequest.getPhoneNo().matches(regexNumberOnly)) {
             throw new WorxException(WorxErrorCode.INVALID_PHONE_NO);
         }
         if (!matcher.matches()) {
@@ -91,22 +94,22 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.EMAIL_EXIST);
         }
 
-            //phone no validation
-            String phone = formatPhone(userRequest.getPhoneNo(), "ID");
+        // phone no validation
+        String phone = formatPhone(userRequest.getPhoneNo(), "ID");
 
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String random = UUID.randomUUID().toString().replace("-", "");
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String random = UUID.randomUUID().toString().replace("-", "");
 
-            Users users = new Users();
-            users.setEmail(userRequest.getEmail());
-            users.setFullname(userRequest.getFullname());
-            users.setPhone(phone);
-            users.setStatus(UserStatus.INACTIVE);
-            users.setOrganizationName(userRequest.getOrganizationName());
-            users.setCountry(userRequest.getCountry().toUpperCase());
-            users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-            users.setOrganizationCode(organizationCode());
-            users = usersRepository.save(users);
+        Users users = new Users();
+        users.setEmail(userRequest.getEmail());
+        users.setFullname(userRequest.getFullname());
+        users.setPhone(phone);
+        users.setStatus(UserStatus.INACTIVE);
+        users.setOrganizationName(userRequest.getOrganizationName());
+        users.setCountry(userRequest.getCountry().toUpperCase());
+        users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        users.setOrganizationCode(organizationCode());
+        users = usersRepository.save(users);
 
             EmailToken emailToken = new EmailToken();
             emailToken.setToken(random);
@@ -114,44 +117,45 @@ public class UsersServiceImpl implements UsersService {
             emailToken.setEmail(userRequest.getEmail());
             emailToken.setType(EmailTokenType.NEWACC);
             emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
-            emailTokenRepository.save(emailToken);
+        groupService.createDefaultGroup(users.getId());
 
-            String url = String.format("%s/account-confirmation?code=%s",httpServletRequest.getRequestURL(), random);
+        String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), random);
 
-            emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
+        emailService.sendWelcomingEmail(userRequest.getEmail(), userRequest.getFullname(), url);
 
-            return users;
+        return users;
 
     }
 
     @Override
-    public void sendMailConfirmation(EmailRequestDTO emailRequestDTO){
+    public void sendMailConfirmation(EmailRequestDTO emailRequestDTO) {
 
-            Optional<Users> checkEmail = usersRepository.findByEmail(emailRequestDTO.getEmail());
-            if(checkEmail.isPresent()){
-                Users users = checkEmail.get();
+        Optional<Users> checkEmail = usersRepository.findByEmail(emailRequestDTO.getEmail());
+        if (checkEmail.isPresent()) {
+            Users users = checkEmail.get();
 
-                Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(emailRequestDTO.getEmail(),EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
+            Optional<EmailToken> getEmailToken = emailTokenRepository.findByEmailAndTypeAndStatus(emailRequestDTO.getEmail(), EmailTokenType.NEWACC, EmailTokenStatus.UNUSED);
 
-                if(getEmailToken.isEmpty()){
-                    throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
-                }
-                String url = String.format("%s/account-confirmation?code=%s",worxProps.getWeb().getEndpoint(), getEmailToken.get().getToken());
-
-                emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
-
-            }else{
-                throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+            if (getEmailToken.isEmpty()) {
+                throw new WorxException(WorxErrorCode.ALREADY_VERIRIED);
             }
+            String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), getEmailToken.get().getToken());
+
+            emailService.sendWelcomingEmail(emailRequestDTO.getEmail(), users.getFullname(), url);
+
+        } else {
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }
     }
+
     public JwtResponse login(LoginRequest loginRequest) {
 
         JwtResponse jwtResponse = new JwtResponse();
         log.info("get users by email : {} ", loginRequest.getEmail());
-        Optional<Users>  users = usersRepository.findByEmail(loginRequest.getEmail());
-        if(users.isPresent()){
+        Optional<Users> users = usersRepository.findByEmail(loginRequest.getEmail());
+        if (users.isPresent()) {
 
-            try{
+            try {
                 String accessToken = "JWT Access Token here";
 
                 Map<String, Object> data = new HashMap<>();
@@ -160,14 +164,14 @@ public class UsersServiceImpl implements UsersService {
                 jwtResponse.setData(data);
                 jwtResponse.setStatus(HttpStatus.OK.value());
 
-            }catch (BadCredentialsException e){
+            } catch (BadCredentialsException e) {
                 log.error("bad cridential");
 
                 jwtResponse.setData("invalid email");
                 jwtResponse.setStatus(HttpStatus.NOT_FOUND.value());
             }
 
-        }else{
+        } else {
             jwtResponse.setData("invalid email");
             jwtResponse.setStatus(HttpStatus.NOT_FOUND.value());
         }
@@ -175,9 +179,8 @@ public class UsersServiceImpl implements UsersService {
         return jwtResponse;
     }
 
-
     @Override
-    public String changePassword(ChangePasswordRequest updatePasswordRequest){
+    public String changePassword(ChangePasswordRequest updatePasswordRequest) {
 
         String message = "";
 
@@ -189,7 +192,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
         Optional<Users> optionalUsers = usersRepository.findByEmail(updatePasswordRequest.getEmail());
-        if(optionalUsers.isEmpty()){
+        if (optionalUsers.isEmpty()) {
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
         Users getUsers = optionalUsers.get();
@@ -200,25 +203,25 @@ public class UsersServiceImpl implements UsersService {
         boolean matchPassword = passwordEncoder.matches(updatePasswordRequest.getOldPassword(), encodedPassword);
         log.info("Match Password user : {} ", matchPassword);
 
-        if (matchPassword){
+        if (matchPassword) {
             getUsers.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
             usersRepository.save(getUsers);
 
             message = "Update Password Success";
 
             return message;
-        }else{
+        } else {
             throw new WorxException(WorxErrorCode.PASSWORD_NOT_MATCH);
         }
     }
 
     @Override
-    public String resetPassword(String email){
+    public String resetPassword(String email) {
 
-        try{
+        try {
 
             Optional<Users> checkEmail = usersRepository.findByEmail(email);
-            if(!checkEmail.isPresent()){
+            if (!checkEmail.isPresent()) {
                 throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
             }
             String random = UUID.randomUUID().toString().replace("-", "");
@@ -233,17 +236,16 @@ public class UsersServiceImpl implements UsersService {
 
             String url = String.format("https://dev.worx.id/reset-password?code=%s", random);
 
-            emailService.sendResetPassword(email,checkEmail.get().getFullname(),url);
+            emailService.sendResetPassword(email, checkEmail.get().getFullname(), url);
 
             return "Reset Password Request Success, Please check your email";
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new WorxException(WorxErrorCode.FAILED_SEND_EMAIL);
         }
     }
 
     @Override
-    public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken){
-
+    public void verifyPasswordResetToken(ChangePasswordToken changePasswordToken) {
 
         Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(changePasswordToken.getNewPassword());
@@ -252,16 +254,16 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.PATTERN_PASSWORD_VALIDATION);
         }
 
-        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(changePasswordToken.getToken(),EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
+        Optional<EmailToken> checkData = emailTokenRepository.findByTokenAndTypeAndStatus(changePasswordToken.getToken(), EmailTokenType.RESETPWD, EmailTokenStatus.UNUSED);
 
-        if(!checkData.isPresent()){
+        if (!checkData.isPresent()) {
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
         }
 
         if(checkData.get().getExpiredToken().isAfter(Instant.now())){
 
             Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
-            if(users.isPresent()){
+            if (users.isPresent()) {
                 Users updateUsers = users.get();
 
                 PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -269,12 +271,11 @@ public class UsersServiceImpl implements UsersService {
                 updateUsers.setPassword(passwordEncoder.encode(changePasswordToken.getNewPassword()));
                 usersRepository.save(updateUsers);
 
-
                 EmailToken updateData = checkData.get();
                 updateData.setStatus(EmailTokenStatus.USED);
                 emailTokenRepository.save(updateData);
             }
-        }else{
+        } else {
             throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
         }
 
@@ -283,9 +284,9 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void verifyAccount(String code, HttpServletResponse httpServletResponse) throws IOException {
 
-        Optional<EmailToken> checkToken = emailTokenRepository.findByTokenAndTypeAndStatus(code,EmailTokenType.NEWACC,EmailTokenStatus.UNUSED);
+        Optional<EmailToken> checkToken = emailTokenRepository.findByTokenAndTypeAndStatus(code, EmailTokenType.NEWACC, EmailTokenStatus.UNUSED);
 
-        if(!checkToken.isPresent()){
+        if (!checkToken.isPresent()) {
             throw new WorxException(WorxErrorCode.TOKEN_INVALID_ERROR);
         }
 
@@ -296,17 +297,16 @@ public class UsersServiceImpl implements UsersService {
             emailTokenRepository.save(updateData);
 
             httpServletResponse.sendRedirect("https://dev.worx.id/sign-in");
-        }else{
+        } else {
             throw new WorxException(WorxErrorCode.TOKEN_EXPIRED_ERROR);
         }
 
     }
 
-
     @Override
     public UserDetailsResponse getByEmail(String email) {
         Optional<Users> getEmail = usersRepository.findByEmail(email);
-        if(getEmail.isEmpty()){
+        if (getEmail.isEmpty()) {
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
         Users data = getEmail.get();
@@ -320,7 +320,7 @@ public class UsersServiceImpl implements UsersService {
         return userDetailsResponse;
     }
 
-    public String organizationCode(){
+    public String organizationCode() {
 
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder sb = new StringBuilder();
@@ -332,23 +332,18 @@ public class UsersServiceImpl implements UsersService {
             sb.append(randomChar);
         }
 
-        return "WX"+sb;
+        return "WX" + sb;
     }
 
-    public String defaultUrl(HttpServletRequest httpServletRequest){
-
-        return httpServletRequest.getRequestURL().toString();
-    }
-
-    public String formatPhone(String phone, String country){
+    public String formatPhone(String phone, String country) {
 
         String resultPhone = "";
 
-        if(country.equals("ID")){
-            String get2FirstCharacter = phone.substring(0,2);
-            if(get2FirstCharacter.equals("08")){
-                resultPhone = "62"+phone.substring(1);
-            }else{
+        if (country.equals("ID")) {
+            String get2FirstCharacter = phone.substring(0, 2);
+            if (get2FirstCharacter.equals("08")) {
+                resultPhone = "62" + phone.substring(1);
+            } else {
                 resultPhone = phone;
             }
         }
@@ -356,12 +351,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public String createRefreshToken(String email){
+    public String createRefreshToken(String email) {
 
-        Integer expiredTimeRefreshToken = worxProperties.getToken().getRefresh();
+        Integer expiredTimeRefreshToken = worxProps.getToken().getRefresh();
         Optional<Users> getByEmail = usersRepository.findByEmail(email);
 
-        if(!getByEmail.isPresent()){
+        if (!getByEmail.isPresent()) {
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
 
@@ -378,9 +373,10 @@ public class UsersServiceImpl implements UsersService {
     @Transactional
     public void deleteRefreshToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-            .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
         refreshTokenRepository.delete(refreshToken);
     }
+
     public void logout(TokenRefreshRequest request) {
         deleteRefreshToken(request.getRefreshToken());
     }
@@ -396,38 +392,41 @@ public class UsersServiceImpl implements UsersService {
     public JwtResponse refreshToken(TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
         return this.findByToken(requestRefreshToken)
-            .map(this::verifyExpiration)
-            .map(RefreshToken::getUser)
-            .map(user -> {
-                String accessToken = jwtUtils.generateToken(user.getEmail());
+                .map(this::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtUtils.generateToken(user.getEmail());
 
-                Map<String, Object> data = new HashMap<>();
-                data.put("accessToken", accessToken);
-                data.put("refreshToken", requestRefreshToken);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("accessToken", accessToken);
+                    data.put("refreshToken", requestRefreshToken);
 
-                JwtResponse response = new JwtResponse();
-                response.setData(data);
-                response.setStatus(200);
+                    JwtResponse response = new JwtResponse();
+                    response.setData(data);
+                    response.setStatus(200);
 
-                return response;
-            })
-            .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
+                    return response;
+                })
+                .orElseThrow(() -> new WorxException(WorxErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
+
     @Override
     public Optional<Users> findByOrganizationCode(String token) {
         return usersRepository.findByOrganizationCode(token);
     }
+
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
     }
-    public Users findByEmail(String email){
+
+    public Users findByEmail(String email) {
 
         Optional<Users> getUser = usersRepository.findByEmail(email);
-        if(getUser.isEmpty()){
+        if (getUser.isEmpty()) {
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
         return getUser.get();

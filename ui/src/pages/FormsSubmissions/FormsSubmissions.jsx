@@ -12,22 +12,39 @@ import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // LIBRARY
 import * as XLSX from 'xlsx'
+
+// LODASH
+import lodash from 'lodash'
 
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+// MUI ICONS
+import IconGesture from '@mui/icons-material/Gesture'
+import IconImage from '@mui/icons-material/Image'
+import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
+import { getDetailFormTemplate } from 'services/formTemplate'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
+
+// UTILITIES
+import { convertDate } from 'utilities/date'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -38,7 +55,9 @@ const FormsSubmissions = () => {
 
   // NAVIGATE
   const navigate = useNavigate()
-  const { id } = useParams()
+  const { formTemplateId } = useParams()
+
+  const axiosPrivate = useAxiosPrivate()
 
   // INITS
   let initialColumns = [
@@ -51,6 +70,7 @@ const FormsSubmissions = () => {
       width: 140,
       hide: false,
       areFilterAndSortShown: true,
+      valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
       field: 'submissionDate',
@@ -61,6 +81,25 @@ const FormsSubmissions = () => {
       areFilterAndSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
+      renderCell: (params) => (
+        <Stack
+          minHeight={48}
+          justifyContent='center'
+        >
+          {/* DATE */}
+          <Typography variant='inherit'>
+            {convertDate(params.value, 'dd-MM-yyyy')}
+          </Typography>
+
+          {/* TIME */}
+          <Typography 
+            variant='inherit'
+            color='text.secondary'
+          >
+            {convertDate(params.value, 'hh:mm a')}
+          </Typography>
+        </Stack>
+      ),
     },
     {
       field: 'submissionAddress',
@@ -73,28 +112,16 @@ const FormsSubmissions = () => {
       cellClassName: 'cell-source-custom',
     },
   ]
-  // TO DO: FIX THIS LATER
-  // Object.keys(dummyTableData[0].dynamicFields)
-  //   .forEach(item => {
-  //     initialColumns.push({
-  //       field: item,
-  //       headerName: item,
-  //       flex: 1,
-  //       minWidth: 150,
-  //       hide: false,
-  //       areFilterAndSortShown: true,
-  //       headerClassName: 'cell-source-custom',
-  //       cellClassName: 'cell-source-custom',
-  //       valueGetter: (params) => params.row.dynamicFields[item]
-  //     })
-  //   })
     
   const initialFilters = {}
 
   // CONTENT
+  const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
+  const [ areDynamicColumnTitlesAdded, setAreDynamicColumnTitlesAdded ] = useState(false)
+  const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
-  const [ selectedColumnList, setSelectedColumnList ] = useState(initialColumns)
+  const [ columnList, setColumnList ] = useState(initialColumns)
   const [ tableData, setTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
@@ -134,6 +161,22 @@ const FormsSubmissions = () => {
     })
   }
 
+  const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
+    setIsDataGridLoading(true)
+
+    const resultFormTemplateDetail = await getDetailFormTemplate(
+      formTemplateId,
+      inputAbortController.signal,
+      axiosPrivate,
+    )
+
+    if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
+      setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
+    }
+
+    setIsDataGridLoading(false)
+  }
+
   const getSubmissionList = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
 
@@ -143,17 +186,18 @@ const FormsSubmissions = () => {
         page: pageNumber,
         size: pageSize,
       },
-      // TO DO: CHANGE THIS WITH FILTERS VALUE
-      {},
+      { template_id: formTemplateId },
+      axiosPrivate
     )
 
     if (resultSubmissionList.status === 200 && inputIsMounted) {
-      const submissionList = resultSubmissionList?.data?.content?.map((submissionItem, submissionIndex) => {
+      const submissionList = resultSubmissionList?.data?.content?.map(submissionItem => {
         return {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
           submissionDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem.submit_location?.address ?? '-',
+          values: submissionItem.values,
         }
       })
 
@@ -163,6 +207,190 @@ const FormsSubmissions = () => {
 
     setIsDataGridLoading(false)
   }
+
+  const getMininumColumnWidthByColumnType = (inputItem) => {
+    if (inputItem.type === 'rating') {
+      if (inputItem.max_stars <= 5) return 30 * inputItem.max_stars
+      else return 28 * inputItem.max_stars
+    }
+    else if (
+      inputItem.type === 'radio_group' || 
+      inputItem.type === 'dropdown' || 
+      inputItem.type === 'checkbox_group'
+    ) return 175
+    else return 150
+  }
+
+  const getRenderCellByColumnType = (inputParams) => {
+    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
+      return (
+        <Typography variant='inherit'>
+          {inputParams?.value?.value}
+        </Typography>
+      )
+    }
+    else if (inputParams?.value?.type === 'rating') {
+      const maxStars = inputParams?.colDef?.fieldInformation?.max_stars
+
+      return (
+        <Rating
+          defaultValue={inputParams?.value?.value ?? 0} 
+          max={maxStars}
+          readOnly
+        />
+      )
+    }
+    else if (inputParams?.value?.type === 'radio_group' || inputParams?.value?.type === 'dropdown') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.options
+      const selectedOption = optionList.find((item, index) => index === inputParams?.value?.value_index)
+
+      return (
+        <Chip
+          label={selectedOption.label}
+          size='small'
+          className={classes.columnChip}
+        />
+      )
+    }
+    else if (inputParams?.value?.type === 'checkbox_group') {
+      const optionList = formTemplateDetail?.fields?.find(item => item.id === inputParams?.field)?.group
+      const selectedOptionList = optionList.filter((item, index) => inputParams?.value?.values[index])
+      
+      return (
+        <Stack 
+          spacing='8px'
+          padding='8px 0px'
+        >
+          {selectedOptionList.map((item, index) => (
+            <Chip
+              key={index}
+              label={item.label}
+              size='small'
+              className={classes.columnChip}
+            />
+          ))}
+        </Stack>
+      )
+    }
+    else if (
+      inputParams?.value?.type === 'file' || 
+      inputParams?.value?.type === 'photo' || 
+      inputParams?.value?.type === 'signature'
+    ) {
+      let valueList = inputParams?.value?.file_ids
+      if (inputParams?.value?.type === 'signature') valueList = [ inputParams?.value?.file_id ]
+
+      let columnIcon
+      if (inputParams?.value?.type === 'file') columnIcon = (
+        <IconInsertDriveFile 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'photo') columnIcon = (
+        <IconImage 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'signature') columnIcon = (
+        <IconGesture 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      
+      return (
+        <Stack
+          spacing='8px'
+          padding='8px 0px'
+          className='cursorPointer'
+        >
+          {valueList.map((item, index) => (
+            <Stack
+              key={index}
+              direction='row'
+              spacing='8px'
+              alignItems='center'
+            >
+              {/* ICON */}
+              {columnIcon}
+
+              {/* TEXT */}
+              <Typography 
+                variant='inherit'
+                className='heightFitContent'
+              >
+                {item}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+      )
+    }
+  }
+
+  const updateColumnsDynamically = () => {
+    if (
+      formTemplateDetail && formTemplateDetail?.fields?.length > 0 &&
+      !areDynamicColumnTitlesAdded
+    ) {
+      const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
+        return {
+          field: item.id,
+          headerName: item.label,
+          flex: 1,
+          minWidth: getMininumColumnWidthByColumnType(item),
+          hide: false,
+          areFilterAndSortShown: false,
+          headerClassName: 'cell-source-custom',
+          cellClassName: 'cell-source-custom',
+          fieldInformation: {...item},
+          renderCell: (params) => getRenderCellByColumnType(params),
+        }
+      })]
+
+      setColumnList(newColumnList)
+      setAreDynamicColumnTitlesAdded(true)
+    }
+  }
+
+  const updateTableDataDynamically = () => {
+    // NOTE: DYNAMIC COLUMNS START FROM THE 3RD INDEX
+    if (
+      columnList.length > 3 && tableData.length > 0 && 
+      areDynamicColumnTitlesAdded && !areDynamicColumnsValuesAdded
+    ) {
+      const dynamicColumnList = columnList.filter((item, index) => index > 2)
+
+      const newTableData = tableData.map((tableRowItem) => {
+        const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
+          result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
+          return result
+        }, {})
+
+        return {
+          ...tableRowItem,
+          ...columnWithValueObject,
+        }
+      })
+
+      setAreDynamicColumnsValuesAdded(true)
+      setTableData(newTableData)
+    }
+  }
+  
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    getFormTemplateDetail(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -175,6 +403,14 @@ const FormsSubmissions = () => {
       abortController.abort()
     }
   }, [pageNumber, pageSize, filters, order, orderBy])
+
+  useEffect(() => {
+    updateColumnsDynamically()
+  }, [formTemplateDetail])
+
+  useEffect(() => {
+    updateTableDataDynamically()
+  }, [columnList, tableData, areDynamicColumnTitlesAdded])
 
   return (
     <>
@@ -211,7 +447,7 @@ const FormsSubmissions = () => {
                 className={classes.headerTitle}
                 variant='subtitle1'
               >
-                Valid Form (Waiting for the API)
+                {formTemplateDetail?.label ?? 'No Title for This Form'}
               </Typography>
 
               {/* DESCRIPTION */}
@@ -219,7 +455,9 @@ const FormsSubmissions = () => {
                 color='text.secondary'
                 variant='caption'
               >
-                Ini adalah deskripsi form (Waiting for the API)
+                {formTemplateDetail?.description !== '' 
+                  ? formTemplateDetail?.description 
+                  : 'No Description for This Form'}
               </Typography>
             </Box>
 
@@ -245,8 +483,8 @@ const FormsSubmissions = () => {
             contentTitle='Submission List'
             // COLUMN
             columns={initialColumns}
-            selectedColumnList={selectedColumnList}
-            setSelectedColumnList={setSelectedColumnList}
+            selectedColumnList={columnList}
+            setSelectedColumnList={setColumnList}
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
@@ -258,8 +496,8 @@ const FormsSubmissions = () => {
           <DataGridTable
             // BASE
             initialColumns={initialColumns}
-            selectedColumnList={selectedColumnList}
-            setSelectedColumnList={setSelectedColumnList}
+            selectedColumnList={columnList}
+            setSelectedColumnList={setColumnList}
             rows={tableData}
             // PAGINATION
             total={totalRow}
@@ -282,17 +520,18 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
-            // CELL
-            onCellClick={(event, params, details) => navigate(`/forms/${event.row.id}/view`)}
+            // ROW
+            onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
+            getRowHeight={() => 'auto'}
           />
         </LoadingPaper>
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(id)} />
+      <DialogShareLink id={Number(formTemplateId)} />
 
       {/* DIALOG QR CODE */}
-      <DialogQrCode id={Number(id)} />
+      <DialogQrCode id={Number(formTemplateId)} />
 
       {/* DOWNLOAD MENU */}
       <Menu
@@ -309,10 +548,10 @@ const FormsSubmissions = () => {
         }}
         className={`${classes.downloadMenu} neutralize-zoom-menu`}
       >
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'xlsx')}>
+        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'xlsx')}>
           <Typography variant='caption'>Excel</Typography>
         </MenuItem>
-        <MenuItem onClick={() => handleDownloadTable(tableData, selectedColumnList, 'csv')}>
+        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'csv')}>
           <Typography variant='caption'>CSV</Typography>
         </MenuItem>
       </Menu>

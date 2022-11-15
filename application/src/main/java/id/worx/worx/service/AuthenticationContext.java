@@ -6,6 +6,9 @@ import org.springframework.security.core.Authentication;
 public interface AuthenticationContext {
 
     Authentication getAuthentication();
+
     String getEmail();
+
     Users getUsers();
+
 }

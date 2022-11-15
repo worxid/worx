@@ -14,16 +14,35 @@ export const getMediaPresignedUrl = async (inputSignal, inputQuery, inputFileObj
     })
 
     if(didSuccessfullyCallTheApi(response?.status)) {
-      await axios.put(response.data.url, inputFileObject, {
-        headers: {
-          'Content-Type': inputFileObject.type,
-        }
-      })
+      try {
+        await axios.put(response.data.url, inputFileObject, {
+          headers: {
+            'Content-Type': inputFileObject.type,
+          }
+        })
+      } catch (error) {
+        if (!error.response) return { status: 'No Server Response' }
+        else return error.response
+      }
     }
 
     return response
   } catch (error) {
     if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
+export const postDetailMediaFiles = async (inputSignal, inputBodyParams, inputAxiosPrivate) => {
+  try {
+    const response = await inputAxiosPrivate.post('/media/files', inputBodyParams, {
+      signal: inputSignal
+    })
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
     else return error.response
   }
 }
