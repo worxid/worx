@@ -432,7 +432,7 @@ public class UsersServiceImpl implements UsersService {
         return getUser.get();
     }
 
-    @Scheduled(cron = "59 23 * * * ?")
+    @Scheduled(cron = "59 59 23 * * * ?")
     public void deleteEmailToken(){
 
         List<Long> ids = emailTokenRepository.getAllByLessThan(Instant.now());
@@ -440,7 +440,7 @@ public class UsersServiceImpl implements UsersService {
         emailTokenRepository.deleteAllById(ids);
     }
 
-    @Scheduled(cron = "59 23 * * * ?")
+    @Scheduled(cron = "59 59 23 * * * ?")
     public void deleteRefreshToken(){
 
         List<Long> ids = refreshTokenRepository.getAllByLessThan(Instant.now());
