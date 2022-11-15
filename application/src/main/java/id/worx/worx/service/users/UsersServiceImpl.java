@@ -258,7 +258,7 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.TOKEN_EMAIL_ERROR);
         }
 
-        if(checkData.get().getExpiredToken().compareTo(Instant.now()) >= 0){
+        if(checkData.get().getExpiredToken().isAfter(Instant.now())){
 
             Optional<Users> users = usersRepository.findByEmail(checkData.get().getEmail());
             if(users.isPresent()){
@@ -290,7 +290,7 @@ public class UsersServiceImpl implements UsersService {
         }
 
         //check expired
-        if(checkToken.get().getExpiredToken().compareTo(Instant.now()) >= 0){
+        if(checkToken.get().getExpiredToken().isAfter(Instant.now())){
             EmailToken updateData = checkToken.get();
             updateData.setStatus(EmailTokenStatus.USED);
             emailTokenRepository.save(updateData);
