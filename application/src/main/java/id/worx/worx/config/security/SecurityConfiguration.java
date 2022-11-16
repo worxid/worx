@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                         "/form/submit",
                         "/media/presigned-url")
                 .permitAll()
+                .antMatchers("/guest/**").permitAll()
                 .antMatchers("/mobile/**").permitAll()
                 .anyRequest()
                 .authenticated();
