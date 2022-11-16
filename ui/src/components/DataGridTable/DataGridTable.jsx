@@ -107,7 +107,7 @@ const DataGridTable = (props) => {
     handleSortModelChange(newSortModel)
   }
 
-  const filterOnColumns = initialColumns.map((item) => {
+  const filterOnColumns = selectedColumnList.map((item) => {
     if (item.isFilterShown || item.isSortShown) {
       return {
         renderHeader: (params) => (
