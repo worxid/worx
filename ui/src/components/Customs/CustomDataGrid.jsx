@@ -77,7 +77,10 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
 
   // COLUMN 
   '& .MuiDataGrid-columnHeaderTitleContainerContent': {
-    width: '100%',
+    flex: 1,
+    '& .MuiCheckbox-root': {
+      margin: '0px auto',
+    },
   },
 
   // (INTENTIONALLY COMMENTED)
