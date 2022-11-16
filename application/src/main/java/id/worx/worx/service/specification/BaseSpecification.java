@@ -18,4 +18,8 @@ public interface BaseSpecification<E> {
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get(attributeName), date);
     }
 
+    public default Specification<E> between(String attributeName,Instant from, Instant to){
+        return (root, query, cb) -> cb.between(root.get(attributeName),from,to);
+    }
+
 }
