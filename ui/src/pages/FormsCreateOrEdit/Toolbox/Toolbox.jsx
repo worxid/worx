@@ -28,18 +28,29 @@ const Toolbox = () => {
   // INITS
   const initOptionList = [
     {
-      label: ''
+      label: 'Option 1'
     },
     {
-      label: ''
+      label: 'Option 2'
     },
     {
-      label: ''
+      label: 'Option 3'
     }
   ]
 
   // CONTEXT
   const { listToolbox, setListToolbox } = useContext(PageFormsCreateOrEditContext)
+
+  // HANDLE SORTABLE CLONE
+  const handleCloneSortable = (item) => {
+    // INIT NEW OPTION LIST
+    if(item.type === 'checkbox_group' || item.type === 'radio_group' || item.type === 'dropdown') {
+      let tempItem = { ...item, id: uuid() } 
+      if (item.type === 'checkbox_group') tempItem['group'] = initOptionList
+      else tempItem['options'] = initOptionList
+      return tempItem
+    } else return { ...item, id: uuid() }
+  }
 
   return (
     <Stack direction='column' className={classes.root} flex={0} flexShrink={0} flexBasis={304}>
@@ -74,15 +85,7 @@ const Toolbox = () => {
             pull: 'clone',
             put: false
           }}
-          clone={(item) => {
-            // INIT NEW OPTION LIST
-            if(item.type === 'checkbox_group' || item.type === 'radio_group' || item.type === 'dropdown') {
-              let tempItem = { ...item, id: uuid() } 
-              if (item.type === 'checkbox_group') tempItem['group'] = initOptionList
-              else tempItem['options'] = initOptionList
-              return tempItem
-            } else return { ...item, id: uuid() }
-          }}
+          clone={handleCloneSortable}
         >
           {dataListComponents.map((item, index) => (
             <ListItem key={index} disablePadding className={classes.listItem}>

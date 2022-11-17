@@ -16,8 +16,8 @@ import IconStop from '@mui/icons-material/Stop'
 export const dataListComponents = [
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Text Field',
+    description: 'Description',
     min_length: 1,
     max_length: 24,
     required: false,
@@ -26,20 +26,20 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Checkbox',
+    description: 'Description',
     required: false,
     min_checked: 1,
     max_checked: 3,
     group: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'checkbox_group',
@@ -47,18 +47,18 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Radio',
+    description: 'Description',
     required: false,
     options: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'radio_group',
@@ -66,18 +66,18 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Dropdown',
+    description: 'Description',
     required: false,
     options: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'dropdown',
@@ -85,8 +85,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Date',
+    description: 'Description',
     required: false,
     disable_future: false,
     disable_past: false,
@@ -95,15 +95,15 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Separator',
+    description: 'Description',
     type: 'separator',
     duplicateFrom: null,
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Rating',
+    description: 'Description',
     required: false,
     max_stars: 5,
     type: 'rating',
@@ -111,8 +111,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'File',
+    description: 'Description',
     required: false,
     max_files: 6,
     max_file_size: 10485760,
@@ -125,8 +125,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Photo',
+    description: 'Description',
     required: false,
     max_files: 6,
     allow_gallery_upload: true,
@@ -135,8 +135,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Signature',
+    description: 'Description',
     required: false,
     type: 'signature',
     duplicateFrom: null,
@@ -170,7 +170,7 @@ export const getTypeIconComponent = (type) => {
   else if(type === 'signature') return <IconCreate className='colorTextPrimary'/>
 }
 export const getTypeTitle = (type) => {
-  if(type === 'text') return 'Textfield'
+  if(type === 'text') return 'Text Field'
   else if(type === 'checkbox_group') return 'Checkbox'
   else if(type === 'radio_group') return 'Radio Group'
   else if(type === 'dropdown') return 'Dropdown'
@@ -183,8 +183,8 @@ export const getTypeTitle = (type) => {
 }
 export const initObjectForm = {
   id: null,
-  label: 'Valid Form',
-  description: '',
+  label: 'New Form',
+  description: 'Description',
   created: '',
   updated: '',
 }

@@ -143,7 +143,7 @@ const MainMenu = (props) => {
                     ? <Stack className='colorTextPrimary'>
                       <CellGroups dataValue={item.value} limitShowGroup={false} />
                     </Stack>
-                    : (<Typography variant='body2'>
+                    : (<Typography variant='body2' noWrap={true} maxWidth='184px' width='100%'>
                       {item.value}
                     </Typography>)
                 }
