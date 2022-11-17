@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
+import DialogExport from 'components/DialogExport/DialogExport'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
@@ -135,31 +136,32 @@ const FormsSubmissions = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+
   // DOWNLOAD
-  const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
+  // const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
 
   // HANDLE DOWNLOAD DATA TABLE
-  const handleDownloadTable = (listData, listSelectedColumns, formatFile) => {
-    // FILTER SELECTED COLUMN WITH HIDE FALSE
-    const filterSelectedColumns = listSelectedColumns.filter(item => !item.hide)
+  // const handleDownloadTable = (listData, listSelectedColumns, formatFile) => {
+  //   // FILTER SELECTED COLUMN WITH HIDE FALSE
+  //   const filterSelectedColumns = listSelectedColumns.filter(item => !item.hide)
 
-    // FILTER DATA WITH SELECTED COLUMN
-    const filterListData = listData.map(item => {
-      const tempItemObj = {}
-      filterSelectedColumns.forEach(itemCol => {
-        tempItemObj[itemCol.headerName] = item[itemCol.field] || item.dynamicFields[itemCol.field]
-      })
-      return tempItemObj
-    })
+  //   // FILTER DATA WITH SELECTED COLUMN
+  //   const filterListData = listData.map(item => {
+  //     const tempItemObj = {}
+  //     filterSelectedColumns.forEach(itemCol => {
+  //       tempItemObj[itemCol.headerName] = item[itemCol.field] || item.dynamicFields[itemCol.field]
+  //     })
+  //     return tempItemObj
+  //   })
 
-    // CREATE SHEET
-    const sheetFormSubmissions = XLSX.utils.json_to_sheet(filterListData)
-    const workBook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workBook, sheetFormSubmissions, 'Form Submissions')
-    XLSX.writeFile(workBook, `Form Submissions.${formatFile}`, {
-      bookType: formatFile
-    })
-  }
+  //   // CREATE SHEET
+  //   const sheetFormSubmissions = XLSX.utils.json_to_sheet(filterListData)
+  //   const workBook = XLSX.utils.book_new()
+  //   XLSX.utils.book_append_sheet(workBook, sheetFormSubmissions, 'Form Submissions')
+  //   XLSX.writeFile(workBook, `Form Submissions.${formatFile}`, {
+  //     bookType: formatFile
+  //   })
+  // }
 
   const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
@@ -490,7 +492,7 @@ const FormsSubmissions = () => {
             setIsFilterOn={setIsFilterOn}
             // DOWNLOAD
             isDownloadButtonEnabled={true}
-            handleDownloadButtonClick={(event) => setDownloadMenuAnchor(event.currentTarget)}
+            handleDownloadButtonClick={(event) => setIsDialogFormOpen('dialogExport')}
           />
 
           <DataGridTable
@@ -530,11 +532,14 @@ const FormsSubmissions = () => {
       {/* DIALOG SHARE LINK */}
       <DialogShareLink id={Number(formTemplateId)} />
 
+      {/* DIALOG EXPORT */}
+      <DialogExport id={Number(formTemplateId)} />
+
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(formTemplateId)} />
 
       {/* DOWNLOAD MENU */}
-      <Menu
+      {/* <Menu
         anchorEl={downloadMenuAnchor}
         open={Boolean(downloadMenuAnchor)}
         onClose={() => setDownloadMenuAnchor(null)}
@@ -554,7 +559,7 @@ const FormsSubmissions = () => {
         <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'csv')}>
           <Typography variant='caption'>CSV</Typography>
         </MenuItem>
-      </Menu>
+      </Menu> */}
     </>
   )
 }
