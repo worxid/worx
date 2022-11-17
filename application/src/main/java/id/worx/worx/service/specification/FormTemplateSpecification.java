@@ -83,6 +83,10 @@ public class FormTemplateSpecification implements BaseSpecification<FormTemplate
             spec = spec.and(lessThanOrEqualTo(Audit_.CREATED_ON, request.getCreatedOn()));
         }
 
+        if(Objects.nonNull(request.getFrom())&&Objects.nonNull(request.getTo())){
+            spec = spec.and(between(Audit_.CREATED_ON, request.getFrom(),request.getTo()));
+        }
+
         if (Objects.nonNull(request.getModifiedOn())) {
             spec = spec.and(lessThanOrEqualTo(Audit_.MODIFIED_ON, request.getModifiedOn()));
         }
