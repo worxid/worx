@@ -19,6 +19,8 @@ const useRefreshToken = () => {
   const refreshToken = async () => {
     const resultRefreshToken = await postRefreshToken(auth?.refreshToken)
 
+    const error40XRegex = /^40[0-9]$/
+
     if (resultRefreshToken.status === 200) {
       setUserProfileToLocalStorage({
         ...auth,
@@ -34,7 +36,7 @@ const useRefreshToken = () => {
 
       return resultRefreshToken?.data?.data?.accessToken
     }
-    else if (resultRefreshToken.status === 400) {
+    else if (error40XRegex.test(resultRefreshToken.status)) {
       setSnackbarObject({
         open: true,
         severity: 'error',
