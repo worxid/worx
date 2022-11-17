@@ -4,7 +4,7 @@ import axios from 'apis/axios'
 export const getReadFormTemplate = async (formCode, inputSignal) => {
   try {
     const response = await axios.get(
-      `/form/template/read?code=${formCode}`, 
+      `/guest/form/template/read?code=${formCode}`, 
       { signal: inputSignal }
     )
 
