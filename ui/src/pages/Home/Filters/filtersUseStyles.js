@@ -9,6 +9,14 @@ const useStyles = makeStyles((theme) => ({
       border: `2px solid ${theme.palette.divider}`,
     },
   },
+  formControlAutocomplete: {
+    '& .MuiOutlinedInput-root': {
+      height: 32,
+    },
+    '& fieldset': {
+      border: `2px solid ${theme.palette.divider}`,
+    },
+  },
 }))
 
 export default useStyles

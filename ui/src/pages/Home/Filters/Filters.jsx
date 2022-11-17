@@ -78,8 +78,7 @@ const Filters = () => {
           options={dummyFormList}
           disableCloseOnSelect
           getOptionLabel={(option) => option.text}
-          // className={classes.formControlInput}
-          sx={{ width: '500px' }}
+          className={classes.formControlAutocomplete}
           renderOption={(props, option, { selected }) => (
             <ListItem {...props}>
               <ListItemButton>
@@ -101,7 +100,6 @@ const Filters = () => {
               {...params} 
               label='' 
               placeholder='' 
-              // className={classes.formControlInput}
             />
           )}
         />
