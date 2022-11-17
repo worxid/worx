@@ -1,6 +1,26 @@
+// MUIS
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+// STYLES
+import useStyles from './homeUseStyles'
+
 const Home = () => {
+  const classes = useStyles()
+
   return (
-    <div>Home</div>
+    <Stack className={classes.root}>
+      {/* HEADER */}
+      <Typography 
+        variant='h6'
+        className={classes.title}
+      >
+        Dashboard
+      </Typography>
+
+      <Divider className={classes.divider}/>
+    </Stack>
   )
 }
 
