@@ -75,7 +75,7 @@ const DataGridFilters = (props) => {
       {/* DOWNLOAD ROW ICON */}
       {isDownloadButtonEnabled &&
       <CustomTooltip 
-        title='Download' 
+        title='Export'
         placement='top'
       >
         <IconButton 
