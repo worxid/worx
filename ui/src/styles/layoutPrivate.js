@@ -3,6 +3,11 @@ import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
+  dialogDateRangePicker: {
+    '& .MuiPaper-root': {
+      maxWidth: 'unset',
+    },
+  },
   flyoutListItemIcon: {
     minWidth: 'unset',
     marginRight: 16,
