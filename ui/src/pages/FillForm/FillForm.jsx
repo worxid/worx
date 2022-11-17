@@ -26,8 +26,10 @@ import Typography from '@mui/material/Typography'
 import IconShare from '@mui/icons-material/Share'
 
 // SERVICES
-import { getReadFormTemplate } from 'services/formTemplate'
-import { postSubmitFormSubmission } from 'services/form'
+import { 
+  getReadFormTemplate, 
+  postSubmitFormSubmission, 
+} from 'services/guest'
 
 // STYLES
 import useStyles from './fillFormUseStyles'

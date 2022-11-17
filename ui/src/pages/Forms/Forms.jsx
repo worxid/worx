@@ -60,7 +60,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'description',
@@ -68,7 +69,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'created_on',
@@ -76,7 +78,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: false,
+      isSortShown: true,
       valueGetter: params => convertDate(params.value)
     },
     {
@@ -85,7 +88,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: false,
+      isSortShown: true,
       valueGetter: params => convertDate(params.value)
     },
     {
@@ -94,7 +98,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 315,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
       renderCell: (params) =>
         params.value && (
           <CellGroups dataValue={params.value} />
@@ -106,7 +111,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'fields_size',
@@ -114,7 +120,8 @@ const Forms = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
   ]
 

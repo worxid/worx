@@ -39,7 +39,8 @@ const Groups = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
       renderCell: (params) =>
         params.value && (
           <Stack  
@@ -65,7 +66,8 @@ const Groups = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
       valueGetter: (params) => params.value ?? 0,
     },
     {
@@ -74,7 +76,8 @@ const Groups = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
       valueGetter: (params) => params.value ?? 0,
     }
   ]

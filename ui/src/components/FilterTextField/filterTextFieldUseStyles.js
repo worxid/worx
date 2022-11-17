@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    flex: 1,
     marginBottom: 8,
     '& .MuiInputLabel-root': {
       fontSize: 12,

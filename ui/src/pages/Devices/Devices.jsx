@@ -59,7 +59,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 125,
       hide: false,
-      areFilterAndSortShown: false,
+      isFilterShown: true,
+      isSortShown: true,
       renderCell: (params) =>
         params.value && (
           <Stack direction={'row'} alignItems='center'>
@@ -83,7 +84,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'device_code',
@@ -91,7 +93,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 200,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'device_model',
@@ -99,7 +102,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 150,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'device_os_version',
@@ -107,7 +111,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 125,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'device_app_version',
@@ -115,7 +120,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 150,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
     },
     {
       field: 'groups',
@@ -123,7 +129,8 @@ const Devices = () => {
       flex: 1,
       minWidth: 380,
       hide: false,
-      areFilterAndSortShown: true,
+      isFilterShown: true,
+      isSortShown: true,
       renderCell: (params) =>
         params.value && (
           <CellGroups dataValue={params.value.map(item => ({ name: item }))} />
