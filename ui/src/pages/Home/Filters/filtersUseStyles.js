@@ -10,11 +10,19 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   formControlAutocomplete: {
+    width: 200,
     '& .MuiOutlinedInput-root': {
       height: 32,
+      padding: '0px !important',
     },
     '& fieldset': {
       border: `2px solid ${theme.palette.divider}`,
+    },
+  },
+  formControlAutocompleteListItemButton: {
+    padding: 0,
+    '& .MuiListItemIcon-root': {
+      minWidth: 'unset',
     },
   },
   buttonReset: {

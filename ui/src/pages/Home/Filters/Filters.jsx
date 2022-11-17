@@ -76,25 +76,28 @@ const Filters = () => {
         {/* AUTOCOMPLETE */}
         <Autocomplete
           multiple
+          limitTags={1}
+          size='small'
           options={dummyFormList}
           disableCloseOnSelect
           getOptionLabel={(option) => option.text}
           className={classes.formControlAutocomplete}
           renderOption={(props, option, { selected }) => (
-            <ListItem {...props}>
-              <ListItemButton>
-                {/* ICON */}
-                <ListItemIcon>
-                  <Checkbox
-                    size='small'
-                    checked={true}
-                  />
-                </ListItemIcon>
+            <ListItemButton 
+              {...props}
+              className={classes.formControlAutocompleteListItemButton}
+            >
+              {/* ICON */}
+              <ListItemIcon>
+                <Checkbox
+                  size='small'
+                  checked={selected}
+                />
+              </ListItemIcon>
 
-                {/* TEXT */}
-                <ListItemText primary={option.text}/>
-              </ListItemButton>
-            </ListItem>
+              {/* TEXT */}
+              <ListItemText primary={option.text}/>
+            </ListItemButton>
           )}
           renderInput={(params) => (
             <TextField 
@@ -123,25 +126,28 @@ const Filters = () => {
         {/* AUTOCOMPLETE */}
         <Autocomplete
           multiple
+          limitTags={1}
+          size='small'
           options={dummyFormList}
           disableCloseOnSelect
           getOptionLabel={(option) => option.text}
           className={classes.formControlAutocomplete}
           renderOption={(props, option, { selected }) => (
-            <ListItem {...props}>
-              <ListItemButton>
-                {/* ICON */}
-                <ListItemIcon>
-                  <Checkbox
-                    size='small'
-                    checked={true}
-                  />
-                </ListItemIcon>
+            <ListItemButton 
+              {...props}
+              className={classes.formControlAutocompleteListItemButton}
+            >
+              {/* ICON */}
+              <ListItemIcon>
+                <Checkbox
+                  size='small'
+                  checked={selected}
+                />
+              </ListItemIcon>
 
-                {/* TEXT */}
-                <ListItemText primary={option.text}/>
-              </ListItemButton>
-            </ListItem>
+              {/* TEXT */}
+              <ListItemText primary={option.text}/>
+            </ListItemButton>
           )}
           renderInput={(params) => (
             <TextField 
