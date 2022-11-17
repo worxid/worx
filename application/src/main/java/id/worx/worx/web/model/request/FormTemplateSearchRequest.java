@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,10 +25,14 @@ public class FormTemplateSearchRequest implements Serializable {
     private String label;
     private String description;
 
+    @JsonIgnore
     @JsonProperty("created_on")
     private Instant createdOn;
+    @JsonIgnore
     @JsonProperty("modified_on")
     private Instant modifiedOn;
+    private Instant from;
+    private Instant to;
 
     @JsonProperty("assigned_groups")
     private List<String> assignedGroups;
