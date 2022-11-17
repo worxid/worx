@@ -1,6 +1,6 @@
 export const paramsCreateForm = {
   label: 'New Form',
-  description: '',
+  description: 'Description',
   fields: [],
   submit_in_zone: false,
   default: false

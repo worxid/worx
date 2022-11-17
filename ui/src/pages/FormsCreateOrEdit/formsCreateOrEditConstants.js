@@ -16,8 +16,8 @@ import IconStop from '@mui/icons-material/Stop'
 export const dataListComponents = [
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Textfield Label',
+    description: 'Description',
     min_length: 1,
     max_length: 24,
     required: false,
@@ -26,20 +26,20 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Checkbox Label',
+    description: 'Description',
     required: false,
     min_checked: 1,
     max_checked: 3,
     group: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'checkbox_group',
@@ -47,18 +47,18 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Radio Label',
+    description: 'Description',
     required: false,
     options: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'radio_group',
@@ -66,18 +66,18 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Dropdown Label',
+    description: 'Description',
     required: false,
     options: [
       {
-        label: ''
+        label: 'Option 1'
       },
       {
-        label: ''
+        label: 'Option 2'
       },
       {
-        label: ''
+        label: 'Option 3'
       }
     ],
     type: 'dropdown',
@@ -85,8 +85,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Date Label',
+    description: 'Description',
     required: false,
     disable_future: false,
     disable_past: false,
@@ -95,15 +95,15 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Separator Label',
+    description: 'Description',
     type: 'separator',
     duplicateFrom: null,
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Rating Label',
+    description: 'Description',
     required: false,
     max_stars: 5,
     type: 'rating',
@@ -111,8 +111,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'File Label',
+    description: 'Description',
     required: false,
     max_files: 6,
     max_file_size: 10485760,
@@ -125,8 +125,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Photo Label',
+    description: 'Description',
     required: false,
     max_files: 6,
     allow_gallery_upload: true,
@@ -135,8 +135,8 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: '',
-    description: '',
+    label: 'Signature Label',
+    description: 'Description',
     required: false,
     type: 'signature',
     duplicateFrom: null,
@@ -183,8 +183,8 @@ export const getTypeTitle = (type) => {
 }
 export const initObjectForm = {
   id: null,
-  label: 'Valid Form',
-  description: '',
+  label: 'New Form',
+  description: 'Description',
   created: '',
   updated: '',
 }
