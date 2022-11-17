@@ -64,31 +64,26 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 12,
     backgroundColor: theme.palette.action.active,
   },
-  dateRangePicker: {
-    // "& .MuiTypography-root": {
-    //   fontSize: 14,
-    //   fontWeight: 600,
-    //   width: 32,
-    //   margin: 0,
-    // },
-    // "& .MuiDateRangePickerDay-root": {
-    //   width: 32,
-    //   height: 32,
-    // },
-    // "& .MuiButtonBase-root": {
-    //   width: 28,
-    //   height: 28,
-    // },
-  },
   countDays: {
     marginRight: 'auto',
     fontSize: 12,
     color: theme.palette.text.secondary,
   },
   actionButton: {
-    marginLeft: 20,
+    marginLeft: 8,
     fontWeight: 600,
     width: 88,
+    border: 'none',
+    boxShadow: 'none',
+    '&:hover': {
+      boxShadow: 'none',
+    },
+  },
+  actionButtonCancel: {
+    color: theme.palette.text.secondary,
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
   },
 }))
 

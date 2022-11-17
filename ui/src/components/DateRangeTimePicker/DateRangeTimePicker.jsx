@@ -301,9 +301,7 @@ const DateRangeTimePicker = (props) => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDateRangePicker
             key={key}
-            className={classes.dateRangePicker}
             displayStaticWrapperAs='desktop'
-            // value={value}
             value={tempValue}
             onChange={(newValue) => handleDateRangePickerChange(newValue)}
             renderInput={(startProps, endProps) => (
@@ -326,20 +324,20 @@ const DateRangeTimePicker = (props) => {
             {getSelectedDays()}
           </Typography>
 
+          {/* CANCEL BUTTON */}
+          <Button
+            onClick={handleCancelButtonClick}
+            className={`${classes.actionButton} ${classes.actionButtonCancel}`}
+          >
+            Cancel
+          </Button>
+
           {/* SELECT BUTTON */}
           <Button
             onClick={() => handleSelectButtonClick(tempValue)}
             className={classes.actionButton}
           >
             Select
-          </Button>
-
-          {/* CANCEL BUTTON */}
-          <Button
-            onClick={handleCancelButtonClick}
-            className={`${classes.actionButton} colorActionActive`}
-          >
-            Cancel
           </Button>
         </Stack>
       </Box>
