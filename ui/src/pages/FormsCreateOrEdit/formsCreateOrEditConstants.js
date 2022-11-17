@@ -16,7 +16,7 @@ import IconStop from '@mui/icons-material/Stop'
 export const dataListComponents = [
   {
     id: uuid(),
-    label: 'Textfield Label',
+    label: 'Text Field',
     description: 'Description',
     min_length: 1,
     max_length: 24,
@@ -26,7 +26,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Checkbox Label',
+    label: 'Checkbox',
     description: 'Description',
     required: false,
     min_checked: 1,
@@ -47,7 +47,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Radio Label',
+    label: 'Radio',
     description: 'Description',
     required: false,
     options: [
@@ -66,7 +66,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Dropdown Label',
+    label: 'Dropdown',
     description: 'Description',
     required: false,
     options: [
@@ -85,7 +85,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Date Label',
+    label: 'Date',
     description: 'Description',
     required: false,
     disable_future: false,
@@ -95,14 +95,14 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Separator Label',
+    label: 'Separator',
     description: 'Description',
     type: 'separator',
     duplicateFrom: null,
   },
   {
     id: uuid(),
-    label: 'Rating Label',
+    label: 'Rating',
     description: 'Description',
     required: false,
     max_stars: 5,
@@ -111,7 +111,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'File Label',
+    label: 'File',
     description: 'Description',
     required: false,
     max_files: 6,
@@ -125,7 +125,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Photo Label',
+    label: 'Photo',
     description: 'Description',
     required: false,
     max_files: 6,
@@ -135,7 +135,7 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
-    label: 'Signature Label',
+    label: 'Signature',
     description: 'Description',
     required: false,
     type: 'signature',
@@ -170,7 +170,7 @@ export const getTypeIconComponent = (type) => {
   else if(type === 'signature') return <IconCreate className='colorTextPrimary'/>
 }
 export const getTypeTitle = (type) => {
-  if(type === 'text') return 'Textfield'
+  if(type === 'text') return 'Text Field'
   else if(type === 'checkbox_group') return 'Checkbox'
   else if(type === 'radio_group') return 'Radio Group'
   else if(type === 'dropdown') return 'Dropdown'
