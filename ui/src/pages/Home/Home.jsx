@@ -1,3 +1,6 @@
+// COMPONENTS
+import Filters from './Filters/Filters'
+
 // MUIS
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -20,6 +23,9 @@ const Home = () => {
       </Typography>
 
       <Divider className={classes.divider}/>
+
+      {/* FILTERS */}
+      <Filters/>
     </Stack>
   )
 }
