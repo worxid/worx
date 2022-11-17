@@ -19,11 +19,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     transform: 'rotate(180deg)',
   },
-  columnFilter: {
+  columnFilterTextField: {
     marginBottom: 10,
     '& .MuiInput-root:before': {
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
+  },
+  columnFilterText: {
+    flex: 1,
+    fontWeight: 500,
   },
 }))
 

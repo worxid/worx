@@ -9,6 +9,7 @@ import FilterTextField from 'components/FilterTextField/FilterTextField'
 // MUIS
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconArrowUpward from '@mui/icons-material/ArrowUpward'
@@ -106,23 +107,33 @@ const DataGridTable = (props) => {
     handleSortModelChange(newSortModel)
   }
 
-  const filterOnColumns = initialColumns.map((item) => {
-    if (item.field !== 'actions' && item.areFilterAndSortShown) {
+  const filterOnColumns = selectedColumnList.map((item) => {
+    if (item.isFilterShown || item.isSortShown) {
       return {
         renderHeader: (params) => (
           <>
-            {/* DEVICE TEXT FIELD */}
-            <FilterTextField
-              className={classes.columnFilter}
-              variant='standard'
-              label={item.headerName}
-              type='text'
-              name={item.field}
-              updateFilters={setFilters}
-              onClick={(event) => event.stopPropagation()}
-            />
+            {item.isFilterShown ?
+              // TEXT FIELD
+              <FilterTextField
+                className={classes.columnFilterTextField}
+                variant='standard'
+                label={item.headerName}
+                type='text'
+                name={item.field}
+                updateFilters={setFilters}
+                onClick={(event) => event.stopPropagation()}
+              /> : 
+              // TEXT
+              <Typography 
+                variant='inherit'
+                className={classes.columnFilterText}
+              >
+                {item.headerName}
+              </Typography>
+            }
 
             {/* SORT ICON */}
+            {item.isSortShown &&
             <CustomTooltip 
               title='Sort by this column' 
               placement='bottom'
@@ -133,7 +144,7 @@ const DataGridTable = (props) => {
               >
                 {getSortIcon(item.field)}
               </IconButton>
-            </CustomTooltip>
+            </CustomTooltip>}
           </>
         ),
       }

@@ -104,18 +104,6 @@ export const postShareFormTemplate = async (formTemplateId, inputSignal, inputPa
   }
 }
 
-export const getReadFormTemplate = async (formCode, inputSignal) => {
-  try {
-    const response = await axios.get(`/form/template/read?code=${formCode}`, {
-      signal: inputSignal,
-    })
-    return response
-  } catch (error) {
-    if (!error.response) return { status: 'No Server Response' }
-    else return error.response
-  }
-}
-
 export const postShareLinkFormTemplate = async (formTemplateId, inputSignal, inputAxiosPrivate) => {
   try {
     const response = await inputAxiosPrivate.post(`/form/template/${formTemplateId}/share-link`, null, {
