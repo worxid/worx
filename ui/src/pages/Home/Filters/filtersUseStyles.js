@@ -17,6 +17,14 @@ const useStyles = makeStyles((theme) => ({
       border: `2px solid ${theme.palette.divider}`,
     },
   },
+  buttonReset: {
+    marginLeft: 'auto !important',
+    boxShadow: 'none',
+    border: 'none',
+    '&:hover': {
+      boxShadow: 'none',
+    },
+  },
 }))
 
 export default useStyles
