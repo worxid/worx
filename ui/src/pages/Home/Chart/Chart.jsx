@@ -1,6 +1,11 @@
+// MUIS
+import Stack from '@mui/material/Stack'
+
 const Chart = () => {
   return (
-    <div>Chart</div>
+    <Stack flex='1'>
+      Chart
+    </Stack>
   )
 }
 
