@@ -26,6 +26,8 @@ const Home = () => {
 
       {/* FILTERS */}
       <Filters/>
+
+      <Divider className={classes.divider}/>
     </Stack>
   )
 }
