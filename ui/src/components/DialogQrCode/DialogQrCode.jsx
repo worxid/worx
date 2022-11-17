@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -22,6 +23,7 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 
 // SERVICES
+import { getGuestShareLinkFormTemplate } from 'services/guest'
 import { postShareLinkFormTemplate } from 'services/formTemplate'
 
 // STYLES
@@ -37,7 +39,7 @@ import {
 } from 'utilities/validation'
 
 const DialogQrCode = (props) => {
-  const { id } = props
+  const { id, code, isAuth } = props
   const axiosPrivate = useAxiosPrivate()
 
   // STYLES
@@ -63,7 +65,11 @@ const DialogQrCode = (props) => {
 
   // FETCH SHARE LINK
   const fetchShareLink = async (abortController) => {
-    const response = await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+    const response = isAuth
+      ? await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+      : await getGuestShareLinkFormTemplate(abortController.signal, {
+        code,
+      })
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       generateQR(response.data.value.link)
@@ -79,10 +85,10 @@ const DialogQrCode = (props) => {
 
   useEffect(() => {
     const abortController = new AbortController()
-    id && fetchShareLink(abortController)
+    if (id || code) fetchShareLink(abortController)
 
     return () => abortController.abort()
-  }, [id])
+  }, [id, code])
 
   return (
     <DialogForm
@@ -105,11 +111,7 @@ const DialogQrCode = (props) => {
       <Divider />
 
       <Stack className={classes.content}>
-        <Box
-          component='img'
-          src={qrCode}
-          className={classes.imgQrCode}
-        />
+        <Box component='img' src={qrCode} className={classes.imgQrCode} />
 
         <Button
           variant='contained'
@@ -121,6 +123,16 @@ const DialogQrCode = (props) => {
       </Stack>
     </DialogForm>
   )
+}
+
+DialogQrCode.defaultProps = {
+  isAuth: true,
+}
+
+DialogQrCode.propTypes = {
+  id: PropTypes.number,
+  code: PropTypes.string,
+  isAuth: PropTypes.bool,
 }
 
 export default DialogQrCode
