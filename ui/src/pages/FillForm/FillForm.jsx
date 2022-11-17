@@ -214,10 +214,20 @@ const FillForm = () => {
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={dataFormTemplate?.id}/>
+      <DialogShareLink
+        code={searchParams.get('code')}
+        isShowTabLink={true}
+        isShowTabEmail={false}
+        hideTabHeader={true}
+        isAuth={false}
+        defaultSelectedTab={1}
+      />
 
       {/* DIALOG QR CODE */}
-      <DialogQrCode id={dataFormTemplate?.id}/>
+      <DialogQrCode
+        isAuth={false}
+        code={searchParams.get('code')}
+      />
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
@@ -37,6 +38,7 @@ import {
 } from 'react-share'
 
 // SERVICES
+import { getGuestShareLinkFormTemplate } from 'services/guest'
 import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/formTemplate'
 
 // STYLES
@@ -55,7 +57,10 @@ const a11yProps = (index) => ({
 })
 
 const DialogShareLink = (props) => {
-  const { id } = props
+  const {
+    id, code, isShowTabEmail, isShowTabLink,
+    isAuth, defaultSelectedTab, hideTabHeader
+  } = props
 
   // STYLES
   const classes = useStyles()
@@ -65,7 +70,7 @@ const DialogShareLink = (props) => {
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STATES
-  const [currentTab, setCurrentTab] = useState(0)
+  const [currentTab, setCurrentTab] = useState(defaultSelectedTab || 0)
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
   const [formLink, setFormLink] = useState('')
@@ -153,7 +158,11 @@ const DialogShareLink = (props) => {
 
   // FETCH SHARE LINK
   const fetchShareLink = async (abortController) => {
-    const response = await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+    const response = isAuth
+      ? await postShareLinkFormTemplate(id, abortController.signal, axiosPrivate)
+      : await getGuestShareLinkFormTemplate(abortController.signal, {
+        code,
+      })
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
@@ -170,10 +179,10 @@ const DialogShareLink = (props) => {
 
   useEffect(() => {
     const abortController = new AbortController()
-    id && fetchShareLink(abortController)
+    if (id || code) fetchShareLink(abortController)
 
     return () => abortController.abort()
-  }, [id])
+  }, [id, code])
 
   return (
     <DialogForm
@@ -192,14 +201,18 @@ const DialogShareLink = (props) => {
       areActionsAvailable={false}
       classNames={classes.dialogShareLink}
     >
-      <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
-        <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />
-        <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />
-        {/* <Tab icon={breakpointType !== 'xs' && <IconCode fontSize='small'/>} iconPosition='start' label='Embed' {...a11yProps(2)} /> */}
-      </Tabs>
+      {!hideTabHeader
+        ? (
+          <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
+            {isShowTabEmail && <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />}
+            {isShowTabLink && <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />}
+          </Tabs>
+        )
+        : <Divider />
+      }
 
       {/* CONTENT SHARE EMAIL */}
-      {currentTab === 0 && (
+      {(currentTab === 0 && isShowTabEmail) && (
         <Stack className={classes.content}>
           <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
           <Typography variant='caption' color='text.secondary'>Share a direct link to your form via email</Typography>
@@ -254,7 +267,7 @@ const DialogShareLink = (props) => {
       )}
 
       {/* CONTENT DIRECT LINK */}
-      {currentTab === 1 && (<Stack className={classes.content}>
+      {(currentTab === 1 && isShowTabLink) && (<Stack className={classes.content}>
         <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
         <Typography variant='caption' color='text.secondary'>You can share the direct link to your form</Typography>
 
@@ -280,45 +293,20 @@ const DialogShareLink = (props) => {
         </Stack>
       </Stack>)}
 
-      {/* CONTENT EMBED */}
-      {/* {currentTab === 2 && (<Stack className={classes.content}>
-        <Typography variant='subtitle2' className='fontWeight400'>Embed</Typography>
-        <Typography variant='caption' color='text.secondary'>Copy and paste this snippet into your code</Typography>
-
-        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
-          <Stack direction='row' alignItems='center' className={classes.boxLink}>
-            <Typography variant='caption' color='text.secondary' noWrap>
-              {'<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>'}
-            </Typography>
-          </Stack>
-
-          <Stack className={classes.actionWrap}>
-            <Button
-              size='small'
-              variant='contained'
-              className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={(event) => handleButtonCopyClick(event, '<script src="https://dev.worx.id/fill-form?code=Fz9dZvxo9Twyi8unPisrM"></script>')}
-            >
-              Copy Code
-            </Button>
-          </Stack>
-        </Stack>
-      </Stack>)} */}
-
       <Divider className={classes.dividerContent}/>
 
       {/* FOOTER */}
       <Stack alignItems='center' direction='row' className={classes.footer} flexWrap='nowrap'>
         <Stack direction='row' flex={1}>
-          <FacebookShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+          <FacebookShareButton className={classes.buttonSocialMedia} url={formLink}>
             <FacebookIcon round={true} size={18}/>
           </FacebookShareButton>
 
-          <TwitterShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+          <TwitterShareButton className={classes.buttonSocialMedia} url={formLink}>
             <TwitterIcon round={true} size={18}/>
           </TwitterShareButton>
 
-          <LinkedinShareButton className={classes.buttonSocialMedia} url='http://ww.worx.id//validformsid12345hajsdsddsds'>
+          <LinkedinShareButton className={classes.buttonSocialMedia} url={formLink}>
             <LinkedinIcon round={true} size={18}/>
           </LinkedinShareButton>
         </Stack>
@@ -334,6 +322,24 @@ const DialogShareLink = (props) => {
       </Stack>
     </DialogForm>
   )
+}
+
+DialogShareLink.defaultProps = {
+  isShowTabEmail: true,
+  isShowTabLink: true,
+  isAuth: true,
+  defaultSelectedTab: 0,
+  hideTabHeader: false
+}
+
+DialogShareLink.propTypes = {
+  id: PropTypes.number,
+  code: PropTypes.string,
+  isShowTabEmail: PropTypes.bool,
+  isShowTabLink: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  defaultSelectedTab: PropTypes.number,
+  hideTabHeader: PropTypes.bool
 }
 
 export default DialogShareLink
