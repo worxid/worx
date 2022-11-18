@@ -114,15 +114,6 @@ const Forms = () => {
       isFilterShown: true,
       isSortShown: true,
     },
-    {
-      field: 'fields_size',
-      headerName: 'Fields',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      isFilterShown: true,
-      isSortShown: true,
-    },
   ]
 
   const initialFilters = {}
