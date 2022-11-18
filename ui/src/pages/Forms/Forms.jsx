@@ -225,7 +225,8 @@ const Forms = () => {
         assigned_groups: filters?.assigned_groups?.includes(', ')
           ? filters?.assigned_groups?.split(', ') : filters?.assigned_groups
             ? [filters?.assigned_groups] : null,
-        submission_count: filters?.submission_count || null
+        submission_count: filters?.submission_count || null,
+        global_search: pageSearch,
       },
       axiosPrivate,
     )
