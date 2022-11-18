@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
@@ -8,6 +8,9 @@ import InputComponent from './InputComponent'
 import ItemGrid from './ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
@@ -15,23 +18,27 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
 // REACT TO PRINT
 import { useReactToPrint } from 'react-to-print'
 
 // SERVICES
-import { postSearchFormSubmissionList } from 'services/form'
+import { getSubmissionListDetail } from 'services/form'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { didSuccessfullyCallTheApi, wasRequestCanceled } from 'utilities/validation'
 
 const FormsSubmissionsDetail = () => {
   const axiosPrivate = useAxiosPrivate()
   const [ searchParams ] = useSearchParams()
   const downloadComponentRef = useRef()
+
+  // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STYLES
   const classes = useStyles()
@@ -41,21 +48,22 @@ const FormsSubmissionsDetail = () => {
   const [ submissionDetail, setSubmissionDetail ] = useState({})
 
   // HANDLE GET SUBMISSION DETAIL
-  const getSubmissionDetail = async (
-    inputSignal,
-    inputTemplateId,
-    inputSubmissionId
-  ) => {
-    const response = await postSearchFormSubmissionList(inputSignal.signal, {
-      page: 0,
-      size: 100000
-    }, {
-      template_id: inputTemplateId,
-    }, axiosPrivate)
+  const getSubmissionDetail = async (inputSignal, inputSubmissionId) => {
+    const response = await getSubmissionListDetail(
+      inputSignal.signal,
+      inputSubmissionId,
+      axiosPrivate
+    )
 
     if(didSuccessfullyCallTheApi(response?.status)) {
-      const findDetail = response.data.content.find(item => item.id === inputSubmissionId)
-      setSubmissionDetail(findDetail)
+      setSubmissionDetail(response?.data?.value)
+    } else if (!wasRequestCanceled(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something went wrong',
+      })
     }
 
     setIsFormLoading(false)
@@ -66,6 +74,8 @@ const FormsSubmissionsDetail = () => {
     const findValues = submissionDetail?.values[inputFieldId]
     if(Boolean(findValues)) {
       return findValues
+    } else {
+      return null
     }
   }
 
@@ -97,7 +107,6 @@ const FormsSubmissionsDetail = () => {
     const abortController = new AbortController()
     getSubmissionDetail(
       abortController,
-      Number(searchParams.get('formTemplateId')),
       Number(searchParams.get('submissionId'))
     )
 
@@ -133,13 +142,17 @@ const FormsSubmissionsDetail = () => {
               key={index}
               isSeparator={item.type === 'separator'}
             >
-              <Stack width='100%' maxWidth='400px'>
-                <InputComponent
-                  item={item}
-                  type={item.type}
-                  defaultValue={findValuesByFieldId(item.id)}
-                />
-              </Stack>
+              {Boolean(findValuesByFieldId(item.id)) ? (
+                <Stack width='100%' maxWidth='400px'>
+                  <InputComponent
+                    item={item}
+                    type={item.type}
+                    defaultValue={findValuesByFieldId(item.id)}
+                  />
+                </Stack>)
+                : (
+                  <Typography variant='body2'>{item.type !== 'separator' && 'No data'}</Typography>
+                )}
             </ItemGrid>
           ))}
           {/* ITEM */}
