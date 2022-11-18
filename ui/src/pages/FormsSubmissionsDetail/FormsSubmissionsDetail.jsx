@@ -151,7 +151,7 @@ const FormsSubmissionsDetail = () => {
                   />
                 </Stack>)
                 : (
-                  <Typography variant='body2'>No data</Typography>
+                  <Typography variant='body2'>{item.type !== 'separator' && 'No data'}</Typography>
                 )}
             </ItemGrid>
           ))}
