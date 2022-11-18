@@ -19,3 +19,17 @@ export const postSearchFormSubmissionList = async (
     else return error.response
   }
 }
+
+export const getSubmissionListDetail = async (inputSignal, inputId, inputAxiosPrivate) => {
+  try {
+    const response = await inputAxiosPrivate.get(`/form/${inputId}`, {
+      signal: inputSignal
+    })
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
