@@ -37,12 +37,14 @@ const Filters = () => {
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
-  const [ filterParameters, setFilterParameters ] = useState({
+  const initialFIlterParameters = {
     form: dummyFormList[0].text,
     device: dummyDeviceList[0].text,
     startTime: moment().subtract(1, 'month').toDate(),
     endTime: moment().endOf('month').toDate(), 
-  })
+  }
+
+  const [ filterParameters, setFilterParameters ] = useState(initialFIlterParameters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
 
   const handleSelectDateRangePickerButtonClick = (inputNewValue) => {
@@ -165,7 +167,10 @@ const Filters = () => {
       </Stack>
 
       {/* RESET FILTER BUTTON */}
-      <Button className={classes.buttonReset}>
+      <Button 
+        className={classes.buttonReset}
+        onClick={() => setFilterParameters(initialFIlterParameters)}
+      >
         Reset Filter
       </Button>
 
