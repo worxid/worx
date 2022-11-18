@@ -13,28 +13,30 @@ const ItemGrid = (props) => {
   const classes = useStyles()
 
   return (
-    <>
-      {isSeparator && (
-        <Grid item xs={12} className={classes.gridItemSeparator}>
-          <Divider/>
+    <Grid item xs={12}>
+      <Grid container spacing={0} className={classes.contentFormsChild}>
+        {isSeparator && (
+          <Grid item xs={12} className={classes.gridItemSeparator}>
+            <Divider/>
+          </Grid>
+        )}
+
+        <Grid item xs={4}>
+          <Typography variant='subtitle2'>{label}</Typography>
+
+          <Typography
+            variant='caption'
+            color='text.secondary'
+          >
+            {description}
+          </Typography>
         </Grid>
-      )}
 
-      <Grid item xs={4}>
-        <Typography variant='subtitle2' >{label}</Typography>
-
-        <Typography
-          variant='caption'
-          color='text.secondary'
-        >
-          {description}
-        </Typography>
+        <Grid item xs={8}>
+          {children}
+        </Grid>
       </Grid>
-
-      <Grid item xs={8}>
-        {children}
-      </Grid>
-    </>
+    </Grid>
   )
 }
 

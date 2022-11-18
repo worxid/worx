@@ -15,10 +15,20 @@ const useStyles = makeStyles((theme) => ({
     padding: 24,
     '& .MuiGrid-item': {
       marginBottom: 32,
-      '&:nth-last-child(-n+2)': {
+      '&:last-child': {
         marginBottom: 0,
       }
+    },
+    '@media print': {
+      display: 'block',
+      '& .MuiGrid-item': {
+        marginBottom: 32,
+      },
     }
+  },
+  contentFormsChild: {
+    padding: 0,
+    margin: 0,
   },
   checkboxGroup: {
     '& .Mui-checked.Mui-disabled': {

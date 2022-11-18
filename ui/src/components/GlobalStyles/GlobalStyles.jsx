@@ -18,6 +18,7 @@ const GlobalStyles = () => {
           imageRendering: 'optimizeQuality',
           fillRule: 'evenodd',
           clipRule: 'evenodd',
+          pageBreakInside: 'avoid'
         },
 
         // CONTENT CONTAINER
