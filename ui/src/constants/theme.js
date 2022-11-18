@@ -90,6 +90,13 @@ customTheme = createTheme(customTheme, {
         },
       },
     },
+    MuiMenuItem: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+        },
+      },
+    },
     MuiOutlinedInput: {
       defaultProps: {
         sx: {
