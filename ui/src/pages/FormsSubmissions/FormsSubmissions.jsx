@@ -80,7 +80,7 @@ const FormsSubmissions = () => {
       flex: 0,
       minWidth: 200,
       hide: false,
-      isFilterShown: true,
+      isFilterShown: false,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
@@ -117,7 +117,10 @@ const FormsSubmissions = () => {
     },
   ]
     
-  const initialFilters = {}
+  const initialFilters = {
+    source: '',
+    submissionAddress: '',
+  }
 
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
@@ -185,13 +188,21 @@ const FormsSubmissions = () => {
   const getSubmissionList = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
 
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+
+    let bodyParams = { 
+      template_id: formTemplateId, 
+      ...filters,
+    }
+
     const resultSubmissionList = await postSearchFormSubmissionList(
       inputAbortController.signal,
-      {
-        page: pageNumber,
-        size: pageSize,
-      },
-      { template_id: formTemplateId },
+      requestParams,
+      bodyParams,
       axiosPrivate
     )
 
