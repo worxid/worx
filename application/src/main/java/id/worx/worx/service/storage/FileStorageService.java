@@ -20,7 +20,7 @@ public interface FileStorageService {
 
     UrlPresignedResponse getUploadUrl(Long fileId);
 
-    UrlPresignedResponse getDownloadUrl(Long fileId);
+    UrlPresignedResponse getDownloadUrl(String fileId);
 
     boolean isObjectExist(String path);
 

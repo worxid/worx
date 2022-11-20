@@ -27,12 +27,14 @@ public class File extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private String name;
-    private long size;
     private String path;
+    private String name;
+    private String mediaId;
+    private String originalName;
     private String mimeType;
+    private long size;
     @Default
     private FileState state = FileState.CREATED;
+    private Long userId;
 
 }
