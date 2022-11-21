@@ -377,6 +377,7 @@ export const getTransactionChartOptions = (
   inputTheme, 
   inputTitle, 
   inputXList,
+  inputYList,
 ) => {
   return {
     chart: {
@@ -402,7 +403,18 @@ export const getTransactionChartOptions = (
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      offsetY: -24,
+      style: {
+        fontSize: '12px',
+        colors: [ inputTheme.palette.text.primary ],
+        fontWeight: 400,
+      },
+      formatter: function (value) {
+        if (value === Math.min(...inputYList)) return `min ${value}`
+        else if (value === Math.max(...inputYList)) return `max ${value}`
+        else return ''
+      },
     },
     fill: {
       colors: [ inputTheme.palette.primary.main ],
@@ -411,9 +423,12 @@ export const getTransactionChartOptions = (
     plotOptions: {
       bar: {
         borderRadius: 10,
-        columnWidth: '50%',
+        columnWidth: '75%',
         endingShape: 'rounded',
         horizontal: false,
+        dataLabels: {
+          position: 'top',
+        },
       },
     },
     tooltip: {

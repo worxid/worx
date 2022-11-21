@@ -55,7 +55,8 @@ const Chart = () => {
         options={getTransactionChartOptions(
           theme,
           chartTitle, 
-          chartList.map(item => item.x)
+          chartList.map(item => item.x),
+          chartList.map(item => item.y)
         )}
         series={getTransactionChartSeries(
           chartTitle, 
