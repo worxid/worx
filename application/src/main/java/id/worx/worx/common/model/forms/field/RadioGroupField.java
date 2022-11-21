@@ -49,10 +49,11 @@ public class RadioGroupField extends Field {
         }
 
         RadioGroupValue radioGroupValue = (RadioGroupValue) value;
-        Integer valueIndex = radioGroupValue.getValueIndex();
+        int valueIndex = radioGroupValue.getValueIndex();
 
         if (Objects.isNull(valueIndex) && this.getRequired().equals(Boolean.TRUE)) {
             details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
+            return details;
         }
 
         if (valueIndex < 0 || valueIndex >= this.options.size()) {
