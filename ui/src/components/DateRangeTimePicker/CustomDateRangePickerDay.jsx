@@ -58,7 +58,6 @@ const CustomDateRangePickerDay = styled(({ className, ...props }) => (
       borderRight: `8px solid ${theme.palette.primary.main}`,
     },
   }),
-
 }))
 
 export default CustomDateRangePickerDay

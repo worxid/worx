@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme) => ({
   rightPanelContainer: {
     padding: '19px 24px 24px',
   },
-  title: {
-    color: theme.palette.text.secondary,
-    fontWeight: 600,
-  },
   dateAndTimeInputContainer: {
     display: 'flex',
     alignItems: 'center',

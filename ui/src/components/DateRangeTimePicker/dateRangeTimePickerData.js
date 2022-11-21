@@ -1,7 +1,58 @@
+// DATE AND TIME
+import moment from 'moment'
+
 export const dateRangeList = [
-  ['Yesterday', 'Last week', 'Last month'],
-  ['Today', 'This week', 'This month'],
-  ['Tomorrow', 'Next week', 'Next month'],
+  [
+    {
+      title: 'Yesterday',
+      startDate: moment().subtract(1, 'days').startOf('days').toDate(),
+      endDate: moment().subtract(1, 'days').endOf('days').toDate(),
+    },
+    {
+      title: 'Last week',
+      startDate: moment().subtract(1, 'weeks').startOf('week').toDate(),
+      endDate: moment().subtract(1, 'weeks').endOf('week').toDate(),
+    },
+    {
+      title: 'Last month',
+      startDate: moment().subtract(1, 'months').startOf('months').toDate(),
+      endDate: moment().subtract(1, 'months').endOf('months').toDate(),
+    },
+  ],
+  [
+    {
+      title: 'Today',
+      startDate: moment().startOf('day').toDate(),
+      endDate: moment().endOf('day').toDate(),
+    },
+    {
+      title: 'This week',
+      startDate: moment().startOf('week').toDate(),
+      endDate: moment().endOf('week').toDate(),
+    },
+    {
+      title: 'This month',
+      startDate: moment().startOf('month').toDate(),
+      endDate: moment().endOf('month').toDate(),
+    },
+  ],
+  [
+    {
+      title: 'Tomorrow',
+      startDate: moment().add(1, 'days').startOf('days').toDate(),
+      endDate: moment().add(1, 'days').endOf('days').toDate(),
+    },
+    {
+      title: 'Next week',
+      startDate: moment().add(1, 'weeks').startOf('weeks').toDate(),
+      endDate: moment().add(1, 'weeks').endOf('weeks').toDate(),
+    },
+    {
+      title: 'Next month',
+      startDate: moment().add(1, 'months').startOf('months').toDate(),
+      endDate: moment().add(1, 'months').endOf('months').toDate(),
+    },
+  ]
 ]
 
 export const timeOptionList = [

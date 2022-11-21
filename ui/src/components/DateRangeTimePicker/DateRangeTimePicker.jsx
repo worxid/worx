@@ -81,54 +81,14 @@ const DateRangeTimePicker = (props) => {
     setEndTimeInput(moment(inputNewValue[1]).format(timeFormat))
   }
 
-  const handleDateRangeItemClick = (inputItem, inputIndex) => {
-    let startDate
-    let endDate
+  const handleDateRangeItemClick = (inputItem) => {
+    setSelectedDateRangeItem(inputItem.title)
+    setTempValue([ inputItem.startDate, inputItem.endDate ])
 
-    if (inputItem === 'Yesterday') {
-      startDate = moment().subtract(1, 'days').startOf('days').toDate()
-      endDate = moment().subtract(1, 'days').endOf('days').toDate()
-    } 
-    else if (inputItem === 'Last week') {
-      startDate = moment().subtract(1, 'weeks').startOf('week').toDate()
-      endDate = moment().subtract(1, 'weeks').endOf('week').toDate()
-    } 
-    else if (inputItem === 'Last month') {
-      startDate = moment().subtract(1, 'months').startOf('months').toDate()
-      endDate = moment().subtract(1, 'months').endOf('months').toDate()
-    } 
-    else if (inputItem === 'Today') {
-      startDate = moment().startOf('day').toDate()
-      endDate = moment().endOf('day').toDate()
-    } 
-    else if (inputItem === 'This week') {
-      startDate = moment().startOf('week').toDate()
-      endDate = moment().endOf('week').toDate()
-    } 
-    else if (inputItem === 'This month') {
-      startDate = moment().startOf('month').toDate()
-      endDate = moment().endOf('month').toDate()
-    } 
-    else if (inputItem === 'Tomorrow') {
-      startDate = moment().add(1, 'days').startOf('days').toDate()
-      endDate = moment().add(1, 'days').endOf('days').toDate()
-    } 
-    else if (inputItem === 'Next week') {
-      startDate = moment().add(1, 'weeks').startOf('weeks').toDate()
-      endDate = moment().add(1, 'weeks').endOf('weeks').toDate()
-    } 
-    else if (inputItem === 'Next month') {
-      startDate = moment().add(1, 'months').startOf('months').toDate()
-      endDate = moment().add(1, 'months').endOf('months').toDate()
-    }
-
-    setSelectedDateRangeItem(inputItem)
-    setTempValue([startDate, endDate])
-
-    setStartDateInput(moment(startDate).format(dateFormat))
-    setStartTimeInput(moment(startDate).format(timeFormat))
-    setEndDateInput(moment(endDate).format(dateFormat))
-    setEndTimeInput(moment(endDate).format(timeFormat))
+    setStartDateInput(moment(inputItem.startDate).format(dateFormat))
+    setStartTimeInput(moment(inputItem.startDate).format(timeFormat))
+    setEndDateInput(moment(inputItem.endDate).format(dateFormat))
+    setEndTimeInput(moment(inputItem.ndDate).format(timeFormat))
 
     setKey((current) => current + 1)
   }
@@ -214,28 +174,28 @@ const DateRangeTimePicker = (props) => {
     <Stack direction='row'>
       {/* LEFT PANEL */}
       <Box className={classes.leftPanelContainer}>
-        {dateRangeList.map((dateRangeType, dateRangeTypeIndex) => (
-          <Fragment key={dateRangeTypeIndex}>
+        {dateRangeList.map((dateRangeItem, dateRangeIndex) => (
+          <Fragment key={dateRangeIndex}>
             <List>
-              {dateRangeType.map((item, index) => (
+              {dateRangeItem.map((item, index) => (
                 <ListItemButton
                   key={index}
-                  onClick={() => handleDateRangeItemClick(item, index)}
+                  onClick={() => handleDateRangeItemClick(item)}
                   className={
-                    selectedDateRangeItem === item
+                    selectedDateRangeItem === item.title
                       ? `${classes.leftPanelItemButton} ${classes.leftPanelItemButtonActive}`
                       : classes.leftPanelItemButton
                   }
                 >
                   <ListItemText
-                    primary={item}
+                    primary={item.title}
                     className={classes.leftPanelItemText}
                   />
                 </ListItemButton>
               ))}
             </List>
 
-            {dateRangeTypeIndex !== dateRangeList.length - 1 &&
+            {dateRangeIndex !== dateRangeList.length - 1 &&
             <Divider className={classes.leftPanelItemDivider}/>}
           </Fragment>
         ))}
@@ -244,7 +204,10 @@ const DateRangeTimePicker = (props) => {
       {/* RIGHT PANEL */}
       <Box className={classes.rightPanelContainer}>
         {/* TITLE */}
-        <Typography variant='subtitle2' className={classes.title}>
+        <Typography 
+          variant='subtitle2' 
+          className='colorTextSecondary'
+        >
           Date range:
         </Typography>
 
