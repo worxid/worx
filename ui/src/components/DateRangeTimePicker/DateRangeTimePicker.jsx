@@ -206,7 +206,7 @@ const DateRangeTimePicker = (props) => {
         {/* TITLE */}
         <Typography 
           variant='subtitle2' 
-          className='colorTextSecondary'
+          className={classes.title}
         >
           Date range:
         </Typography>
