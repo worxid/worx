@@ -28,6 +28,7 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<google-maps-services.version>2.1.0</google-maps-services.version>
 		<guava.version>31.1-jre</guava.version>
+		<org.apache.poi.version>5.2.0</org.apache.poi.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -143,7 +144,17 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
-		  </dependency>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${org.apache.poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${org.apache.poi.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

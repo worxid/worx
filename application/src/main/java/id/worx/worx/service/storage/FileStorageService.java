@@ -22,6 +22,8 @@ public interface FileStorageService {
 
     UrlPresignedResponse getDownloadUrl(Long fileId);
 
+    List<UrlPresignedResponse> getDownloadUrls(List<Long> fileIds);
+
     boolean isObjectExist(String path);
 
     long getObjectSize(String path);

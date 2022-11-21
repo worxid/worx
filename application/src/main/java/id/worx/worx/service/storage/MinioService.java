@@ -6,13 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import id.worx.worx.common.model.dto.DeviceDTO;
-import id.worx.worx.entity.Group;
-import id.worx.worx.entity.devices.Device;
-import id.worx.worx.web.model.request.FileRequestDTO;
-import io.minio.http.Method;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.response.UrlPresignedResponse;
@@ -22,6 +16,7 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.storage.client.MinioClientService;
 import id.worx.worx.util.MediaUtils;
+import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -120,6 +115,33 @@ public class MinioService implements FileStorageService {
     }
 
     @Override
+    public List<UrlPresignedResponse> getDownloadUrls(List<Long> fileIds) {
+        List<File> files = fileRepository.findAllById(fileIds);
+        List<UrlPresignedResponse> responses = new ArrayList<>();
+
+        for (File file : files) {
+            String url = "";
+            try {
+                url = clientService.getDownloadPresignedObjectUrl(file.getPath());
+            } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                    | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
+                    | IllegalArgumentException | IOException e) {
+                log.trace("File Storage failed to generate download url: {}", e.getMessage());
+                throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
+            }
+
+            UrlPresignedResponse response = UrlPresignedResponse.builder()
+                    .fileId(file.getId())
+                    .url(url)
+                    .path(file.getPath())
+                    .build();
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
+    @Override
     public boolean isObjectExist(String path) {
         return clientService.isObjectExist(path);
     }
@@ -131,21 +153,22 @@ public class MinioService implements FileStorageService {
     }
 
     @Override
-    public List<UrlPresignedResponse> getFiles(FileRequestDTO fileRequestDTO)  throws IOException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException, ServerException, ErrorResponseException, XmlParserException, InsufficientDataException, InternalException {
+    public List<UrlPresignedResponse> getFiles(FileRequestDTO fileRequestDTO)
+            throws IOException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException,
+            ServerException, ErrorResponseException, XmlParserException, InsufficientDataException, InternalException {
 
         List<UrlPresignedResponse> responses = new ArrayList<>();
 
-        for (Long ids:fileRequestDTO.getFileIds()){
+        for (Long ids : fileRequestDTO.getFileIds()) {
 
             Optional<File> file = fileRepository.findById(ids);
-            if(file.isPresent()){
+            if (file.isPresent()) {
 
                 File files = file.get();
 
-
                 boolean objectExist = clientService.isObjectExist(files.getPath());
 
-                if(objectExist){
+                if (objectExist) {
 
                     UrlPresignedResponse url = new UrlPresignedResponse();
                     url.setFileId(ids);
