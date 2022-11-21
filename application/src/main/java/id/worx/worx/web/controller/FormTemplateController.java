@@ -188,13 +188,13 @@ public class FormTemplateController implements SecuredRestController {
     public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormExportRequest request) {
         ByteArrayOutputStream reportByte = new ByteArrayOutputStream();
         String filename = "";
-        if (request.getOption().equals(ExportOption.XLS)) {
+        if (request.getOption().equals(ExportOption.EXCEL)) {
 
             reportByte = exportService.toXLS(request.getTemplateId());
-            filename = "myfile.xlsx";
+            filename = "forms.xlsx";
         } else if (request.getOption().equals(ExportOption.CSV)) {
             reportByte = exportService.toCSV(request.getTemplateId());
-            filename = "myfile.csv";
+            filename = "forms.csv";
         }
 
         ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
