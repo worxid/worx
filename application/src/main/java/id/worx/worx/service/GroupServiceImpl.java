@@ -87,6 +87,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void delete(List<Long> ids) {
         List<Group> groups = groupRepository.findByIdsAndUserId(ids, authContext.getUsers().getId());
+
+        boolean defaultGroupFound = groups.stream()
+                .anyMatch(Group::isDefault);
+
+        if (defaultGroupFound) {
+            throw new WorxException(WorxErrorCode.OPERATION_NOT_ALLOWED);
+        }
+
         for (Group group : groups) {
             this.delete(group);
         }

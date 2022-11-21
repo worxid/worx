@@ -106,4 +106,24 @@ class GroupServiceImplTest {
         verify(groupRepository, times(1)).delete(group1);
         verify(groupRepository, times(1)).delete(group2);
     }
+
+    @Test
+    void givenDefaultGroupId_whenDelete_thenReturn() {
+        Long defaultGroupId = 1L;
+        List<Long> groupIds = List.of(defaultGroupId);
+        Long userId = 1L;
+        Group group1 = Group.builder()
+                .id(1L)
+                .isDefault(true)
+                .build();
+        Users users = Users.builder()
+                .id(1L)
+                .build();
+
+        when(groupRepository.findByIdsAndUserId(groupIds, userId)).thenReturn(List.of(group1));
+        when(authContext.getUsers()).thenReturn(users);
+
+        Assertions.assertThrows(WorxException.class, () -> groupService.delete(defaultGroupId));
+        Assertions.assertThrows(WorxException.class, () -> groupService.delete(groupIds));
+    }
 }

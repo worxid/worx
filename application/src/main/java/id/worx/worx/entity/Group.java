@@ -70,4 +70,7 @@ public class Group extends BaseEntity {
         return devices.size();
     }
 
+    public boolean isDefault() {
+        return this.isDefault.booleanValue();
+    }
 }

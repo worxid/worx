@@ -1,17 +1,16 @@
 package id.worx.worx.repository;
 
-import id.worx.worx.common.model.dto.GroupDTO;
-import id.worx.worx.common.model.projection.GroupSearchProjection;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.entity.Group;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
