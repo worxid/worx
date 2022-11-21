@@ -26,14 +26,12 @@ public class FormExportObject {
 
     public List<List<String>> getValueRowsWithQuote() {
         return valueRows.stream()
-                .map(valueRow -> {
-                    return valueRow.stream()
-                            .map(value -> {
-                                String valueString = String.join(",", value.getValues());
-                                return String.format("\"%s\"", valueString);
-                            })
-                            .collect(Collectors.toList());
-                })
+                .map(valueRow -> valueRow.stream()
+                        .map(value -> {
+                            String valueString = String.join(",", value.getValues());
+                            return String.format("\"%s\"", valueString);
+                        })
+                        .collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }
 
