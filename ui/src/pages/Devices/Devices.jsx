@@ -9,6 +9,7 @@ import DeviceFlyout from './DeviceFlyout/DeviceFlyout'
 import DialogAddOrEditDevice from './DialogAddOrEditDevice/DialogAddOrEditDevice'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
+import DialogInvite from './DialogInvite/DialogInvite'
 import Flyout from 'components/Flyout/Flyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
@@ -47,7 +48,7 @@ import {
 } from 'utilities/validation'
 import { getDeviceStatusColor } from 'utilities/component'
 
-const Devices = () => { 
+const Devices = () => {
   const classes = useLayoutStyles()
 
   const axiosPrivate = useAxiosPrivate()
@@ -138,7 +139,8 @@ const Devices = () => {
     }
   ]
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  // CONTEXT
+  const { setIsDialogFormOpen, setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFilters = {
@@ -286,7 +288,8 @@ const Devices = () => {
     <>
       {/* APP BAR */}
       <AppBar
-        hasFab={false}
+        hasFab={true}
+        onFabClick={() => setIsDialogFormOpen('dialogInvite')}
         pageTitle='Devices'
         hasSearch={true}
         search={pageSearch}
@@ -392,6 +395,9 @@ const Devices = () => {
         onContinueButtonClick={() => handleDeleteDevicesClick()}
         onCancelButtonClick={() => setDialogDeleteDevice({})}
       />
+
+      {/* DIALOG INVITE */}
+      <DialogInvite />
     </>
   )
 }
