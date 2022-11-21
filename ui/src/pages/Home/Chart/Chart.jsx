@@ -56,7 +56,7 @@ const Chart = () => {
           theme,
           chartTitle, 
           chartList.map(item => item.x),
-          chartList.map(item => item.y)
+          chartList.map(item => item.y),
         )}
         series={getTransactionChartSeries(
           chartTitle, 

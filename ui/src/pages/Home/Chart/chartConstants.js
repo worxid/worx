@@ -383,6 +383,7 @@ export const getTransactionChartOptions = (
   inputTitle, 
   inputXList,
   inputYList,
+  inputClasses,
 ) => {
   return {
     chart: {
@@ -439,7 +440,13 @@ export const getTransactionChartOptions = (
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
         return ReactDOMServer.renderToString(
-          <CustomTooltip/>
+          <CustomTooltip
+            xList={inputXList}
+            yList={inputYList}
+            dataPointIndex={dataPointIndex}
+            theme={inputTheme}
+            title={inputTitle}
+          />
         )
       }
     },

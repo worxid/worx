@@ -8,12 +8,17 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   chart: {
-    '& .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title': {
-      backgroundColor: theme.palette.background.paper,
+    '& .apexcharts-tooltip': {
+      borderRadius: 0,
+      border: 'none',
     },
-    '& .apexcharts-tooltip.apexcharts-theme-light': {
-      backgroundColor: theme.palette.background.default,
-    },
+  },
+  chartTooltip: {
+    padding: 12,
+    borderRadius: 0,
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.common.black}`,
+    color: theme.palette.text.primary,
   },
 }))
 
