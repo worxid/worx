@@ -5,6 +5,17 @@ import {
 } from '@mui/material/styles'
 import DateRangePickerDay from '@mui/lab/DateRangePickerDay'
 
+const selectedDayStyles = (theme) => {
+  return {
+    backgroundColor: 'transparent',
+    color: theme.palette.text.primary,
+    fontWeight: 400,
+    borderRadius: 0,
+    '&:hover, &:focus': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  }
+}
 const CustomDateRangePickerDay = styled(({ className, ...props }) => (
   <DateRangePickerDay
     className={className} 
@@ -16,7 +27,6 @@ const CustomDateRangePickerDay = styled(({ className, ...props }) => (
   isStartOfHighlighting,
   isEndOfHighlighting,
   outsideCurrentMonth,
-  selected,
 }) => ({
   // HIGHLIGHTED
   ...(!outsideCurrentMonth && isHighlighting && {
@@ -28,31 +38,27 @@ const CustomDateRangePickerDay = styled(({ className, ...props }) => (
     },
   }),
 
-  // HIGHLIGHTED (FIRST ITEM)
-  ...(isStartOfHighlighting && {
-    borderLeft: `8px solid ${theme.palette.primary.main}`,
-  }),
-
-  // HIGHLIGHTED (LAST ITEM)
-  ...(isEndOfHighlighting && {
-    borderRight: `8px solid ${theme.palette.primary.main}`,
-  }),
-  
   // HIGHLIGHTED (LEFT AND RIGHT SIDES)
   '&.MuiDateRangePickerDay-root:first-of-type, &.MuiDateRangePickerDay-root:last-of-type': {
     borderRadius: 0,
   },
 
-  // SELECTED
-  '& .MuiDateRangePickerDay-day.Mui-selected': {
-    backgroundColor: 'transparent',
-    color: theme.palette.text.primary,
-    fontWeight: 400,
-    borderRadius: 0,
-    '&:hover, &:focus': {
-      backgroundColor: theme.palette.action.hover,
+  // HIGHLIGHTED (FIRST ITEM)
+  ...(isStartOfHighlighting && {
+    '& .MuiDateRangePickerDay-day.Mui-selected': {
+      ...selectedDayStyles(theme),
+      borderLeft: `8px solid ${theme.palette.primary.main}`,
     },
-  },
+  }),
+
+  // HIGHLIGHTED (LAST ITEM)
+  ...(isEndOfHighlighting && {
+    '& .MuiDateRangePickerDay-day.Mui-selected': {
+      ...selectedDayStyles(theme),
+      borderRight: `8px solid ${theme.palette.primary.main}`,
+    },
+  }),
+
 }))
 
 export default CustomDateRangePickerDay
