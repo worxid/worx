@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,8 +21,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFHyperlink;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -81,26 +81,20 @@ public class FormExportServiceImpl implements FormExportService {
 
     @Override
     public ByteArrayOutputStream toCSV(Long id) {
-        Optional<FormTemplate> optTemplate = templateRepository.findById(id);
-
-        if (optTemplate.isEmpty()) {
-            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
-        }
-
-        FormTemplate template = optTemplate.get();
+        FormTemplate template = this.findByIdorElseThrowNotFound(id);
         FormExportObject exportObject = this.toFormExportObject(template);
         List<String> headers = exportObject.getHeadersWithQuote();
         List<List<String>> valueRows = exportObject.getValueRowsWithQuote();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (OutputStreamWriter osw = new OutputStreamWriter(output, Charsets.UTF_8)) {
-            osw.write(String.join(",", headers));
-            osw.write(StringUtils.CR);
-            osw.write(StringUtils.LF);
+        try (OutputStreamWriter writer = new OutputStreamWriter(output, Charsets.UTF_8)) {
+            writer.write(String.join(",", headers));
+            writer.write(StringUtils.CR);
+            writer.write(StringUtils.LF);
             for (List<String> values : valueRows) {
-                osw.write(String.join(",", values));
-                osw.write(StringUtils.CR);
-                osw.write(StringUtils.LF);
+                writer.write(String.join(",", values));
+                writer.write(StringUtils.CR);
+                writer.write(StringUtils.LF);
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -112,13 +106,7 @@ public class FormExportServiceImpl implements FormExportService {
 
     @Override
     public ByteArrayOutputStream toXLS(Long id) {
-        Optional<FormTemplate> optTemplate = templateRepository.findById(id);
-
-        if (optTemplate.isEmpty()) {
-            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
-        }
-
-        FormTemplate template = optTemplate.get();
+        FormTemplate template = this.findByIdorElseThrowNotFound(id);
         FormExportObject exportObject = this.toFormExportObject(template);
         List<FormExportEntry> headers = exportObject.getHeaders();
         List<List<FormExportEntry>> valueRows = exportObject.getValueRows();
@@ -132,33 +120,52 @@ public class FormExportServiceImpl implements FormExportService {
 
             CellStyle hlinkstyle = workbook.createCellStyle();
             Font hlinkfont = workbook.createFont();
-            hlinkfont.setUnderline(XSSFFont.U_SINGLE);
+            hlinkfont.setUnderline(Font.U_SINGLE);
             hlinkfont.setColor(IndexedColors.BLUE.index);
             hlinkstyle.setFont(hlinkfont);
 
             Row headerRow = sheet.createRow(HEADER_ROW_NUMBER_VALUE);
             for (int i = 0; i < headers.size(); i++) {
-                String header = headers.get(i).getValue();
+                String header = headers.get(i).getValues().get(0);
                 Cell cell = headerRow.createCell(i);
                 cell.setCellValue(header);
             }
 
+            // start after header
+            int rowNumber = 1;
             for (int i = 0; i < valueRows.size(); i++) {
                 List<FormExportEntry> entries = valueRows.get(i);
-                Row row = sheet.createRow(i + 1);
+                int maxRows = entries.stream()
+                        .mapToInt(FormExportEntry::size)
+                        .max()
+                        .orElseThrow(NoSuchElementException::new);
+                for (int j = 0; j < maxRows; j++) {
+                    sheet.createRow(rowNumber + j);
+                }
 
-                for (int j = 0; j < entries.size(); j++) {
-                    FormExportEntry entry = entries.get(j);
-                    Cell cell = row.createCell(j);
-                    cell.setCellValue(entry.getValue());
+                for (int columnIndex = 0; columnIndex < entries.size(); columnIndex++) {
+                    FormExportEntry entry = entries.get(columnIndex);
+                    int size = entry.size();
+                    for (int k = 0; k < size; k++) {
+                        Row tempRow = sheet.getRow(rowNumber + k);
+                        Cell cell = tempRow.createCell(columnIndex);
+                        cell.setCellValue(entry.getValues().get(k));
 
-                    if (entry.hasHyperlink()) {
-                        XSSFHyperlink link = (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
-                        link.setAddress(entry.getHyperlink());
-                        cell.setHyperlink(link);
+                        if (entry.hasHyperlink()) {
+                            XSSFHyperlink link = (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
+                            link.setAddress(entry.getHyperlinks().get(k));
+                            cell.setHyperlink(link);
+                            cell.setCellStyle(hlinkstyle);
+                        }
+                    }
+
+                    if (hasCellRange(size, maxRows)) {
+                        sheet.addMergedRegion(
+                                new CellRangeAddress(rowNumber, rowNumber + maxRows - 1, columnIndex, columnIndex));
                     }
                 }
 
+                rowNumber = rowNumber + maxRows;
             }
 
             workbook.write(output);
@@ -169,6 +176,24 @@ public class FormExportServiceImpl implements FormExportService {
         }
 
         return output;
+    }
+
+    private void toXLSHelper() {
+
+    }
+
+    private boolean hasCellRange(int size, int maxRows) {
+        return size == 1 && maxRows > 1;
+    }
+
+    private FormTemplate findByIdorElseThrowNotFound(Long id) {
+        Optional<FormTemplate> optTemplate = templateRepository.findById(id);
+
+        if (optTemplate.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        return optTemplate.get();
     }
 
     private FormExportObject toFormExportObject(FormTemplate template) {
@@ -184,60 +209,62 @@ public class FormExportServiceImpl implements FormExportService {
         headers.add(new FormExportEntry("Source"));
         headers.add(new FormExportEntry("Submission Date"));
         headers.add(new FormExportEntry("Submission Address"));
+
         List<Field> fields = templateDTO.getFields();
-        for (Field field : fields) {
-            if (!field.getType().equals(FieldType.SEPARATOR)) {
-                FormExportEntry label = new FormExportEntry(field.getLabel());
-                headers.add(label);
-            }
-        }
+        List<FormExportEntry> fieldEntries = fields.stream()
+                .filter(field -> !field.getType().isSeparator())
+                .map(field -> new FormExportEntry(field.getLabel()))
+                .collect(Collectors.toList());
+        headers.addAll(fieldEntries);
 
-        List<List<FormExportEntry>> valueRows = new ArrayList<>();
-
-        for (FormDTO formDTO : formDTOs) {
-            List<FormExportEntry> valueRow = new ArrayList<>();
-            valueRow.add(new FormExportEntry(formDTO.getSource().getLabel()));
-            valueRow.add(new FormExportEntry(formDTO.getSubmitDate()));
-            valueRow.add(new FormExportEntry(formDTO.getSubmitLocation().getAddress()));
-
-            Map<String, Value> values = formDTO.getValues();
-
-            for (Field field : fields) {
-                String valueString = StringUtils.EMPTY;
-                String hyperlink = StringUtils.EMPTY;
-
-                if (!field.getType().equals(FieldType.SEPARATOR)) {
-                    if (values.containsKey(field.getId())) {
-                        Value value = values.get(field.getId());
-                        valueString = this.getValueAsString(field, value);
-
-                        if (field.getType().containsFile()) {
-                            hyperlink = this.getHyperlinkAsString(value);
-                        }
-                    }
-
-                    FormExportEntry entry;
-                    if (hyperlink.isBlank()) {
-                        entry = new FormExportEntry(valueString, hyperlink);
-                    } else {
-                        entry = new FormExportEntry(valueString);
-                    }
-                    valueRow.add(entry);
-                }
-
-            }
-
-            valueRows.add(valueRow);
-        }
+        List<List<FormExportEntry>> valueRows = formDTOs.stream()
+                .map(formDTO -> this.createFormExportEntries(formDTO, fields))
+                .collect(Collectors.toList());
 
         return new FormExportObject(headers, valueRows);
 
     }
 
-    private String getValueAsString(Field field, Value value) {
+    private List<FormExportEntry> createFormExportEntries(FormDTO formDTO, List<Field> fields) {
+        List<FormExportEntry> valueRow = new ArrayList<>();
+        valueRow.add(new FormExportEntry(formDTO.getSource().getLabel()));
+        valueRow.add(new FormExportEntry(formDTO.getSubmitDate()));
+        valueRow.add(new FormExportEntry(formDTO.getSubmitLocation().getAddress()));
+
+        Map<String, Value> values = formDTO.getValues();
+
+        for (Field field : fields) {
+            List<String> valueStrings = List.of(StringUtils.EMPTY);
+            List<String> hyperlinks = List.of(StringUtils.EMPTY);
+
+            if (!field.getType().isSeparator()) {
+                if (values.containsKey(field.getId())) {
+                    Value value = values.get(field.getId());
+                    valueStrings = this.getValueAsString(field, value);
+
+                    if (field.getType().containsFile()) {
+                        hyperlinks = this.getHyperlinkAsString(value);
+                    }
+                }
+
+                FormExportEntry entry;
+                if (hyperlinks.isEmpty()) {
+                    entry = new FormExportEntry(valueStrings);
+                } else {
+                    entry = new FormExportEntry(valueStrings, hyperlinks);
+                }
+                valueRow.add(entry);
+            }
+
+        }
+
+        return valueRow;
+    }
+
+    private List<String> getValueAsString(Field field, Value value) {
         if (value instanceof TextValue) {
             TextValue temp = (TextValue) value;
-            return temp.getValue();
+            return List.of(temp.getValue());
         }
 
         if (value instanceof CheckboxGroupValue) {
@@ -254,7 +281,7 @@ public class FormExportServiceImpl implements FormExportService {
                 }
             }
 
-            return String.join(",", labels);
+            return labels;
         }
 
         if (value instanceof DropdownValue) {
@@ -264,7 +291,7 @@ public class FormExportServiceImpl implements FormExportService {
             Integer index = temp.getValueIndex();
             Option option = options.get(index);
 
-            return option.getLabel();
+            return List.of(option.getLabel());
         }
 
         if (value instanceof RadioGroupValue) {
@@ -274,82 +301,77 @@ public class FormExportServiceImpl implements FormExportService {
             Integer index = temp.getValueIndex();
             Option option = options.get(index);
 
-            return option.getLabel();
+            return List.of(option.getLabel());
         }
 
         if (value instanceof DateValue) {
             DateValue temp = (DateValue) value;
-            return temp.getValue().toString();
+            return List.of(temp.getValue().toString());
         }
 
         if (value instanceof RatingValue) {
             RatingField tempField = (RatingField) field;
             RatingValue temp = (RatingValue) value;
-            return FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars());
+            return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
         }
 
         if (value instanceof FileValue) {
             FileValue temp = (FileValue) value;
             List<Long> fileIds = temp.getFileIds();
             List<File> files = fileRepository.findAllById(fileIds);
-            List<String> filenames = files.stream()
+            return files.stream()
                     .map(File::getName)
                     .collect(Collectors.toList());
-            return String.join("\n", filenames);
         }
 
         if (value instanceof PhotoValue) {
             PhotoValue temp = (PhotoValue) value;
             List<Long> fileIds = temp.getFileIds();
             List<File> files = fileRepository.findAllById(fileIds);
-            List<String> filenames = files.stream()
+            return files.stream()
                     .map(File::getName)
                     .collect(Collectors.toList());
-            return String.join("\n", filenames);
         }
 
         if (value instanceof SignatureValue) {
             SignatureValue temp = (SignatureValue) value;
             Long fileId = temp.getFileId();
             List<File> files = fileRepository.findAllById(List.of(fileId));
-            List<String> filenames = files.stream()
+            return files.stream()
                     .map(File::getName)
                     .collect(Collectors.toList());
-            return String.join("\n", filenames);
         }
 
-        return StringUtils.EMPTY;
+        return List.of(StringUtils.EMPTY);
     }
 
-    private String getHyperlinkAsString(Value value) {
+    private List<String> getHyperlinkAsString(Value value) {
         if (value instanceof FileValue) {
             FileValue temp = (FileValue) value;
             List<Long> fileIds = temp.getFileIds();
             List<UrlPresignedResponse> responses = storageService.getDownloadUrls(fileIds);
-            List<String> urls = responses.stream()
+            return responses.stream()
                     .map(UrlPresignedResponse::getUrl)
                     .collect(Collectors.toList());
-            return String.join(",", urls);
         }
 
         if (value instanceof PhotoValue) {
             PhotoValue temp = (PhotoValue) value;
             List<Long> fileIds = temp.getFileIds();
             List<UrlPresignedResponse> responses = storageService.getDownloadUrls(fileIds);
-            List<String> urls = responses.stream()
+            return responses.stream()
                     .map(UrlPresignedResponse::getUrl)
                     .collect(Collectors.toList());
-            return String.join(",", urls);
         }
 
         if (value instanceof SignatureValue) {
             SignatureValue temp = (SignatureValue) value;
             Long fileId = temp.getFileId();
             UrlPresignedResponse response = storageService.getDownloadUrl(fileId);
-            return response.getUrl();
+            return List.of(response.getUrl());
         }
 
-        return StringUtils.EMPTY;
+        return List.of(StringUtils.EMPTY);
     }
 
 }

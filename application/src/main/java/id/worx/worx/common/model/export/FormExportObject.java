@@ -17,7 +17,10 @@ public class FormExportObject {
 
     public List<String> getHeadersWithQuote() {
         return headers.stream()
-                .map(header -> String.format("\"%s\"", header.getValue()))
+                .map(header -> {
+                    String value = String.join(",", header.getValues());
+                    return String.format("\"%s\"", value);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -25,7 +28,10 @@ public class FormExportObject {
         return valueRows.stream()
                 .map(valueRow -> {
                     return valueRow.stream()
-                            .map(value -> String.format("\"%s\"", value.getValue()))
+                            .map(value -> {
+                                String valueString = String.join(",", value.getValues());
+                                return String.format("\"%s\"", valueString);
+                            })
                             .collect(Collectors.toList());
                 })
                 .collect(Collectors.toList());
