@@ -116,3 +116,18 @@ export const postShareLinkFormTemplate = async (formTemplateId, inputSignal, inp
     else return error.response
   }
 }
+
+export const postExportFormSubmission = async (inputSignal, inputParams, inputAxiosPrivate) => {
+  try {
+    const { data } = await inputAxiosPrivate.post('/form/template/export',
+      inputParams,
+      { signal: inputSignal },
+      {responseType: 'arraybuffer'}
+    )
+    return data
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
