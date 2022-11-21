@@ -2,6 +2,9 @@ import { Fragment, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
+// CUSTOM COMPONENTS
+import CustomDateRangePickerDay from './CustomDateRangePickerDay'
+
 // DATA
 import { 
   dateRangeList, 
@@ -56,6 +59,10 @@ const DateRangeTimePicker = (props) => {
   const [ selectedDateRangeItem, setSelectedDateRangeItem ] = useState(null)
   const [ countDays, setCountDays ] = useState(0)
   const [ key, setKey ] = useState(0)
+
+  const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
+    return <CustomDateRangePickerDay {...dateRangePickerDayProps}/>
+  }
 
   const getSelectedDays = () => {
     if (countDays) {
@@ -304,6 +311,7 @@ const DateRangeTimePicker = (props) => {
             displayStaticWrapperAs='desktop'
             value={tempValue}
             onChange={(newValue) => handleDateRangePickerChange(newValue)}
+            renderDay={renderWeekPickerDay}
             renderInput={(startProps, endProps) => (
               <>
                 <TextField {...startProps} />
