@@ -33,7 +33,6 @@ import id.worx.worx.common.model.export.FormExportObject;
 import id.worx.worx.common.model.forms.field.CheckboxGroupField;
 import id.worx.worx.common.model.forms.field.DropdownField;
 import id.worx.worx.common.model.forms.field.Field;
-import id.worx.worx.common.model.forms.field.FieldType;
 import id.worx.worx.common.model.forms.field.Option;
 import id.worx.worx.common.model.forms.field.RadioGroupField;
 import id.worx.worx.common.model.forms.field.RatingField;
@@ -61,7 +60,9 @@ import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.FormUtils;
 import kotlin.text.Charsets;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FormExportServiceImpl implements FormExportService {
@@ -97,8 +98,8 @@ public class FormExportServiceImpl implements FormExportService {
                 writer.write(StringUtils.LF);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("Failed to write to the stream", e);
+            throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }
 
         return output;
@@ -110,76 +111,82 @@ public class FormExportServiceImpl implements FormExportService {
         FormExportObject exportObject = this.toFormExportObject(template);
         List<FormExportEntry> headers = exportObject.getHeaders();
         List<List<FormExportEntry>> valueRows = exportObject.getValueRows();
+        return toXLSHelper(headers, valueRows);
+    }
 
+    private ByteArrayOutputStream toXLSHelper(List<FormExportEntry> headers, List<List<FormExportEntry>> valueRows) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try (Workbook workbook = new XSSFWorkbook()) {
 
             Sheet sheet = workbook.createSheet();
-            CreationHelper creationHelper = workbook.getCreationHelper();
 
-            CellStyle hlinkstyle = workbook.createCellStyle();
-            Font hlinkfont = workbook.createFont();
-            hlinkfont.setUnderline(Font.U_SINGLE);
-            hlinkfont.setColor(IndexedColors.BLUE.index);
-            hlinkstyle.setFont(hlinkfont);
-
-            Row headerRow = sheet.createRow(HEADER_ROW_NUMBER_VALUE);
-            for (int i = 0; i < headers.size(); i++) {
-                String header = headers.get(i).getValues().get(0);
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(header);
-            }
-
-            // start after header
-            int rowNumber = 1;
-            for (int i = 0; i < valueRows.size(); i++) {
-                List<FormExportEntry> entries = valueRows.get(i);
-                int maxRows = entries.stream()
-                        .mapToInt(FormExportEntry::size)
-                        .max()
-                        .orElseThrow(NoSuchElementException::new);
-                for (int j = 0; j < maxRows; j++) {
-                    sheet.createRow(rowNumber + j);
-                }
-
-                for (int columnIndex = 0; columnIndex < entries.size(); columnIndex++) {
-                    FormExportEntry entry = entries.get(columnIndex);
-                    int size = entry.size();
-                    for (int k = 0; k < size; k++) {
-                        Row tempRow = sheet.getRow(rowNumber + k);
-                        Cell cell = tempRow.createCell(columnIndex);
-                        cell.setCellValue(entry.getValues().get(k));
-
-                        if (entry.hasHyperlink()) {
-                            XSSFHyperlink link = (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
-                            link.setAddress(entry.getHyperlinks().get(k));
-                            cell.setHyperlink(link);
-                            cell.setCellStyle(hlinkstyle);
-                        }
-                    }
-
-                    if (hasCellRange(size, maxRows)) {
-                        sheet.addMergedRegion(
-                                new CellRangeAddress(rowNumber, rowNumber + maxRows - 1, columnIndex, columnIndex));
-                    }
-                }
-
-                rowNumber = rowNumber + maxRows;
-            }
+            fillHeader(sheet, headers);
+            fillFormEntry(workbook, sheet, valueRows);
 
             workbook.write(output);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("Failed to write to the stream", e);
+            throw new WorxException(WorxErrorCode.INTERNAL_SERVER_ERROR);
         }
 
         return output;
     }
 
-    private void toXLSHelper() {
+    private void fillHeader(Sheet sheet, List<FormExportEntry> headers) {
+        Row headerRow = sheet.createRow(HEADER_ROW_NUMBER_VALUE);
+        for (int i = 0; i < headers.size(); i++) {
+            String header = headers.get(i).getValues().get(0);
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(header);
+        }
+    }
 
+    private void fillFormEntry(Workbook workbook, Sheet sheet, List<List<FormExportEntry>> valueRows) {
+        CreationHelper creationHelper = workbook.getCreationHelper();
+
+        CellStyle hlinkstyle = workbook.createCellStyle();
+        Font hlinkfont = workbook.createFont();
+        hlinkfont.setUnderline(Font.U_SINGLE);
+        hlinkfont.setColor(IndexedColors.BLUE.index);
+        hlinkstyle.setFont(hlinkfont);
+
+        int rowNumber = 1;
+        for (int i = 0; i < valueRows.size(); i++) {
+            List<FormExportEntry> entries = valueRows.get(i);
+            int maxRows = entries.stream()
+                    .mapToInt(FormExportEntry::size)
+                    .max()
+                    .orElseThrow(NoSuchElementException::new);
+            for (int j = 0; j < maxRows; j++) {
+                sheet.createRow(rowNumber + j);
+            }
+
+            for (int columnIndex = 0; columnIndex < entries.size(); columnIndex++) {
+                FormExportEntry entry = entries.get(columnIndex);
+                int size = entry.size();
+                for (int k = 0; k < size; k++) {
+                    Row tempRow = sheet.getRow(rowNumber + k);
+                    Cell cell = tempRow.createCell(columnIndex);
+                    cell.setCellValue(entry.getValues().get(k));
+
+                    if (entry.hasHyperlink()) {
+                        XSSFHyperlink link = (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
+                        link.setAddress(entry.getHyperlinks().get(k));
+                        cell.setHyperlink(link);
+                        cell.setCellStyle(hlinkstyle);
+                    }
+                }
+
+                if (hasCellRange(size, maxRows)) {
+                    sheet.addMergedRegion(
+                            new CellRangeAddress(rowNumber, rowNumber + maxRows - 1, columnIndex, columnIndex));
+                }
+            }
+
+            rowNumber = rowNumber + maxRows;
+        }
     }
 
     private boolean hasCellRange(int size, int maxRows) {
