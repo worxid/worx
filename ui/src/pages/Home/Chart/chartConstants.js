@@ -1,3 +1,8 @@
+import ReactDOMServer from 'react-dom/server'
+
+// COMPONENTS
+import CustomTooltip from './CustomTooltip'
+
 // CONSTANTS
 import { values } from 'constants/values'
 
@@ -432,12 +437,11 @@ export const getTransactionChartOptions = (
       },
     },
     tooltip: {
-      enabled: true,
-      y: {
-        formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
-          return value
-        },
-      },
+      custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+        return ReactDOMServer.renderToString(
+          <CustomTooltip/>
+        )
+      }
     },
     xaxis: {
       categories: inputXList,
