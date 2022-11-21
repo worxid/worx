@@ -74,6 +74,13 @@ customTheme = createTheme(customTheme, {
         },
       },
     },
+    MuiInput: {
+      defaultProps: {
+        sx: {
+          fontSize: 14,
+        },
+      },
+    },
     MuiInputLabel: {
       defaultProps: {
         sx: {
