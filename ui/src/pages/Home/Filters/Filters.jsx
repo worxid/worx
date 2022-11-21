@@ -15,7 +15,9 @@ import moment from 'moment'
 // MUIS
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import FormControl from '@mui/material/FormControl'
+import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -24,6 +26,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconClose from '@mui/icons-material/Close'
 import IconEvent from '@mui/icons-material/Event'
 
 // STYLES
@@ -180,6 +183,20 @@ const Filters = () => {
         onClose={() => setIsDateRangeTimePickerOpen(false)} 
         className={layoutClasses.dialogDateRangePicker}
       >
+        {/* HEADER */}
+        <DialogTitle className={layoutClasses.dialogDateRangePickerHeader}>
+          {/* TITLE */}
+          <Typography variant='h6'>
+            Select Period
+          </Typography>
+
+          {/* CLOSE ICON */}
+          <IconButton onClick={() => setIsDateRangeTimePickerOpen(false)}>
+            <IconClose/>
+          </IconButton>
+        </DialogTitle>
+
+        {/* DATE RANGE TIME PICKER */}
         <DateRangeTimePicker
           value={[ filterParameters.startTime, filterParameters.endTime ]}
           dateFormat={'MM/DD/YYYY'}
