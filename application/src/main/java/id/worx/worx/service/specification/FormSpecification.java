@@ -49,8 +49,14 @@ public class FormSpecification implements BaseSpecification<Form> {
             spec = spec.and(like(Form_.SUBMIT_ADDRESS, request.getSubmitAddress()));
         }
 
-        if (Objects.nonNull(request.getRespondentLabel())) {
-            spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getRespondentLabel()));
+        if (Objects.nonNull(request.getSource())) {
+            if (Objects.nonNull(request.getSource().getLabel()))
+                spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getSource().getLabel()));
+        }
+
+        if (Objects.nonNull(request.getSource())) {
+            if(Objects.nonNull(request.getSource().getType()))
+                spec = spec.and(equalTo(Form_.RESPONDENT_TYPE, request.getSource().getType()));
         }
 
         if(Objects.nonNull(request.getGlobalSearch())){

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.common.model.dto.FormSource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,10 +43,9 @@ public class FormSubmissionSearchRequest implements Serializable {
     @JsonProperty("submit_address")
     private String submitAddress;
 
-    @JsonProperty("respondent_label")
-    private String respondentLabel;
-
     @JsonProperty("global_search")
     private String globalSearch;
+
+    private FormSource source;
 
 }
