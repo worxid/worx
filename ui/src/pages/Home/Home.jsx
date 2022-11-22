@@ -61,7 +61,7 @@ const Home = () => {
       <Chart/>
 
       {/* MAP */}
-      <Map/>
+      <Map filterParameters={filterParameters}/>
     </Stack>
   )
 }

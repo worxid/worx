@@ -20,7 +20,7 @@ import useStyles from './mapUseStyles'
 import 'leaflet/dist/leaflet.css'
 
 const Map = (props) => {
-  const {} = props
+  const { filterParameters } = props
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
@@ -29,7 +29,7 @@ const Map = (props) => {
 
   useEffect(() => {
     setSubmissionList(dummySubmissionList)
-  }, [])
+  }, [filterParameters])
 
   return (
     <Stack
