@@ -1,5 +1,5 @@
 import { Fragment, useState, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 // ASSETS
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
@@ -10,7 +10,6 @@ import NavigationTooltip from './NavigationTooltip'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
-import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
 import CustomDrawer, { DrawerHeader } from 'components/Customs/CustomDrawer'
@@ -47,24 +46,18 @@ import { readDrawerFromLocalStorage, setDrawerToLocalStorage } from 'utilities/l
 
 const Drawer = () => {
   const classes = useStyles()
-
-  const navigate = useNavigate()
   const location = useLocation()
-  const { isDrawerExpanded, expandParent, lastClicked } = readDrawerFromLocalStorage()
+  const drawerStorage = readDrawerFromLocalStorage()
 
   const { 
     auth, setAuth, 
     setSnackbarObject,
   } = useContext(AllPagesContext)
-  // const [isDrawerExpanded, setIsDrawerExpanded] = useState(location.state?.isDrawerExpanded
-  //   ? location.state.isDrawerExpanded
-  //   : drawerStorage.isDrawerExpanded)
 
-  // const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
-  //   ? location.state.expandParent
-  //   : drawerStorage.expandParent
-  // )
-  const [ dialogLogOut, setDialogLogOut ] = useState({})
+  // STATES
+  const [isDrawerExpanded, setIsDrawerExpanded] = useState(drawerStorage.isDrawerExpanded)
+  const [expandParent, setExpandParent] = useState(drawerStorage.expandParent)
+  const [dialogLogOut, setDialogLogOut] = useState({})
 
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
@@ -96,10 +89,7 @@ const Drawer = () => {
   }
 
   const handleParentItemClick = (inputEvent, inputParentItem) => {
-    inputEvent.preventDefault()
-
     if (inputParentItem.type === 'single') {
-      navigate(inputParentItem.path)
       setDrawerToLocalStorage({
         isDrawerExpanded,
         expandParent,
@@ -113,13 +103,15 @@ const Drawer = () => {
           expandParent: 'null',
           lastClicked: 'parent',
         })
+        setExpandParent(null)
       }
       else {
         setDrawerToLocalStorage({
           isDrawerExpanded,
-          expandParent: 'null',
+          expandParent: inputParentItem.title,
           lastClicked: 'parent',
         })
+        setExpandParent(inputParentItem.title)
       }
     }
   }
@@ -129,14 +121,21 @@ const Drawer = () => {
 
     if (inputChildrenItem.title === 'Log Out') signOutUser(setAuth)
     else {
-      navigate(inputChildrenItem.path, {
-        state: {
-          expandParent,
-          isDrawerExpanded, 
-          lastClicked: 'children',
-        },
+      setDrawerToLocalStorage({
+        isDrawerExpanded,
+        expandParent,
+        lastClicked: 'children',
       })
     }
+  }
+
+  const handleToggleExpand = () => {
+    setDrawerToLocalStorage({
+      isDrawerExpanded: !isDrawerExpanded,
+      expandParent,
+      lastClicked: drawerStorage.lastClicked,
+    })
+    setIsDrawerExpanded(!isDrawerExpanded)
   }
 
   return (
@@ -150,11 +149,7 @@ const Drawer = () => {
         {/* TOGGEL DRAWER ICON */}
         <IconButton   
           className={`${classes.headerIconToggle} no-zoom`}
-          onClick={() => setDrawerToLocalStorage({
-            isDrawerExpanded: !isDrawerExpanded,
-            expandParent,
-            lastClicked,
-          })}
+          onClick={handleToggleExpand}
         >
           <IconMenuOpen/>
         </IconButton>
@@ -225,6 +220,7 @@ const Drawer = () => {
                 <ListItemButton
                   className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
                   onClick={(event) => handleParentItemClick(event, parentItem)}
+                  href={parentItem.type === 'single' ? parentItem.path : null}
                 >
                   {/* TEXT */}
                   <ListItemText primary={
