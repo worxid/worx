@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // COMPONENTS
 import Markers from './Markers'
+
+// CONSTANTS
+import { dummySubmissionList } from '../homeConstants'
 
 // LEAFLET
 import { 
@@ -16,10 +19,17 @@ import Stack from '@mui/material/Stack'
 import useStyles from './mapUseStyles'
 import 'leaflet/dist/leaflet.css'
 
-const Map = () => {
+const Map = (props) => {
+  const {} = props
+  
   const [ mapObject, setMapObject ] = useState()
+  const [ submissionList, setSubmissionList ] = useState([])
 
   const classes = useStyles()
+
+  useEffect(() => {
+    setSubmissionList(dummySubmissionList)
+  }, [])
 
   return (
     <Stack
@@ -42,7 +52,10 @@ const Map = () => {
         />
 
         {/* MARKERS */}
-        <Markers/>
+        <Markers 
+          mapObject={mapObject}
+          submissionList={submissionList}
+        />
       </MapContainer>
     </Stack>
   )
