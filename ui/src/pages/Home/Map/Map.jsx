@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+// COMPONENTS
+import Markers from './Markers'
+
 // LEAFLET
 import { 
   MapContainer, 
@@ -22,7 +25,6 @@ const Map = () => {
     <Stack
       flex='2'
       margin='0px -24px -24px'
-      sx={{ backgroundColor: 'orange' }}
     >
       <MapContainer
         center={[ 0, 0 ]}
@@ -38,6 +40,9 @@ const Map = () => {
           minZoom={2}
           maxZoom={20}
         />
+
+        {/* MARKERS */}
+        <Markers/>
       </MapContainer>
     </Stack>
   )
