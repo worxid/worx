@@ -6,6 +6,9 @@ import DialogForm from 'components/DialogForm/DialogForm'
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
@@ -21,11 +24,15 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconClose from '@mui/icons-material/Close'
 
+// SERVICES
+import { postExportFormSubmission } from 'services/formTemplate'
+
 // STYLES
 import useStyles from './dialogExportUseStyles'
 
 const DialogExport = (props) => {
-  const { id } = props
+  const { id, title } = props
+  const axiosPrivate = useAxiosPrivate()
 
   // STYLES
   const classes = useStyles()
@@ -42,14 +49,32 @@ const DialogExport = (props) => {
     const abortController = new AbortController()
     setIsLoading(true)
    
-    setTimeout(() => {
-      setIsLoading(false)
-      abortController.abort()      
-    }, 5000) 
-    setTimeout(() => {
-      setFileFormat('')
-      setIsDialogFormOpen(false)
-    }, 6000)
+    if(fileFormat || fileFormat !== ''){
+      postExportFormSubmission(abortController.signal, {
+        templateId: id,
+        option: fileFormat
+      }, axiosPrivate)
+        .then((response) => {
+          var a = document.createElement('a')
+          document.body.appendChild(a)
+          a.style = 'display: none'
+  
+          const blob = new Blob([response])
+          const url = window.URL.createObjectURL(blob)
+          a.href = url
+          a.download = `Form_Submissions${title ? `_${title}` : ''}.${fileFormat.toLowerCase()}`
+          a.click()
+          window.URL.revokeObjectURL(url)
+
+          setIsLoading(false)
+          abortController.abort()
+          setTimeout(() => {
+            setFileFormat('')
+            setIsDialogFormOpen(false)
+          }, 1000)      
+        })
+        .catch(err => console.log(err))
+    }
   }
 
   return (
@@ -109,7 +134,7 @@ const DialogExport = (props) => {
               size='small'
               variant='contained'
               className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={() => handleButtonSendClick()}
+              onClick={handleButtonSendClick}
               loading={isLoading}
               disabled={!fileFormat || fileFormat === ''}
             >

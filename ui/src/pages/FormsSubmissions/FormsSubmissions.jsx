@@ -517,7 +517,7 @@ const FormsSubmissions = () => {
       <DialogShareLink id={Number(formTemplateId)} />
 
       {/* DIALOG EXPORT */}
-      <DialogExport id={Number(formTemplateId)} />
+      <DialogExport id={Number(formTemplateId)} title={formTemplateDetail?.label ?? ''} />
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(formTemplateId)} />
