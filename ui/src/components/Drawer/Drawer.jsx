@@ -134,7 +134,7 @@ const Drawer = () => {
       <DrawerHeader>
         {/* TOGGEL DRAWER ICON */}
         <IconButton   
-          className={classes.headerIconToggle}
+          className={`${classes.headerIconToggle} no-zoom`}
           onClick={() => setIsDrawerExpanded(current => !current)}
         >
           <IconMenuOpen/>
@@ -157,14 +157,14 @@ const Drawer = () => {
           sx={isDrawerExpanded ? { display: 'none' } : {}}
           title={
             <ListItemButton
-              className={`${classes.navigationItem} ${classes.navigationTooltipItem}`}
+              className={`${classes.navigationItem} ${classes.navigationTooltipItem} no-zoom`}
               onClick={handleIdButtonClick}
             >
               {/* TEXT */}
               <ListItemText primary={
                 <Typography
                   variant='inherit'
-                  className={classes.navigationItemContentInactive}
+                  className={`${classes.navigationItemContentInactive} zoom`}
                 >
                   Code: {auth?.user?.organization_code}
                 </Typography>
@@ -177,8 +177,8 @@ const Drawer = () => {
             onClick={handleIdButtonClick}
           >
             {/* ICON */}
-            <ListItemIcon>
-              <IconContentCopy className={classes.navigationItemContentInactive}/>
+            <ListItemIcon className='zoom'>
+              <IconContentCopy className={`${classes.navigationItemContentInactive} no-zoom`}/>
             </ListItemIcon>
 
             {/* TEXT */}
@@ -204,14 +204,14 @@ const Drawer = () => {
               sx={isDrawerExpanded ? { display: 'none' } : {}}
               title={
                 <ListItemButton
-                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem}`}
+                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
                   onClick={(event) => handleParentItemClick(event, parentItem)}
                 >
                   {/* TEXT */}
                   <ListItemText primary={
                     <Typography
                       variant='inherit'
-                      className={getListItemTextClassName(parentItem.path)}
+                      className={`${getListItemTextClassName(parentItem.path)} zoom`}
                     >
                       {parentItem.title}
                     </Typography>
@@ -226,10 +226,10 @@ const Drawer = () => {
                 onClick={(event) => handleParentItemClick(event, parentItem)}
               >
                 {/* ICON */}
-                <ListItemIcon>
+                <ListItemIcon className='zoom'>
                   <parentItem.icon className={isNavigationActive(parentItem.path)
-                    ? classes.navigationItemContentActive
-                    : classes.navigationItemContentInactive
+                    ? `${classes.navigationItemContentActive} no-zoom`
+                    : `${classes.navigationItemContentInactive} no-zoom`
                   }/>
                 </ListItemIcon>
 
@@ -297,14 +297,14 @@ const Drawer = () => {
           sx={isDrawerExpanded ? { display: 'none' } : {}}
           title={
             <ListItemButton
-              className={`${classes.navigationItem} ${classes.navigationTooltipItem}`}
+              className={`${classes.navigationItem} ${classes.navigationTooltipItem} no-zoom`}
               onClick={() => setDialogLogOut({ show: true })}
             >
               {/* TEXT */}
               <ListItemText primary={
                 <Typography
                   variant='inherit'
-                  className={classes.navigationItemContentInactive}
+                  className={`${classes.navigationItemContentInactive} zoom`}
                 >
                   Log Out
                 </Typography>
@@ -317,11 +317,12 @@ const Drawer = () => {
             onClick={() => setDialogLogOut({ show: true })}
           >
             {/* ICON */}
-            <ListItemIcon>
+            <ListItemIcon className='zoom'>
               <Avatar className={classes.logOutAvatar}>
                 <IconAccountCircle 
                   fontSize='small'
                   color='primary'
+                  className='no-zoom'
                 />
               </Avatar>
             </ListItemIcon>

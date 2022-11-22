@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   headerIconToggle: {
     position: 'absolute',
-    left: 16,
+    left: 12,
     transform: 'rotateY(0deg)',
     transition: 'transform 0.25s ease-in-out',
     color: theme.palette.common.white,
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     height: 28,
   },
   navigationItem: {
-    paddingLeft: 24,
+    paddingLeft: 20,
     height: 48,
     '&:hover': {
       backgroundColor: theme.palette.additional.drawer.hover,
