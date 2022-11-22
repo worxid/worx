@@ -52,9 +52,6 @@ public class FormSpecification implements BaseSpecification<Form> {
         if (Objects.nonNull(request.getSource())) {
             if (Objects.nonNull(request.getSource().getLabel()))
                 spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getSource().getLabel()));
-        }
-
-        if (Objects.nonNull(request.getSource())) {
             if(Objects.nonNull(request.getSource().getType()))
                 spec = spec.and(equalTo(Form_.RESPONDENT_TYPE, request.getSource().getType()));
         }
