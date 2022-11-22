@@ -43,23 +43,27 @@ import useStyles from './drawerUseStyles'
 
 // UTILTIIES
 import { signOutUser } from 'utilities/authentication'
+import { readDrawerFromLocalStorage, setDrawerToLocalStorage } from 'utilities/localStorage'
 
 const Drawer = () => {
   const classes = useStyles()
 
   const navigate = useNavigate()
   const location = useLocation()
+  const { isDrawerExpanded, expandParent, lastClicked } = readDrawerFromLocalStorage()
 
   const { 
     auth, setAuth, 
     setSnackbarObject,
   } = useContext(AllPagesContext)
-  const { isDrawerExpanded, setIsDrawerExpanded } = useContext(PrivateLayoutContext)
+  // const [isDrawerExpanded, setIsDrawerExpanded] = useState(location.state?.isDrawerExpanded
+  //   ? location.state.isDrawerExpanded
+  //   : drawerStorage.isDrawerExpanded)
 
-  const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
-    ? location.state.expandParent
-    : null
-  )
+  // const [ expandParent, setExpandParent ] = useState(location.state?.expandParent
+  //   ? location.state.expandParent
+  //   : drawerStorage.expandParent
+  // )
   const [ dialogLogOut, setDialogLogOut ] = useState({})
 
   const handleIdButtonClick = () => {
@@ -95,17 +99,28 @@ const Drawer = () => {
     inputEvent.preventDefault()
 
     if (inputParentItem.type === 'single') {
-      navigate(inputParentItem.path, {
-        state: {
-          expandParent: null,
-          isDrawerExpanded,
-          lastClicked: 'parent',
-        },
+      navigate(inputParentItem.path)
+      setDrawerToLocalStorage({
+        isDrawerExpanded,
+        expandParent,
+        lastClicked: 'parent',
       })
     }
     else if(inputParentItem.type === 'collection' && isDrawerExpanded) {
-      if (expandParent === inputParentItem.title) setExpandParent(null)
-      else setExpandParent(inputParentItem.title)
+      if (expandParent === inputParentItem.title) {
+        setDrawerToLocalStorage({
+          isDrawerExpanded,
+          expandParent: 'null',
+          lastClicked: 'parent',
+        })
+      }
+      else {
+        setDrawerToLocalStorage({
+          isDrawerExpanded,
+          expandParent: 'null',
+          lastClicked: 'parent',
+        })
+      }
     }
   }
 
@@ -135,7 +150,11 @@ const Drawer = () => {
         {/* TOGGEL DRAWER ICON */}
         <IconButton   
           className={`${classes.headerIconToggle} no-zoom`}
-          onClick={() => setIsDrawerExpanded(current => !current)}
+          onClick={() => setDrawerToLocalStorage({
+            isDrawerExpanded: !isDrawerExpanded,
+            expandParent,
+            lastClicked,
+          })}
         >
           <IconMenuOpen/>
         </IconButton>
