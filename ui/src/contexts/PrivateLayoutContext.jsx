@@ -10,16 +10,11 @@ const PrivateLayoutContextProvider = (props) => {
   // DIALOG FORM
   const [ isDialogFormOpen, setIsDialogFormOpen ] = useState(false)
 
-  // DRAWER
-  const [ isDrawerExpanded, setIsDrawerExpanded ] = useState(true) // BOOLEAN
-
   return (
     <PrivateLayoutContext.Provider
       value={{
         // APP BAR
         isDialogAddOrEditOpen, setIsDialogAddOrEditOpen,
-        // DRAWER
-        isDrawerExpanded, setIsDrawerExpanded,
         // DIALOG FORM
         isDialogFormOpen, setIsDialogFormOpen,
         // LAYOUT
