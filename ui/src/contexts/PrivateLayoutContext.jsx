@@ -1,5 +1,8 @@
 import { createContext, useState, useRef } from 'react'
 
+// UTILITIES
+import { readDrawerStateFromLocalStorage } from 'utilities/localStorage'
+
 const PrivateLayoutContext = createContext()
 
 const PrivateLayoutContextProvider = (props) => {
@@ -11,7 +14,7 @@ const PrivateLayoutContextProvider = (props) => {
   const [ isDialogFormOpen, setIsDialogFormOpen ] = useState(false)
 
   // DRAWER
-  const [ isDrawerExpanded, setIsDrawerExpanded ] = useState(true) // BOOLEAN
+  const [ drawerState, setDrawerState ] = useState(readDrawerStateFromLocalStorage())
 
   return (
     <PrivateLayoutContext.Provider
@@ -19,7 +22,7 @@ const PrivateLayoutContextProvider = (props) => {
         // APP BAR
         isDialogAddOrEditOpen, setIsDialogAddOrEditOpen,
         // DRAWER
-        isDrawerExpanded, setIsDrawerExpanded,
+        drawerState, setDrawerState,
         // DIALOG FORM
         isDialogFormOpen, setIsDialogFormOpen,
         // LAYOUT

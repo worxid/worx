@@ -17,14 +17,12 @@ export const removeUserProfileFromLocalStorage = () => {
   return localStorage.removeItem(keyUserProfile)
 }
 
-/**
- * ex params: { expandParent: null/string, isDrawerExpanded: boolean, lastClicked: string }
- */
-export const setDrawerToLocalStorage = (inputDrawerValue) => {
+// DRAWER STATE
+export const setDrawerStateToLocalStorage = (inputDrawerValue) => {
   localStorage.setItem(keyDrawer, JSON.stringify(inputDrawerValue))
 }
 
-export const readDrawerFromLocalStorage = () => {
+export const readDrawerStateFromLocalStorage = () => {
   return localStorage.getItem(keyDrawer)
     ? JSON.parse(localStorage.getItem(keyDrawer))
     : {
