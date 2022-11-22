@@ -430,6 +430,7 @@ export const getTransactionChartOptions = (
       bar: {
         borderRadius: 10,
         columnWidth: '75%',
+        borderRadiusApplication: 'end',
         endingShape: 'rounded',
         horizontal: false,
         dataLabels: {
