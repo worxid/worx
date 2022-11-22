@@ -66,6 +66,7 @@ public class Form extends BaseEntity {
 
     private Boolean submitInZone;
     private Instant submitDate;
+    @Column(columnDefinition = "TEXT")
     private String submitAddress;
 
     @Column(columnDefinition = "decimal(16,10)")
