@@ -4,9 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +19,9 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -123,6 +128,7 @@ public class FormExportServiceImpl implements FormExportService {
 
             fillHeader(sheet, headers);
             fillFormEntry(workbook, sheet, valueRows);
+            prettify(workbook, sheet, headers);
 
             workbook.write(output);
 
@@ -189,8 +195,30 @@ public class FormExportServiceImpl implements FormExportService {
         }
     }
 
+    private void prettify(Workbook workbook, Sheet sheet, List<FormExportEntry> headers) {
+        Row headerRow = sheet.getRow(HEADER_ROW_NUMBER_VALUE);
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        for (int i = 0; i < headers.size(); i++) {
+            sheet.autoSizeColumn(i);
+            Cell cell = headerRow.getCell(i);
+            if (Objects.nonNull(cell)) {
+                cell.setCellStyle(headerStyle);
+                String value = cell.getStringCellValue();
+                if (!value.isBlank()) {
+                    cell.setCellValue(FormUtils.formatLabel(value));
+                }
+            }
+        }
+    }
+
     private boolean hasCellRange(int size, int maxRows) {
-        return size == 1 && maxRows > 1;
+        return size <= 1 && maxRows > 1;
     }
 
     private FormTemplate findByIdorElseThrowNotFound(Long id) {
@@ -206,7 +234,10 @@ public class FormExportServiceImpl implements FormExportService {
     private FormExportObject toFormExportObject(FormTemplate template) {
         FormTemplateDTO templateDTO = templateMapper.toDTO(template);
         Set<Form> forms = template.getForms();
-        List<FormDTO> formDTOs = forms.stream()
+        Set<Form> sorted = forms.stream()
+                .sorted(Comparator.comparing(Form::getSubmitDate))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        List<FormDTO> formDTOs = sorted.stream()
                 .map(formMapper::toDTO)
                 .collect(Collectors.toList());
         Integer fromIndex = Math.max(MINIMUM_SUBMISSION_COUNT_VALUE, formDTOs.size() - MAXIMUM_SUBMISSION_COUNT_VALUE);
@@ -234,15 +265,17 @@ public class FormExportServiceImpl implements FormExportService {
 
     private List<FormExportEntry> createFormExportEntries(FormDTO formDTO, List<Field> fields) {
         List<FormExportEntry> valueRow = new ArrayList<>();
-        valueRow.add(new FormExportEntry(formDTO.getSource().getLabel()));
-        valueRow.add(new FormExportEntry(formDTO.getSubmitDate()));
+        String label = FormUtils.formatLabel(formDTO.getSource().getLabel());
+        String submitDate = FormUtils.formatDateToString(formDTO.getSubmitDate());
+        valueRow.add(new FormExportEntry(label));
+        valueRow.add(new FormExportEntry(submitDate));
         valueRow.add(new FormExportEntry(formDTO.getSubmitLocation().getAddress()));
 
         Map<String, Value> values = formDTO.getValues();
 
         for (Field field : fields) {
-            List<String> valueStrings = List.of(StringUtils.EMPTY);
-            List<String> hyperlinks = List.of(StringUtils.EMPTY);
+            List<String> valueStrings = List.of();
+            List<String> hyperlinks = List.of();
 
             if (!field.getType().isSeparator()) {
                 if (values.containsKey(field.getId())) {
