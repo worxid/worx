@@ -3,15 +3,6 @@ import { useState } from 'react'
 // COMPONENTS
 import DateRangeTimePicker from 'components/DateRangeTimePicker/DateRangeTimePicker'
 
-// CONSTANTS
-import { 
-  dummyDeviceList,
-  dummyFormList, 
-} from './filtersConstants'
-
-// DATE AND TIME
-import moment from 'moment'
-
 // MUIS
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -36,18 +27,17 @@ import useStyles from './filtersUseStyles'
 // UTILITIES
 import { convertDate } from 'utilities/date'
 
-const Filters = () => {
+const Filters = (props) => {
+  const { 
+    initialFIlterParameters,
+    filterParameters, setFilterParameters,
+    formList,
+    deviceList,
+  } = props
+
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
-  const initialFIlterParameters = {
-    form: dummyFormList[0].text,
-    device: dummyDeviceList[0].text,
-    startTime: moment().subtract(1, 'month').toDate(),
-    endTime: moment().endOf('month').toDate(), 
-  }
-
-  const [ filterParameters, setFilterParameters ] = useState(initialFIlterParameters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
 
   const handleSelectDateRangePickerButtonClick = (inputNewValue) => {
@@ -94,7 +84,7 @@ const Filters = () => {
             onChange={(event) => handleFormParametersChange('form', event.target.value)}
             className={classes.formControlInput}
           >
-            {dummyFormList.map((item, index) => (
+            {formList.map((item, index) => (
               <MenuItem
                 key={index} 
                 value={item.text}
@@ -157,7 +147,7 @@ const Filters = () => {
             onChange={(event) => handleFormParametersChange('device', event.target.value)}
             className={classes.formControlInput}
           >
-            {dummyDeviceList.map((item, index) => (
+            {deviceList.map((item, index) => (
               <MenuItem
                 key={index} 
                 value={item.text}
