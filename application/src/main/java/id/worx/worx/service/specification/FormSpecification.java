@@ -28,6 +28,10 @@ public class FormSpecification implements BaseSpecification<Form> {
         if (Objects.nonNull(request.getDescription())) {
             spec = spec.and(like(Form_.DESCRIPTION, request.getDescription()));
         }
+        
+        if(Objects.nonNull(request.getFrom())&&Objects.nonNull(request.getTo())){
+            spec = spec.and(between(Form_.SUBMIT_DATE,request.getFrom(),request.getTo()));
+        }
 
         if (Objects.nonNull(request.getSubmitAddress())) {
             spec = spec.and(like(Form_.SUBMIT_ADDRESS, request.getSubmitAddress()));
