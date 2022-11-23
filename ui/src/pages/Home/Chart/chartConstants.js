@@ -383,10 +383,12 @@ export const getTransactionChartOptions = (
   inputTitle, 
   inputXList,
   inputYList,
-  inputClasses,
 ) => {
   return {
     chart: {
+      animations: {
+        enabled: false,
+      },
       fontFamily: values.fontFamilyDmMono,
       foreColor: inputTheme.palette.text.primary,
       toolbar: {
@@ -423,7 +425,7 @@ export const getTransactionChartOptions = (
       },
     },
     fill: {
-      colors: [ inputTheme.palette.primary.main ],
+      colors: [ inputTheme.palette.common.white ],
       opacity: 1,
     },
     plotOptions: {
@@ -437,6 +439,11 @@ export const getTransactionChartOptions = (
           position: 'top',
         },
       },
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: [ 'red' ],
     },
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
