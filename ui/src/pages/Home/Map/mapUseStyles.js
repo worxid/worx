@@ -5,9 +5,15 @@ const useStyles = makeStyles((theme) => ({
   mapContainer: {
     position: 'relative',
     zIndex: 1,
+    // MAP
     '&.leaflet-container': {
       width: '100%',
       height: '100%',
+    },
+    // POP UP
+    '& .leaflet-popup-content-wrapper, &.leaflet-popup-tip': {
+      borderRadius: 0,
+      border: `1px solid ${theme.palette.common.black}`,
     },
   },
   marker: {
@@ -23,8 +29,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
   },
   popUpContainer: {
-    padding: 12,
-    border: `1px solid ${theme.palette.common.black}`,
     display: 'flex',
     flexDirection: 'column',
   },
