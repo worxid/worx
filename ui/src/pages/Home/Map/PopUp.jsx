@@ -1,5 +1,6 @@
 // MUIS
 import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
@@ -16,18 +17,22 @@ const Popup = (props) => {
 
   const informationList = [
     {
+      type: 'link',
       icon: IconInsertLink,
       text: markerData.id ?? 'No data',
     },
     {
+      type: 'text',
       icon: IconPhoneAndroid,
       text: markerData.type ? markerData.type.replace('_', ' ') : 'No data',
     },
     {
+      type: 'text',
       icon: IconAccessTime,
       text: markerData.date ?? 'No data',
     },
     {
+      type: 'text',
       icon: IconLocationOn,
       text: markerData.address ?? 'No data',
     },
@@ -53,12 +58,23 @@ const Popup = (props) => {
           <item.icon className={classes.popUpListItemIcon}/>
 
           {/* TEXT */}
+          {item.type === 'text' &&
           <Typography 
             variant='caption'
             className='textCapitalize'
           >
             {item.text}
-          </Typography>
+          </Typography>}
+          
+          {/* LINK */}
+          {item.type === 'link' &&
+          <Link
+            href='/dummy-link'
+            underline='hover'
+            className={classes.popUpListItemLink}
+          >
+            {item.text}
+          </Link>}
         </Box>
       ))}
     </Box>

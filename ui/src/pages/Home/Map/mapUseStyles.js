@@ -50,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
     height: 16,
     color: theme.palette.action.active,
   },
+  popUpListItemLink: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
 }))
 
 export default useStyles
