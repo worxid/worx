@@ -128,7 +128,7 @@ public class FormExportServiceImpl implements FormExportService {
 
             fillHeader(sheet, headers);
             fillFormEntry(workbook, sheet, valueRows);
-            prettify(workbook, sheet, headers);
+            prettify(workbook, sheet, headers.size());
 
             workbook.write(output);
 
@@ -195,7 +195,7 @@ public class FormExportServiceImpl implements FormExportService {
         }
     }
 
-    private void prettify(Workbook workbook, Sheet sheet, List<FormExportEntry> headers) {
+    private void prettify(Workbook workbook, Sheet sheet, int columnCount) {
         Row headerRow = sheet.getRow(HEADER_ROW_NUMBER_VALUE);
         CellStyle headerStyle = workbook.createCellStyle();
         Font headerFont = workbook.createFont();
@@ -204,7 +204,7 @@ public class FormExportServiceImpl implements FormExportService {
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
         headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        for (int i = 0; i < headers.size(); i++) {
+        for (int i = 0; i < columnCount; i++) {
             sheet.autoSizeColumn(i);
             Cell cell = headerRow.getCell(i);
             if (Objects.nonNull(cell)) {
