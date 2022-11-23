@@ -83,8 +83,8 @@ const MapMarkers = (props) => {
       geometry: {
         type: 'Point',
         coordinates: [
-          parseFloat(item.latitude) || null,
           parseFloat(item.longitude) || null,
+          parseFloat(item.latitude) || null,
         ],
       },
       markerData: item,
