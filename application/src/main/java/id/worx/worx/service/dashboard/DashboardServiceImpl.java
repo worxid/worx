@@ -36,15 +36,10 @@ public class DashboardServiceImpl implements DashboardService {
         for(LocalDate dateList:totalDates){
             Instant startDate = Instant.parse(dateList+"T00:00:01Z");
             Instant endDate = Instant.parse(dateList+"T23:59:59Z");
-
             if(dashboardRequest.getFormId() != null && dashboardRequest.getDeviceId() != null){
-                Optional<Device> getDeviceCode = deviceRepository.findById(dashboardRequest.getDeviceId());
-                if(getDeviceCode.isPresent()){
-                    Device device = getDeviceCode.get();
-                    deviceCode = device.getDeviceCode();
-                }else{
-                    deviceCode = "";
-                }
+
+                deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
+
                 Integer count = formRepository.getCountByRespondentDeviceAndTemplateId(startDate,endDate,deviceCode, dashboardRequest.getFormId());
 
                 DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
@@ -52,13 +47,9 @@ public class DashboardServiceImpl implements DashboardService {
                 dashboardStatDTO.setDate(dateList);
                 responses.add(dashboardStatDTO);
             }else if(dashboardRequest.getFormId() == null && dashboardRequest.getDeviceId() != null){
-                Optional<Device> getDeviceCode = deviceRepository.findById(dashboardRequest.getDeviceId());
-                if(getDeviceCode.isPresent()){
-                    Device device = getDeviceCode.get();
-                    deviceCode = device.getDeviceCode();
-                }else{
-                    deviceCode = "";
-                }
+
+                deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
+
                 Integer count = formRepository.getCountByRespondentDevice(startDate,endDate,deviceCode);
 
                 DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
@@ -85,4 +76,19 @@ public class DashboardServiceImpl implements DashboardService {
 
         return responses;
     }
+
+    public String deviceCode(Long deviceId){
+        String deviceCode;
+
+        Optional<Device> getDeviceCode = deviceRepository.findById(deviceId);
+        if(getDeviceCode.isPresent()){
+            Device device = getDeviceCode.get();
+            deviceCode = device.getDeviceCode();
+        }else{
+            deviceCode = "";
+        }
+
+        return deviceCode;
+    }
+
 }
