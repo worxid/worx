@@ -1,4 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+// COMPONENTS
+import Markers from './Markers'
+
+// CONSTANTS
+import { dummySubmissionList } from '../homeConstants'
 
 // LEAFLET
 import { 
@@ -13,16 +19,22 @@ import Stack from '@mui/material/Stack'
 import useStyles from './mapUseStyles'
 import 'leaflet/dist/leaflet.css'
 
-const Map = () => {
+const Map = (props) => {
+  const { filterParameters } = props
+  
   const [ mapObject, setMapObject ] = useState()
+  const [ submissionList, setSubmissionList ] = useState([])
 
   const classes = useStyles()
+
+  useEffect(() => {
+    setSubmissionList(dummySubmissionList)
+  }, [filterParameters])
 
   return (
     <Stack
       flex='2'
       margin='0px -24px -24px'
-      sx={{ backgroundColor: 'orange' }}
     >
       <MapContainer
         center={[ 0, 0 ]}
@@ -37,6 +49,12 @@ const Map = () => {
           url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
           minZoom={2}
           maxZoom={20}
+        />
+
+        {/* MARKERS */}
+        <Markers 
+          mapObject={mapObject}
+          submissionList={submissionList}
         />
       </MapContainer>
     </Stack>

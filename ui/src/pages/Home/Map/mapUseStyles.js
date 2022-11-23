@@ -10,6 +10,18 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
     },
   },
+  marker: {
+    width: 24,
+    height: 24,
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  markerCount: {
+    color: theme.palette.common.white,
+  },
 }))
 
 export default useStyles
