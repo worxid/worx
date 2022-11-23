@@ -10,6 +10,7 @@ import NavigationTooltip from './NavigationTooltip'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
 import CustomDrawer, { DrawerHeader } from 'components/Customs/CustomDrawer'
@@ -42,22 +43,20 @@ import useStyles from './drawerUseStyles'
 
 // UTILTIIES
 import { signOutUser } from 'utilities/authentication'
-import { readDrawerFromLocalStorage, setDrawerToLocalStorage } from 'utilities/localStorage'
+import { setDrawerStateToLocalStorage } from 'utilities/localStorage'
 
 const Drawer = () => {
   const classes = useStyles()
+
   const location = useLocation()
-  const drawerStorage = readDrawerFromLocalStorage()
 
   const { 
     auth, setAuth, 
     setSnackbarObject,
   } = useContext(AllPagesContext)
+  const { drawerState, setDrawerState } = useContext(PrivateLayoutContext)
 
-  // STATES
-  const [isDrawerExpanded, setIsDrawerExpanded] = useState(drawerStorage.isDrawerExpanded)
-  const [expandParent, setExpandParent] = useState(drawerStorage.expandParent)
-  const [dialogLogOut, setDialogLogOut] = useState({})
+  const [ dialogLogOut, setDialogLogOut ] = useState({})
 
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
@@ -88,60 +87,63 @@ const Drawer = () => {
     else return false
   }
 
-  const handleParentItemClick = (inputEvent, inputParentItem) => {
+  const handleParentItemClick = (inputParentItem) => {
+    let newDrawerState
+
     if (inputParentItem.type === 'single') {
-      setDrawerToLocalStorage({
-        isDrawerExpanded,
-        expandParent,
+      newDrawerState = {
+        ...drawerState,
         lastClicked: 'parent',
-      })
+      }
     }
-    else if(inputParentItem.type === 'collection' && isDrawerExpanded) {
-      if (expandParent === inputParentItem.title) {
-        setDrawerToLocalStorage({
-          isDrawerExpanded,
-          expandParent: 'null',
+    else if(inputParentItem.type === 'collection' && drawerState.isDrawerExpanded) {
+      if (drawerState.expandParent === inputParentItem.title) {
+        newDrawerState = {
+          ...drawerState,
+          expandParent: null,
           lastClicked: 'parent',
-        })
-        setExpandParent(null)
+        }
       }
       else {
-        setDrawerToLocalStorage({
-          isDrawerExpanded,
+        newDrawerState = {
+          ...drawerState,
           expandParent: inputParentItem.title,
           lastClicked: 'parent',
-        })
-        setExpandParent(inputParentItem.title)
+        }
       }
     }
+
+    setDrawerStateToLocalStorage(newDrawerState)
+    setDrawerState(newDrawerState)
   }
 
   const handleChildrenItemClick = (inputEvent, inputChildrenItem) => {
-    inputEvent.preventDefault()
-
     if (inputChildrenItem.title === 'Log Out') signOutUser(setAuth)
     else {
-      setDrawerToLocalStorage({
-        isDrawerExpanded,
-        expandParent,
+      const newDrawerState = {
+        ...drawerState,
         lastClicked: 'children',
-      })
+      }
+      
+      setDrawerStateToLocalStorage(newDrawerState)
+      setDrawerState(newDrawerState)
     }
   }
 
-  const handleToggleExpand = () => {
-    setDrawerToLocalStorage({
-      isDrawerExpanded: !isDrawerExpanded,
-      expandParent,
-      lastClicked: drawerStorage.lastClicked,
-    })
-    setIsDrawerExpanded(!isDrawerExpanded)
+  const handleToggleDrawerIconClick = () => {
+    const newDrawerState = {
+      ...drawerState,
+      isDrawerExpanded: !drawerState.isDrawerExpanded,
+    }
+
+    setDrawerStateToLocalStorage(newDrawerState)
+    setDrawerState(newDrawerState)
   }
 
   return (
     <CustomDrawer 
       variant='permanent' 
-      open={isDrawerExpanded}
+      open={drawerState.isDrawerExpanded}
       className='zoom'
     >
       {/* HEADER */}
@@ -149,13 +151,13 @@ const Drawer = () => {
         {/* TOGGEL DRAWER ICON */}
         <IconButton   
           className={`${classes.headerIconToggle} no-zoom`}
-          onClick={handleToggleExpand}
+          onClick={handleToggleDrawerIconClick}
         >
           <IconMenuOpen/>
         </IconButton>
         
         {/* COMPANY LOGO */}
-        {isDrawerExpanded &&
+        {drawerState.isDrawerExpanded &&
         <Box
           component='img'
           src={LogoProduct}
@@ -168,7 +170,7 @@ const Drawer = () => {
       <List disablePadding>
         <NavigationTooltip 
           placement='right'
-          sx={isDrawerExpanded ? { display: 'none' } : {}}
+          sx={drawerState.isDrawerExpanded ? { display: 'none' } : {}}
           title={
             <ListItemButton
               className={`${classes.navigationItem} ${classes.navigationTooltipItem} no-zoom`}
@@ -215,12 +217,12 @@ const Drawer = () => {
             {/* EXTRA ITEMS FOR PARENT IF IT'S HOVERED AND THE DRAWER IS COLLAPSED */}
             <NavigationTooltip 
               placement='right'
-              sx={isDrawerExpanded ? { display: 'none' } : {}}
+              sx={drawerState.isDrawerExpanded ? { display: 'none' } : {}}
               title={
                 <ListItemButton
-                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
-                  onClick={(event) => handleParentItemClick(event, parentItem)}
                   href={parentItem.type === 'single' ? parentItem.path : null}
+                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
+                  onClick={(event) => handleParentItemClick(parentItem)}
                 >
                   {/* TEXT */}
                   <ListItemText primary={
@@ -238,7 +240,7 @@ const Drawer = () => {
               <ListItemButton
                 href={parentItem.type === 'single' ? parentItem.path : null}
                 className={getListItemButtonClassName(parentItem.path)}
-                onClick={(event) => handleParentItemClick(event, parentItem)}
+                onClick={(event) => handleParentItemClick(parentItem)}
               >
                 {/* ICON */}
                 <ListItemIcon className='zoom'>
@@ -259,8 +261,8 @@ const Drawer = () => {
                 }/>
                 
                 {/* EXPAND/COLLAPSE ICON */}
-                {(parentItem.type === 'collection' && isDrawerExpanded) &&
-                (expandParent === parentItem.text
+                {(parentItem.type === 'collection' && drawerState.isDrawerExpanded) &&
+                (drawerState.expandParent === parentItem.text
                   ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
                   : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
                 )}
@@ -269,7 +271,7 @@ const Drawer = () => {
 
             {/* NAVIGATION ITEM - CHILDREN */}
             <Collapse 
-              in={(parentItem.children && expandParent === parentItem.title) && isDrawerExpanded} 
+              in={(parentItem.children && drawerState.expandParent === parentItem.title) && drawerState.isDrawerExpanded} 
               timeout='auto' 
             >
               {parentItem.children &&
@@ -309,7 +311,7 @@ const Drawer = () => {
         {/* LOGOUT BUTTON */}
         <NavigationTooltip 
           placement='right'
-          sx={isDrawerExpanded ? { display: 'none' } : {}}
+          sx={drawerState.isDrawerExpanded ? { display: 'none' } : {}}
           title={
             <ListItemButton
               className={`${classes.navigationItem} ${classes.navigationTooltipItem} no-zoom`}
