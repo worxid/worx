@@ -4,6 +4,8 @@ import org.thymeleaf.context.Context;
 
 import id.worx.worx.common.model.dto.EmailDTO;
 
+import java.util.List;
+
 public interface EmailService {
 
     void sendEmail(EmailDTO email);
@@ -15,5 +17,7 @@ public interface EmailService {
     void sendShareFormEmail(String email, Context context);
 
     void sendWelcomingEmail(String email, String content, String url);
+
+    void sendInviteDeviceEmail(String[] emails,String organizationCode);
 
 }
