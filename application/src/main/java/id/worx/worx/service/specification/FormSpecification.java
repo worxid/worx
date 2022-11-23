@@ -28,19 +28,7 @@ public class FormSpecification implements BaseSpecification<Form> {
         if (Objects.nonNull(request.getDescription())) {
             spec = spec.and(like(Form_.DESCRIPTION, request.getDescription()));
         }
-
-        if (Objects.nonNull(request.getCreatedOn())) {
-            spec = spec.and(lessThanOrEqualTo(Audit_.CREATED_ON, request.getCreatedOn()));
-        }
-
-        if (Objects.nonNull(request.getModifiedOn())) {
-            spec = spec.and(lessThanOrEqualTo(Audit_.MODIFIED_ON, request.getModifiedOn()));
-        }
-
-        if (Objects.nonNull(request.getSubmitDate())) {
-            spec = spec.and(lessThanOrEqualTo(Form_.SUBMIT_DATE, request.getSubmitDate()));
-        }
-
+        
         if(Objects.nonNull(request.getFrom())&&Objects.nonNull(request.getTo())){
             spec = spec.and(between(Form_.SUBMIT_DATE,request.getFrom(),request.getTo()));
         }
@@ -49,8 +37,11 @@ public class FormSpecification implements BaseSpecification<Form> {
             spec = spec.and(like(Form_.SUBMIT_ADDRESS, request.getSubmitAddress()));
         }
 
-        if (Objects.nonNull(request.getRespondentLabel())) {
-            spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getRespondentLabel()));
+        if (Objects.nonNull(request.getSource())) {
+            if (Objects.nonNull(request.getSource().getLabel()))
+                spec = spec.and(like(Form_.RESPONDENT_LABEL, request.getSource().getLabel()));
+            if(Objects.nonNull(request.getSource().getType()))
+                spec = spec.and(equalTo(Form_.RESPONDENT_TYPE, request.getSource().getType()));
         }
 
         if(Objects.nonNull(request.getGlobalSearch())){
