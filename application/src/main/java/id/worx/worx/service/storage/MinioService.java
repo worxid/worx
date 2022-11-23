@@ -34,6 +34,9 @@ public class MinioService implements FileStorageService {
 
     private static final String MEDIA_PATH = "media";
 
+    private static final String FAILED_GENERATE_UPLOAD_URL = "File Storage failed to generate upload url : {}";
+    private static final String FAILED_GENERATE_DOWNLOAD_URL = "File Storage failed to generate download url: {}";
+
     private final MinioClientService clientService;
 
     private final FileRepository fileRepository;
@@ -53,12 +56,11 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate upload url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         String nanoId = UrlUtils.generateUrlCode();
         String[] getExtension = filename.split("[.]", 0);
-        System.out.println(">>"+getExtension[1]);
         File newFile = File.builder()
                 .path(path)
                 .mediaId(nanoId)
@@ -95,7 +97,7 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate upload url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
@@ -119,7 +121,7 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate download url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
@@ -143,7 +145,7 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                  | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate download url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
@@ -170,7 +172,7 @@ public class MinioService implements FileStorageService {
             } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                     | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                     | IllegalArgumentException | IOException e) {
-                log.trace("File Storage failed to generate download url: {}", e.getMessage());
+                log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
                 throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
             }
 
