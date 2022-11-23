@@ -4,6 +4,7 @@ import { useContext } from 'react'
 import { formatFiles, formatSizeImages } from '../formsCreateOrEditConstants'
 
 // CONTEXT
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PageFormsCreateOrEditContext } from 'contexts/PageFormsCreateOrEditContext'
 
 // MUIS
@@ -36,6 +37,7 @@ const FieldProperties = () => {
   const classes = useStyles()
 
   // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const {
     formObject, setFormObject, listFields, setListFields,
     selectedFieldsType, selectedFieldsId, setHasFormChanged,
@@ -45,6 +47,21 @@ const FieldProperties = () => {
   const handleUpdateFieldPropertiesById = (fieldId, name, value) => {
     const indexOfId = listFields.findIndex(item => item.id === fieldId)
     let tempListFields = listFields
+
+    // VALIDATION CHECKBOX MAX CHECKED
+    if (
+      selectedFieldsType === 'checkbox_group'
+      && value > getFieldPropertiesValueById(fieldId, 'group').length
+    ) {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title:'',
+        message:`Maximum value checked is ${getFieldPropertiesValueById(fieldId, 'group').length}`
+      })
+
+      return
+    }
 
     // UPDATE
     tempListFields[indexOfId][name] = value
@@ -85,6 +102,14 @@ const FieldProperties = () => {
     const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
     let tempOptionList = getFieldPropertiesValueById(fieldId, optionKey)
       .filter((item, index) => index !== indexOption)
+
+    // update max check when its value more than list options
+    if (
+      selectedFieldsType === 'checkbox_group'
+      && getFieldPropertiesValueById(selectedFieldsId, 'max_checked') > tempOptionList.length
+    ) handleUpdateFieldPropertiesById(
+      selectedFieldsId, 'max_checked', tempOptionList.length
+    )
 
     handleUpdateFieldPropertiesById(fieldId, optionKey, tempOptionList)
   }
@@ -281,6 +306,9 @@ const FieldProperties = () => {
               onChange={(event) => handleUpdateFieldPropertiesById(
                 selectedFieldsId, 'max_checked', Number(event.target.value)
               )}
+              inputProps={{
+                max: getFieldPropertiesValueById(selectedFieldsId, 'group').length
+              }}
             />
           </FormControl>
         </>

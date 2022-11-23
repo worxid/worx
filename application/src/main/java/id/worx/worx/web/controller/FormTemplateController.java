@@ -1,5 +1,6 @@
 package id.worx.worx.web.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,9 +8,12 @@ import javax.validation.Valid;
 
 import id.worx.worx.data.dto.LinkFormDTO;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.model.dto.FormTemplateDTO;
+import id.worx.worx.common.model.export.ExportOption;
 import id.worx.worx.common.model.request.FormShareRequest;
 import id.worx.worx.common.model.request.FormTemplateAssignGroupRequest;
 import id.worx.worx.common.model.request.FormTemplateRequest;
@@ -31,7 +36,9 @@ import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.entity.FormTemplate;
+import id.worx.worx.service.FormExportService;
 import id.worx.worx.service.FormTemplateService;
+import id.worx.worx.web.model.request.FormExportRequest;
 import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -43,6 +50,7 @@ import lombok.RequiredArgsConstructor;
 public class FormTemplateController implements SecuredRestController {
 
     private final FormTemplateService templateService;
+    private final FormExportService exportService;
 
     @PostMapping("search")
     public ResponseEntity<Page<FormTemplateDTO>> search(
@@ -55,7 +63,8 @@ public class FormTemplateController implements SecuredRestController {
                 .map(templateService::toDTO)
                 .collect(Collectors.toList());
 
-        Page<FormTemplateDTO> page = new BasePageResponse<>(dtos, templates.getPageable(), templates.getTotalElements());
+        Page<FormTemplateDTO> page = new BasePageResponse<>(dtos, templates.getPageable(),
+                templates.getTotalElements());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(page);
     }
@@ -169,9 +178,37 @@ public class FormTemplateController implements SecuredRestController {
         LinkFormDTO dto = templateService.generateLink(template);
 
         BaseValueResponse<LinkFormDTO> response = BaseValueResponse.<LinkFormDTO>builder()
-            .value(dto)
-            .build();
+                .value(dto)
+                .build();
         return ResponseEntity.status(HttpStatus.OK)
-            .body(response);
+                .body(response);
     }
+
+    @PostMapping("export")
+    public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormExportRequest request) {
+        ByteArrayOutputStream reportByte = new ByteArrayOutputStream();
+        String filename = "";
+        if (request.getOption().equals(ExportOption.EXCEL)) {
+
+            reportByte = exportService.toXLS(request.getTemplateId());
+            filename = "forms.xlsx";
+        } else if (request.getOption().equals(ExportOption.CSV)) {
+            reportByte = exportService.toCSV(request.getTemplateId());
+            filename = "forms.csv";
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        header.add("Pragma", "no-cache");
+        header.add("Expires", "0");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(header)
+                .contentLength(reportByte.size())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+    }
+
 }

@@ -59,10 +59,11 @@ public class RatingField extends Field {
         }
 
         RatingValue ratingValue = (RatingValue) value;
-        Integer rating = ratingValue.getValue();
+        int rating = ratingValue.getValue();
 
         if (Objects.isNull(rating) && this.getRequired().equals(Boolean.TRUE)) {
             details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
+            return details;
         }
 
         if (rating < 0 || rating > this.maxStars) {

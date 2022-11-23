@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import id.worx.worx.entity.File;
 import id.worx.worx.entity.Form;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long>, JpaSpecificationExecutor<Form> {
-    Optional<File> findByMediaId(String mediaId);
+    Optional<File> findByMediaId(String mediaId);;
 }

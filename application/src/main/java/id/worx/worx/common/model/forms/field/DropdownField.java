@@ -49,10 +49,11 @@ public class DropdownField extends Field {
         }
 
         DropdownValue dropdownValue = (DropdownValue) value;
-        Integer valueIndex = dropdownValue.getValueIndex();
+        int valueIndex = dropdownValue.getValueIndex();
 
         if (Objects.isNull(valueIndex) && this.getRequired().equals(Boolean.TRUE)) {
             details.add(new FormValidationErrorDetail(FormValidationReason.NULL_VALUE, this.getId()));
+            return details;
         }
 
         if (valueIndex < 0 || valueIndex >= this.options.size()) {

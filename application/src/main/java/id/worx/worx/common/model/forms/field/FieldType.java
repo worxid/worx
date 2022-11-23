@@ -65,4 +65,12 @@ public enum FieldType {
         return this.text;
     }
 
+    public boolean containsFile() {
+        return this.equals(FILE) || this.equals(PHOTO) || this.equals(SIGNATURE);
+    }
+
+    public boolean isSeparator() {
+        return this.equals(SEPARATOR);
+    }
+
 }

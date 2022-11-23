@@ -36,7 +36,7 @@ public class CheckboxGroupField extends Field {
         super(id, label, description, FieldType.CHECKBOX_GROUP, required);
 
         int groupSize = group.size();
-        if (minChecked < MINIMUM_ALLOWED_MIN_CHECKED || minChecked > groupSize - 1) {
+        if (minChecked < MINIMUM_ALLOWED_MIN_CHECKED || minChecked > groupSize) {
             throw new InvalidParameterException("Allowed minimum checked is from 0 to " + groupSize);
         }
 

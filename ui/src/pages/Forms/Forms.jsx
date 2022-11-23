@@ -114,15 +114,6 @@ const Forms = () => {
       isFilterShown: true,
       isSortShown: true,
     },
-    {
-      field: 'fields_size',
-      headerName: 'Fields',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      isFilterShown: true,
-      isSortShown: true,
-    },
   ]
 
   const initialFilters = {}
@@ -225,7 +216,8 @@ const Forms = () => {
         assigned_groups: filters?.assigned_groups?.includes(', ')
           ? filters?.assigned_groups?.split(', ') : filters?.assigned_groups
             ? [filters?.assigned_groups] : null,
-        submission_count: filters?.submission_count || null
+        submission_count: filters?.submission_count || null,
+        global_search: pageSearch,
       },
       axiosPrivate,
     )

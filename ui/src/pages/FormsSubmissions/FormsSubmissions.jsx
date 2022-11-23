@@ -16,9 +16,6 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
-// LIBRARY
-import * as XLSX from 'xlsx'
-
 // LODASH
 import lodash from 'lodash'
 
@@ -26,8 +23,6 @@ import lodash from 'lodash'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -80,7 +75,7 @@ const FormsSubmissions = () => {
       flex: 0,
       minWidth: 200,
       hide: false,
-      isFilterShown: true,
+      isFilterShown: false,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
@@ -117,7 +112,10 @@ const FormsSubmissions = () => {
     },
   ]
     
-  const initialFilters = {}
+  const initialFilters = {
+    source: '',
+    submissionAddress: '',
+  }
 
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
@@ -140,32 +138,6 @@ const FormsSubmissions = () => {
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
 
-  // DOWNLOAD
-  // const [ downloadMenuAnchor, setDownloadMenuAnchor ] = useState(null)
-
-  // HANDLE DOWNLOAD DATA TABLE
-  // const handleDownloadTable = (listData, listSelectedColumns, formatFile) => {
-  //   // FILTER SELECTED COLUMN WITH HIDE FALSE
-  //   const filterSelectedColumns = listSelectedColumns.filter(item => !item.hide)
-
-  //   // FILTER DATA WITH SELECTED COLUMN
-  //   const filterListData = listData.map(item => {
-  //     const tempItemObj = {}
-  //     filterSelectedColumns.forEach(itemCol => {
-  //       tempItemObj[itemCol.headerName] = item[itemCol.field] || item.dynamicFields[itemCol.field]
-  //     })
-  //     return tempItemObj
-  //   })
-
-  //   // CREATE SHEET
-  //   const sheetFormSubmissions = XLSX.utils.json_to_sheet(filterListData)
-  //   const workBook = XLSX.utils.book_new()
-  //   XLSX.utils.book_append_sheet(workBook, sheetFormSubmissions, 'Form Submissions')
-  //   XLSX.writeFile(workBook, `Form Submissions.${formatFile}`, {
-  //     bookType: formatFile
-  //   })
-  // }
-
   const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
 
@@ -185,13 +157,21 @@ const FormsSubmissions = () => {
   const getSubmissionList = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
 
+    let requestParams = {
+      size: pageSize,
+      page: pageNumber,
+    }
+    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+
+    let bodyParams = { 
+      template_id: formTemplateId, 
+      ...filters,
+    }
+
     const resultSubmissionList = await postSearchFormSubmissionList(
       inputAbortController.signal,
-      {
-        page: pageNumber,
-        size: pageSize,
-      },
-      { template_id: formTemplateId },
+      requestParams,
+      bodyParams,
       axiosPrivate
     )
 
@@ -265,8 +245,9 @@ const FormsSubmissions = () => {
         <Stack 
           spacing='8px'
           padding='8px 0px'
+          direction='row'
         >
-          {selectedOptionList.map((item, index) => (
+          {selectedOptionList?.slice(0, 1)?.map((item, index) => (
             <Chip
               key={index}
               label={item.label}
@@ -274,6 +255,14 @@ const FormsSubmissions = () => {
               className={classes.columnChip}
             />
           ))}
+
+          {selectedOptionList?.length >= 2 && (
+            <Chip
+              label={`${selectedOptionList.length-1}+`}
+              size='small'
+              className={classes.columnChip}
+            />
+          )}
         </Stack>
       )
     }
@@ -311,7 +300,7 @@ const FormsSubmissions = () => {
           padding='8px 0px'
           className='cursorPointer'
         >
-          {valueList.map((item, index) => (
+          {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
               key={index}
               direction='row'
@@ -325,9 +314,18 @@ const FormsSubmissions = () => {
               <Typography 
                 variant='inherit'
                 className='heightFitContent'
+                color='primary.main'
               >
                 {item}
               </Typography>
+
+              {valueList?.length >= 2 && (
+                <Chip
+                  label={`${valueList.length-1}+`}
+                  size='small'
+                  className={`${classes.columnChip} red`}
+                />
+              )}
             </Stack>
           ))}
         </Stack>
@@ -537,33 +535,10 @@ const FormsSubmissions = () => {
       <DialogShareLink id={Number(formTemplateId)} />
 
       {/* DIALOG EXPORT */}
-      <DialogExport id={Number(formTemplateId)} />
+      <DialogExport id={Number(formTemplateId)} title={formTemplateDetail?.label ?? ''} />
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(formTemplateId)} />
-
-      {/* DOWNLOAD MENU */}
-      {/* <Menu
-        anchorEl={downloadMenuAnchor}
-        open={Boolean(downloadMenuAnchor)}
-        onClose={() => setDownloadMenuAnchor(null)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        className={`${classes.downloadMenu} neutralize-zoom-menu`}
-      >
-        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'xlsx')}>
-          <Typography variant='caption'>Excel</Typography>
-        </MenuItem>
-        <MenuItem onClick={() => handleDownloadTable(tableData, columnList, 'csv')}>
-          <Typography variant='caption'>CSV</Typography>
-        </MenuItem>
-      </Menu> */}
     </>
   )
 }

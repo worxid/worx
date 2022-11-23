@@ -78,7 +78,10 @@ public class SecurityConfiguration {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .antMatchers("/logo.svg");
+                .antMatchers(
+                        "/logo.svg",
+                        "/worx.svg",
+                        "/worx.png");
     }
 
     @Bean

@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   leftPanelContainer: {
     width: 200,
-    paddingRight: 24,
+    padding: '8px 24px 16px 0px',
     borderRight: `1px solid ${theme.palette.divider}`,
   },
   leftPanelItemButton: {
@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     color: theme.palette.text.secondary,
-    fontWeight: 600,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    paddingBottom: 16,
   },
   dateAndTimeInputContainer: {
     display: 'flex',

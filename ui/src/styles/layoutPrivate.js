@@ -8,6 +8,12 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 'unset',
     },
   },
+  dialogDateRangePickerHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
   flyoutListItemIcon: {
     minWidth: 'unset',
     marginRight: 16,

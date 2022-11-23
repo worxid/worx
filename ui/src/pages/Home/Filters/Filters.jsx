@@ -3,28 +3,21 @@ import { useState } from 'react'
 // COMPONENTS
 import DateRangeTimePicker from 'components/DateRangeTimePicker/DateRangeTimePicker'
 
-// CONSTANTS
-import { dummyFormList } from './filtersConstants'
-
-// DATE AND TIME
-import moment from 'moment'
-
 // MUIS
-import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
-import Checkbox from '@mui/material/Checkbox'
 import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import FormControl from '@mui/material/FormControl'
+import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
 import OutlinedInput from '@mui/material/OutlinedInput'
+import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconClose from '@mui/icons-material/Close'
 import IconEvent from '@mui/icons-material/Event'
 
 // STYLES
@@ -34,19 +27,32 @@ import useStyles from './filtersUseStyles'
 // UTILITIES
 import { convertDate } from 'utilities/date'
 
-const Filters = () => {
+const Filters = (props) => {
+  const { 
+    initialFIlterParameters,
+    filterParameters, setFilterParameters,
+    formList,
+    deviceList,
+  } = props
+
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([
-    moment().subtract(1, 'month').toDate(),
-    moment().endOf('month').toDate(), 
-  ])
 
-  const handleSelectDateRangePickerButtonClick = (newValue) => {
-    setDateRangeTimeValue(newValue)
+  const handleSelectDateRangePickerButtonClick = (inputNewValue) => {
+    handleFormParametersChange('startTime', inputNewValue[0])
+    handleFormParametersChange('endTime', inputNewValue[1])
     setIsDateRangeTimePickerOpen(false)
+  }
+
+  const handleFormParametersChange = (inputParameter, inputNewValue) => {
+    setFilterParameters(current => {
+      return {
+        ...current,
+        [inputParameter]: inputNewValue,
+      }
+    })
   }
 
   return (
@@ -54,8 +60,42 @@ const Filters = () => {
       direction='row'
       alignItems='center'
       height='70px'
-      spacing='16px'
+      spacing='20px'
     >
+      {/* FORM FILTER */}
+      <Stack
+        direction='row'
+        alignItems='center'
+        spacing='8px'
+      >
+        {/* TEXT */}
+        <Typography
+          variant='body2'
+          color='text.secondary'
+        >
+          Form:
+        </Typography>
+
+        {/* SELECT */}
+        <FormControl>
+          <Select
+            value={filterParameters.form}
+            label=''
+            onChange={(event) => handleFormParametersChange('form', event.target.value)}
+            className={classes.formControlInput}
+          >
+            {formList.map((item, index) => (
+              <MenuItem
+                key={index} 
+                value={item.text}
+              >
+                {item.text}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
+
       {/* DATE RANGE FILTER */}
       <Stack
         direction='row'
@@ -73,8 +113,8 @@ const Filters = () => {
         {/* OUTLINED INPUT */}
         <FormControl>
           <OutlinedInput
-            value={`${convertDate(dateRangeTimeValue[0], 'dd/MM/yyyy')} - ${convertDate(dateRangeTimeValue[1], 'dd/MM/yyyy')}`}
-            className={classes.formControlInput}
+            value={`${convertDate(filterParameters.startTime, 'dd/MM/yyyy')} - ${convertDate(filterParameters.endTime, 'dd/MM/yyyy')}`}
+            className={`${classes.formControlInput} ${classes.formControlInputWithStartIcon}`}
             onClick={() => setIsDateRangeTimePickerOpen(true)}
             startAdornment={
               <InputAdornment position='start'>
@@ -83,56 +123,6 @@ const Filters = () => {
             }
           />
         </FormControl>
-      </Stack>
-
-      {/* FORM FILTER */}
-      <Stack
-        direction='row'
-        alignItems='center'
-        spacing='8px'
-      >
-        {/* TEXT */}
-        <Typography
-          variant='body2'
-          color='text.secondary'
-        >
-          Filter by Form:
-        </Typography>
-
-        {/* AUTOCOMPLETE */}
-        <Autocomplete
-          multiple
-          limitTags={1}
-          size='small'
-          options={dummyFormList}
-          disableCloseOnSelect
-          getOptionLabel={(option) => option.text}
-          className={classes.formControlAutocomplete}
-          renderOption={(props, option, { selected }) => (
-            <ListItemButton 
-              {...props}
-              className={classes.formControlAutocompleteListItemButton}
-            >
-              {/* ICON */}
-              <ListItemIcon>
-                <Checkbox
-                  size='small'
-                  checked={selected}
-                />
-              </ListItemIcon>
-
-              {/* TEXT */}
-              <ListItemText primary={option.text}/>
-            </ListItemButton>
-          )}
-          renderInput={(params) => (
-            <TextField 
-              {...params} 
-              label='' 
-              placeholder='' 
-            />
-          )}
-        />
       </Stack>
 
       {/* DEVICE FILTER */}
@@ -146,47 +136,34 @@ const Filters = () => {
           variant='body2'
           color='text.secondary'
         >
-          Filter by Device:
+          Device:
         </Typography>
 
-        {/* AUTOCOMPLETE */}
-        <Autocomplete
-          multiple
-          limitTags={1}
-          size='small'
-          options={dummyFormList}
-          disableCloseOnSelect
-          getOptionLabel={(option) => option.text}
-          className={classes.formControlAutocomplete}
-          renderOption={(props, option, { selected }) => (
-            <ListItemButton 
-              {...props}
-              className={classes.formControlAutocompleteListItemButton}
-            >
-              {/* ICON */}
-              <ListItemIcon>
-                <Checkbox
-                  size='small'
-                  checked={selected}
-                />
-              </ListItemIcon>
-
-              {/* TEXT */}
-              <ListItemText primary={option.text}/>
-            </ListItemButton>
-          )}
-          renderInput={(params) => (
-            <TextField 
-              {...params} 
-              label='' 
-              placeholder='' 
-            />
-          )}
-        />
+        {/* SELECT */}
+        <FormControl>
+          <Select
+            value={filterParameters.device}
+            label=''
+            onChange={(event) => handleFormParametersChange('device', event.target.value)}
+            className={classes.formControlInput}
+          >
+            {deviceList.map((item, index) => (
+              <MenuItem
+                key={index} 
+                value={item.text}
+              >
+                {item.text}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Stack>
 
       {/* RESET FILTER BUTTON */}
-      <Button className={classes.buttonReset}>
+      <Button 
+        className={classes.buttonReset}
+        onClick={() => setFilterParameters(initialFIlterParameters)}
+      >
         Reset Filter
       </Button>
 
@@ -196,8 +173,22 @@ const Filters = () => {
         onClose={() => setIsDateRangeTimePickerOpen(false)} 
         className={layoutClasses.dialogDateRangePicker}
       >
+        {/* HEADER */}
+        <DialogTitle className={layoutClasses.dialogDateRangePickerHeader}>
+          {/* TITLE */}
+          <Typography variant='h6'>
+            Select Period
+          </Typography>
+
+          {/* CLOSE ICON */}
+          <IconButton onClick={() => setIsDateRangeTimePickerOpen(false)}>
+            <IconClose/>
+          </IconButton>
+        </DialogTitle>
+
+        {/* DATE RANGE TIME PICKER */}
         <DateRangeTimePicker
-          value={dateRangeTimeValue}
+          value={[ filterParameters.startTime, filterParameters.endTime ]}
           dateFormat={'MM/DD/YYYY'}
           isWithTimePicker={false}
           handleSelectButtonClick={handleSelectDateRangePickerButtonClick}
