@@ -45,8 +45,9 @@ const Map = (props) => {
       >
         {/* BASE MAP */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+          attribution='&copy; Maps Data: <a href="https://about.google/brand-resource-center/products-and-services/geo-guidelines/#required-attribution">Google</a>'
+          url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+          subdomains={['mt1','mt2','mt3']}
           minZoom={2}
           maxZoom={20}
         />
