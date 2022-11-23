@@ -1,3 +1,6 @@
+// CONSTANTS
+import { values } from 'constants/values'
+
 // MUI STYLES
 import { makeStyles } from '@mui/styles'
 
@@ -8,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     transform: 'rotateY(0deg)',
     transition: 'transform 0.25s ease-in-out',
     color: theme.palette.common.white,
+    [values.noZoomBoundary]: {
+      left: 16,
+    }
   },
   headerLogoProduct: {
     height: 28,
@@ -18,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.additional.drawer.hover,
     },
+    [values.noZoomBoundary]: {
+      paddingLeft: 24,
+    }
   },
   navigationItemActive: {
     backgroundColor: theme.palette.primary.main,
@@ -37,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
   logOutItemButton: {
     paddingLeft: 20,
+    [values.noZoomBoundary]: {
+      paddingLeft: 24,
+    }
   },
   logOutAvatar: {
     width: 32,
