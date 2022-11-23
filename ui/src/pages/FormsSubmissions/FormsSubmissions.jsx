@@ -245,8 +245,9 @@ const FormsSubmissions = () => {
         <Stack 
           spacing='8px'
           padding='8px 0px'
+          direction='row'
         >
-          {selectedOptionList.map((item, index) => (
+          {selectedOptionList?.slice(0, 1)?.map((item, index) => (
             <Chip
               key={index}
               label={item.label}
@@ -254,6 +255,14 @@ const FormsSubmissions = () => {
               className={classes.columnChip}
             />
           ))}
+
+          {selectedOptionList?.length >= 2 && (
+            <Chip
+              label={`${selectedOptionList.length-1}+`}
+              size='small'
+              className={classes.columnChip}
+            />
+          )}
         </Stack>
       )
     }
@@ -291,7 +300,7 @@ const FormsSubmissions = () => {
           padding='8px 0px'
           className='cursorPointer'
         >
-          {valueList.map((item, index) => (
+          {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
               key={index}
               direction='row'
@@ -305,9 +314,18 @@ const FormsSubmissions = () => {
               <Typography 
                 variant='inherit'
                 className='heightFitContent'
+                color='primary.main'
               >
                 {item}
               </Typography>
+
+              {valueList?.length >= 2 && (
+                <Chip
+                  label={`${valueList.length-1}+`}
+                  size='small'
+                  className={`${classes.columnChip} red`}
+                />
+              )}
             </Stack>
           ))}
         </Stack>

@@ -42,7 +42,7 @@ public abstract class FormMapper {
     @Mapping(source = "values", target = "values", qualifiedByName = "readValuefromString")
     @Mapping(source = "submitLat", target = "submitLocation.lat")
     @Mapping(source = "submitLng", target = "submitLocation.lng")
-    @Mapping(source = "submitLng", target = "submitLocation.address")
+    @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
     public abstract MobileFormDTO toMobileDTO(Form form);
@@ -52,7 +52,7 @@ public abstract class FormMapper {
     @Mapping(source = "values", target = "values", qualifiedByName = "readValuefromString")
     @Mapping(source = "submitLat", target = "submitLocation.lat")
     @Mapping(source = "submitLng", target = "submitLocation.lng")
-    @Mapping(source = "submitLng", target = "submitLocation.address")
+    @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
     public abstract SearchFormDTO toSearchFormDTO(Form form);
