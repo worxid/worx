@@ -81,7 +81,12 @@ public class SecurityConfiguration {
                 .antMatchers(
                         "/logo.svg",
                         "/worx.svg",
-                        "/worx.png");
+                        "/worx.png",
+                        "/dot.png",
+                        "/fb.png",
+                        "/linkedin.png",
+                        "/mail.png",
+                        "/web.png");
     }
 
     @Bean

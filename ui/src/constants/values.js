@@ -3,6 +3,7 @@ export const values = {
   fontFamilyDmMono: [ 'DM Mono', 'monospace', 'sans-serif' ].join(','),
   fontFamilySpaceMono: [ 'Space Mono', 'monospace', 'sans-serif' ].join(','),
   zoomBoundary: '@media only screen and (max-height: 800px) and (min-width: 1200px)',
+  noZoomBoundary: '@media only screen and (min-height: 801px)',
 
   // DRAWER
   drawerWidth: 256,
