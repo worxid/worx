@@ -55,6 +55,7 @@ import id.worx.worx.common.model.response.UrlPresignedResponse;
 import id.worx.worx.entity.File;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
+import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormMapper;
@@ -77,6 +78,8 @@ public class FormExportServiceImpl implements FormExportService {
 
     private static final int HEADER_ROW_NUMBER_VALUE = 0;
 
+    private final AuthenticationContext authContext;
+
     private final FileRepository fileRepository;
     private final FormTemplateRepository templateRepository;
 
@@ -87,7 +90,8 @@ public class FormExportServiceImpl implements FormExportService {
 
     @Override
     public ByteArrayOutputStream toCSV(Long id) {
-        FormTemplate template = this.findByIdorElseThrowNotFound(id);
+        Users user = authContext.getUsers();
+        FormTemplate template = this.findByIdorElseThrowNotFound(id, user.getId());
         FormExportObject exportObject = this.toFormExportObject(template);
         List<String> headers = exportObject.getHeadersWithQuote();
         List<List<String>> valueRows = exportObject.getValueRowsWithQuote();
@@ -112,7 +116,8 @@ public class FormExportServiceImpl implements FormExportService {
 
     @Override
     public ByteArrayOutputStream toXLS(Long id) {
-        FormTemplate template = this.findByIdorElseThrowNotFound(id);
+        Users user = authContext.getUsers();
+        FormTemplate template = this.findByIdorElseThrowNotFound(id, user.getId());
         FormExportObject exportObject = this.toFormExportObject(template);
         List<FormExportEntry> headers = exportObject.getHeaders();
         List<List<FormExportEntry>> valueRows = exportObject.getValueRows();
@@ -221,8 +226,8 @@ public class FormExportServiceImpl implements FormExportService {
         return size <= 1 && maxRows > 1;
     }
 
-    private FormTemplate findByIdorElseThrowNotFound(Long id) {
-        Optional<FormTemplate> optTemplate = templateRepository.findById(id);
+    private FormTemplate findByIdorElseThrowNotFound(Long id, Long userId) {
+        Optional<FormTemplate> optTemplate = templateRepository.findByIdAndUserId(id, userId);
 
         if (optTemplate.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
