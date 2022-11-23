@@ -1,4 +1,5 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
   },
   columnChip: {
     fontSize: 12,
+    '&.red': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.2),
+      color: theme.palette.primary.main,
+    }
   },
 }))
 
