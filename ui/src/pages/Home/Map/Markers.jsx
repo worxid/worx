@@ -63,6 +63,9 @@ const MapMarkers = (props) => {
           feature,
           { superclusterRef, mapObject, },
         ),
+      }).on('click', (event) => {
+        mapObject.setView(latitudeLongitude, mapObject._zoom + 1)
+        setMapZoom(current => current + 1)
       })
     }
   }
