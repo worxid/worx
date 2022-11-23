@@ -29,22 +29,6 @@ public class FormSpecification implements BaseSpecification<Form> {
             spec = spec.and(like(Form_.DESCRIPTION, request.getDescription()));
         }
 
-        if (Objects.nonNull(request.getCreatedOn())) {
-            spec = spec.and(lessThanOrEqualTo(Audit_.CREATED_ON, request.getCreatedOn()));
-        }
-
-        if (Objects.nonNull(request.getModifiedOn())) {
-            spec = spec.and(lessThanOrEqualTo(Audit_.MODIFIED_ON, request.getModifiedOn()));
-        }
-
-        if (Objects.nonNull(request.getSubmitDate())) {
-            spec = spec.and(lessThanOrEqualTo(Form_.SUBMIT_DATE, request.getSubmitDate()));
-        }
-
-        if(Objects.nonNull(request.getFrom())&&Objects.nonNull(request.getTo())){
-            spec = spec.and(between(Form_.SUBMIT_DATE,request.getFrom(),request.getTo()));
-        }
-
         if (Objects.nonNull(request.getSubmitAddress())) {
             spec = spec.and(like(Form_.SUBMIT_ADDRESS, request.getSubmitAddress()));
         }

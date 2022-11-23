@@ -28,15 +28,6 @@ public class FormSubmissionSearchRequest implements Serializable {
     private String label;
     private String description;
 
-    @JsonProperty("created_on")
-    @JsonIgnore
-    private Instant createdOn;
-    @JsonProperty("modified_on")
-    @JsonIgnore
-    private Instant modifiedOn;
-    @JsonProperty("submit_date")
-    @JsonIgnore
-    private Instant submitDate;
     private Instant from;
     private Instant to;
 
