@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long>, JpaSpecificationExecutor<Form> {
-    Optional<File> findByMediaId(String mediaId);;
+    Optional<File> findByMediaId(String mediaId);
 }
