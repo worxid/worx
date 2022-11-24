@@ -164,8 +164,12 @@ const FormsSubmissions = () => {
     if (order && orderBy) requestParams.sort = `${orderBy},${order}`
 
     let bodyParams = { 
-      template_id: formTemplateId, 
       ...filters,
+      source: {
+        type: null,
+        label: filters.source,
+      },
+      template_id: formTemplateId, 
     }
 
     const resultSubmissionList = await postSearchFormSubmissionList(
