@@ -23,6 +23,7 @@ import lodash from 'lodash'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import Link from '@mui/material/Link'
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -106,12 +107,21 @@ const FormsSubmissions = () => {
       field: 'submissionAddress',
       headerName: 'Submission Address',
       flex: 1,
-      minWidth: 200,
+      minWidth: 300,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
+      renderCell: (params) => (
+        <Link
+          underline='hover'
+          className={classes.columnLink}
+          href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
+        >
+          {params.value ? params.value : 'No address found'}
+        </Link>
+      ),
     },
   ]
     
@@ -177,7 +187,7 @@ const FormsSubmissions = () => {
     if (order && orderBy) requestParams.sort = `${orderBy},${order}`
 
     let bodyParams = { 
-      ...filters,
+      submit_address: filters.submissionAddress,
       source: {
         type: null,
         label: filters.source,
@@ -200,8 +210,10 @@ const FormsSubmissions = () => {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
           submissionDate: submissionItem?.submit_date ?? '-',
-          submissionAddress: submissionItem.submit_location?.address ?? '-',
-          values: submissionItem.values,
+          submissionAddress: submissionItem?.submit_location?.address ?? '-',
+          submissionLatitude: submissionItem?.submit_location?.lat ?? null,
+          submissionLongitude: submissionItem?.submit_location?.lng ?? null,
+          values: submissionItem?.values,
         }
       })
 
@@ -553,7 +565,6 @@ const FormsSubmissions = () => {
             className={classes.tableFormsSubmissions}
             // ROW
             onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
-            getRowHeight={() => 'auto'}
           />
         </LoadingPaper>
       </Stack>
