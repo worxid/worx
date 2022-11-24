@@ -40,7 +40,10 @@ import { getDetailFormTemplate } from 'services/formTemplate'
 import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
-import { convertDate } from 'utilities/date'
+import { 
+  convertDate, 
+  getLast30Days,
+} from 'utilities/date'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -135,8 +138,18 @@ const FormsSubmissions = () => {
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
+  const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
+    getLast30Days().startTime,
+    getLast30Days().endTime,
+  ])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+
+  const handleSelectDateRangePickerButtonClick = (newValue) => {
+    setDateRangeTimeValue(newValue)
+    setIsDateRangeTimePickerOpen(false)
+  }
 
   const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
@@ -170,6 +183,8 @@ const FormsSubmissions = () => {
         label: filters.source,
       },
       template_id: formTemplateId, 
+      from: dateRangeTimeValue[0],
+      to: dateRangeTimeValue[1],
     }
 
     const resultSubmissionList = await postSearchFormSubmissionList(
@@ -410,7 +425,7 @@ const FormsSubmissions = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [pageNumber, pageSize, filters, order, orderBy])
+  }, [pageNumber, pageSize, filters, order, orderBy, dateRangeTimeValue])
 
   useEffect(() => {
     updateColumnsDynamically()
@@ -493,6 +508,14 @@ const FormsSubmissions = () => {
             columns={initialColumns}
             selectedColumnList={columnList}
             setSelectedColumnList={setColumnList}
+            // DATE RANGE TIME
+            isWithDateTimePicker={true}
+            isWithTimePicker={false}
+            dateRangeValue={dateRangeTimeValue}
+            isDateRangeTimePickerOpen={isDateRangeTimePickerOpen} 
+            setIsDateRangeTimePickerOpen={setIsDateRangeTimePickerOpen}
+            handleSelectDateRangePickerButtonClick={handleSelectDateRangePickerButtonClick}
+            handleCancelDateRangePickerButtonClick={() => setIsDateRangeTimePickerOpen(false)}
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
