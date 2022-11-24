@@ -59,12 +59,12 @@ public class MinioService implements FileStorageService {
             log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
-        String nanoId = UrlUtils.generateUrlCode();
-        String[] getExtension = filename.split("[.]", 0);
+        String mediaId = UrlUtils.generateMediaId();
+        String extension = MediaUtils.getExtension(filename);
         File newFile = File.builder()
                 .path(path)
-                .mediaId(nanoId)
-                .name(nanoId + "." + getExtension[1])
+                .mediaId(mediaId)
+                .name(String.format("%s.%s", mediaId, extension))
                 .originalName(filename)
                 .mimeType(MediaUtils.getMimeType(filename))
                 .build();
@@ -73,8 +73,8 @@ public class MinioService implements FileStorageService {
 
         return UrlPresignedResponse.builder()
                 .id(newFile.getId())
-                .mediaId(nanoId)
-                .name(nanoId + "." + getExtension[1])
+                .mediaId(mediaId)
+                .name(String.format("%s.%s", mediaId, extension))
                 .url(url)
                 .path(path)
                 .mimeType(MediaUtils.getMimeType(filename))
