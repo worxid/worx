@@ -67,7 +67,7 @@ const DevicesFlyout = (props) => {
 
   const handleChangeGroup = () => {
     setGroupData(rows[0].groups)
-    setIsDialogFormOpen(true)
+    setIsDialogFormOpen('dialogChangeGroup')
   }
 
   const handleApprovedDevices = async (type) => {
