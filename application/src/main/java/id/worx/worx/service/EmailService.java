@@ -4,8 +4,6 @@ import org.thymeleaf.context.Context;
 
 import id.worx.worx.common.model.dto.EmailDTO;
 
-import java.util.List;
-
 public interface EmailService {
 
     void sendEmail(EmailDTO email);
