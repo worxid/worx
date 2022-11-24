@@ -29,4 +29,5 @@ public interface FormService {
     SearchFormDTO toSearchFormDTO(Form form);
     Form getById(Long id);
 
+    List<Form> listFormFilter(FormSubmissionSearchRequest request,String deviceCode);
 }

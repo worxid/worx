@@ -68,7 +68,7 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
-        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId());
+        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId(),null);
         return formRepository.findAll(spec, pageable);
     }
 
@@ -125,6 +125,12 @@ public class FormServiceImpl implements FormService {
 
     public Form getById(Long id) {
         return formRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+    }
+
+    @Override
+    public List<Form> listFormFilter(FormSubmissionSearchRequest request, String deviceCode) {
+        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId(),deviceCode);
+        return formRepository.findAll(spec);
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {

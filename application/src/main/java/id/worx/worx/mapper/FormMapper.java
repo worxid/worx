@@ -3,6 +3,7 @@ package id.worx.worx.mapper;
 import java.util.List;
 import java.util.Map;
 
+import id.worx.worx.common.model.dto.DashboardStatMapDTO;
 import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -36,6 +37,16 @@ public abstract class FormMapper {
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
     public abstract FormDTO toDTO(Form form);
+
+    @Mapping(source = "template.id", target = "templateId")
+    @Mapping(source = "fields", target = "fields", qualifiedByName = "readFieldfromString")
+    @Mapping(source = "values", target = "values", qualifiedByName = "readValuefromString")
+    @Mapping(source = "submitLat", target = "submitLocation.lat")
+    @Mapping(source = "submitLng", target = "submitLocation.lng")
+    @Mapping(source = "submitAddress", target = "submitLocation.address")
+    @Mapping(source = "respondentType", target = "source.type")
+    @Mapping(source = "respondentLabel", target = "source.label")
+    public abstract DashboardStatMapDTO toDashboardMapDTO(Form form);
 
     @Mapping(source = "template.id", target = "templateId")
     @Mapping(source = "fields", target = "fields", qualifiedByName = "readFieldfromString")

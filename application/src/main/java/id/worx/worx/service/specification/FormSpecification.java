@@ -4,7 +4,6 @@ import java.util.Objects;
 import id.worx.worx.entity.FormTemplate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import id.worx.worx.entity.Audit_;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.Form_;
 import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
@@ -13,7 +12,7 @@ import javax.persistence.criteria.Join;
 @Component
 public class FormSpecification implements BaseSpecification<Form> {
 
-    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId) {
+    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId, String deviceCode) {
         Specification<Form> spec = Specification.where(null);
 
         spec= spec.and(getByUserId(userId));
@@ -28,7 +27,7 @@ public class FormSpecification implements BaseSpecification<Form> {
         if (Objects.nonNull(request.getDescription())) {
             spec = spec.and(like(Form_.DESCRIPTION, request.getDescription()));
         }
-        
+
         if(Objects.nonNull(request.getFrom())&&Objects.nonNull(request.getTo())){
             spec = spec.and(between(Form_.SUBMIT_DATE,request.getFrom(),request.getTo()));
         }
@@ -46,6 +45,10 @@ public class FormSpecification implements BaseSpecification<Form> {
 
         if(Objects.nonNull(request.getGlobalSearch())){
             spec = spec.and(getGlobalSearch(request.getGlobalSearch()));
+        }
+
+        if(Objects.nonNull(deviceCode)){
+            spec = spec.and(equalTo(Form_.RESPONDENT_DEVICE_CODE,deviceCode));
         }
 
         return spec;
