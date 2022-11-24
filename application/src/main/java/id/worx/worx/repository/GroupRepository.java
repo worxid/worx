@@ -25,6 +25,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         "WHERE (:id is null OR(id= :id)) " +
         "      AND (:name is null OR(lower(group_name) like concat('%',lower(:name),'%'))) " +
         "      AND (:color is null OR(lower(group_color) like concat('%',lower(:color),'%'))) " +
+        "      AND (:globalSearch is null " +
+        "               OR(lower(group_name) like concat('%',lower(:globalSearch),'%')) " +
+        "               OR(lower(group_color) like concat('%',lower(:globalSearch   ),'%')) " +
+        "      ) " +
         "      AND user_id= :userId " +
         ") as wG " +
         "LEFT JOIN " +
@@ -40,8 +44,12 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         ") as tG " +
         "ON wG.id=tG.id " +
         "WHERE (:templateCount is null OR(coalesce(form_group_cnt,0)=:templateCount)) " +
-        "AND (:deviceCount is null OR(coalesce(dev_group_cnt,0)=:deviceCount))")
-    Page<GroupSearchProjection> search(Long id, String name, String color, Long userId, Integer deviceCount, Integer templateCount, Pageable pageable);
+        "AND (:deviceCount is null OR(coalesce(dev_group_cnt,0)=:deviceCount)) " +
+        "AND (:globalCountSearch is null  " +
+        "       OR(coalesce(form_group_cnt,0)=:globalCountSearch) " +
+        "       OR(coalesce(dev_group_cnt,0)=:globalCountSearch) " +
+        ")")
+    Page<GroupSearchProjection> search(Long id, String name, String color, Long userId, Integer deviceCount, Integer templateCount, String globalSearch, Integer globalCountSearch,Pageable pageable);
 
     Optional<Group> findByIdAndUserId(Long id, Long userId);
     Optional<Group> findByIsDefaultTrueAndUserId(Long userId);

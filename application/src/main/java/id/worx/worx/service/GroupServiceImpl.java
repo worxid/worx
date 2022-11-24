@@ -1,6 +1,7 @@
 package id.worx.worx.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -114,12 +115,22 @@ public class GroupServiceImpl implements GroupService {
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 JpaUtils.replaceSort(pageable.getSort()));
+        Integer globalCountSearch= null;
+        String globalSearch=null;
+        if(Objects.nonNull(groupSearchRequest.getGlobalSearch())){
+            if(groupSearchRequest.getGlobalSearch().matches("[0-9]+")){
+                globalCountSearch=Integer.valueOf(groupSearchRequest.getGlobalSearch());
+            }else
+                globalSearch= groupSearchRequest.getGlobalSearch();
+        }
         return groupRepository.search(groupSearchRequest.getId(),
                 groupSearchRequest.getName(),
                 groupSearchRequest.getColor(),
                 authContext.getUsers().getId(),
                 groupSearchRequest.getDeviceCount(),
                 groupSearchRequest.getFormCount(),
+                globalSearch,
+                globalCountSearch,
                 customPageable);
     }
 
