@@ -306,15 +306,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [
-    filters, 
-    pageNumber, 
-    pageSize, 
-    pageSearch, 
-    order, 
-    orderBy, 
-    dateRangeTimeValue,
-  ])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy, dateRangeTimeValue])
 
   return (
     <>
