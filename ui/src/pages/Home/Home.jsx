@@ -11,9 +11,6 @@ import {
   dummyFormList, 
 } from './homeConstants'
 
-// DATE AND TIME
-import moment from 'moment'
-
 // MUIS
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -22,14 +19,17 @@ import Typography from '@mui/material/Typography'
 // STYLES
 import useStyles from './homeUseStyles'
 
+// UTILITIES
+import { getLast30Days } from 'utilities/date'
+
 const Home = () => {
   const classes = useStyles()
 
   const initialFIlterParameters = {
     form: dummyFormList[0].text,
     device: dummyDeviceList[0].text,
-    startTime: moment().subtract(1, 'month').toDate(),
-    endTime: moment().endOf('month').toDate(), 
+    startTime: getLast30Days().startTime,
+    endTime: getLast30Days().endTime,
   }
 
   const [ filterParameters, setFilterParameters ] = useState(initialFIlterParameters)
