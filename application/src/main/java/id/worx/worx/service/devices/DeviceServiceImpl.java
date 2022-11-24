@@ -10,9 +10,11 @@ import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.service.AuthenticationContext;
+import id.worx.worx.service.EmailService;
 import id.worx.worx.service.specification.DeviceSpecification;
 import id.worx.worx.util.JpaUtils;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
+import id.worx.worx.web.model.request.InviteDeviceRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,7 @@ public class DeviceServiceImpl implements DeviceService {
     private final AuthenticationContext authContext;
 
     private final GroupRepository groupRepository;
+    private final EmailService emailService;
 
     @Override
     public Device registerDevice(MobileRegisterRequest request) {
@@ -226,6 +229,11 @@ public class DeviceServiceImpl implements DeviceService {
         Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             JpaUtils.replaceSort(pageable.getSort()));
         return deviceRepository.findAll(spec, adjustedPageable);
+    }
+
+    @Override
+    public void sendEmailDeviceInvitation(InviteDeviceRequest request) {
+        emailService.sendInviteDeviceEmail(request.getSendTo(),authContext.getUsers().getOrganizationCode());
     }
 
     private Device findByIdorElseThrowNotFound(Long id) {

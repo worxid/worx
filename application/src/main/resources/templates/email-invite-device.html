@@ -1,0 +1,158 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Email Invite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <!-- <style>
+    ol {
+      padding-left: 15px;
+    }
+    ol > li::marker {
+      font-weight: 500;
+    }
+  </style> -->
+</head>
+
+<body yahoo="" bgcolor="#f8f9fa" style="margin: 0; padding: 0; min-width: 100% !important">
+<table width="100%" bgcolor="#f8f9fa" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <table class="content" align="center" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 950px; border: 2px solid rgba(0, 0, 0, 0.87); border-radius: 0 0 16px 16px;">
+        <tr>
+          <td bgcolor="#ffffff" class="header" style="padding: 55px 30px 0 30px">
+            <table align="center" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding: 0 250px 0 250px">
+                  <img class="fix" src="https://api.dev.worx.id/worx.png" height="54"
+                       width="100%" alt="worx-logo" />
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 0 0 0 0">
+                  <h1 style="
+                        font-family: 'DM Mono', monospace;
+                        font-weight: 500;
+                        font-size: 26px;
+                        line-height: 34px;
+                        text-align: center;
+                      ">You've Been Invited to Join an Organization</h1>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#ffffff" class="innerpadding borderbottom" style="padding: 30px 100px 50px 100px;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="bodycopy" style="
+                            font-family: 'DM Mono', monospace;
+                            font-size: 16px;
+                            line-height: 26.03px;
+                          ">
+                  <p style="font-weight: 400; color: #000000;">
+                    You've been invited by your Worx Administrator to join Field Service Mobile.
+                    <br/>
+                    Follow these 3 quick steps to get started:
+                  </p>
+                  <ol>
+                    <li>
+                      <a
+                              style="color: #DA3630;"
+                              href="https://play.google.com/store/apps/details?id=id.worx.device.client&hl=id&gl=US&pli=1"
+                              target="_blank"
+                      >Download</a>
+                      the Worx app on your mobile device.
+                    </li>
+                    <li>
+                      <div style="display: flex; flex-direction: row;">
+                        <p style="margin: 0; padding: 0; font-family: 'DM Mono', monospace; font-size: 16px; line-height: 26.03px;">
+                          Open the mobile app and tap <span style="font-weight: 600;">"Sign in to an Existing Team"</span> and enter your
+                          <span style="color: #DA3630;" th:text="${orgCode}">Org Key: AIT763</span>
+                          to join.
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      Once you've requested to join an organization, your administrator will receive a notification to approve your device.
+                    </li>
+                  </ol>
+                  <p>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#DA3630" class="header" style="padding: 12px; border-radius: 0px 0px 12px 12px; background-color: #DA3630;">
+            <table align="center" border="0" cellpadding="0" cellspacing="0">
+              <tr align="center">
+                <td style="padding: 0 0px 15px 0;">
+                  <img class="fix" src="https://api.dev.worx.id/mail.png" height="10px" width="12.5px"
+                       alt="mail-logo" />
+                  <a style="color: #ffffff; text-decoration: none; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 12px; line-height: 16px;"
+                     href="mailto:hi@worx.id">
+                    hi@worx.id
+                  </a>
+                </td>
+                <td style="padding: 0 0px 15px 0;">
+                  <img class="fix" src="https://api.dev.worx.id/web.png" height="12.5px" width="12.5px"
+                       alt="web-logo" />
+                  <a style="color: #ffffff; text-decoration: none; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 12px; line-height: 16px;"
+                     href="https://worx.id">worx.id</a>
+                </td>
+                <td style="padding: 0 0px 15px 0;">
+                  <a href="https://www.facebook.com/Worxid-101895892557350" style="text-decoration: none; cursor: pointer;">
+                    <img class="fix" src="https://api.dev.worx.id/fb.png" height="15px" width="15px"
+                         alt="fb-logo" />
+                  </a>
+                  <img class="fix" src="https://api.dev.worx.id/dot.png" height="5px" width="5px"
+                       style="margin: 0 0 5px 0"
+                       alt="dot" />
+                  <a href="https://www.linkedin.com/company/worx-id/" style="text-decoration: none; cursor: pointer;">
+                    <img class="fix" src="https://api.dev.worx.id/linkedin.png" height="13.75px" width="13.75px"
+                         alt="linkedin-logo" />
+                  </a>
+                  <span style="color: #ffffff; text-decoration: none; cursor: pointer; font-family: 'Open Sans', sans-serif; font-size: 12px; line-height: 16px;">
+                          worx.id
+                        </span>
+                </td>
+              </tr>
+              <tr align="center" style="color: #ffffff">
+                <td>
+                </td>
+                <td>
+                  <p style="margin: 0; font-family: 'Open Sans', sans-serif; font-size: 12px; line-height: 16px;">®WORX 2022</p>
+                </td>
+                <td>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr style="align-items: center;">
+    <td style="text-align: center; padding-top: 20px;">
+      <p style="font-size: 14px; font-weight: 400; font-family: 'Open Sans', sans-serif;">
+        You received this email because you are subscribed to emails from Worx<br/>
+        <!-- Update your <a style="color: #000000; text-decoration: underline;" href="https://app.devicemagic.com/users/login" target="_blank">email preferences</a> to choose the types of emails you receive. -->
+      </p>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>
+
+<!-- -->

@@ -16,4 +16,6 @@ public interface EmailService {
 
     void sendWelcomingEmail(String email, String content, String url);
 
+    void sendInviteDeviceEmail(String[] emails,String organizationCode);
+
 }
