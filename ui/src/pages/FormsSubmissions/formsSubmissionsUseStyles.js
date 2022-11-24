@@ -36,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
       width: 92,
     },
   },
+  columnLink: {
+    cursor: 'pointer',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
   columnChip: {
     fontSize: 12,
     '&.red': {
