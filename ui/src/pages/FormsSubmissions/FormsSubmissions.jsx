@@ -187,7 +187,7 @@ const FormsSubmissions = () => {
     if (order && orderBy) requestParams.sort = `${orderBy},${order}`
 
     let bodyParams = { 
-      ...filters,
+      submit_address: filters.submissionAddress,
       source: {
         type: null,
         label: filters.source,
