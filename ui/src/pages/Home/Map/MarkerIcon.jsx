@@ -11,7 +11,6 @@ const MarkerIcon = (
   type,
   classes,
   feature,
-  informationObject,
 ) => {
   return L.divIcon({
     className: 'custom-icon',

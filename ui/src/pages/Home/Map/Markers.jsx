@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import ReactDOMServer from 'react-dom/server'
 
 // COMPONENTS
 import MarkerIcon from './MarkerIcon'
+import PopUp from './PopUp'
 
 // LEAFLET
 import L from 'leaflet'
@@ -50,9 +52,13 @@ const MapMarkers = (props) => {
           'marker',
           classes,
           feature,
-          {},
         ),
-      })
+      }).bindPopup(ReactDOMServer.renderToString(
+        <PopUp 
+          markerData={feature.markerData}
+          classes={classes}
+        />
+      ), {})
     }
     // CLUSTER ITEM
     else {
@@ -61,8 +67,10 @@ const MapMarkers = (props) => {
           'cluster',
           classes,
           feature,
-          { superclusterRef, mapObject, },
         ),
+      }).on('click', (event) => {
+        mapObject.setView(latitudeLongitude, mapObject._zoom + 1)
+        setMapZoom(current => current + 1)
       })
     }
   }
@@ -83,8 +91,8 @@ const MapMarkers = (props) => {
       geometry: {
         type: 'Point',
         coordinates: [
-          parseFloat(item.latitude) || null,
           parseFloat(item.longitude) || null,
+          parseFloat(item.latitude) || null,
         ],
       },
       markerData: item,
