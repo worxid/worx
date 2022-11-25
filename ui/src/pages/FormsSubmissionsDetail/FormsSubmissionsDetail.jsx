@@ -43,7 +43,7 @@ const FormsSubmissionsDetail = () => {
   const downloadComponentRef = useRef()
 
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
 
   // STYLES
   const classes = useStyles()
@@ -130,7 +130,7 @@ const FormsSubmissionsDetail = () => {
         hasFlyout={true}
         isFlyoutShown={isFlyoutShown}
         flyoutTitle='Information'
-        flyoutTitleMargin={232}
+        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
         onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
