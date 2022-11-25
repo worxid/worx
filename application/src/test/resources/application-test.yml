@@ -40,7 +40,7 @@ worx:
     secret-key: worxtest
     bucket-name: worx-dev-test
   token:
-    access: 10
-    refresh: 20
+    access: 3600000
+    refresh: 7200000
   geocoder:
     enabled: false
