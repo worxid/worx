@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -22,15 +23,20 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import id.worx.worx.common.model.request.auth.LoginRequest;
+import id.worx.worx.common.model.request.users.UserRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -41,6 +47,9 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractWebTest {
 
     protected ObjectMapper mapper = new ObjectMapper();
+
+    protected static final String ADMIN_USER_EMAIL = "testadmin@worx.id";
+    protected static final String ADMIN_USER_PASSWORD = "TestAdmin123!";
 
     protected MediaType contentType = MediaType.APPLICATION_JSON;
 
@@ -84,6 +93,16 @@ public abstract class AbstractWebTest {
                     .apply(springSecurity()).build();
         }
 
+        // register
+        UserRequest request = new UserRequest();
+        request.setFullname("testadmin");
+        request.setEmail(ADMIN_USER_EMAIL);
+        request.setPassword(ADMIN_USER_PASSWORD);
+        request.setPhoneNo("62898555907");
+        request.setOrganizationName("testadmin");
+        request.setCountry("Indonesia");
+        createUserAndLogin(request, ADMIN_USER_PASSWORD);
+
         log.info("Setup web test done");
     }
 
@@ -92,6 +111,15 @@ public abstract class AbstractWebTest {
         log.info("Teardown web test");
 
         log.info("Teardown web test done");
+    }
+
+    protected void createUserAndLogin(UserRequest request, String password) throws Exception {
+
+        resetTokens();
+        doPost("/api/users/register", request);
+
+        // TODO activate user
+        login(ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD);
     }
 
     protected void login(String username, String password) throws Exception {
@@ -104,12 +132,16 @@ public abstract class AbstractWebTest {
 
     protected void validateAndSetJwtToken(JsonNode tokenInfo, String username) {
         assertNotNull(tokenInfo);
-        assertTrue(tokenInfo.has("token"));
-        assertTrue(tokenInfo.has("refreshToken"));
-        String token = tokenInfo.get("token").asText();
-        String refreshToken = tokenInfo.get("refreshToken").asText();
+        assertTrue(tokenInfo.has("data"));
+
+        JsonNode tokenData = tokenInfo.get("data");
+        assertTrue(tokenData.has("accessToken"));
+        assertTrue(tokenData.has("refreshToken"));
+
+        String token = tokenData.get("accessToken").asText();
+        String refreshToken = tokenData.get("refreshToken").asText();
         validateJwtToken(token, username);
-        validateJwtToken(refreshToken, username);
+
         this.token = token;
         this.refreshToken = refreshToken;
         this.username = username;
@@ -123,8 +155,46 @@ public abstract class AbstractWebTest {
         String withoutSignature = token.substring(0, i + 1);
         Jwt<Header, Claims> jwsClaims = Jwts.parser().parseClaimsJwt(withoutSignature);
         Claims claims = jwsClaims.getBody();
-        String subject = claims.getSubject();
+        String subject = claims.get(StandardClaimNames.PREFERRED_USERNAME, String.class);
         assertEquals(username, subject);
+    }
+
+    protected ResultActions doGet(String urlTemplate, Object... urlVariables) throws Exception {
+        MockHttpServletRequestBuilder getRequest = get(urlTemplate, urlVariables);
+        setJwtToken(getRequest);
+        return mockMvc.perform(getRequest);
+    }
+
+    protected <T> T doGet(String urlTemplate, Class<T> responseClass, Object... urlVariables) throws Exception {
+        return readResponse(doGet(urlTemplate, urlVariables).andExpect(status().isOk()), responseClass);
+    }
+
+    protected <T> T doGetTyped(String urlTemplate, TypeReference<T> responseType, Object... urlVariables)
+            throws Exception {
+        return readResponse(doGet(urlTemplate, urlVariables).andExpect(status().isOk()), responseType);
+    }
+
+    protected <T> T doPost(String urlTemplate, T content, Class<T> responseClass, String... params) {
+        try {
+            return readResponse(doPost(urlTemplate, content, params).andExpect(status().isOk()), responseClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected <T, R> R doPostWithResponse(String urlTemplate, T content, Class<R> responseClass, String... params)
+            throws Exception {
+        return readResponse(doPost(urlTemplate, content, params).andExpect(status().isOk()), responseClass);
+    }
+
+    protected <T, R> R doPostWithTypedResponse(String urlTemplate, T content, TypeReference<R> responseType,
+            String... params) throws Exception {
+        return readResponse(doPost(urlTemplate, content, params).andExpect(status().isOk()), responseType);
+    }
+
+    protected <T, R> R doPostWithTypedResponse(String urlTemplate, T content, TypeReference<R> responseType,
+            ResultMatcher resultMatcher, String... params) throws Exception {
+        return readResponse(doPost(urlTemplate, content, params).andExpect(resultMatcher), responseType);
     }
 
     protected <T> ResultActions doPost(String urlTemplate, T content, String... params) throws Exception {
@@ -154,6 +224,15 @@ public abstract class AbstractWebTest {
         return (T) converter.read(responseClass, mockHttpInputMessage);
     }
 
+    protected <T> T readResponse(ResultActions result, TypeReference<T> type) throws Exception {
+        return readResponse(result.andReturn(), type);
+    }
+
+    protected <T> T readResponse(MvcResult result, TypeReference<T> type) throws Exception {
+        byte[] content = result.getResponse().getContentAsByteArray();
+        return mapper.readerFor(type).readValue(content);
+    }
+
     protected void resetTokens() {
         this.token = null;
         this.refreshToken = null;
@@ -165,4 +244,5 @@ public abstract class AbstractWebTest {
             request.header(HttpHeaders.AUTHORIZATION, "Bearer " + this.token);
         }
     }
+
 }
