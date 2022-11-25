@@ -51,7 +51,7 @@ import {
 
 const Forms = () => {
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -321,7 +321,7 @@ const Forms = () => {
         hasFlyout={true}
         isFlyoutShown={isFlyoutShown}
         flyoutTitle='Information'
-        flyoutTitleMargin={232}
+        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
         onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
