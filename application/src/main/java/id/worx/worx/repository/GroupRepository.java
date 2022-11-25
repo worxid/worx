@@ -3,6 +3,7 @@ package id.worx.worx.repository;
 import java.util.List;
 import java.util.Optional;
 
+import id.worx.worx.web.model.request.GroupSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,9 +23,9 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         "FROM " +
         "(SELECT * " +
         "FROM worx_groups " +
-        "WHERE (:id is null OR(id= :id)) " +
-        "      AND (:name is null OR(lower(group_name) like concat('%',lower(:name),'%'))) " +
-        "      AND (:color is null OR(lower(group_color) like concat('%',lower(:color),'%'))) " +
+        "WHERE (:#{#request.id} is null OR(id= :#{#request.id})) " +
+        "      AND (:#{#request.name} is null OR(lower(group_name) like concat('%',lower(:#{#request.name}),'%'))) " +
+        "      AND (:#{#request.color} is null OR(lower(group_color) like concat('%',lower(:#{#request.color}),'%'))) " +
         "      AND (:globalSearch is null " +
         "               OR(lower(group_name) like concat('%',lower(:globalSearch),'%')) " +
         "               OR(lower(group_color) like concat('%',lower(:globalSearch   ),'%')) " +
@@ -43,13 +44,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         "GROUP BY group_id " +
         ") as tG " +
         "ON wG.id=tG.id " +
-        "WHERE (:templateCount is null OR(coalesce(form_group_cnt,0)=:templateCount)) " +
-        "AND (:deviceCount is null OR(coalesce(dev_group_cnt,0)=:deviceCount)) " +
+        "WHERE (:#{#request.formCount} is null OR(coalesce(form_group_cnt,0)=:#{#request.formCount})) " +
+        "AND (:#{#request.deviceCount} is null OR(coalesce(dev_group_cnt,0)=:#{#request.deviceCount})) " +
         "AND (:globalCountSearch is null  " +
         "       OR(coalesce(form_group_cnt,0)=:globalCountSearch) " +
         "       OR(coalesce(dev_group_cnt,0)=:globalCountSearch) " +
         ")")
-    Page<GroupSearchProjection> search(Long id, String name, String color,  String globalSearch, Long userId, Integer deviceCount, Integer templateCount, Integer globalCountSearch,Pageable pageable);
+    Page<GroupSearchProjection> search(GroupSearchRequest request,String globalSearch, Long userId, Integer globalCountSearch, Pageable pageable);
 
     Optional<Group> findByIdAndUserId(Long id, Long userId);
     Optional<Group> findByIsDefaultTrueAndUserId(Long userId);
