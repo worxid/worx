@@ -138,7 +138,7 @@ const FormsSubmissionsDetail = () => {
         direction='row'
         position='relative'
         flex='1'
-        height='100%'
+        height={0}
         className='contentContainer'
         sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
