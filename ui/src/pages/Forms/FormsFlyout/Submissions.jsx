@@ -116,6 +116,7 @@ const Submissions = (props) => {
               <Typography 
                 variant='caption'
                 className='colorTextSecondary'
+                fontWeight={600}
               >
                 Total
               </Typography>
@@ -152,7 +153,7 @@ const Submissions = (props) => {
               {/* TEXT */}
               <ListItemText
                 primary={
-                  <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`}>
+                  <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`} fontWeight={600}>
                     {item?.source?.label?.replace(/_/g, ' ')}
                   </Typography>
                 }
