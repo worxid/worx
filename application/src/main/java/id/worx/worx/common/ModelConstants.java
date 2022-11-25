@@ -2,6 +2,7 @@ package id.worx.worx.common;
 
 public class ModelConstants {
 
+    @Generated
     private ModelConstants() {
         throw new IllegalStateException("Utility class");
     }
