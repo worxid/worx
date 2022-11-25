@@ -5,6 +5,7 @@ import id.worx.worx.common.model.request.device.ApproveRequest;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
+import id.worx.worx.web.model.request.InviteDeviceRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,4 +42,6 @@ public interface DeviceService {
     DeviceDTO toDTOMobile(Device devices);
 
     Page<Device> search(DeviceSearchRequest deviceSearchRequest, Pageable pageable);
+
+    void sendEmailDeviceInvitation(InviteDeviceRequest request);
 }

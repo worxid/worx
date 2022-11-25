@@ -141,7 +141,7 @@ const Devices = () => {
 
   // CONTEXT
   const { setIsDialogFormOpen, setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
 
   const initialFilters = {
     label: '',
@@ -297,7 +297,7 @@ const Devices = () => {
         hasFlyout={true}
         isFlyoutShown={isFlyoutShown}
         flyoutTitle='Information'
-        flyoutTitleMargin={232}
+        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
         onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 

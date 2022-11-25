@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
+import InvalidateSize from './InvalidateSize'
 import Markers from './Markers'
 
 // CONSTANTS
 import { dummySubmissionList } from '../homeConstants'
+
+// CONTEXTS
+import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // LEAFLET
 import { 
@@ -21,6 +25,8 @@ import 'leaflet/dist/leaflet.css'
 
 const Map = (props) => {
   const { filterParameters } = props
+
+  const { drawerState } = useContext(PrivateLayoutContext)
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
@@ -45,10 +51,17 @@ const Map = (props) => {
       >
         {/* BASE MAP */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+          attribution='&copy; Maps Data: <a href="https://about.google/brand-resource-center/products-and-services/geo-guidelines/#required-attribution">Google</a>'
+          url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+          subdomains={['mt1','mt2','mt3']}
           minZoom={2}
           maxZoom={20}
+        />
+
+        {/* INVALIDATE SIZE */}
+        <InvalidateSize
+          map={mapObject}
+          dependencyList={[ mapObject, drawerState.isDrawerExpanded ]}
         />
 
         {/* MARKERS */}

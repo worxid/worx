@@ -468,6 +468,8 @@ export const getTransactionChartOptions = (
       tickPlacement: 'on',
     },
     yaxis: {
+      forceNiceScale: true,
+      max: function(max) { return max * 1.1 },
       labels: {
         style: {
           fontSize: 14,

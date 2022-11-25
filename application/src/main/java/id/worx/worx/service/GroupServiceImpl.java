@@ -1,6 +1,7 @@
 package id.worx.worx.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
@@ -25,9 +27,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
-
-    private static final String DEFAULT_GROUP_NAME_STRING = "Main Group";
-    private static final String DEFAULT_GROUP_COLOR_STRING = "#DA3630";
 
     private final GroupRepository groupRepository;
 
@@ -51,8 +50,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group createDefaultGroup(Long userId) {
         Group group = Group.builder()
-                .name(DEFAULT_GROUP_NAME_STRING)
-                .color(DEFAULT_GROUP_COLOR_STRING)
+                .name(ModelConstants.GROUP_DEFAULT_NAME)
+                .color(ModelConstants.GROUP_DEFAULT_COLOR)
                 .userId(userId)
                 .isDefault(true)
                 .build();
@@ -114,12 +113,18 @@ public class GroupServiceImpl implements GroupService {
     public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 JpaUtils.replaceSort(pageable.getSort()));
-        return groupRepository.search(groupSearchRequest.getId(),
-                groupSearchRequest.getName(),
-                groupSearchRequest.getColor(),
+        Integer globalCountSearch= null;
+        String globalSearch=null;
+        if(Objects.nonNull(groupSearchRequest.getGlobalSearch())){
+            if(groupSearchRequest.getGlobalSearch().matches("[0-9]+")){
+                globalCountSearch=Integer.valueOf(groupSearchRequest.getGlobalSearch());
+            }else
+                globalSearch= groupSearchRequest.getGlobalSearch();
+        }
+        return groupRepository.search(groupSearchRequest,
+                globalSearch,
                 authContext.getUsers().getId(),
-                groupSearchRequest.getDeviceCount(),
-                groupSearchRequest.getFormCount(),
+                globalCountSearch,
                 customPageable);
     }
 

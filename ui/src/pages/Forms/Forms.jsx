@@ -44,11 +44,14 @@ import {
   isFormatDateSearchValid, 
   wasRequestCanceled,
 } from 'utilities/validation'
-import { convertDate } from 'utilities/date'
+import { 
+  convertDate, 
+  getLast30Days,
+} from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -138,6 +141,11 @@ const Forms = () => {
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
+  const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
+    getLast30Days().startTime,
+    getLast30Days().endTime,
+  ])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
@@ -192,6 +200,11 @@ const Forms = () => {
     }
   }
 
+  const handleSelectDateRangePickerButtonClick = (newValue) => {
+    setDateRangeTimeValue(newValue)
+    setIsDateRangeTimePickerOpen(false)
+  }
+
   // FETCHING DATA TABLE FORMS
   const fetchingFormsList = async (abortController, inputIsMounted) => {
     let createdDate = handleDateSearchValue(filters?.created_on)
@@ -218,6 +231,8 @@ const Forms = () => {
             ? [filters?.assigned_groups] : null,
         submission_count: filters?.submission_count || null,
         global_search: pageSearch,
+        from: dateRangeTimeValue[0],
+        to: dateRangeTimeValue[1],
       },
       axiosPrivate,
     )
@@ -291,7 +306,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy, dateRangeTimeValue])
 
   return (
     <>
@@ -306,7 +321,7 @@ const Forms = () => {
         hasFlyout={true}
         isFlyoutShown={isFlyoutShown}
         flyoutTitle='Information'
-        flyoutTitleMargin={232}
+        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
         onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
@@ -331,6 +346,14 @@ const Forms = () => {
             setIsFilterOn={setIsFilterOn}
             // TEXT
             contentTitle='Form List'
+            // DATE RANGE TIME
+            isWithDateTimePicker={true}
+            isWithTimePicker={false}
+            dateRangeValue={dateRangeTimeValue}
+            isDateRangeTimePickerOpen={isDateRangeTimePickerOpen} 
+            setIsDateRangeTimePickerOpen={setIsDateRangeTimePickerOpen}
+            handleSelectDateRangePickerButtonClick={handleSelectDateRangePickerButtonClick}
+            handleCancelDateRangePickerButtonClick={() => setIsDateRangeTimePickerOpen(false)}
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}

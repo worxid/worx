@@ -14,4 +14,5 @@ public class EmailDTO {
     private String to;
     private String subject;
     private String content;
+    private String[] tos;
 }

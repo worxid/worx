@@ -22,4 +22,7 @@ public class GroupSearchRequest {
 
     @JsonProperty("device_count")
     private Integer deviceCount;
+
+    @JsonProperty("global_search")
+    private String globalSearch;
 }
