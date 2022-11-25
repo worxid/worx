@@ -57,7 +57,7 @@ const DialogForm = (props) => {
       {areActionsAvailable && (
         <DialogActions className={classes.dialogFormActions}>
           <CustomDialogActionButton 
-            className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
+            className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
             onClick={() => handleActionButtonClick('cancel')}
           >
             Cancel
