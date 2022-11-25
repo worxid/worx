@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   leftPanelItemText: {
     color: theme.palette.text.secondary,
+    fontWeight: 600,
     '& .MuiTypography-root': {
       fontSize: 13,
     },
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     borderBottom: `1px solid ${theme.palette.divider}`,
     paddingBottom: 16,
+    fontWeight: 600
   },
   dateAndTimeInputContainer: {
     display: 'flex',
@@ -69,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 'auto',
     fontSize: 12,
     color: theme.palette.text.secondary,
+    fontWeight: 600
   },
   actionButton: {
     marginLeft: 8,
