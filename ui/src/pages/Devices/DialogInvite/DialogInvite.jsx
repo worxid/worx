@@ -49,6 +49,12 @@ const DialogInvite = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
 
+  // HANDLE BUTTON CLOSE CLICK
+  const handleCloseDialog = () => {
+    setEmail('')
+    setIsDialogFormOpen(false)
+  }
+
   // HANDLE BUTTON SEND CLICK
   const handleButtonInviteClick = async () => {
     const abortController = new AbortController()
@@ -73,8 +79,7 @@ const DialogInvite = () => {
         message: `Invite sent to ${email} successfully`
       })
       setTimeout(() => {
-        setEmail('')
-        setIsDialogFormOpen(false)    
+        handleCloseDialog()
       }, 1500)  
     }
     else if (!wasRequestCanceled(response?.status)) {
@@ -129,10 +134,7 @@ const DialogInvite = () => {
           sx={{
             marginRight: '20px'
           }}
-          onClick={() => {
-            setEmail('')
-            setIsDialogFormOpen(false)        
-          }}
+          onClick={handleCloseDialog}
           disabled={isLoading}
         >
           Close
