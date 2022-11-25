@@ -22,6 +22,12 @@ const AllPagesContextProvider = (props) => {
   const isLgScreen = useMediaQuery((theme) => theme.breakpoints.only('lg'))
   const isXlScreen = useMediaQuery((theme) => theme.breakpoints.only('xl'))
 
+  // BREAKPOINT ZOOM
+  const isZoomBoundary = useMediaQuery(values.zoomBoundary)
+  const isNoZoomBoundary = useMediaQuery(values.noZoomBoundary)
+  // return true if in screen zoom boundary
+  const breakpointZoomBoundary = (isZoomBoundary && !isNoZoomBoundary) ? isZoomBoundary : false
+
   let breakpointType
   isXsScreen && (breakpointType = 'xs')
   isSmScreen && (breakpointType = 'sm')
@@ -39,6 +45,7 @@ const AllPagesContextProvider = (props) => {
         auth, setAuth,
         // BREAKPOINT
         breakpointType,
+        breakpointZoomBoundary,
         // SNACKBAR
         snackbarObject, setSnackbarObject,
       }}
