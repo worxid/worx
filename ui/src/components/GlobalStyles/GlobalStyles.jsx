@@ -57,6 +57,9 @@ const GlobalStyles = () => {
         '.fontWeight500': {
           fontWeight: '500 !important',
         },
+        '.fontWeight600': {
+          fontWeight: '600 !important',
+        },
         '.fontWeight700': {
           fontWeight: '700 !important',
         },

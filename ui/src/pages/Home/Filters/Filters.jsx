@@ -72,6 +72,7 @@ const Filters = (props) => {
         <Typography
           variant='body2'
           color='text.secondary'
+          className='fontWeight600'
         >
           Form:
         </Typography>
@@ -106,6 +107,7 @@ const Filters = (props) => {
         <Typography
           variant='body2'
           color='text.secondary'
+          className='fontWeight600'
         >
           Date Range:
         </Typography>
@@ -135,6 +137,7 @@ const Filters = (props) => {
         <Typography
           variant='body2'
           color='text.secondary'
+          className='fontWeight600'
         >
           Device:
         </Typography>
