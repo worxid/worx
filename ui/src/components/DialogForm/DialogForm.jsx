@@ -64,7 +64,7 @@ const DialogForm = (props) => {
           </CustomDialogActionButton>
 
           <CustomDialogActionButton
-            className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
+            className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`} 
             onClick={() => handleActionButtonClick('save')}
           >
             Save
