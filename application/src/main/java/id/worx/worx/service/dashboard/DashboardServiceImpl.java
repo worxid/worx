@@ -24,54 +24,35 @@ public class DashboardServiceImpl implements DashboardService {
     private final FormRepository formRepository;
     @Override
     public List<DashboardStatDTO> getDashboardStat(LocalDate from, LocalDate to, DashboardRequest dashboardRequest) {
-        List<DashboardStatDTO> responses = new ArrayList<>();
 
+        String deviceCode;
+        Integer count;
+
+        List<DashboardStatDTO> responses = new ArrayList<>();
         List<LocalDate> totalDates = new ArrayList<>();
         while (!from.isAfter(to)) {
             totalDates.add(from);
             from = from.plusDays(1);
         }
-        String deviceCode;
-
         for(LocalDate dateList:totalDates){
             Instant startDate = Instant.parse(dateList+"T00:00:01Z");
             Instant endDate = Instant.parse(dateList+"T23:59:59Z");
             if(dashboardRequest.getFormId() != null && dashboardRequest.getDeviceId() != null){
-
                 deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
-
-                Integer count = formRepository.getCountByRespondentDeviceAndTemplateId(startDate,endDate,deviceCode, dashboardRequest.getFormId());
-
-                DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
-                dashboardStatDTO.setCount(count);
-                dashboardStatDTO.setDate(dateList);
-                responses.add(dashboardStatDTO);
+                count = formRepository.getCountByRespondentDeviceAndTemplateId(startDate,endDate,deviceCode, dashboardRequest.getFormId());
             }else if(dashboardRequest.getFormId() == null && dashboardRequest.getDeviceId() != null){
-
                 deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
-
-                Integer count = formRepository.getCountByRespondentDevice(startDate,endDate,deviceCode);
-
-                DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
-                dashboardStatDTO.setCount(count);
-                dashboardStatDTO.setDate(dateList);
-                responses.add(dashboardStatDTO);
+                count = formRepository.getCountByRespondentDevice(startDate,endDate,deviceCode);
             }else if(dashboardRequest.getFormId() != null && dashboardRequest.getDeviceId() == null){
-                Integer count = formRepository.getCountByTemplateId(startDate,endDate,dashboardRequest.getFormId());
-
-                DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
-                dashboardStatDTO.setCount(count);
-                dashboardStatDTO.setDate(dateList);
-                responses.add(dashboardStatDTO);
+                count = formRepository.getCountByTemplateId(startDate,endDate,dashboardRequest.getFormId());
             }else{
-                Integer count = formRepository.getCountByDateOnly(startDate,endDate);
-
-                DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
-                dashboardStatDTO.setCount(count);
-                dashboardStatDTO.setDate(dateList);
-                responses.add(dashboardStatDTO);
+                count = formRepository.getCountByDateOnly(startDate,endDate);
             }
 
+            DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
+            dashboardStatDTO.setCount(count);
+            dashboardStatDTO.setDate(dateList);
+            responses.add(dashboardStatDTO);
         }
 
         return responses;
