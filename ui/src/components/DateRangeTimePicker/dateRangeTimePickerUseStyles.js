@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   leftPanelItemText: {
     color: theme.palette.text.secondary,
-    fontWeight: 600,
     '& .MuiTypography-root': {
+      fontWeight: 600,
       fontSize: 13,
     },
   },
