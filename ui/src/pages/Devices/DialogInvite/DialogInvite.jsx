@@ -10,6 +10,9 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 // CUSTOM COMPONENTS
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
 
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 // MUIS
 import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
@@ -18,14 +21,25 @@ import InputLabel from '@mui/material/InputLabel'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+// SERVICES
+import { postDeviceInvite } from 'services/devices'
+
 // STYLES
 import useStyles from './dialogInviteUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
+
+// UTILITIES
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogInvite = () => {
   // STYLES
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
+
+  const axiosPrivate = useAxiosPrivate()
 
   // CONTEXTS
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
@@ -46,17 +60,36 @@ const DialogInvite = () => {
     const abortController = new AbortController()
     setIsLoading(true)
    
-    setIsLoading(false)
-    abortController.abort()
-    setSnackbarObject({
-      open: true,
-      severity:'success',
-      title:'',
-      message: `Invite sent to ${email} successfully`
-    })
-    setTimeout(() => {
+    let requestBody = {
+      send_to: [email]
+    }
+    const response = await postDeviceInvite(
+      abortController.signal,
+      requestBody,
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status)) {
+      setIsLoading(false)
+      abortController.abort()
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title:'',
+        message: `Invite sent to ${email} successfully`
+      })
       handleCloseDialog()
-    }, 1500)
+    }
+    else if (!wasRequestCanceled(response?.status)) {
+      setIsLoading(false)
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something went wrong',
+      })
+    }
+
   }
 
   return (
@@ -82,7 +115,7 @@ const DialogInvite = () => {
               E-mail address
             </InputLabel>
             <Input
-              placeholder='Label'
+              placeholder='E-mail address'
               type='text'
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -95,7 +128,7 @@ const DialogInvite = () => {
       <Stack alignItems='center' direction='row' justifyContent={'flex-end'} className={classes.footer} flexWrap='nowrap'>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
           sx={{
             marginRight: '20px'
           }}
@@ -107,7 +140,7 @@ const DialogInvite = () => {
 
         {/* SAVE BUTTON */}
         <CustomDialogActionButton
-          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
+          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`}
           onClick={handleButtonInviteClick}
           disabled={!email || email === ''}
         >
