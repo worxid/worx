@@ -5,14 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -205,6 +211,55 @@ public abstract class AbstractWebTest {
         return mockMvc.perform(postRequest);
     }
 
+    protected <T> T doPut(String urlTemplate, T content, Class<T> responseClass, String... params) {
+        try {
+            return readResponse(doPut(urlTemplate, content, params).andExpect(status().isOk()), responseClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected <T, R> R doPutWithResponse(String urlTemplate, T content, Class<R> responseClass, String... params)
+            throws Exception {
+        return readResponse(doPut(urlTemplate, content, params).andExpect(status().isOk()), responseClass);
+    }
+
+    protected <T, R> R doPutWithTypedResponse(String urlTemplate, T content, TypeReference<R> responseType,
+            String... params) throws Exception {
+        return readResponse(doPut(urlTemplate, content, params).andExpect(status().isOk()), responseType);
+    }
+
+    protected <T, R> R doPutWithTypedResponse(String urlTemplate, T content, TypeReference<R> responseType,
+            ResultMatcher resultMatcher, String... params) throws Exception {
+        return readResponse(doPut(urlTemplate, content, params).andExpect(resultMatcher), responseType);
+    }
+
+    protected <T> ResultActions doPut(String urlTemplate, T content, String... params) throws Exception {
+        MockHttpServletRequestBuilder postRequest = put(urlTemplate, (Object[]) params);
+        setJwtToken(postRequest);
+        String json = json(content);
+        postRequest.contentType(contentType).content(json);
+        return mockMvc.perform(postRequest);
+    }
+
+    protected ResultActions doDelete(String urlTemplate, String... params) throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = delete(urlTemplate);
+        setJwtToken(deleteRequest);
+        populateParams(deleteRequest, params);
+        return mockMvc.perform(deleteRequest);
+    }
+
+    protected void populateParams(MockHttpServletRequestBuilder request, String... params) {
+        if (params != null && params.length > 0) {
+            assertEquals(0, params.length % 2);
+            MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
+            for (int i = 0; i < params.length; i += 2) {
+                paramsMap.add(params[i], params[i + 1]);
+            }
+            request.params(paramsMap);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
@@ -231,6 +286,10 @@ public abstract class AbstractWebTest {
     protected <T> T readResponse(MvcResult result, TypeReference<T> type) throws Exception {
         byte[] content = result.getResponse().getContentAsByteArray();
         return mapper.readerFor(type).readValue(content);
+    }
+
+    protected static <T> ResultMatcher statusReason(Matcher<T> matcher) {
+        return jsonPath("$.error.message", matcher);
     }
 
     protected void resetTokens() {
