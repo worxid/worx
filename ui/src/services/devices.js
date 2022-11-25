@@ -21,6 +21,25 @@ export const postGetDeviceList = async (
   }
 }
 
+export const postDeviceInvite = async (
+  inputSignal,
+  inputBodyParams, 
+  inputAxiosPrivate,
+) => {
+  try {
+    const response = await inputAxiosPrivate.post(
+      '/devices/invite',
+      inputBodyParams, 
+      { signal: inputSignal }
+    )
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
 export const putApprovedDevices = async (deviceId, inputSignal, inputParams, inputAxiosPrivate) => {
   try {
     const response = await inputAxiosPrivate.put(`/devices/${deviceId}/approve`, inputParams, {
