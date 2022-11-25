@@ -41,6 +41,6 @@ public class DashboardServiceImpl implements DashboardService{
             deviceCode=device.getDeviceCode();
         }
         List<Form> forms= formService.listFormFilter(searchRequest,deviceCode);
-        return forms.stream().map(form-> formMapper.toDashboardMapDTO(form)).collect(Collectors.toList());
+        return forms.stream().map(formMapper::toDashboardMapDTO).collect(Collectors.toList());
     }
 }

@@ -2,7 +2,6 @@ package id.worx.worx.common.model.dto;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import id.worx.worx.entity.RespondentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
