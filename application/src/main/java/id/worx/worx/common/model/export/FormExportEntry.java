@@ -30,7 +30,7 @@ public class FormExportEntry {
     }
 
     public boolean hasHyperlink() {
-        return Objects.nonNull(hyperlinks);
+        return Objects.nonNull(hyperlinks) && !hyperlinks.isEmpty();
     }
 
     public int size() {

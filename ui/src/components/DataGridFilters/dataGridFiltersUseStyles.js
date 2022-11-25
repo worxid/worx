@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   columnsMenuText: {
     color: theme.palette.text.secondary,
-    fontWeight: 400,
+    fontWeight: 600,
   },
 }))
 

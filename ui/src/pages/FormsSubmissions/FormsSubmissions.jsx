@@ -23,6 +23,7 @@ import lodash from 'lodash'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import Link from '@mui/material/Link'
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -40,7 +41,10 @@ import { getDetailFormTemplate } from 'services/formTemplate'
 import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
-import { convertDate } from 'utilities/date'
+import { 
+  convertDate, 
+  getLast30Days,
+} from 'utilities/date'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -103,12 +107,21 @@ const FormsSubmissions = () => {
       field: 'submissionAddress',
       headerName: 'Submission Address',
       flex: 1,
-      minWidth: 200,
+      minWidth: 300,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
+      renderCell: (params) => (
+        <Link
+          underline='hover'
+          className={classes.columnLink}
+          href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
+        >
+          {params.value ? params.value : 'No address found'}
+        </Link>
+      ),
     },
   ]
     
@@ -135,8 +148,18 @@ const FormsSubmissions = () => {
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
+  const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
+    getLast30Days().startTime,
+    getLast30Days().endTime,
+  ])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+
+  const handleSelectDateRangePickerButtonClick = (newValue) => {
+    setDateRangeTimeValue(newValue)
+    setIsDateRangeTimePickerOpen(false)
+  }
 
   const getFormTemplateDetail = async (inputIsMounted, inputAbortController) => {
     setIsDataGridLoading(true)
@@ -164,8 +187,14 @@ const FormsSubmissions = () => {
     if (order && orderBy) requestParams.sort = `${orderBy},${order}`
 
     let bodyParams = { 
+      submit_address: filters.submissionAddress,
+      source: {
+        type: null,
+        label: filters.source,
+      },
       template_id: formTemplateId, 
-      ...filters,
+      from: dateRangeTimeValue[0],
+      to: dateRangeTimeValue[1],
     }
 
     const resultSubmissionList = await postSearchFormSubmissionList(
@@ -181,8 +210,10 @@ const FormsSubmissions = () => {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
           submissionDate: submissionItem?.submit_date ?? '-',
-          submissionAddress: submissionItem.submit_location?.address ?? '-',
-          values: submissionItem.values,
+          submissionAddress: submissionItem?.submit_location?.address ?? '-',
+          submissionLatitude: submissionItem?.submit_location?.lat ?? null,
+          submissionLongitude: submissionItem?.submit_location?.lng ?? null,
+          values: submissionItem?.values,
         }
       })
 
@@ -406,7 +437,7 @@ const FormsSubmissions = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [pageNumber, pageSize, filters, order, orderBy])
+  }, [pageNumber, pageSize, filters, order, orderBy, dateRangeTimeValue])
 
   useEffect(() => {
     updateColumnsDynamically()
@@ -489,6 +520,14 @@ const FormsSubmissions = () => {
             columns={initialColumns}
             selectedColumnList={columnList}
             setSelectedColumnList={setColumnList}
+            // DATE RANGE TIME
+            isWithDateTimePicker={true}
+            isWithTimePicker={false}
+            dateRangeValue={dateRangeTimeValue}
+            isDateRangeTimePickerOpen={isDateRangeTimePickerOpen} 
+            setIsDateRangeTimePickerOpen={setIsDateRangeTimePickerOpen}
+            handleSelectDateRangePickerButtonClick={handleSelectDateRangePickerButtonClick}
+            handleCancelDateRangePickerButtonClick={() => setIsDateRangeTimePickerOpen(false)}
             // FILTER
             isFilterOn={isFilterOn}
             setIsFilterOn={setIsFilterOn}
@@ -526,7 +565,6 @@ const FormsSubmissions = () => {
             className={classes.tableFormsSubmissions}
             // ROW
             onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
-            getRowHeight={() => 'auto'}
           />
         </LoadingPaper>
       </Stack>

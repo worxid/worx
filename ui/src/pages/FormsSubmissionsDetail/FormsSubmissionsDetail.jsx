@@ -3,10 +3,15 @@ import { useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
+import Flyout from 'components/Flyout/Flyout'
+import FormFlyout from './FormsFlyout/FormsFlyout'
 import Header from './Header'
 import InputComponent from './InputComponent'
 import ItemGrid from './ItemGrid'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+
+// CONSTANTS
+import { values } from 'constants/values'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -38,14 +43,15 @@ const FormsSubmissionsDetail = () => {
   const downloadComponentRef = useRef()
 
   // CONTEXT
-  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
 
   // STYLES
   const classes = useStyles()
 
-  // CONTENT
+  // STATE
   const [ isFormLoading, setIsFormLoading ] = useState(true)
   const [ submissionDetail, setSubmissionDetail ] = useState({})
+  const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
 
   // HANDLE GET SUBMISSION DETAIL
   const getSubmissionDetail = async (inputSignal, inputSubmissionId) => {
@@ -121,43 +127,65 @@ const FormsSubmissionsDetail = () => {
         backLink={`/forms/submissions/${searchParams.get('formTemplateId')}`}
         pageTitle='Form Submission Detail'
         hasSearch={false}
+        hasFlyout={true}
+        isFlyoutShown={isFlyoutShown}
+        flyoutTitle='Information'
+        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
+        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
-      {/* MAIN CONTENT */}
-      <LoadingPaper isLoading={isFormLoading} className='overflowYauto'>
-        {/* HEADER */}
-        <Header
-          title={submissionDetail?.label}
-          onClickDownload={() => handleDownloadButtonClick()}
-        />
+      <Stack 
+        direction='row'
+        position='relative'
+        flex='1'
+        height={0}
+        className='contentContainer'
+        sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
+      >
+        {/* MAIN CONTENT */}
+        <LoadingPaper isLoading={isFormLoading} className='overflowYauto'>
+          {/* HEADER */}
+          <Header
+            title={submissionDetail?.label}
+            onClickDownload={() => handleDownloadButtonClick()}
+          />
 
-        <Divider />
+          <Divider />
 
-        {/* CONTENT FORM */}
-        <Grid ref={downloadComponentRef} container spacing={0} className={classes.contentForms}>
-          {submissionDetail?.fields?.map((item, index) => (
-            <ItemGrid
-              label={item.label}
-              description={item.description}
-              key={index}
-              isSeparator={item.type === 'separator'}
-            >
-              {Boolean(findValuesByFieldId(item.id)) ? (
-                <Stack width='100%' maxWidth='400px'>
-                  <InputComponent
-                    item={item}
-                    type={item.type}
-                    defaultValue={findValuesByFieldId(item.id)}
-                  />
-                </Stack>)
-                : (
-                  <Typography variant='body2'>{item.type !== 'separator' && 'No data'}</Typography>
-                )}
-            </ItemGrid>
-          ))}
-          {/* ITEM */}
-        </Grid>
-      </LoadingPaper>
+          {/* CONTENT FORM */}
+          <Grid ref={downloadComponentRef} container spacing={0} className={classes.contentForms}>
+            {submissionDetail?.fields?.map((item, index) => (
+              <ItemGrid
+                label={item.label}
+                description={item.description}
+                key={index}
+                isSeparator={item.type === 'separator'}
+              >
+                {Boolean(findValuesByFieldId(item.id)) ? (
+                  <Stack width='100%' maxWidth='400px'>
+                    <InputComponent
+                      item={item}
+                      type={item.type}
+                      defaultValue={findValuesByFieldId(item.id)}
+                    />
+                  </Stack>)
+                  : (
+                    <Typography variant='body2'>{item.type !== 'separator' && 'No data'}</Typography>
+                  )}
+              </ItemGrid>
+            ))}
+            {/* ITEM */}
+          </Grid>
+        </LoadingPaper>
+
+        {/* SIDE CONTENT */}
+        <Flyout
+          isFlyoutShown={isFlyoutShown}
+          flyoutWidth={values.flyoutWidth}
+        >
+          <FormFlyout submissionDetail={submissionDetail}/>
+        </Flyout>
+      </Stack>
     </>
   )
 }

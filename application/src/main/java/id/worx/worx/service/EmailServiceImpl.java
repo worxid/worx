@@ -25,12 +25,12 @@ public class EmailServiceImpl implements EmailService {
     private static final String RESET_PASSWORD_EMAIL = "email-reset-password";
     private static final String EMAIL_CONFIRMATION = "email-confirmation";
     private static final String SHARE_TEMPLATE = "email-share-link";
+    private static final String INVITE_DEVICE_EMAIL= "email-invite-device";
 
     private static final String SHARE_FORM_SUBJECT_STRING = "Fill Your Form with Worx";
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
-
     @Override
     public void sendEmail(EmailDTO email) {
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -39,7 +39,10 @@ public class EmailServiceImpl implements EmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setTo(email.getTo());
+            if(email.getTo()!=null)
+                helper.setTo(email.getTo());
+            else
+                helper.setTo(email.getTos());
             helper.setText(email.getContent(), true);
             helper.setSubject(email.getSubject());
             helper.setFrom(email.getFrom());
@@ -104,6 +107,20 @@ public class EmailServiceImpl implements EmailService {
                 .content(body)
                 .subject("WORX - Email Confirmation")
                 .build();
+        sendEmail(emailDTO);
+    }
+
+    @Override
+    public void sendInviteDeviceEmail(String[] emails, String organizationCode) {
+        Context context= new Context();
+        context.setVariable("orgCode","Org Key: "+organizationCode);
+        String body = templateEngine.process(INVITE_DEVICE_EMAIL,context);
+        EmailDTO emailDTO= EmailDTO.builder()
+            .from(worxProps.getMail().getFromAddress())
+            .tos(emails)
+            .content(body)
+            .subject("WORX - Invitation to Join the Field Service Mobile Forms Account")
+            .build();
         sendEmail(emailDTO);
     }
 

@@ -69,7 +69,7 @@ public class GroupController implements SecuredRestController {
         Page<GroupSearchProjection> groups = groupService.searchGroup(searchRequest,pageable);
         List<GroupDTO> dtos = groups.stream().map(groupService::toDTO).collect(Collectors.toList());
         Page<GroupDTO> page= new BasePageResponse<>(dtos,groups.getPageable(),groups.getTotalElements());
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
             .body(page);
     }
 

@@ -10,6 +10,7 @@ import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.web.model.request.DeviceSearchRequest;
+import id.worx.worx.web.model.request.InviteDeviceRequest;
 import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
@@ -99,5 +100,10 @@ public class DeviceController implements SecuredRestController {
         deviceWebService.deleteDevice(request.getIds());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(BaseResponse.builder().build());
+    }
+
+    @PostMapping("/invite")
+    public void sendInviteDeviceEmail(@RequestBody InviteDeviceRequest request){
+        deviceWebService.sendEmailDeviceInvitation(request);
     }
 }

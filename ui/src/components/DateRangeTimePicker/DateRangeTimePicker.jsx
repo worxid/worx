@@ -56,7 +56,7 @@ const DateRangeTimePicker = (props) => {
   const [ startTimeInput, setStartTimeInput ] = useState(initialStartTimeInput)
   const [ endDateInput, setEndDateInput ] = useState(initialEndDateInput)
   const [ endTimeInput, setEndTimeInput ] = useState(initialEndTimeInput)
-  const [ selectedDateRangeItem, setSelectedDateRangeItem ] = useState(null)
+  const [ selectedDateRangeItem, setSelectedDateRangeItem ] = useState(dateRangeList[0][2].title)
   const [ countDays, setCountDays ] = useState(0)
   const [ key, setKey ] = useState(0)
 

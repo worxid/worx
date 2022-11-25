@@ -201,7 +201,7 @@ const Drawer = () => {
             <ListItemText primary={
               <Typography
                 variant='inherit'
-                className={classes.navigationItemContentInactive}
+                className={`${classes.navigationItemContentInactive} zoom`}
               >
                 Code: {auth?.user?.organization_code}
               </Typography>
@@ -254,7 +254,7 @@ const Drawer = () => {
                 <ListItemText primary={
                   <Typography
                     variant='inherit'
-                    className={getListItemTextClassName(parentItem.path)}
+                    className={`${getListItemTextClassName(parentItem.path)} zoom`}
                   >
                     {parentItem.title}
                   </Typography>
@@ -348,7 +348,7 @@ const Drawer = () => {
             <ListItemText primary={
               <Typography
                 variant='inherit'
-                className={classes.navigationItemContentActive}
+                className={`${classes.navigationItemContentActive} zoom`}
               >
                 Log Out
               </Typography>
