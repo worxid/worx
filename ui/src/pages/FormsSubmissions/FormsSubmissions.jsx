@@ -6,6 +6,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DialogExport from 'components/DialogExport/DialogExport'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogMediasPreview from './DialogMediasPreview/DialogMediasPreview'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -577,6 +578,9 @@ const FormsSubmissions = () => {
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(formTemplateId)} />
+
+      {/* DIALOG MEDIAS PREVIEW */}
+      <DialogMediasPreview/>
     </>
   )
 }
