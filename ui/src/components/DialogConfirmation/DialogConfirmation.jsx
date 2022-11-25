@@ -65,7 +65,7 @@ const DialogConfirmation = (props) => {
       <DialogActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
           onClick={onCancelButtonClick}
         >
           {cancelButtonText}
