@@ -126,10 +126,10 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.search(groupSearchRequest.getId(),
                 groupSearchRequest.getName(),
                 groupSearchRequest.getColor(),
+                globalSearch,
                 authContext.getUsers().getId(),
                 groupSearchRequest.getDeviceCount(),
                 groupSearchRequest.getFormCount(),
-                globalSearch,
                 globalCountSearch,
                 customPageable);
     }

@@ -49,7 +49,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         "       OR(coalesce(form_group_cnt,0)=:globalCountSearch) " +
         "       OR(coalesce(dev_group_cnt,0)=:globalCountSearch) " +
         ")")
-    Page<GroupSearchProjection> search(Long id, String name, String color, Long userId, Integer deviceCount, Integer templateCount, String globalSearch, Integer globalCountSearch,Pageable pageable);
+    Page<GroupSearchProjection> search(Long id, String name, String color,  String globalSearch, Long userId, Integer deviceCount, Integer templateCount, Integer globalCountSearch,Pageable pageable);
 
     Optional<Group> findByIdAndUserId(Long id, Long userId);
     Optional<Group> findByIsDefaultTrueAndUserId(Long userId);
