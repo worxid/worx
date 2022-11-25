@@ -78,9 +78,7 @@ const DialogInvite = () => {
         title:'',
         message: `Invite sent to ${email} successfully`
       })
-      setTimeout(() => {
-        handleCloseDialog()
-      }, 1500)  
+      handleCloseDialog()
     }
     else if (!wasRequestCanceled(response?.status)) {
       setIsLoading(false)
