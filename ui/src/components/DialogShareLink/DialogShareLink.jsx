@@ -215,7 +215,7 @@ const DialogShareLink = (props) => {
       {(currentTab === 0 && isShowTabEmail) && (
         <Stack className={classes.content}>
           <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
-          <Typography variant='caption' color='text.secondary'>Share a direct link to your form via email</Typography>
+          <Typography variant='caption' color='text.secondary' fontWeight={600}>Share a direct link to your form via email</Typography>
 
           <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
             {/* RECEVIVERS EMAIL */}
@@ -246,6 +246,7 @@ const DialogShareLink = (props) => {
                   {...params}
                   label='Add email'
                   color='secondary'
+                  fontWeight={600}
                 />
               )}
             />
@@ -269,13 +270,13 @@ const DialogShareLink = (props) => {
       {/* CONTENT DIRECT LINK */}
       {(currentTab === 1 && isShowTabLink) && (<Stack className={classes.content}>
         <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
-        <Typography variant='caption' color='text.secondary'>You can share the direct link to your form</Typography>
+        <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
 
         <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
           <Stack direction='row' alignItems='center' className={classes.boxLink}>
             <IconLink className={classes.iconLink} fontSize='small'/>
 
-            <Typography variant='caption' color='text.secondary' noWrap>
+            <Typography variant='caption' color='text.secondary' noWrap fontWeight={600}>
               {formLink}
             </Typography>
           </Stack>
