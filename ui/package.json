@@ -33,6 +33,8 @@
     "react-share": "^4.4.1",
     "react-signature-canvas": "^1.0.6",
     "react-sortablejs": "^6.1.4",
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0",
     "react-to-print": "^2.14.8",
     "react-webcam": "^7.0.1",
     "sortablejs": "^1.15.0",
