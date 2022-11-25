@@ -12,14 +12,15 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.exception.WorxErrorCode;
-import lombok.extern.slf4j.Slf4j;
+import id.worx.worx.web.model.request.GroupSearchRequest;
 
-@Slf4j
 @ContextConfiguration(classes = { GroupControllerTest.Config.class })
 class GroupControllerTest extends AbstractControllerTest {
 
@@ -101,6 +102,25 @@ class GroupControllerTest extends AbstractControllerTest {
         doGet("/groups/" + groupId)
                 .andExpect(status().isNotFound())
                 .andExpect(statusReason(containsString(WorxErrorCode.ENTITY_NOT_FOUND_ERROR.getReasonPhrase())));
+    }
+
+    @Test
+    void testSearchGroup() throws Exception {
+        String name = ModelConstants.GROUP_DEFAULT_NAME;
+        String color = ModelConstants.GROUP_DEFAULT_COLOR;
+        GroupSearchRequest request = new GroupSearchRequest();
+        request.setName(name);
+        request.setColor(color);
+
+        BasePageResponse<GroupDTO> response = doPostWithTypedResponse(
+            "/groups/search",
+            request,
+            new TypeReference<BasePageResponse<GroupDTO>>() {
+        });
+
+        List<GroupDTO> list = response.getContent();
+        boolean isMainGroupExists = list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
+        assertTrue(isMainGroupExists);
     }
 
 }
