@@ -11,8 +11,7 @@ import javax.persistence.criteria.Join;
 
 @Component
 public class FormSpecification implements BaseSpecification<Form> {
-
-    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId, String deviceCode) {
+    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId) {
         Specification<Form> spec = Specification.where(null);
 
         spec= spec.and(getByUserId(userId));
@@ -46,6 +45,12 @@ public class FormSpecification implements BaseSpecification<Form> {
         if(Objects.nonNull(request.getGlobalSearch())){
             spec = spec.and(getGlobalSearch(request.getGlobalSearch()));
         }
+
+        return spec;
+    }
+
+    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId, String deviceCode) {
+        Specification<Form> spec = fromSearchRequest(request,userId);
 
         if(Objects.nonNull(deviceCode)){
             spec = spec.and(equalTo(Form_.RESPONDENT_DEVICE_CODE,deviceCode));
