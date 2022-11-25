@@ -72,7 +72,7 @@ const DialogConfirmation = (props) => {
         </CustomDialogActionButton>
 
         {/* DELETE BUTTON */}
-        <CustomDialogActionButton className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} onClick={onContinueButtonClick}>
+        <CustomDialogActionButton className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`} onClick={onContinueButtonClick}>
           {continueButtonText}
         </CustomDialogActionButton>
       </DialogActions>
