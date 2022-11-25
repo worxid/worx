@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
   caption: {
     marginBottom: 30,
     color: theme.palette.text.secondary,
+    fontWeight: 600,
     letterSpacing: '1%'
   },
 }))
