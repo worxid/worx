@@ -1,6 +1,8 @@
 package id.worx.worx.web.controller;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.errors.*;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,11 @@ public class MediaController {
     private final FileStorageService storageService;
 
     @GetMapping("presigned-url")
-    public ResponseEntity<UrlPresignedResponse> getPresignedUrlForUpload(@RequestParam String filename) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(storageService.getUploadUrl(filename));
+    public ResponseEntity<BaseValueResponse<UrlPresignedResponse>> getPresignedUrlForUpload(@RequestParam String filename) {
+
+        return ResponseEntity.ok().body(BaseValueResponse.<UrlPresignedResponse>builder()
+            .value(storageService.toDtoFilename(storageService.getUploadUrl(filename)))
+            .build());
     }
 
     @PostMapping("files")

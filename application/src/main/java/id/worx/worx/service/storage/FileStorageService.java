@@ -8,13 +8,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.UrlPresignedResponse;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.errors.*;
 
 public interface FileStorageService {
 
     void store();
+
+    UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse);
 
     UrlPresignedResponse getUploadUrl(String filename);
 

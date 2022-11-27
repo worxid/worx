@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import id.worx.worx.mapper.FileMapper;
 import id.worx.worx.util.UrlUtils;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import org.springframework.stereotype.Service;
@@ -41,10 +43,22 @@ public class MinioService implements FileStorageService {
 
     private final FileRepository fileRepository;
 
+    private final FileMapper fileMapper;
+
     @Override
     public void store() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse) {
+        Optional<File> file = fileRepository.findById(urlPresignedResponse.getId());
+        UrlPresignedResponse resp = fileMapper.toResponse(file.get());
+        resp.setUrl(urlPresignedResponse.getUrl());
+        resp.setFileId(urlPresignedResponse.getFileId());
+
+        return resp;
     }
 
     @Override
