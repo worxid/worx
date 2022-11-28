@@ -142,10 +142,7 @@ const Forms = () => {
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
-    getLast30Days().startTime,
-    getLast30Days().endTime,
-  ])
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
