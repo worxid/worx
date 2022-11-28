@@ -156,6 +156,8 @@ const FormsSubmissions = () => {
   ])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // DIALOG MEDIA PREVIEW
+  const [ mediasPreviewObject, setMediasPreviewObject ] = useState(null)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -331,6 +333,7 @@ const FormsSubmissions = () => {
           spacing='8px'
           padding='8px 0px'
           className='cursorPointer'
+          onClick={() => setMediasPreviewObject(inputParams.value)}
         >
           {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
@@ -580,7 +583,7 @@ const FormsSubmissions = () => {
       <DialogQrCode id={Number(formTemplateId)} />
 
       {/* DIALOG MEDIAS PREVIEW */}
-      <DialogMediasPreview/>
+      <DialogMediasPreview mediasPreviewObject={mediasPreviewObject}/>
     </>
   )
 }
