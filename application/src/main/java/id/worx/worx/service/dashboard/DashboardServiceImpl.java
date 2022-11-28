@@ -37,23 +37,23 @@ public class DashboardServiceImpl implements DashboardService {
     private final FormMapper formMapper;
 
     @Override
-    public List<DashboardStatDTO> getDashboardStat(LocalDate from, LocalDate to, DashboardRequest dashboardRequest) {
-        String deviceCode = "";
-
-        Optional<Device> device = deviceRepository.findById(dashboardRequest.getDeviceId());
-        if(device.isPresent()){
-            Device deviceData = device.get();
-            deviceCode = deviceData.getDeviceCode();
+    public List<DashboardStatDTO> getDashboardStat(LocalDate from, LocalDate to, DashboardRequest request) {
+        String deviceCode = null;
+        if (request.getDeviceId() != null) {
+            Device device = deviceRepository.findById(request.getDeviceId())
+                    .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+            deviceCode = device.getDeviceCode();
         }
 
-        List<DashboardStat> dashboardStatList = formRepository.getDasboardStat(from, to,deviceCode,dashboardRequest.getTemplateId());
+        List<DashboardStat> dashboardStatList = formRepository.getDasboardStat(from, to, deviceCode,
+                request.getTemplateId());
         List<DashboardStatDTO> response = new ArrayList<>();
 
-        for (DashboardStat data:dashboardStatList){
+        for (DashboardStat data : dashboardStatList) {
 
             DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
             dashboardStatDTO.setDate(data.getDates());
-            dashboardStatDTO.setCount(data.getTotal_count());
+            dashboardStatDTO.setCount(data.getTotalCount());
 
             response.add(dashboardStatDTO);
         }
@@ -61,38 +61,25 @@ public class DashboardServiceImpl implements DashboardService {
         return response;
     }
 
-    public String deviceCode(Long deviceId){
-        String deviceCode;
-
-        Optional<Device> getDeviceCode = deviceRepository.findById(deviceId);
-        if(getDeviceCode.isPresent()){
-            Device device = getDeviceCode.get();
-            deviceCode = device.getDeviceCode();
-        }else{
-            deviceCode = "";
-        }
-
-        return deviceCode;
-    }
-
     @Override
     public List<DashboardStatMapDTO> getDashboardStatMap(LocalDate from, LocalDate to, DashboardRequest request) {
-        FormSubmissionSearchRequest searchRequest=FormSubmissionSearchRequest.builder()
-            .templateId(request.getTemplateId())
-            .from(from.atStartOfDay(ZoneId.of("UTC")).toInstant())
-            .to(to.atStartOfDay(ZoneId.of("UTC")).toInstant())
-            .build();
-        String deviceCode=null;
-        if(request.getDeviceId()!=null){
-            Device device= deviceRepository.findByIdAndDeleted(request.getDeviceId(),false).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
-            deviceCode=device.getDeviceCode();
+        FormSubmissionSearchRequest searchRequest = FormSubmissionSearchRequest.builder()
+                .templateId(request.getTemplateId())
+                .from(from.atStartOfDay(ZoneId.of("UTC")).toInstant())
+                .to(to.atStartOfDay(ZoneId.of("UTC")).toInstant())
+                .build();
+        String deviceCode = null;
+        if (request.getDeviceId() != null) {
+            Device device = deviceRepository.findByIdAndDeleted(request.getDeviceId(), false)
+                    .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+            deviceCode = device.getDeviceCode();
         }
-        List<Form> forms= listFormFilter(searchRequest,deviceCode);
+        List<Form> forms = listFormFilter(searchRequest, deviceCode);
         return forms.stream().map(formMapper::toDashboardMapDTO).collect(Collectors.toList());
     }
 
     public List<Form> listFormFilter(FormSubmissionSearchRequest request, String deviceCode) {
-        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId(),deviceCode);
+        Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId(), deviceCode);
         return formRepository.findAll(spec);
     }
 

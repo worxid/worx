@@ -26,7 +26,7 @@ public interface FormRepository extends JpaRepository<Form, Long>, JpaSpecificat
         " where f.submit_date like CONCAT('%',dates,'%') " +
         " and (:deviceCode is null OR(lower(f.respondent_device_code)like concat('%',lower(:deviceCode),'%'))) " +
         " and (:templateId is null OR(lower(f.template_id)like concat('%',lower(:templateId),'%'))) " +
-        " ) as total_count " +
+        " ) as totalCount " +
         "from Date_Ranges  ", nativeQuery = true)
     List<DashboardStat> getDasboardStat(LocalDate from, LocalDate to, String deviceCode, Long templateId);
 
