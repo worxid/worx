@@ -1,6 +1,5 @@
 package id.worx.worx.web.controller;
 
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.web.model.request.FileRequestDTO;

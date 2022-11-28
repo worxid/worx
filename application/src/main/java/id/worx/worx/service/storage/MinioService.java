@@ -54,11 +54,17 @@ public class MinioService implements FileStorageService {
     @Override
     public UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse) {
         Optional<File> file = fileRepository.findById(urlPresignedResponse.getId());
-        UrlPresignedResponse resp = fileMapper.toResponse(file.get());
-        resp.setUrl(urlPresignedResponse.getUrl());
-        resp.setFileId(urlPresignedResponse.getFileId());
+        if(file.isPresent()){
+            UrlPresignedResponse resp = fileMapper.toResponse(file.get());
+            resp.setUrl(urlPresignedResponse.getUrl());
+            resp.setFileId(urlPresignedResponse.getFileId());
 
-        return resp;
+            return resp;
+        }
+
+        return null;
+
+
     }
 
     @Override
