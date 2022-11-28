@@ -56,7 +56,7 @@ const DateRangeTimePicker = (props) => {
   const [ startTimeInput, setStartTimeInput ] = useState(initialStartTimeInput)
   const [ endDateInput, setEndDateInput ] = useState(initialEndDateInput)
   const [ endTimeInput, setEndTimeInput ] = useState(initialEndTimeInput)
-  const [ selectedDateRangeItem, setSelectedDateRangeItem ] = useState(dateRangeList[0][2].title)
+  const [ selectedDateRangeItem, setSelectedDateRangeItem ] = useState('')
   const [ countDays, setCountDays ] = useState(0)
   const [ key, setKey ] = useState(0)
 
@@ -82,6 +82,13 @@ const DateRangeTimePicker = (props) => {
   }
 
   const handleDateRangeItemClick = (inputItem) => {
+    // when click item already selected, do unselected and reset value
+    if(inputItem.title === selectedDateRangeItem) {
+      setSelectedDateRangeItem('')
+      setTempValue([ '', '' ])
+      return
+    }
+
     setSelectedDateRangeItem(inputItem.title)
     setTempValue([ inputItem.startDate, inputItem.endDate ])
 
@@ -169,6 +176,17 @@ const DateRangeTimePicker = (props) => {
     endDateInput,
     endTimeInput
   ])
+
+  useEffect(() => {
+    // set selected range item when open date picker
+    if(value.length === 2 && value[1]) {
+      if(value[1].toString() === dateRangeList[0][0].endDate.toString()) {
+        const getTotalDay = moment(tempValue[1]).diff(tempValue[0], 'days') + 1
+        const findDateRange = dateRangeList[0].find(item => item.totalDay === getTotalDay)
+        setSelectedDateRangeItem(findDateRange ? findDateRange.title : '')
+      }
+    }
+  }, [value])
 
   return (
     <Stack direction='row'>

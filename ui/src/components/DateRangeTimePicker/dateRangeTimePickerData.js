@@ -61,16 +61,19 @@ export const dateRangeList = [
       title: 'Last 7 Days',
       startDate: moment().subtract(6, 'days').startOf('days').toDate(),
       endDate: moment().endOf('days').toDate(),
+      totalDay: 7,
     },
     {
       title: 'Last 14 Days',
       startDate: moment().subtract(13, 'days').startOf('days').toDate(),
       endDate: moment().endOf('days').toDate(),
+      totalDay: 14,
     },
     {
       title: 'Last 30 Days',
       startDate: moment().subtract(29, 'days').startOf('days').toDate(),
       endDate: moment().endOf('days').toDate(),
+      totalDay: 30,
     },
   ],
 ]

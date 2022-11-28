@@ -17,6 +17,6 @@ import java.io.Serializable;
 public class DashboardRequest implements Serializable {
     @JsonProperty("device_id")
     private Long deviceId;
-    @JsonProperty("form_id")
-    private Long formId;
+    @JsonProperty("template_id")
+    private Long templateId;
 }
