@@ -111,7 +111,7 @@ const DialogMediasPreview = (props) => {
         >
           {mediaList.map((item, index) => (
             <Fragment key={index}>
-              {Math.abs(activeStep - index)  <= 2? (
+              {Math.abs(activeStep - index) <= mediaList.length - 1 ? (
                 <Box
                   component='img'
                   src={item.url}
