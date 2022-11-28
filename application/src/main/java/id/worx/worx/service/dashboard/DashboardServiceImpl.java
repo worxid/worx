@@ -1,6 +1,7 @@
 package id.worx.worx.service.dashboard;
 
 import id.worx.worx.common.model.request.DashboardRequest;
+import id.worx.worx.data.dto.DashboardStat;
 import id.worx.worx.data.dto.DashboardStatDTO;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.repository.DeviceRepository;
@@ -24,38 +25,27 @@ public class DashboardServiceImpl implements DashboardService {
     private final FormRepository formRepository;
     @Override
     public List<DashboardStatDTO> getDashboardStat(LocalDate from, LocalDate to, DashboardRequest dashboardRequest) {
+        String deviceCode = "";
 
-        String deviceCode;
-        Integer count;
-
-        List<DashboardStatDTO> responses = new ArrayList<>();
-        List<LocalDate> totalDates = new ArrayList<>();
-        while (!from.isAfter(to)) {
-            totalDates.add(from);
-            from = from.plusDays(1);
+        Optional<Device> device = deviceRepository.findById(dashboardRequest.getDeviceId());
+        if(device.isPresent()){
+            Device deviceData = device.get();
+            deviceCode = deviceData.getDeviceCode();
         }
-        for(LocalDate dateList:totalDates){
-            Instant startDate = Instant.parse(dateList+"T00:00:01Z");
-            Instant endDate = Instant.parse(dateList+"T23:59:59Z");
-            if(dashboardRequest.getFormId() != null && dashboardRequest.getDeviceId() != null){
-                deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
-                count = formRepository.getCountByRespondentDeviceAndTemplateId(startDate,endDate,deviceCode, dashboardRequest.getFormId());
-            }else if(dashboardRequest.getFormId() == null && dashboardRequest.getDeviceId() != null){
-                deviceCode = this.deviceCode(dashboardRequest.getDeviceId());
-                count = formRepository.getCountByRespondentDevice(startDate,endDate,deviceCode);
-            }else if(dashboardRequest.getFormId() != null && dashboardRequest.getDeviceId() == null){
-                count = formRepository.getCountByTemplateId(startDate,endDate,dashboardRequest.getFormId());
-            }else{
-                count = formRepository.getCountByDateOnly(startDate,endDate);
-            }
+
+        List<DashboardStat> dashboardStatList = formRepository.getDasboardStat(from, to,deviceCode,dashboardRequest.getFormId());
+        List<DashboardStatDTO> response = new ArrayList<>();
+
+        for (DashboardStat data:dashboardStatList){
 
             DashboardStatDTO dashboardStatDTO = new DashboardStatDTO();
-            dashboardStatDTO.setCount(count);
-            dashboardStatDTO.setDate(dateList);
-            responses.add(dashboardStatDTO);
+            dashboardStatDTO.setDate(data.getDates());
+            dashboardStatDTO.setCount(data.getTotal_count());
+
+            response.add(dashboardStatDTO);
         }
 
-        return responses;
+        return response;
     }
 
     public String deviceCode(Long deviceId){

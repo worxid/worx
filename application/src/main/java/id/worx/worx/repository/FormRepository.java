@@ -1,8 +1,10 @@
 package id.worx.worx.repository;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
+import id.worx.worx.data.dto.DashboardStat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,19 +17,18 @@ public interface FormRepository extends JpaRepository<Form, Long>, JpaSpecificat
 
     List<Form> findAllByRespondentDeviceCode(String respondentDeviceCode);
 
-    @Query(value = "SELECT count(f) from Form f WHERE f.submitDate BETWEEN :startDate and :endDate " +
-        " and f.respondentDeviceCode = :respondentDeviceCode and f.template.id = :templateId ")
-    Integer getCountByRespondentDeviceAndTemplateId(Instant startDate,Instant endDate, String respondentDeviceCode, Long templateId);
-
-    @Query(value = "SELECT count(f) from Form f WHERE f.submitDate BETWEEN :startDate and :endDate " +
-        " and f.respondentDeviceCode = :respondentDeviceCode ")
-    Integer getCountByRespondentDevice(Instant startDate,Instant endDate, String respondentDeviceCode);
-
-    @Query(value = "SELECT count(f) from Form f WHERE f.submitDate BETWEEN :startDate and :endDate " +
-        " and f.template.id = :templateId ")
-    Integer getCountByTemplateId(Instant startDate,Instant endDate, Long templateId);
-
-    @Query(value = "SELECT count(f) from Form f WHERE f.submitDate BETWEEN :startDate and :endDate ")
-    Integer getCountByDateOnly(Instant startDate,Instant endDate);
+    @Query(value = "WITH recursive Date_Ranges AS ( " +
+        "    select :from as dates union all " +
+        " select dates + interval 1 day " +
+        "   from Date_Ranges " +
+        "   where dates < :to) " +
+        "select dates, " +
+        "(select count(*) from forms f " +
+        " where f.submit_date like CONCAT('%',dates,'%') " +
+        " and (:deviceCode is null OR(lower(f.respondent_device_code)like concat('%',lower(:deviceCode),'%'))) " +
+        " and (:templateId is null OR(lower(f.template_id)like concat('%',lower(:templateId),'%'))) " +
+        " ) as total_count " +
+        "from Date_Ranges  ", nativeQuery = true)
+    List<DashboardStat> getDasboardStat(LocalDate from, LocalDate to, String deviceCode, Long templateId);
 
 }

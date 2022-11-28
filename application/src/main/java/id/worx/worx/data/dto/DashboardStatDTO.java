@@ -15,5 +15,5 @@ import java.time.LocalDate;
 @SuperBuilder
 public class DashboardStatDTO implements Serializable {
     private LocalDate date;
-    private Integer count;
+    private Long count;
 }
