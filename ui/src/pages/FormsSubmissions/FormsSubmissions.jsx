@@ -583,7 +583,10 @@ const FormsSubmissions = () => {
       <DialogQrCode id={Number(formTemplateId)} />
 
       {/* DIALOG MEDIAS PREVIEW */}
-      <DialogMediasPreview mediasPreviewObject={mediasPreviewObject}/>
+      <DialogMediasPreview 
+        mediasPreviewObject={mediasPreviewObject}
+        setMediasPreviewObject={setMediasPreviewObject}
+      />
     </>
   )
 }

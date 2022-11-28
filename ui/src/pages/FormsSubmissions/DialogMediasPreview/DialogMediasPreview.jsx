@@ -3,11 +3,14 @@ import { useEffect } from 'react'
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
+// MUIS
+import Dialog from '@mui/material/Dialog'
+
 // SERVICES
 import { postDetailMediaFiles } from 'services/media'
 
 const DialogMediasPreview = (props) => {
-  const { mediasPreviewObject } = props
+  const { mediasPreviewObject, setMediasPreviewObject } = props
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -32,7 +35,13 @@ const DialogMediasPreview = (props) => {
   }, [mediasPreviewObject])
 
   return (
-    <div>DialogMediasPreview</div>
+    <Dialog
+      fullScreen
+      open={Boolean(mediasPreviewObject)}
+      onClose={() => setMediasPreviewObject(null)}
+    >
+      DialogMediasPreview
+    </Dialog>
   )
 }
 
