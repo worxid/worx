@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -6,6 +6,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // MUIS
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -13,6 +14,8 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconArrowBackIos from '@mui/icons-material/ArrowBackIos'
+import IconArrowForwardIos from '@mui/icons-material/ArrowForwardIos'
 import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
@@ -107,8 +110,8 @@ const DialogMediasPreview = (props) => {
           enableMouseEvents
         >
           {mediaList.map((item, index) => (
-            <Box key={index}>
-              {Math.abs(activeStep - index) <= 2 ? (
+            <Fragment key={index}>
+              {Math.abs(activeStep - index)  <= 2? (
                 <Box
                   component='img'
                   src={item.url}
@@ -116,10 +119,35 @@ const DialogMediasPreview = (props) => {
                   className={classes.mediaPreview}
                 />
               ) : null}
-            </Box>
+            </Fragment>
           ))}
         </SwipeableViews>
       </Stack>
+
+      {/* BOTTOM MENU */}
+      <AppBar className={classes.appBar}>
+        <Toolbar className={classes.toolbar}>
+          {/* BACK BUTTON */}
+          <Button
+            className={classes.actionButton}
+            startIcon={<IconArrowBackIos/>}
+            disabled={activeStep === 0}
+            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep - 1)}
+          >
+            BACK
+          </Button>
+
+          {/* NEXT BUTTON */}
+          <Button
+            className={classes.actionButton}
+            endIcon={<IconArrowForwardIos/>}
+            disabled={activeStep === mediaList.length - 1}
+            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
+          >
+            NEXT
+          </Button>
+        </Toolbar>
+      </AppBar>
     </Dialog>
   )
 }
