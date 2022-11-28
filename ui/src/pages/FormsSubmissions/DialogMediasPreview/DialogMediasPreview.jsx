@@ -5,6 +5,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -17,6 +18,9 @@ import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
 import { postDetailMediaFiles } from 'services/media'
+
+// SWIPEABLE
+import SwipeableViews from 'react-swipeable-views'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
@@ -34,7 +38,10 @@ const DialogMediasPreview = (props) => {
   const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
     const resultMediaFilesData = await postDetailMediaFiles(
       inputAbortController.signal,
-      { file_ids: mediasPreviewObject.file_ids },
+      { file_ids: mediasPreviewObject.type === 'signature' 
+        ? [ mediasPreviewObject.file_id ]
+        : mediasPreviewObject.file_ids
+      },
       axiosPrivate,
     )
 
@@ -65,10 +72,7 @@ const DialogMediasPreview = (props) => {
       <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {/* FILES COUNT */}
-          <Typography 
-            variant='subtitle1'
-            
-          >
+          <Typography variant='subtitle1'>
             {`${mediaList.length} ${mediasPreviewObject?.type}${mediaList.length > 1 ? 's' : ''} (${activeStep + 1}/${mediaList.length})`}
           </Typography>
 
@@ -89,6 +93,33 @@ const DialogMediasPreview = (props) => {
           </Stack>
         </Toolbar>
       </AppBar>
+      
+      {/* CONTENT */}
+      <Stack 
+        flex='1'
+        justifyContent='center'
+        alignItems='center'
+        className={classes.content}
+      >
+        <SwipeableViews
+          index={activeStep}
+          onChangeIndex={(newStep) => setActiveStep(newStep)}
+          enableMouseEvents
+        >
+          {mediaList.map((item, index) => (
+            <Box key={index}>
+              {Math.abs(activeStep - index) <= 2 ? (
+                <Box
+                  component='img'
+                  src={item.url}
+                  alt=''
+                  className={classes.mediaPreview}
+                />
+              ) : null}
+            </Box>
+          ))}
+        </SwipeableViews>
+      </Stack>
     </Dialog>
   )
 }

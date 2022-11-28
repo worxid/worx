@@ -12,6 +12,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  content: {
+    backgroundColor: theme.palette.grey[900],
+  },
+  mediaPreview: {
+    height: '100%',
+    maxHeight: 'calc(100vh - 96px)',
+    maxWidth: '100%',
+    backgroundColor: theme.palette.common.white,
+  },
 }))
 
 export default useStyles
