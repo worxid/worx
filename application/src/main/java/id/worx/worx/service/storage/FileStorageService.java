@@ -16,9 +16,13 @@ public interface FileStorageService {
 
     void store();
 
+    UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse);
+
     UrlPresignedResponse getUploadUrl(String filename);
 
     UrlPresignedResponse getUploadUrl(Long fileId);
+
+    UrlPresignedResponse getDownloadUrl(String fileId);
 
     UrlPresignedResponse getDownloadUrl(Long fileId);
 

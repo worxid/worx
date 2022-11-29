@@ -30,9 +30,9 @@ public class MobileMediaController {
     @GetMapping("download-presigned-url")
     public ResponseEntity<UrlPresignedResponse> getPresignedUrlForDownload(
             @RequestHeader(value = "deviceCode") String deviceCode,
-            @RequestParam Long fileId) {
+            @RequestParam String mediaId) {
                 return ResponseEntity.status(HttpStatus.OK)
-                .body(storageService.getDownloadUrl(fileId));
+                .body(storageService.getDownloadUrl(mediaId));
     }
 
 }

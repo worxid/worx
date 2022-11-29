@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import id.worx.worx.mapper.FileMapper;
+import id.worx.worx.util.UrlUtils;
+import id.worx.worx.web.model.request.FileRequestDTO;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.response.UrlPresignedResponse;
@@ -16,7 +19,6 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.storage.client.MinioClientService;
 import id.worx.worx.util.MediaUtils;
-import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -34,9 +36,14 @@ public class MinioService implements FileStorageService {
 
     private static final String MEDIA_PATH = "media";
 
+    private static final String FAILED_GENERATE_UPLOAD_URL = "File Storage failed to generate upload url : {}";
+    private static final String FAILED_GENERATE_DOWNLOAD_URL = "File Storage failed to generate download url: {}";
+
     private final MinioClientService clientService;
 
     private final FileRepository fileRepository;
+
+    private final FileMapper fileMapper;
 
     @Override
     public void store() {
@@ -45,29 +52,51 @@ public class MinioService implements FileStorageService {
     }
 
     @Override
+    public UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse) {
+        Optional<File> file = fileRepository.findById(urlPresignedResponse.getFileId());
+        if (file.isPresent()) {
+            UrlPresignedResponse resp = fileMapper.toResponse(file.get());
+            resp.setUrl(urlPresignedResponse.getUrl());
+
+            return resp;
+        }
+
+        return null;
+
+    }
+
+    @Override
     public UrlPresignedResponse getUploadUrl(String filename) {
-        String path = this.generateUniquePath(filename, MEDIA_PATH);
+        String mediaId = UrlUtils.generateMediaId();
+        String extension = MediaUtils.getExtension(filename);
+        String name = String.format("%s.%s", mediaId, extension);
+        String path = this.generateUniquePath(name, MEDIA_PATH);
         String url = "";
         try {
             url = clientService.getUploadPresignedObjectUrl(path);
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate upload url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
-
         File newFile = File.builder()
                 .path(path)
-                .name(filename)
+                .mediaId(mediaId)
+                .name(name)
+                .originalName(filename)
                 .mimeType(MediaUtils.getMimeType(filename))
                 .build();
+
         newFile = fileRepository.save(newFile);
 
         return UrlPresignedResponse.builder()
                 .fileId(newFile.getId())
+                .mediaId(newFile.getMediaId())
+                .name(newFile.getName())
                 .url(url)
-                .path(path)
+                .path(newFile.getPath())
+                .mimeType(newFile.getMimeType())
                 .build();
     }
 
@@ -85,13 +114,40 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate upload url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
                 .fileId(file.getId())
+                .mediaId(file.getMediaId())
+                .name(file.getName())
                 .url(url)
                 .path(file.getPath())
+                .mimeType(file.getMimeType())
+                .size(file.getSize())
+                .build();
+    }
+
+    @Override
+    public UrlPresignedResponse getDownloadUrl(String mediaId) {
+        File file = this.findByMediaIdorElseThrowNotFound(mediaId);
+        String url = "";
+        try {
+            url = clientService.getDownloadPresignedObjectUrl(file.getPath());
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
+                | IllegalArgumentException | IOException e) {
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
+            throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
+        }
+        return UrlPresignedResponse.builder()
+                .fileId(file.getId())
+                .mediaId(file.getMediaId())
+                .name(file.getName())
+                .url(url)
+                .path(file.getPath())
+                .mimeType(file.getMimeType())
+                .size(file.getSize())
                 .build();
     }
 
@@ -104,13 +160,17 @@ public class MinioService implements FileStorageService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                 | IllegalArgumentException | IOException e) {
-            log.trace("File Storage failed to generate download url: {}", e.getMessage());
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
                 .fileId(file.getId())
+                .mediaId(file.getMediaId())
+                .name(file.getName())
                 .url(url)
                 .path(file.getPath())
+                .mimeType(file.getMimeType())
+                .size(file.getSize())
                 .build();
     }
 
@@ -126,12 +186,11 @@ public class MinioService implements FileStorageService {
             } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                     | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                     | IllegalArgumentException | IOException e) {
-                log.trace("File Storage failed to generate download url: {}", e.getMessage());
+                log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
                 throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
             }
 
             UrlPresignedResponse response = UrlPresignedResponse.builder()
-                    .fileId(file.getId())
                     .url(url)
                     .path(file.getPath())
                     .build();
@@ -159,21 +218,24 @@ public class MinioService implements FileStorageService {
 
         List<UrlPresignedResponse> responses = new ArrayList<>();
 
-        for (Long ids : fileRequestDTO.getFileIds()) {
+        for (String ids : fileRequestDTO.getMediaIds()) {
 
-            Optional<File> file = fileRepository.findById(ids);
+            Optional<File> file = fileRepository.findByMediaId(ids);
             if (file.isPresent()) {
 
                 File files = file.get();
 
                 boolean objectExist = clientService.isObjectExist(files.getPath());
-
                 if (objectExist) {
 
                     UrlPresignedResponse url = new UrlPresignedResponse();
-                    url.setFileId(ids);
-                    url.setPath(files.getPath());
+                    url.setFileId(files.getId());
+                    url.setMediaId(files.getMediaId());
+                    url.setName(files.getName());
                     url.setUrl(clientService.getDownloadPresignedObjectUrl(files.getPath()));
+                    url.setPath(files.getPath());
+                    url.setMimeType(files.getMimeType());
+                    url.setSize(files.getSize());
 
                     responses.add(url);
 
@@ -195,4 +257,13 @@ public class MinioService implements FileStorageService {
         return file.get();
     }
 
+    private File findByMediaIdorElseThrowNotFound(String mediaId) {
+        Optional<File> file = fileRepository.findByMediaId(mediaId);
+
+        if (file.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        return file.get();
+    }
 }
