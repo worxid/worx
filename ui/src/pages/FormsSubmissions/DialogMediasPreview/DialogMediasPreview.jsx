@@ -111,14 +111,12 @@ const DialogMediasPreview = (props) => {
         >
           {mediaList.map((item, index) => (
             <Fragment key={index}>
-              {Math.abs(activeStep - index) <= mediaList.length - 1 ? (
-                <Box
-                  component='img'
-                  src={item.url}
-                  alt=''
-                  className={classes.mediaPreview}
-                />
-              ) : null}
+              <Box
+                component='img'
+                src={item.url}
+                alt=''
+                className={classes.mediaPreview}
+              />
             </Fragment>
           ))}
         </SwipeableViews>
