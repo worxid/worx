@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.model.dto.Attachment;
 import id.worx.worx.common.model.dto.FormDTO;
 import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.FileField;
@@ -36,6 +37,7 @@ import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormMapper;
+import id.worx.worx.mobile.model.MobileFormDTO;
 import id.worx.worx.mobile.model.MobileFormSubmitRequest;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FileRepository;
@@ -68,7 +70,7 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
-        Specification<Form> spec = specification.fromSearchRequest(request,authContext.getUsers().getId());
+        Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
         return formRepository.findAll(spec, pageable);
     }
 
@@ -115,16 +117,33 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public FormDTO toDTO(Form form) {
-        return formMapper.toDTO(form);
+        FormDTO dto = formMapper.toDTO(form);
+        List<Long> fileIds = getFileIds(dto);
+        List<Attachment> attachments = toAttachmentList(fileIds);
+        dto.setAttachments(attachments);
+        return dto;
     }
 
     @Override
     public SearchFormDTO toSearchFormDTO(Form form) {
-        return formMapper.toSearchFormDTO(form);
+        SearchFormDTO dto = formMapper.toSearchFormDTO(form);
+        List<Long> fileIds = getFileIds(dto);
+        List<Attachment> attachments = toAttachmentList(fileIds);
+        dto.setAttachments(attachments);
+        return dto;
+    }
+
+    @Override
+    public MobileFormDTO toMobileFormDTO(Form form) {
+        MobileFormDTO dto = formMapper.toMobileDTO(form);
+        List<Long> fileIds = getFileIds(dto);
+        List<Attachment> attachments = toAttachmentList(fileIds);
+        dto.setAttachments(attachments);
+        return dto;
     }
 
     public Form getById(Long id) {
-        return formRepository.findById(id).orElseThrow(()-> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        return formRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
@@ -309,6 +328,62 @@ public class FormServiceImpl implements FormService {
         long fileSize = fileStorageService.getObjectSize(file.getPath());
         file.setSize(fileSize);
         fileRepository.save(file);
+    }
+
+    private List<Long> getFileIds(FormDTO form) {
+        List<Field> fields = form.getFields();
+        Map<String, Value> values = form.getValues();
+        List<Long> results = new ArrayList<>();
+
+        List<Field> signatureFields = fields.stream()
+                .filter(SignatureField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : signatureFields) {
+            Value value = values.get(field.getId());
+            SignatureValue signatureValue = (SignatureValue) value;
+            Long fileId = signatureValue.getFileId();
+            results.add(fileId);
+        }
+
+        List<Field> fileFields = fields.stream()
+                .filter(FileField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : fileFields) {
+            Value value = values.get(field.getId());
+            FileValue fileValue = (FileValue) value;
+            List<Long> fileIds = fileValue.getFileIds();
+            results.addAll(fileIds);
+        }
+
+        List<Field> photoFields = fields.stream()
+                .filter(PhotoField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : photoFields) {
+            Value value = values.get(field.getId());
+            PhotoValue photoValue = (PhotoValue) value;
+            List<Long> fileIds = photoValue.getFileIds();
+            results.addAll(fileIds);
+        }
+
+        return results;
+    }
+
+    private List<Attachment> toAttachmentList(List<Long> fileIds) {
+        List<File> files = fileRepository.findAllById(fileIds);
+        return files.stream()
+                .map(file -> Attachment.builder()
+                        .fileId(file.getId())
+                        .mediaId(file.getMediaId())
+                        .name(file.getName())
+                        .path(file.getPath())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

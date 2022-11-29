@@ -43,4 +43,6 @@ public class FormDTO implements Serializable {
 
     private FormSource source;
 
+    private List<Attachment> attachments;
+
 }
