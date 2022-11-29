@@ -88,9 +88,9 @@ const Filters = (props) => {
             {formList.map((item, index) => (
               <MenuItem
                 key={index} 
-                value={item.text}
+                value={item.id}
               >
-                {item.text}
+                {item.label}
               </MenuItem>
             ))}
           </Select>
@@ -153,9 +153,9 @@ const Filters = (props) => {
             {deviceList.map((item, index) => (
               <MenuItem
                 key={index} 
-                value={item.text}
+                value={item.id}
               >
-                {item.text}
+                {item.label}
               </MenuItem>
             ))}
           </Select>
