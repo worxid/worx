@@ -8,7 +8,6 @@ import DateRangeTimePicker from 'components/DateRangeTimePicker/DateRangeTimePic
 import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // MUIS
-import Badge from '@mui/material/Badge'
 import Checkbox from '@mui/material/Checkbox'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
@@ -101,12 +100,10 @@ const DataGridFilters = (props) => {
           onClick={() => setIsDateRangeTimePickerOpen(true)}
           size='small'
         >
-          <Badge 
-            color={dateRangeValue[0] !== null && dateRangeValue[1] !== null ? 'primary' : 'default'} 
-            variant='dot'
-          >
-            <IconDateRange fontSize='small'/>
-          </Badge>
+          <IconDateRange 
+            fontSize='small'
+            color={(dateRangeValue[0] && dateRangeValue[1]) ? 'primary' : 'default'}
+          />
         </IconButton>
       </CustomTooltip>}
 
