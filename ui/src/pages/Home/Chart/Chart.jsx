@@ -26,6 +26,7 @@ import { postDashboardStatsChart } from 'services/dashboard'
 import useStyles from './chartUseStyles'
 
 // UTILITIES
+import { convertDate } from 'utilities/date'
 import moment from 'moment'
 import { 
   didSuccessfullyCallTheApi, 
@@ -80,7 +81,7 @@ const Chart = (props) => {
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setChartList(response?.data?.list?.map((data) => {
         return {
-          x: data?.date,
+          x: convertDate(data?.date, 'dd'),
           y: data?.count
         }
       }))
