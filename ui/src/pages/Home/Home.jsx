@@ -34,13 +34,6 @@ const Home = () => {
   const axiosPrivate = useAxiosPrivate()
   const classes = useStyles()
 
-  const initialFIlterParameters = {
-    form: '',
-    device: '',
-    startTime: getLast30Days().startTime,
-    endTime: getLast30Days().endTime,
-  }
-
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [formList, setFormList] = useState([])
@@ -56,7 +49,15 @@ const Home = () => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status)) {
-      setDeviceList(response.data.content)
+      setDeviceList(
+        [
+          {
+            id: '',
+            label: 'All'
+          },
+          ...response.data.content
+        ]
+      )
     }
     else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
@@ -67,7 +68,6 @@ const Home = () => {
       })
     }
   }
-
   const fetchFormList = async (abortController) => {
     const response = await postGetListFormTemplate(
       abortController.signal,
@@ -77,7 +77,15 @@ const Home = () => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status)) {
-      setFormList(response.data.content)
+      setFormList(
+        [
+          {
+            id: '',
+            label: 'All'
+          },
+          ...response.data.content
+        ]
+      )
     }
     else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
@@ -88,9 +96,6 @@ const Home = () => {
       })
     }
   }
-
-  const [ filterParameters, setFilterParameters ] = useState(initialFIlterParameters)
-  
   useEffect(() => {
     const abortController = new AbortController()
     fetchDeviceList(abortController.signal)
@@ -100,8 +105,15 @@ const Home = () => {
       abortController.abort()
     }
   }, [])
- 
-  console.log('filterParameters', filterParameters)
+
+  const initialFilterParameters = {
+    form: formList && formList?.length > 0 ? formList[0] : '',
+    device: deviceList && deviceList?.length > 0 ? deviceList[0] : '',
+    startTime: getLast30Days().startTime,
+    endTime: getLast30Days().endTime,
+  }
+  const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
+
   return (
     <Stack className={classes.root}>
       {/* HEADER */}
@@ -116,7 +128,7 @@ const Home = () => {
 
       {/* FILTERS */}
       <Filters
-        initialFIlterParameters={initialFIlterParameters}
+        initialFilterParameters={initialFilterParameters}
         filterParameters={filterParameters}
         setFilterParameters={setFilterParameters}
         formList={formList}

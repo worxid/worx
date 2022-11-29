@@ -29,7 +29,7 @@ import { convertDate } from 'utilities/date'
 
 const Filters = (props) => {
   const { 
-    initialFIlterParameters,
+    initialFilterParameters,
     filterParameters, setFilterParameters,
     formList,
     deviceList,
@@ -165,7 +165,7 @@ const Filters = (props) => {
       {/* RESET FILTER BUTTON */}
       <Button 
         className={classes.buttonReset}
-        onClick={() => setFilterParameters(initialFIlterParameters)}
+        onClick={() => setFilterParameters(initialFilterParameters)}
       >
         Reset Filter
       </Button>
