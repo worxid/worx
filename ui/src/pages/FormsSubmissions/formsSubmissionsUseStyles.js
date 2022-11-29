@@ -43,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
   },
   columnLinkIcon: {
     marginRight: 8,

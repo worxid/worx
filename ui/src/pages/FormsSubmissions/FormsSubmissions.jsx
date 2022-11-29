@@ -76,7 +76,7 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 200,
+      minWidth: 160,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
@@ -106,7 +106,7 @@ const FormsSubmissions = () => {
       field: 'submissionAddress',
       headerName: 'Submission Address',
       flex: 1,
-      minWidth: 300,
+      minWidth: 180,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
@@ -114,18 +114,13 @@ const FormsSubmissions = () => {
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
         <Link
-          underline='hover'
           className={classes.columnLink}
           href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
         >
-          {/* ICON */}
           <IconMap
             fontSize='small' 
             className={classes.columnLinkIcon}
           />
-
-          {/* TEXT */}
-          {params.value ? params.value : 'See address'}
         </Link>
       ),
     },
