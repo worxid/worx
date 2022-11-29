@@ -33,6 +33,7 @@ import Typography from '@mui/material/Typography'
 import IconGesture from '@mui/icons-material/Gesture'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+import IconMap from '@mui/icons-material/Map'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
@@ -120,7 +121,14 @@ const FormsSubmissions = () => {
           className={classes.columnLink}
           href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
         >
-          {params.value ? params.value : 'No address found'}
+          {/* ICON */}
+          <IconMap
+            fontSize='small' 
+            className={classes.columnLinkIcon}
+          />
+
+          {/* TEXT */}
+          {params.value ? params.value : 'See address'}
         </Link>
       ),
     },

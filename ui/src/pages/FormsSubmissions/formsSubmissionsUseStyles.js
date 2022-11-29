@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  columnLinkIcon: {
+    marginRight: 8,
   },
   columnChip: {
     fontSize: 12,
