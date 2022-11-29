@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileRequestDTO {
-    @JsonProperty("media_id")
-    private List<String> mediaId;
+    @JsonProperty("media_ids")
+    private List<String> mediaIds;
 }
