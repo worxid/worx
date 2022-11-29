@@ -17,7 +17,6 @@ public class UrlPresignedResponse implements Serializable {
 
     private static final long serialVersionUID = -5724711048604102229L;
 
-    private Long id;
     private Long fileId;
     private String mediaId;
     private String name;

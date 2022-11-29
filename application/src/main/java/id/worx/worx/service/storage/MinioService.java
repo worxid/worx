@@ -53,11 +53,10 @@ public class MinioService implements FileStorageService {
 
     @Override
     public UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse) {
-        Optional<File> file = fileRepository.findById(urlPresignedResponse.getId());
+        Optional<File> file = fileRepository.findById(urlPresignedResponse.getFileId());
         if (file.isPresent()) {
             UrlPresignedResponse resp = fileMapper.toResponse(file.get());
             resp.setUrl(urlPresignedResponse.getUrl());
-            resp.setFileId(urlPresignedResponse.getFileId());
 
             return resp;
         }
@@ -68,7 +67,10 @@ public class MinioService implements FileStorageService {
 
     @Override
     public UrlPresignedResponse getUploadUrl(String filename) {
-        String path = this.generateUniquePath(filename, MEDIA_PATH);
+        String mediaId = UrlUtils.generateMediaId();
+        String extension = MediaUtils.getExtension(filename);
+        String name = String.format("%s.%s", mediaId, extension);
+        String path = this.generateUniquePath(name, MEDIA_PATH);
         String url = "";
         try {
             url = clientService.getUploadPresignedObjectUrl(path);
@@ -78,12 +80,10 @@ public class MinioService implements FileStorageService {
             log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
-        String mediaId = UrlUtils.generateMediaId();
-        String extension = MediaUtils.getExtension(filename);
         File newFile = File.builder()
                 .path(path)
                 .mediaId(mediaId)
-                .name(String.format("%s.%s", mediaId, extension))
+                .name(name)
                 .originalName(filename)
                 .mimeType(MediaUtils.getMimeType(filename))
                 .build();
@@ -91,14 +91,12 @@ public class MinioService implements FileStorageService {
         newFile = fileRepository.save(newFile);
 
         return UrlPresignedResponse.builder()
-                .id(newFile.getId())
-                .mediaId(mediaId)
-                .name(String.format("%s.%s", mediaId, extension))
-                .url(url)
-                .path(path)
-                .mimeType(MediaUtils.getMimeType(filename))
-                .size(newFile.getSize())
                 .fileId(newFile.getId())
+                .mediaId(newFile.getMediaId())
+                .name(newFile.getName())
+                .url(url)
+                .path(newFile.getPath())
+                .mimeType(newFile.getMimeType())
                 .build();
     }
 
@@ -120,14 +118,13 @@ public class MinioService implements FileStorageService {
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
-                .id(file.getId())
+                .fileId(file.getId())
                 .mediaId(file.getMediaId())
                 .name(file.getName())
                 .url(url)
                 .path(file.getPath())
                 .mimeType(file.getMimeType())
                 .size(file.getSize())
-                .fileId(file.getId())
                 .build();
     }
 
@@ -144,9 +141,8 @@ public class MinioService implements FileStorageService {
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
-                .id(file.getId())
-                .mediaId(file.getMediaId())
                 .fileId(file.getId())
+                .mediaId(file.getMediaId())
                 .name(file.getName())
                 .url(url)
                 .path(file.getPath())
@@ -168,9 +164,8 @@ public class MinioService implements FileStorageService {
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
         }
         return UrlPresignedResponse.builder()
-                .id(file.getId())
-                .mediaId(file.getMediaId())
                 .fileId(file.getId())
+                .mediaId(file.getMediaId())
                 .name(file.getName())
                 .url(url)
                 .path(file.getPath())
@@ -196,7 +191,6 @@ public class MinioService implements FileStorageService {
             }
 
             UrlPresignedResponse response = UrlPresignedResponse.builder()
-                    .fileId(file.getId())
                     .url(url)
                     .path(file.getPath())
                     .build();
@@ -235,14 +229,13 @@ public class MinioService implements FileStorageService {
                 if (objectExist) {
 
                     UrlPresignedResponse url = new UrlPresignedResponse();
-                    url.setId(files.getId());
+                    url.setFileId(files.getId());
                     url.setMediaId(files.getMediaId());
                     url.setName(files.getName());
                     url.setUrl(clientService.getDownloadPresignedObjectUrl(files.getPath()));
                     url.setPath(files.getPath());
                     url.setMimeType(files.getMimeType());
                     url.setSize(files.getSize());
-                    url.setFileId(files.getId());
 
                     responses.add(url);
 

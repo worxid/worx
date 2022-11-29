@@ -10,6 +10,5 @@ import org.mapstruct.Mapping;
 public interface FileMapper extends EntityMapper<FileDTO, File, UrlPresignedResponse> {
 
     @Mapping(target = "url", ignore = true)
-    @Mapping(target = "fileId", ignore = true)
     UrlPresignedResponse toResponse(File file);
 }
