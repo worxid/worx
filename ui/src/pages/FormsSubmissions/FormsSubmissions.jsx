@@ -135,10 +135,11 @@ const FormsSubmissions = () => {
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
   const [ areDynamicColumnTitlesAdded, setAreDynamicColumnTitlesAdded ] = useState(false)
-  const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
+  // const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState([])
+  const [ rawTableData, setRawTableData ] = useState([])
+  const [ finalTableData, setFinalTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -217,7 +218,7 @@ const FormsSubmissions = () => {
         }
       })
 
-      setTableData(submissionList)
+      setRawTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
     }
 
@@ -393,27 +394,21 @@ const FormsSubmissions = () => {
 
   const updateTableDataDynamically = () => {
     // NOTE: DYNAMIC COLUMNS START FROM THE 3RD INDEX
-    if (
-      columnList.length > 3 && tableData.length > 0 && 
-      areDynamicColumnTitlesAdded && !areDynamicColumnsValuesAdded
-    ) {
-      const dynamicColumnList = columnList.filter((item, index) => index > 2)
+    const dynamicColumnList = columnList.filter((item, index) => index > 2)
 
-      const newTableData = tableData.map((tableRowItem) => {
-        const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
-          result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
-          return result
-        }, {})
+    const newFinalTableData = rawTableData.map((tableRowItem) => {
+      const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
+        result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
+        return result
+      }, {})
 
-        return {
-          ...tableRowItem,
-          ...columnWithValueObject,
-        }
-      })
+      return {
+        ...tableRowItem,
+        ...columnWithValueObject,
+      }
+    })
 
-      setAreDynamicColumnsValuesAdded(true)
-      setTableData(newTableData)
-    }
+    setFinalTableData(newFinalTableData)
   }
   
   useEffect(() => {
@@ -446,7 +441,7 @@ const FormsSubmissions = () => {
 
   useEffect(() => {
     updateTableDataDynamically()
-  }, [columnList, tableData, areDynamicColumnTitlesAdded])
+  }, [columnList, rawTableData])
 
   return (
     <>
@@ -542,7 +537,7 @@ const FormsSubmissions = () => {
             initialColumns={initialColumns}
             selectedColumnList={columnList}
             setSelectedColumnList={setColumnList}
-            rows={tableData}
+            rows={finalTableData}
             // PAGINATION
             total={totalRow}
             page={pageNumber}
