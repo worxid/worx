@@ -105,7 +105,7 @@ const Chart = (props) => {
       isMounted = false
       abortController.abort()
     }
-  }, [filterParameters])
+  }, [filterParameters.device, filterParameters.form, filterParameters.endTime, filterParameters.startTime])
 
   return (
     <Stack 
