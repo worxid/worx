@@ -36,6 +36,7 @@ public abstract class FormMapper {
     @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
+    @Mapping(target = "attachments", ignore = true)
     public abstract FormDTO toDTO(Form form);
 
     @Mapping(source = "template.id", target = "templateId")
@@ -46,6 +47,7 @@ public abstract class FormMapper {
     @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
+    @Mapping(target = "attachments", ignore = true)
     public abstract DashboardStatMapDTO toDashboardMapDTO(Form form);
 
     @Mapping(source = "template.id", target = "templateId")
@@ -56,6 +58,7 @@ public abstract class FormMapper {
     @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
+    @Mapping(target = "attachments", ignore = true)
     public abstract MobileFormDTO toMobileDTO(Form form);
 
     @Mapping(source = "template.id", target = "templateId")
@@ -66,6 +69,7 @@ public abstract class FormMapper {
     @Mapping(source = "submitAddress", target = "submitLocation.address")
     @Mapping(source = "respondentType", target = "source.type")
     @Mapping(source = "respondentLabel", target = "source.label")
+    @Mapping(target = "attachments", ignore = true)
     public abstract SearchFormDTO toSearchFormDTO(Form form);
 
     @Mapping(source = "submitLocation.lat", target = "submitLat", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
