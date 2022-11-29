@@ -21,33 +21,10 @@ const Popup = (props) => {
       icon: IconInsertLink,
       text: markerData.id ?? 'No data',
     },
-    {
-      type: 'text',
-      icon: IconPhoneAndroid,
-      text: markerData.type ? markerData.type.replace('_', ' ') : markerData?.source?.type ? markerData?.source?.type.replace('_', ' ') : 'No data',
-    },
-    {
-      type: 'text',
-      icon: IconAccessTime,
-      text: markerData.date ?? markerData?.submit_date ?? 'No data',
-    },
-    {
-      type: 'text',
-      icon: IconLocationOn,
-      text: markerData.address ?? markerData?.submit_location?.address ?? 'No data',
-    },
   ]
 
   return (
     <Box className={classes.popUpContainer}>
-      {/* TITLE */}
-      <Typography 
-        variant='caption'
-        className={`${classes.popUpTitle} textCapitalize`}
-      >
-        {markerData?.title ?? markerData?.source?.label ?? ''}
-      </Typography>
-
       {/* CONTENT */}
       {informationList.map((item, index) => (
         <Box
