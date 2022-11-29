@@ -82,7 +82,7 @@ const DialogMediasPreview = (props) => {
         <Toolbar className={classes.toolbar}>
           {/* FILES COUNT */}
           <Typography variant='subtitle1'>
-            {`${mediaList.length} ${mediasPreviewObject?.type}${mediaList.length > 1 ? 's' : ''} (${activeStep + 1}/${mediaList.length})`}
+            {`${mediaList.length} ${mediasPreviewObject?.type}${mediaList.length > 1 ? 's' : ''} (${mediaList.length > 0 ? activeStep + 1 : 0}/${mediaList.length})`}
           </Typography>
 
           {/* MENU */}
