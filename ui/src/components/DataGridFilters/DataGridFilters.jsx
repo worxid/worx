@@ -286,9 +286,9 @@ DataGridFilters.propTypes = {
   dateRangeValue: PropTypes.array.isRequired,
   isDateRangeTimePickerOpen: PropTypes.bool.isRequired,
   isWithDateTimePicker: PropTypes.bool.isRequired,
-  setIsDateRangeTimePickerOpen: PropTypes.func.isRequired,
-  handleSelectDateRangePickerButtonClick: PropTypes.func.isRequired,
-  handleCancelDateRangePickerButtonClick: PropTypes.func.isRequired,
+  setIsDateRangeTimePickerOpen: PropTypes.func,
+  handleSelectDateRangePickerButtonClick: PropTypes.func,
+  handleCancelDateRangePickerButtonClick: PropTypes.func,
   // SHARE
   isShareButtonEnabled: PropTypes.bool,
   handleShareButtonClick: PropTypes.func,
