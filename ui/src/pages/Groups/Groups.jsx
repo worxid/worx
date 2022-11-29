@@ -147,7 +147,10 @@ const Groups = () => {
     const resultGroupList = await postGetGroupList(
       inputAbortController.signal, 
       requestParams,
-      filters,
+      {
+        ...filters,
+        global_search: pageSearch,
+      },
       axiosPrivate,
     )
 
