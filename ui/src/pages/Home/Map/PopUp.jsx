@@ -24,17 +24,17 @@ const Popup = (props) => {
     {
       type: 'text',
       icon: IconPhoneAndroid,
-      text: markerData.type ? markerData.type.replace('_', ' ') : 'No data',
+      text: markerData.type ? markerData.type.replace('_', ' ') : markerData?.source?.type ? markerData?.source?.type.replace('_', ' ') : 'No data',
     },
     {
       type: 'text',
       icon: IconAccessTime,
-      text: markerData.date ?? 'No data',
+      text: markerData.date ?? markerData?.submit_date ?? 'No data',
     },
     {
       type: 'text',
       icon: IconLocationOn,
-      text: markerData.address ?? 'No data',
+      text: markerData.address ?? markerData?.submit_location?.address ?? 'No data',
     },
   ]
 
@@ -45,7 +45,7 @@ const Popup = (props) => {
         variant='caption'
         className={`${classes.popUpTitle} textCapitalize`}
       >
-        {markerData.title}
+        {markerData?.title ?? markerData?.source?.label ?? ''}
       </Typography>
 
       {/* CONTENT */}
