@@ -28,7 +28,7 @@ public class DashboardController implements SecuredRestController {
 
     private final DashboardService dashboardService;
 
-    @PostMapping
+    @PostMapping("chart")
     public ResponseEntity<BaseListResponse<DashboardStatDTO>> getStats(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -40,7 +40,7 @@ public class DashboardController implements SecuredRestController {
                 .build());
     }
 
-    @PostMapping("stats-map")
+    @PostMapping("map")
     public ResponseEntity<BaseListResponse<DashboardStatMapDTO>> getStatsMap(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
