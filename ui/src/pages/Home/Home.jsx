@@ -36,6 +36,14 @@ const Home = () => {
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
+  const initialFilterParameters = {
+    form: 'all',
+    device: 'all',
+    startTime: getLast30Days().startTime,
+    endTime: getLast30Days().endTime,
+  }
+  const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
+
   const [formList, setFormList] = useState([])
   const [deviceList, setDeviceList] = useState([])
 
@@ -105,14 +113,6 @@ const Home = () => {
       abortController.abort()
     }
   }, [])
-
-  const initialFilterParameters = {
-    form: 'all',
-    device: 'all',
-    startTime: getLast30Days().startTime,
-    endTime: getLast30Days().endTime,
-  }
-  const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
 
   return (
     <Stack className={classes.root}>
