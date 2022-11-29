@@ -1,5 +1,6 @@
 //APIS
 import axios from 'apis/axios'
+import axiosPure from 'axios'
 
 // UTILITIES
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
@@ -15,7 +16,7 @@ export const getMediaPresignedUrl = async (inputSignal, inputQuery, inputFileObj
 
     if(didSuccessfullyCallTheApi(response?.status)) {
       try {
-        await axios.put(response.data.url, inputFileObject, {
+        await axiosPure.put(response.data.value.url, inputFileObject, {
           headers: {
             'Content-Type': inputFileObject.type,
           }

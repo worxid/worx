@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
@@ -112,7 +112,7 @@ const InputForm = (props) => {
         })
 
         handleInputChange(fieldId, fieldType, getKeyValue(fieldType), fileObject)
-        handleInputChange(fieldId, fieldType, 'file_id', response.data.fileId)
+        handleInputChange(fieldId, fieldType, 'file_id', response.data.value.fileId)
       } else {
         setSnackbarObject({
           open: true,
@@ -184,7 +184,7 @@ const InputForm = (props) => {
 
       // UPDATE CURRENT FILE LOADING AND FILE ID
       temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
-      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.value.fileId
 
       setFormObject(temp)
     } else {
@@ -253,7 +253,7 @@ const InputForm = (props) => {
 
       // UPDATE CURRENT FILE LOADING AND FILE ID
       temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
-      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.value.fileId
 
       setFormObject(temp)
     } else {
@@ -330,7 +330,7 @@ const InputForm = (props) => {
 
       // UPDATE CURRENT FILE LOADING AND FILE ID
       temp[fieldId].values[currentIndexFile]['isLoadingUpload'] = false
-      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.fileId
+      temp[fieldId].values[currentIndexFile]['idFile'] = response.data.value.fileId
 
       setFormObject(temp)
     } else {
