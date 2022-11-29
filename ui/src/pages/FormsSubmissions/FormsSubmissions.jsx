@@ -6,6 +6,7 @@ import AppBar from 'components/AppBar/AppBar'
 import DialogExport from 'components/DialogExport/DialogExport'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogMediasPreview from './DialogMediasPreview/DialogMediasPreview'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
@@ -155,6 +156,8 @@ const FormsSubmissions = () => {
   ])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
+  // DIALOG MEDIA PREVIEW
+  const [ mediasPreviewObject, setMediasPreviewObject ] = useState(null)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -330,6 +333,7 @@ const FormsSubmissions = () => {
           spacing='8px'
           padding='8px 0px'
           className='cursorPointer'
+          onClick={() => setMediasPreviewObject(inputParams.value)}
         >
           {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
@@ -577,6 +581,12 @@ const FormsSubmissions = () => {
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(formTemplateId)} />
+
+      {/* DIALOG MEDIAS PREVIEW */}
+      <DialogMediasPreview 
+        mediasPreviewObject={mediasPreviewObject}
+        setMediasPreviewObject={setMediasPreviewObject}
+      />
     </>
   )
 }

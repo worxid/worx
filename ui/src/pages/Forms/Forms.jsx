@@ -44,10 +44,7 @@ import {
   isFormatDateSearchValid, 
   wasRequestCanceled,
 } from 'utilities/validation'
-import { 
-  convertDate, 
-  getLast30Days,
-} from 'utilities/date'
+import { convertDate } from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
