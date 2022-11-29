@@ -43,10 +43,7 @@ import { getDetailFormTemplate } from 'services/formTemplate'
 import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
-import { 
-  convertDate, 
-  getLast30Days,
-} from 'utilities/date'
+import { convertDate } from 'utilities/date'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -158,10 +155,7 @@ const FormsSubmissions = () => {
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
-    getLast30Days().startTime,
-    getLast30Days().endTime,
-  ])
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DIALOG MEDIA PREVIEW
