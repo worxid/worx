@@ -65,12 +65,14 @@ const Chart = (props) => {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
-    let bodyParams = filterParameters?.form?.toLowerCase() !== 'all' && filterParameters?.device?.toLowerCase() !== 'all' 
-      ? {
-        template_id: filterParameters.form,
-        device_id: filterParameters.device,
-      }
-      : {}
+    const bodyParams = {}
+    if(filterParameters?.form !== 'all'){
+      bodyParams.template_id = filterParameters.form
+    } 
+    if (filterParameters?.device !== 'all') {
+      bodyParams.device_id = filterParameters.device
+    }
+    console.log(bodyParams)
     const response = await postDashboardStatsChart(
       abortController.signal,
       requestParams,
@@ -105,7 +107,12 @@ const Chart = (props) => {
       isMounted = false
       abortController.abort()
     }
-  }, [filterParameters.device, filterParameters.form, filterParameters.endTime, filterParameters.startTime])
+  }, [
+    filterParameters.device,
+    filterParameters.form,
+    filterParameters.endTime,
+    filterParameters.startTime
+  ])
 
   return (
     <Stack 
