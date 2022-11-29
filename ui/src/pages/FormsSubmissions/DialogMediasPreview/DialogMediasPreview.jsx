@@ -53,6 +53,12 @@ const DialogMediasPreview = (props) => {
     }
   }
 
+  const handleDialogClose = () => {
+    setMediasPreviewObject(null)
+    setMediaList([])
+    setActiveStep(0)
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -69,7 +75,7 @@ const DialogMediasPreview = (props) => {
     <Dialog
       fullScreen
       open={Boolean(mediasPreviewObject)}
-      onClose={() => setMediasPreviewObject(null)}
+      onClose={handleDialogClose}
     >
       {/* HEADER */}
       <AppBar className={classes.appBar}>
@@ -90,7 +96,7 @@ const DialogMediasPreview = (props) => {
             </IconButton>
 
             {/* CLOSE ICON */}
-            <IconButton onClick={() => setMediasPreviewObject(null)}>
+            <IconButton onClick={handleDialogClose}>
               <IconClose/>
             </IconButton>
           </Stack>
