@@ -72,7 +72,6 @@ const Chart = (props) => {
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
-    console.log(bodyParams)
     const response = await postDashboardStatsChart(
       abortController.signal,
       requestParams,
