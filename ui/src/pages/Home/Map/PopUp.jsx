@@ -27,7 +27,7 @@ const Popup = (props) => {
     {
       type: 'text',
       icon: IconPhoneAndroid,
-      text:  markerData?.source?.type ? markerData?.source?.type.replace('_', ' ') : 'No data',
+      text:  markerData?.source?.type ? markerData?.source?.type.replaceAll('_', ' ') : 'No data',
     },
     {
       type: 'text',
@@ -37,7 +37,7 @@ const Popup = (props) => {
     {
       type: 'text',
       icon: IconLocationOn,
-      text: markerData?.submit_location?.address ?? 'No data',
+      text: (markerData?.submit_location?.address || markerData?.submit_location?.address !== '') ? markerData?.submit_location?.address : 'No data',
     },
   ]
 
