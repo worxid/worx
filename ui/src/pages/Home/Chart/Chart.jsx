@@ -1,30 +1,49 @@
-import { useState, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 
 // APEX CHART
 import ReactApexChart from 'react-apexcharts'
 
 // CONSTANTS
 import { 
-  dummyChartList10,
-  dummyChartList30,
-  dummyChartList50,
   getTransactionChartOptions,
   getTransactionChartSeries,
 } from './chartConstants'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 
+// SERVICES
+import { postDashboardStatsChart } from 'services/dashboard'
+
 // STYLES
 import useStyles from './chartUseStyles'
 
-const Chart = () => {
+// UTILITIES
+import moment from 'moment'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasRequestCanceled,
+} from 'utilities/validation'
+
+const Chart = (props) => {
+  const axiosPrivate = useAxiosPrivate()
+
+  const { filterParameters } = props
+
   const classes = useStyles()
 
   const chartContainerRef = useRef()
-
+  
   const theme = useTheme()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [ chartList, setChartList ] = useState([])
 
@@ -40,9 +59,52 @@ const Chart = () => {
     else return '100%'
   }
 
+  const fetchDashboardChart = async (abortController, inputIsMounted) => {
+    let requestParams = {
+      from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
+      to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
+    }
+    let bodyParams = filterParameters?.form?.toLowerCase() !== 'all' && filterParameters?.device?.toLowerCase() !== 'all' 
+      ? {
+        template_id: filterParameters.form,
+        device_id: filterParameters.device,
+      }
+      : {}
+    const response = await postDashboardStatsChart(
+      abortController.signal,
+      requestParams,
+      bodyParams,
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+      setChartList(response?.data?.list?.map((data) => {
+        return {
+          x: data?.date,
+          y: data?.count
+        }
+      }))
+    }
+    else if (!wasRequestCanceled(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Something went wrong',
+      })
+    }
+  }
+
   useEffect(() => {
-    setChartList(dummyChartList30)
-  }, [])
+    let isMounted = true
+    const abortController = new AbortController()
+    fetchDashboardChart(abortController.signal, isMounted)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [filterParameters])
 
   return (
     <Stack 
