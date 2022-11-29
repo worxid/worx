@@ -52,7 +52,7 @@ const Home = () => {
       setDeviceList(
         [
           {
-            id: '',
+            id: 'all',
             label: 'All'
           },
           ...response.data.content
@@ -80,7 +80,7 @@ const Home = () => {
       setFormList(
         [
           {
-            id: '',
+            id: 'all',
             label: 'All'
           },
           ...response.data.content
@@ -107,8 +107,8 @@ const Home = () => {
   }, [])
 
   const initialFilterParameters = {
-    form: formList && formList?.length > 0 ? formList[0] : '',
-    device: deviceList && deviceList?.length > 0 ? deviceList[0] : '',
+    form: 'all',
+    device: 'all',
     startTime: getLast30Days().startTime,
     endTime: getLast30Days().endTime,
   }
