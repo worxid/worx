@@ -142,7 +142,6 @@ public class FormServiceImpl implements FormService {
         return dto;
     }
 
-
     public Form getById(Long id) {
         return formRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
@@ -375,20 +374,16 @@ public class FormServiceImpl implements FormService {
         return results;
     }
 
-
     private List<Attachment> toAttachmentList(List<Long> fileIds) {
         List<File> files = fileRepository.findAllById(fileIds);
         return files.stream()
-                .map(file -> {
-                    return Attachment.builder()
-                            .fileId(file.getId())
-                            .mediaId(file.getMediaId())
-                            .name(file.getName())
-                            .path(file.getPath())
-                            .build();
-                })
+                .map(file -> Attachment.builder()
+                        .fileId(file.getId())
+                        .mediaId(file.getMediaId())
+                        .name(file.getName())
+                        .path(file.getPath())
+                        .build())
                 .collect(Collectors.toList());
     }
-
 
 }
