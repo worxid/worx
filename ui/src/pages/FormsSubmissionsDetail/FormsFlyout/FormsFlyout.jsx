@@ -114,6 +114,7 @@ const FormsFlyout = (props) => {
                   <Typography 
                     variant='caption'
                     className='colorTextSecondary'
+                    fontWeight={600}
                   >
                     {item.title}
                   </Typography>
