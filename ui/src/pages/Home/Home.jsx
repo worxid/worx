@@ -48,7 +48,7 @@ const Home = () => {
   const [deviceList, setDeviceList] = useState([])
 
   // FETCH FILTER DATA
-  const fetchDeviceList = async (abortController) => {
+  const fetchDeviceList = async (abortController, inputIsMounted) => {
     const response = await postGetDeviceList(
       abortController.signal,
       {},
@@ -56,7 +56,7 @@ const Home = () => {
       axiosPrivate,
     )
 
-    if (didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setDeviceList(
         [
           {
@@ -76,7 +76,7 @@ const Home = () => {
       })
     }
   }
-  const fetchFormList = async (abortController) => {
+  const fetchFormList = async (abortController, inputIsMounted) => {
     const response = await postGetListFormTemplate(
       abortController.signal,
       {},
@@ -84,7 +84,7 @@ const Home = () => {
       axiosPrivate,
     )
 
-    if (didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setFormList(
         [
           {
@@ -105,11 +105,13 @@ const Home = () => {
     }
   }
   useEffect(() => {
+    let isMounted = true
     const abortController = new AbortController()
-    fetchDeviceList(abortController.signal)
-    fetchFormList(abortController.signal)
+    fetchDeviceList(abortController.signal, isMounted)
+    fetchFormList(abortController.signal, isMounted)
 
     return () => {
+      isMounted = false
       abortController.abort()
     }
   }, [])
@@ -138,7 +140,7 @@ const Home = () => {
       <Divider className={classes.divider}/>
 
       {/* CHART */}
-      <Chart/>
+      <Chart filterParameters={filterParameters}/>
 
       {/* MAP */}
       <Map filterParameters={filterParameters}/>
