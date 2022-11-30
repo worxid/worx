@@ -19,7 +19,7 @@ const MarkerIcon = (
         {/* MARKER COUNT */}
         {type === 'cluster' &&
         <Typography 
-          variant='body2'
+          variant='body1'
           className={classes.markerCount}
         >
           {feature?.properties?.point_count}
