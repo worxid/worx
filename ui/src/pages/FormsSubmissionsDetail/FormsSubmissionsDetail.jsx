@@ -165,8 +165,8 @@ const FormsSubmissionsDetail = () => {
                   <Stack width='100%' maxWidth='400px'>
                     <InputComponent
                       item={item}
-                      type={item.type}
                       defaultValue={findValuesByFieldId(item.id)}
+                      attachments={submissionDetail.attachments}
                     />
                   </Stack>)
                   : (

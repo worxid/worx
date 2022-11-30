@@ -38,7 +38,7 @@ import { convertDate } from 'utilities/date'
 import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const InputComponent = (props) => {
-  const { item, type, defaultValue } = props
+  const { item, defaultValue, attachments } = props
   const axiosPrivate = useAxiosPrivate()
 
   // STYLES
@@ -47,21 +47,26 @@ const InputComponent = (props) => {
   const [currentFiles, setCurrentFiles] = useState([])
 
   // FIND VALUES BY KEY
-  const findValuesKey = (type) => {
-    if(type === 'text' || type === 'rating' || type === 'date') return 'value' // string
-    else if (type === 'checkbox_group') return 'values' // array<boolean>
-    else if (type === 'radio_group' || type === 'dropdown') return 'value_index' // number
-    else if (type === 'file' || type === 'photo') return 'file_ids' // array<number>
-    else if (type === 'signature') return 'file_id' // number
+  const findValuesKey = (inputType) => {
+    if(inputType === 'text' || inputType === 'rating' || inputType === 'date') return 'value' // string
+    else if (inputType === 'checkbox_group') return 'values' // array<boolean>
+    else if (inputType === 'radio_group' || inputType === 'dropdown') return 'value_index' // number
+    else if (inputType === 'file' || inputType === 'photo') return 'file_ids' // array<number>
+    else if (inputType === 'signature') return 'file_id' // number
   }
 
   // GET FILE/MEDIA URL
   const getMediaURL = async (fileIds = []) => {
+    const mediaIds = fileIds.map(item => {
+      const findIds = attachments.find(itemFind => itemFind.file_id === item)
+      if(findIds) return findIds.media_id
+    })
+
     const abortController = new AbortController()
     const response = await postDetailMediaFiles(
       abortController.signal,
       {
-        file_ids: [...fileIds]
+        media_ids: [...mediaIds]
       },
       axiosPrivate
     )
@@ -73,26 +78,20 @@ const InputComponent = (props) => {
     abortController.abort()
   }
 
-  // GET NAME FILE
-  const getFileName = (name) => {
-    const splitName = name.split('/')
-    return splitName[splitName.length-1]
-  }
-
   useEffect(() => {
-    if(type === 'file' || type === 'photo' && defaultValue?.[findValuesKey(type)]) {
-      getMediaURL(defaultValue?.[findValuesKey(type)])
+    if(item.type === 'file' || item.type === 'photo' && defaultValue?.[findValuesKey(item.type)]) {
+      getMediaURL(defaultValue?.[findValuesKey(item.type)])
     }
 
-    if(type === 'signature' && defaultValue?.[findValuesKey(type)]) {
-      getMediaURL([defaultValue?.[findValuesKey(type)]])
+    if(item.type === 'signature' && defaultValue?.[findValuesKey(item.type)]) {
+      getMediaURL([defaultValue?.[findValuesKey(item.type)]])
     }
-  }, [type])
+  }, [item])
 
   return (
     <>
       {/* TEXTFIELD */}
-      {type === 'text' && (
+      {item.type === 'text' && (
         <FormControl
           variant='outlined' 
           fullWidth
@@ -107,20 +106,20 @@ const InputComponent = (props) => {
             autoFocus
             type='text'
             label={item?.label}
-            defaultValue={defaultValue?.[findValuesKey(type)] || '-'}
+            defaultValue={defaultValue?.[findValuesKey(item.type)] || '-'}
           />
         </FormControl>
       )}
 
       {/* CHECKBOX GROUP */}
-      {type === 'checkbox_group' && (
+      {item.type === 'checkbox_group' && (
         <FormGroup className={classes.checkboxGroup} disabled>
           {item?.group?.map((itemCheckbox, index) => (
             <FormControlLabel
               key={index}
               disabled
               control={<Checkbox
-                defaultChecked={defaultValue?.[findValuesKey(type)][index] || false}
+                defaultChecked={defaultValue?.[findValuesKey(item.type)][index] || false}
               />}
               label={itemCheckbox.label}
             />
@@ -129,11 +128,11 @@ const InputComponent = (props) => {
       )}
 
       {/* RADIO GROUP */}
-      {type === 'radio_group' && (
+      {item.type === 'radio_group' && (
         <RadioGroup className={classes.radioGroup} disabled>
           {item?.options?.map((itemRadio, index) => (
             <FormControlLabel
-              control={<Radio checked={Number(defaultValue?.[findValuesKey(type)]) === index}/>}
+              control={<Radio checked={Number(defaultValue?.[findValuesKey(item.type)]) === index}/>}
               key={index}
               disabled
               value={index}
@@ -144,9 +143,9 @@ const InputComponent = (props) => {
       )}
 
       {/* DROPDOWN */}
-      {type === 'dropdown' && (
+      {item.type === 'dropdown' && (
         <FormControl fullWidth disabled>
-          <Select defaultValue={Number(defaultValue?.[findValuesKey(type)])} disabled>
+          <Select defaultValue={Number(defaultValue?.[findValuesKey(item.type)])} disabled>
             {item?.options?.map((itemDropdown, index) => (
               <MenuItem key={index} value={index}>
                 {itemDropdown.label}
@@ -157,11 +156,11 @@ const InputComponent = (props) => {
       )}
 
       {/* DATE */}
-      {type === 'date' && (
+      {item.type === 'date' && (
         <TextField
           fullWidth
           disabled
-          value={convertDate(defaultValue?.[findValuesKey(type)], 'dd-MM-yyyy')}
+          value={convertDate(defaultValue?.[findValuesKey(item.type)], 'dd-MM-yyyy')}
           InputProps={{
             startAdornment: (<InputAdornment position='start'>
               <Box className={classes.textfieldDateAdornment}><IconCalendarMonth /></Box>
@@ -171,16 +170,16 @@ const InputComponent = (props) => {
       )}
 
       {/* RATING */}
-      {type === 'rating' && (
+      {item.type === 'rating' && (
         <Rating
-          value={Number(defaultValue?.[findValuesKey(type)])}
+          value={Number(defaultValue?.[findValuesKey(item.type)])}
           readOnly
           max={item?.max_stars}
         />
       )}
 
       {/* LIST FILE */}
-      {type === 'file' && (
+      {item.type === 'file' && (
         <List className='padding0'>
           {currentFiles?.map((itemFile, index) => (
             <ListItem className={classes.listItem} key={index}>
@@ -190,7 +189,7 @@ const InputComponent = (props) => {
 
               <ListItemText
                 className={classes.listItemText}
-                primary={getFileName(itemFile?.path)}
+                primary={itemFile?.name}
               />
             </ListItem>
           ))}
@@ -198,7 +197,7 @@ const InputComponent = (props) => {
       )}
 
       {/* LIST IMAGE */}
-      {type === 'photo' && (
+      {item.type === 'photo' && (
         <List className='padding0'>
           {currentFiles?.map((itemPhoto, index) => (
             <ListItem className={classes.listItem} key={index}>
@@ -212,7 +211,7 @@ const InputComponent = (props) => {
 
               <ListItemText
                 className={classes.listItemText}
-                primary={getFileName(itemPhoto?.path)}
+                primary={itemPhoto?.name}
               />
             </ListItem>
           ))}
@@ -220,7 +219,7 @@ const InputComponent = (props) => {
       )}
 
       {/* SIGNATURE */}
-      {(type === 'signature' && currentFiles[0]?.url) && (
+      {(item.type === 'signature' && currentFiles[0]?.url) && (
         <Box
           className={classes.signatureBox}
           component='img'

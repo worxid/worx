@@ -91,8 +91,8 @@ const MapMarkers = (props) => {
       geometry: {
         type: 'Point',
         coordinates: [
-          parseFloat(item.longitude) || null,
-          parseFloat(item.latitude) || null,
+          parseFloat(item?.submit_location?.lng) || null,
+          parseFloat(item?.submit_location?.lat) || null,
         ],
       },
       markerData: item,
@@ -123,7 +123,7 @@ const MapMarkers = (props) => {
   }, [mapObject])
 
   useEffect(() => {
-    if(mapBounds && mapZoom && submissionList.length) {
+    if(mapBounds && mapZoom && submissionList) {
       updateCluster()
     }
   }, [mapObject, mapBounds, mapZoom, submissionList])

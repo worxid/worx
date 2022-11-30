@@ -17,13 +17,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   marker: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     backgroundColor: theme.palette.primary.main,
     borderRadius: '50%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    '&.cluster': {
+      width: 32,
+      height: 32,
+    }
   },
   markerCount: {
     color: theme.palette.common.white,

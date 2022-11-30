@@ -24,7 +24,7 @@ import lodash from 'lodash'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import Link from '@mui/material/Link'
+import IconButton from '@mui/material/IconButton'
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -33,6 +33,7 @@ import Typography from '@mui/material/Typography'
 import IconGesture from '@mui/icons-material/Gesture'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+import IconMap from '@mui/icons-material/Map'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/form'
@@ -42,10 +43,7 @@ import { getDetailFormTemplate } from 'services/formTemplate'
 import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
-import { 
-  convertDate, 
-  getLast30Days,
-} from 'utilities/date'
+import { convertDate } from 'utilities/date'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -78,7 +76,7 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 200,
+      minWidth: 160,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
@@ -107,21 +105,26 @@ const FormsSubmissions = () => {
     {
       field: 'submissionAddress',
       headerName: 'Submission Address',
+      headerAlign: 'center',
       flex: 1,
-      minWidth: 300,
+      minWidth: 180,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
-        <Link
-          underline='hover'
-          className={classes.columnLink}
-          href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
+        <Stack
+          width='100%'
+          alignItems='center'
         >
-          {params.value ? params.value : 'No address found'}
-        </Link>
+          <IconButton onClick={() => window.open(`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')}>
+            <IconMap
+              color='primary'
+              fontSize='small'
+            />
+          </IconButton>
+        </Stack>
       ),
     },
   ]
@@ -134,11 +137,11 @@ const FormsSubmissions = () => {
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
-  const [ areDynamicColumnTitlesAdded, setAreDynamicColumnTitlesAdded ] = useState(false)
-  const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
+  // const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
-  const [ tableData, setTableData ] = useState([])
+  const [ rawTableData, setRawTableData ] = useState([])
+  const [ finalTableData, setFinalTableData ] = useState([])
   // DATA GRID - PAGINATION
   const [ totalRow, setTotalRow ] = useState(0)
   const [ pageNumber, setPageNumber ] = useState(0)
@@ -150,10 +153,7 @@ const FormsSubmissions = () => {
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState([ 
-    getLast30Days().startTime,
-    getLast30Days().endTime,
-  ])
+  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DIALOG MEDIA PREVIEW
@@ -217,10 +217,11 @@ const FormsSubmissions = () => {
           submissionLatitude: submissionItem?.submit_location?.lat ?? null,
           submissionLongitude: submissionItem?.submit_location?.lng ?? null,
           values: submissionItem?.values,
+          attachments: submissionItem.attachments,
         }
       })
 
-      setTableData(submissionList)
+      setRawTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
     }
 
@@ -237,6 +238,11 @@ const FormsSubmissions = () => {
       inputItem.type === 'dropdown' || 
       inputItem.type === 'checkbox_group'
     ) return 175
+    else if (
+      inputItem.type === 'file' || 
+      inputItem.type === 'photo' || 
+      inputItem.type === 'signature'
+    ) return 260
     else return 150
   }
 
@@ -305,8 +311,7 @@ const FormsSubmissions = () => {
       inputParams?.value?.type === 'photo' || 
       inputParams?.value?.type === 'signature'
     ) {
-      let valueList = inputParams?.value?.file_ids
-      if (inputParams?.value?.type === 'signature') valueList = [ inputParams?.value?.file_id ]
+      let valueList = inputParams?.value?.fileList
 
       let columnIcon
       if (inputParams?.value?.type === 'file') columnIcon = (
@@ -351,7 +356,7 @@ const FormsSubmissions = () => {
                 className='heightFitContent'
                 color='primary.main'
               >
-                {item}
+                {item.name}
               </Typography>
 
               {valueList?.length >= 2 && (
@@ -369,10 +374,7 @@ const FormsSubmissions = () => {
   }
 
   const updateColumnsDynamically = () => {
-    if (
-      formTemplateDetail && formTemplateDetail?.fields?.length > 0 &&
-      !areDynamicColumnTitlesAdded
-    ) {
+    if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
       const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
           field: item.id,
@@ -390,33 +392,44 @@ const FormsSubmissions = () => {
       })]
 
       setColumnList(newColumnList)
-      setAreDynamicColumnTitlesAdded(true)
     }
   }
 
   const updateTableDataDynamically = () => {
     // NOTE: DYNAMIC COLUMNS START FROM THE 3RD INDEX
-    if (
-      columnList.length > 3 && tableData.length > 0 && 
-      areDynamicColumnTitlesAdded && !areDynamicColumnsValuesAdded
-    ) {
-      const dynamicColumnList = columnList.filter((item, index) => index > 2)
+    const dynamicColumnList = columnList.filter((item, index) => index > 2)
 
-      const newTableData = tableData.map((tableRowItem) => {
-        const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
-          result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
-          return result
-        }, {})
+    const newFinalTableData = rawTableData.map((tableRowItem) => {
+      const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
+        const fileType = tableRowItem?.values?.[columnItem.field]?.type
 
-        return {
-          ...tableRowItem,
-          ...columnWithValueObject,
+        if (fileType === 'file' || fileType === 'photo') {
+          result[columnItem.field] = {
+            type: fileType,
+            fileList: tableRowItem?.values?.[columnItem.field]?.file_ids?.map(fileId => {
+              return tableRowItem?.attachments?.find(attachmentItem => fileId === attachmentItem.file_id)
+            })
+          }
         }
-      })
+        else if (fileType === 'signature') {
+          result[columnItem.field] = {
+            type: fileType,
+            fileList: [ tableRowItem?.attachments?.find(attachmentItem => 
+              tableRowItem?.values?.[columnItem.field]?.file_id === attachmentItem.file_id) 
+            ]
+          }
+        }
 
-      setAreDynamicColumnsValuesAdded(true)
-      setTableData(newTableData)
-    }
+        return result
+      }, {})
+
+      return {
+        ...tableRowItem,
+        ...columnWithValueObject,
+      }
+    })
+
+    setFinalTableData(newFinalTableData)
   }
   
   useEffect(() => {
@@ -449,7 +462,7 @@ const FormsSubmissions = () => {
 
   useEffect(() => {
     updateTableDataDynamically()
-  }, [columnList, tableData, areDynamicColumnTitlesAdded])
+  }, [columnList, rawTableData])
 
   return (
     <>
@@ -545,7 +558,7 @@ const FormsSubmissions = () => {
             initialColumns={initialColumns}
             selectedColumnList={columnList}
             setSelectedColumnList={setColumnList}
-            rows={tableData}
+            rows={finalTableData}
             // PAGINATION
             total={totalRow}
             page={pageNumber}
