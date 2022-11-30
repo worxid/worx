@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -21,9 +21,6 @@ import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
 import { postDetailMediaFiles } from 'services/media'
-
-// SWIPEABLE
-import SwipeableViews from 'react-swipeable-views'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
@@ -107,22 +104,13 @@ const DialogMediasPreview = (props) => {
         alignItems='center'
         className={classes.content}
       >
-        <SwipeableViews
-          index={activeStep}
-          onChangeIndex={(newStep) => setActiveStep(newStep)}
-          enableMouseEvents
-        >
-          {mediaList.map((item, index) => (
-            <Fragment key={index}>
-              <Box
-                component='img'
-                src={item.url}
-                alt=''
-                className={classes.mediaPreview}
-              />
-            </Fragment>
-          ))}
-        </SwipeableViews>
+        {mediaList.length > 0 &&
+        <Box
+          component='img'
+          src={mediaList[activeStep].url}
+          alt=''
+          className={classes.mediaPreview}
+        />}
       </Stack>
 
       {/* BOTTOM MENU */}
