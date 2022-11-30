@@ -23,11 +23,12 @@ const Popup = (props) => {
       type: 'link',
       icon: IconInsertLink,
       text: markerData.id ?? 'No data',
+      secondText: markerData?.template_id ?? 'No data',
     },
     {
       type: 'text',
       icon: IconPhoneAndroid,
-      text:  markerData?.source?.type ? markerData?.source?.type.replaceAll('_', ' ') : 'No data',
+      text:  markerData?.source?.type ? markerData?.source?.type?.replaceAll('_', ' ') : 'No data',
     },
     {
       type: 'text',
@@ -48,7 +49,7 @@ const Popup = (props) => {
         variant='caption'
         className={`${classes.popUpTitle} textCapitalize`}
       >
-        {markerData?.source?.label ?? ''}
+        {markerData?.source?.label ? markerData?.source?.label?.replace('_', ' ') : ''}
       </Typography>
 
       {/* CONTENT */}
@@ -72,7 +73,7 @@ const Popup = (props) => {
           {/* LINK */}
           {item.type === 'link' &&
           <Link
-            href='/dummy-link'
+            href={`/forms/submission-detail?formTemplateId=${item.secondText}&submissionId=${item.text}`}
             underline='hover'
             className={classes.popUpListItemLink}
           >
