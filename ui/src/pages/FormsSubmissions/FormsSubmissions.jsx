@@ -217,6 +217,7 @@ const FormsSubmissions = () => {
           submissionLatitude: submissionItem?.submit_location?.lat ?? null,
           submissionLongitude: submissionItem?.submit_location?.lng ?? null,
           values: submissionItem?.values,
+          attachments: submissionItem.attachments,
         }
       })
 
@@ -237,6 +238,11 @@ const FormsSubmissions = () => {
       inputItem.type === 'dropdown' || 
       inputItem.type === 'checkbox_group'
     ) return 175
+    else if (
+      inputItem.type === 'file' || 
+      inputItem.type === 'photo' || 
+      inputItem.type === 'signature'
+    ) return 260
     else return 150
   }
 
@@ -305,8 +311,7 @@ const FormsSubmissions = () => {
       inputParams?.value?.type === 'photo' || 
       inputParams?.value?.type === 'signature'
     ) {
-      let valueList = inputParams?.value?.file_ids
-      if (inputParams?.value?.type === 'signature') valueList = [ inputParams?.value?.file_id ]
+      let valueList = inputParams?.value?.fileList
 
       let columnIcon
       if (inputParams?.value?.type === 'file') columnIcon = (
@@ -351,7 +356,7 @@ const FormsSubmissions = () => {
                 className='heightFitContent'
                 color='primary.main'
               >
-                {item}
+                {item.name}
               </Typography>
 
               {valueList?.length >= 2 && (
@@ -396,7 +401,25 @@ const FormsSubmissions = () => {
 
     const newFinalTableData = rawTableData.map((tableRowItem) => {
       const columnWithValueObject = dynamicColumnList.reduce((result, columnItem) => {
-        result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
+        const fileType = tableRowItem?.values?.[columnItem.field]?.type
+
+        if (fileType === 'file' || fileType === 'photo') {
+          result[columnItem.field] = {
+            type: fileType,
+            fileList: tableRowItem?.values?.[columnItem.field]?.file_ids?.map(fileId => {
+              return tableRowItem?.attachments?.find(attachmentItem => fileId === attachmentItem.file_id)
+            })
+          }
+        }
+        else if (fileType === 'signature') {
+          result[columnItem.field] = {
+            type: fileType,
+            fileList: [ tableRowItem?.attachments?.find(attachmentItem => 
+              tableRowItem?.values?.[columnItem.field]?.file_id === attachmentItem.file_id) 
+            ]
+          }
+        }
+
         return result
       }, {})
 
