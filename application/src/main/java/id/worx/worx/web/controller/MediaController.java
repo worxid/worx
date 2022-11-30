@@ -26,20 +26,24 @@ public class MediaController {
     private final FileStorageService storageService;
 
     @GetMapping("presigned-url")
-    public ResponseEntity<BaseValueResponse<UrlPresignedResponse>> getPresignedUrlForUpload(@RequestParam String filename) {
+    public ResponseEntity<BaseValueResponse<UrlPresignedResponse>> getPresignedUrlForUpload(
+            @RequestParam String filename) {
 
         return ResponseEntity.ok().body(BaseValueResponse.<UrlPresignedResponse>builder()
-            .value(storageService.toDtoFilename(storageService.getUploadUrl(filename)))
-            .build());
+                .value(storageService.getUploadUrl(filename))
+                .build());
     }
 
     @PostMapping("files")
-    public ResponseEntity<BaseListResponse<UrlPresignedResponse>> getFiles(@RequestBody @Valid FileRequestDTO fileRequestDTO) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public ResponseEntity<BaseListResponse<UrlPresignedResponse>> getFiles(
+            @RequestBody @Valid FileRequestDTO fileRequestDTO) throws ServerException, InsufficientDataException,
+            ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException {
 
         List<UrlPresignedResponse> urlPresignedResponses = storageService.getFiles(fileRequestDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(BaseListResponse.<UrlPresignedResponse>builder()
-            .list(urlPresignedResponses)
-            .build());
+                .list(urlPresignedResponses)
+                .build());
     }
 }

@@ -29,7 +29,7 @@ import { convertDate } from 'utilities/date'
 
 const Filters = (props) => {
   const { 
-    initialFIlterParameters,
+    initialFilterParameters,
     filterParameters, setFilterParameters,
     formList,
     deviceList,
@@ -88,9 +88,9 @@ const Filters = (props) => {
             {formList.map((item, index) => (
               <MenuItem
                 key={index} 
-                value={item.text}
+                value={item.id}
               >
-                {item.text}
+                {item.label}
               </MenuItem>
             ))}
           </Select>
@@ -153,9 +153,9 @@ const Filters = (props) => {
             {deviceList.map((item, index) => (
               <MenuItem
                 key={index} 
-                value={item.text}
+                value={item.id}
               >
-                {item.text}
+                {item.label}
               </MenuItem>
             ))}
           </Select>
@@ -165,7 +165,7 @@ const Filters = (props) => {
       {/* RESET FILTER BUTTON */}
       <Button 
         className={classes.buttonReset}
-        onClick={() => setFilterParameters(initialFIlterParameters)}
+        onClick={() => setFilterParameters(initialFilterParameters)}
       >
         Reset Filter
       </Button>
