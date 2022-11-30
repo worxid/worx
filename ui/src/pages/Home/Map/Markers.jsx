@@ -123,7 +123,7 @@ const MapMarkers = (props) => {
   }, [mapObject])
 
   useEffect(() => {
-    if(mapBounds && mapZoom && submissionList.length) {
+    if(mapBounds && mapZoom && submissionList) {
       updateCluster()
     }
   }, [mapObject, mapBounds, mapZoom, submissionList])
