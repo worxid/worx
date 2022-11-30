@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.request.EmailRequestDTO;
+import id.worx.worx.entity.devices.Device;
+import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +66,22 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(response);
+    }
+
+    @PutMapping(value = "/user-details")
+    public ResponseEntity<BaseValueResponse<UserResponse>> updateUserDetails(
+        @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        Users users = usersService.updateInformation(userUpdateRequest);
+        UserResponse dto = usersService.toDTO(users);
+
+        BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()
+            .value(dto)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
+
     }
 
     @PostMapping("/login")

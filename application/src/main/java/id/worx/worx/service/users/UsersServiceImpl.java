@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -417,6 +418,24 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Optional<Users> findByOrganizationCode(String token) {
         return usersRepository.findByOrganizationCode(token);
+    }
+
+    @Override
+    public Users updateInformation(UserUpdateRequest userUpdateRequest) {
+        Optional<Users> checkUsersByEmail = usersRepository.findByEmail(userUpdateRequest.getEmail());
+        if(checkUsersByEmail.isEmpty()){
+            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        }else{
+
+            Users user = checkUsersByEmail.get();
+            user.setEmail(userUpdateRequest.getEmail());
+            user.setCountry(userUpdateRequest.getCountry());
+            user.setPhone(userUpdateRequest.getPhone());
+            user.setOrganizationName(user.getOrganizationName());
+            usersRepository.save(user);
+
+            return user;
+        }
     }
 
     public UserResponse toDTO(Users users) {

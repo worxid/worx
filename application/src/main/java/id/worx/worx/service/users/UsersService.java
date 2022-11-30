@@ -14,6 +14,7 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.web.model.request.UserUpdateRequest;
 
 public interface UsersService {
 
@@ -40,6 +41,8 @@ public interface UsersService {
     Users findByEmail(String email);
 
     Optional<Users> findByOrganizationCode(String organizationCode);
+
+    Users updateInformation(UserUpdateRequest userUpdateRequest);
 
     void deleteEmailToken();
     void deleteRefreshToken();
