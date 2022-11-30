@@ -9,6 +9,9 @@ import IconInsertLink from '@mui/icons-material/InsertLink'
 import IconLocationOn from '@mui/icons-material/LocationOn'
 import IconPhoneAndroid from '@mui/icons-material/PhoneAndroid'
 
+// UTILITIES
+import { convertDate } from 'utilities/date'
+
 const Popup = (props) => {
   const { 
     markerData, 
@@ -24,17 +27,17 @@ const Popup = (props) => {
     {
       type: 'text',
       icon: IconPhoneAndroid,
-      text: markerData.type ? markerData.type.replace('_', ' ') : 'No data',
+      text:  markerData?.source?.type ? markerData?.source?.type?.replaceAll('_', ' ') : 'No data',
     },
     {
       type: 'text',
       icon: IconAccessTime,
-      text: markerData.date ?? 'No data',
+      text: markerData?.submit_date ? convertDate(markerData?.submit_date) : 'No data',
     },
     {
       type: 'text',
       icon: IconLocationOn,
-      text: markerData.address ?? 'No data',
+      text: (markerData?.submit_location?.address || markerData?.submit_location?.address !== '') ? markerData?.submit_location?.address : 'No data',
     },
   ]
 
@@ -45,7 +48,7 @@ const Popup = (props) => {
         variant='caption'
         className={`${classes.popUpTitle} textCapitalize`}
       >
-        {markerData.title}
+        {markerData?.source?.label ? markerData?.source?.label?.replace('_', ' ') : ''}
       </Typography>
 
       {/* CONTENT */}
@@ -69,7 +72,7 @@ const Popup = (props) => {
           {/* LINK */}
           {item.type === 'link' &&
           <Link
-            href='/dummy-link'
+            href={`/forms/submission-detail?formTemplateId=${markerData?.template_id}&submissionId=${markerData?.id}`}
             underline='hover'
             className={classes.popUpListItemLink}
           >
