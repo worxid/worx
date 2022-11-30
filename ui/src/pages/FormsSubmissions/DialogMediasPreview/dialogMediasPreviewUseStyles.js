@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     backgroundColor: theme.palette.grey[900],
     maxHeight: 'calc(100vh - (2 * 96px))',
+    maxWidth: '100%',
   },
   mediaPreview: {
     height: '100%',

@@ -34,6 +34,32 @@ const DialogMediasPreview = (props) => {
 
   const [ mediaList, setMediaList ] = useState([])
   const [ activeStep, setActiveStep ] = useState(0)
+  
+  const getContentPropertyFromMediaObject = (inputMediaObject) => {
+    let output = {}
+
+    // SOURCE: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    // IMAGE TYPE MEDIA
+    if (inputMediaObject?.mimeType?.includes('image/')) output = {
+      component: 'img',
+      src: inputMediaObject.url,
+    }
+    // EXCEL TYPE MEDIA
+    else if (
+      inputMediaObject?.mimeType === 'application/vnd.ms-excel' ||
+      inputMediaObject?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    ) output = {
+      component: 'iframe',
+      src: `https://view.officeapps.live.com/op/embed.aspx?src=${inputMediaObject.url}&embedded=true`,
+    }
+    // OTHER DOCUMENT TYPE MEDIA
+    else if (inputMediaObject?.mimeType?.includes('application/')) output = {
+      component: 'iframe',
+      src: `https://docs.google.com/gview?url=${inputMediaObject.url}&embedded=true`,
+    }
+
+    return output
+  }
 
   const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
     const resultMediaFilesData = await postDetailMediaFiles(
@@ -106,8 +132,8 @@ const DialogMediasPreview = (props) => {
       >
         {mediaList.length > 0 &&
         <Box
-          component='img'
-          src={mediaList[activeStep].url}
+          component={getContentPropertyFromMediaObject(mediaList[activeStep]).component}
+          src={getContentPropertyFromMediaObject(mediaList[activeStep]).src}
           alt=''
           className={classes.mediaPreview}
         />}
