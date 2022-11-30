@@ -15,7 +15,7 @@ const MarkerIcon = (
   return L.divIcon({
     className: 'custom-icon',
     html: ReactDOMServer.renderToString(
-      <Box className={`${classes.marker} zoom`}>
+      <Box className={`${classes.marker} ${type === 'cluster' && 'cluster'} zoom`}>
         {/* MARKER COUNT */}
         {type === 'cluster' &&
         <Typography 
