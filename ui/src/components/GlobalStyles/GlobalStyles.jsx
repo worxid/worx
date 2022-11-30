@@ -45,6 +45,9 @@ const GlobalStyles = () => {
         '.displayBlock': {
           display: 'block'
         },
+        '.displayNone': {
+          display: 'none'
+        },
         '.flexDirectionRow': {
           flexDirection: 'row !important',
         },
