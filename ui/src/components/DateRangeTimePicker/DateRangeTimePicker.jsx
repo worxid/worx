@@ -346,8 +346,8 @@ DateRangeTimePicker.propTypes = {
   dateFormat: PropTypes.string,
   timeFormat: PropTypes.string,
   isWithTimePicker: PropTypes.bool,
-  handleSelectButtonClick: PropTypes.func.isRequired,
-  handleCancelButtonClick: PropTypes.func.isRequired,
+  handleSelectButtonClick: PropTypes.func,
+  handleCancelButtonClick: PropTypes.func,
 }
 
 export default DateRangeTimePicker
