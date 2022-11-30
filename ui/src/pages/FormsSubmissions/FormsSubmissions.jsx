@@ -137,7 +137,6 @@ const FormsSubmissions = () => {
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
-  const [ areDynamicColumnTitlesAdded, setAreDynamicColumnTitlesAdded ] = useState(false)
   // const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
@@ -370,10 +369,7 @@ const FormsSubmissions = () => {
   }
 
   const updateColumnsDynamically = () => {
-    if (
-      formTemplateDetail && formTemplateDetail?.fields?.length > 0 &&
-      !areDynamicColumnTitlesAdded
-    ) {
+    if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
       const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
           field: item.id,
@@ -391,7 +387,6 @@ const FormsSubmissions = () => {
       })]
 
       setColumnList(newColumnList)
-      setAreDynamicColumnTitlesAdded(true)
     }
   }
 
