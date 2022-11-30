@@ -43,6 +43,7 @@ const DialogMediasPreview = (props) => {
     if (inputMediaObject?.mimeType?.includes('image/')) output = {
       component: 'img',
       src: inputMediaObject.url,
+      className: classes.mediaPreviewImage,
     }
     // EXCEL TYPE MEDIA
     else if (
@@ -50,12 +51,14 @@ const DialogMediasPreview = (props) => {
       inputMediaObject?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
     ) output = {
       component: 'iframe',
-      src: `https://view.officeapps.live.com/op/embed.aspx?src=${inputMediaObject.url}&embedded=true`,
+      src: `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(inputMediaObject.url)}&embedded=true`,
+      className: classes.mediaPreviewDocument,
     }
     // OTHER DOCUMENT TYPE MEDIA
     else if (inputMediaObject?.mimeType?.includes('application/')) output = {
       component: 'iframe',
-      src: `https://docs.google.com/gview?url=${inputMediaObject.url}&embedded=true`,
+      src: `https://docs.google.com/gview?url=${encodeURIComponent(inputMediaObject.url)}&embedded=true`,
+      className: classes.mediaPreviewDocument,
     }
 
     return output
@@ -135,7 +138,7 @@ const DialogMediasPreview = (props) => {
           component={getContentPropertyFromMediaObject(mediaList[activeStep]).component}
           src={getContentPropertyFromMediaObject(mediaList[activeStep]).src}
           alt=''
-          className={classes.mediaPreview}
+          className={getContentPropertyFromMediaObject(mediaList[activeStep]).className}
         />}
       </Stack>
 

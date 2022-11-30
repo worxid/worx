@@ -17,7 +17,13 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 'calc(100vh - (2 * 96px))',
     maxWidth: '100%',
   },
-  mediaPreview: {
+  mediaPreviewDocument: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    backgroundColor: theme.palette.common.white,
+  },
+  mediaPreviewImage: {
     height: '100%',
     maxWidth: '100%',
     backgroundColor: theme.palette.common.white,
