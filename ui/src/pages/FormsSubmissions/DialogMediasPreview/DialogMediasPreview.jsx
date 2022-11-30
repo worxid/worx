@@ -55,7 +55,10 @@ const DialogMediasPreview = (props) => {
       className: classes.mediaPreviewDocument,
     }
     // OTHER DOCUMENT TYPE MEDIA
-    else if (inputMediaObject?.mimeType?.includes('application/')) output = {
+    else if (
+      inputMediaObject?.mimeType?.includes('application/') || 
+      inputMediaObject?.mimeType?.includes('text/')
+    ) output = {
       component: 'iframe',
       src: `https://docs.google.com/gview?url=${encodeURIComponent(inputMediaObject.url)}&embedded=true`,
       className: classes.mediaPreviewDocument,
