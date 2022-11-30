@@ -41,10 +41,7 @@ const DialogMediasPreview = (props) => {
   const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
     const resultMediaFilesData = await postDetailMediaFiles(
       inputAbortController.signal,
-      { file_ids: mediasPreviewObject.type === 'signature' 
-        ? [ mediasPreviewObject.file_id ]
-        : mediasPreviewObject.file_ids
-      },
+      { media_ids: mediasPreviewObject?.fileList?.map(item => item.media_id) },
       axiosPrivate,
     )
 
