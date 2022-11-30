@@ -24,7 +24,7 @@ import lodash from 'lodash'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import Link from '@mui/material/Link'
+import IconButton from '@mui/material/IconButton'
 import Rating from '@mui/material/Rating'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -105,6 +105,7 @@ const FormsSubmissions = () => {
     {
       field: 'submissionAddress',
       headerName: 'Submission Address',
+      headerAlign: 'center',
       flex: 1,
       minWidth: 180,
       hide: false,
@@ -113,15 +114,17 @@ const FormsSubmissions = () => {
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
-        <Link
-          className={classes.columnLink}
-          href={`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`}
+        <Stack
+          width='100%'
+          alignItems='center'
         >
-          <IconMap
-            fontSize='small' 
-            className={classes.columnLinkIcon}
-          />
-        </Link>
+          <IconButton onClick={() => window.open(`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')}>
+            <IconMap
+              color='primary'
+              fontSize='small'
+            />
+          </IconButton>
+        </Stack>
       ),
     },
   ]

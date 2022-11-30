@@ -36,19 +36,6 @@ const useStyles = makeStyles((theme) => ({
       width: 92,
     },
   },
-  columnLink: {
-    cursor: 'pointer',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  columnLinkIcon: {
-    marginRight: 8,
-  },
   columnChip: {
     fontSize: 12,
     '&.red': {
