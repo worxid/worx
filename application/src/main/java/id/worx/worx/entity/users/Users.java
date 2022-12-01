@@ -63,6 +63,9 @@ public class Users extends Audit {
     @Column(name = "country", nullable = false)
     private String country;
 
+    @Column(name = "dashboard_logo", nullable = false)
+    private Long dashboardLogo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
