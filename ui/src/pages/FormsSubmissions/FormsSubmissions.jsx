@@ -419,6 +419,7 @@ const FormsSubmissions = () => {
             ]
           }
         }
+        else result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
 
         return result
       }, {})
