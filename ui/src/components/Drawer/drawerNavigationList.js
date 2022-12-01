@@ -3,6 +3,7 @@ import IconDynamicForm from '@mui/icons-material/DynamicForm'
 import IconGroups from '@mui/icons-material/Groups'
 import IconHome from '@mui/icons-material/Home'
 import IconSmartphone from '@mui/icons-material/Smartphone'
+import IconSettings from '@mui/icons-material/Settings'
 
 export const drawerNavigationList = [
   {
@@ -28,6 +29,12 @@ export const drawerNavigationList = [
     title: 'Groups',
     icon: IconGroups,
     path: '/groups',
+  },
+  {
+    type: 'single',
+    title: 'Settings',
+    icon: IconSettings,
+    path: '/settings',
   },
   // {
   //   type: 'collection',

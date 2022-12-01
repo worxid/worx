@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -21,6 +24,7 @@ import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
 import { postDetailMediaFiles } from 'services/media'
+import { downloadFileFromUrl } from 'services/others'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
@@ -31,6 +35,8 @@ const DialogMediasPreview = (props) => {
   const classes = useStyles()
 
   const axiosPrivate = useAxiosPrivate()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [ mediaList, setMediaList ] = useState([])
   const [ activeStep, setActiveStep ] = useState(0)
@@ -85,6 +91,22 @@ const DialogMediasPreview = (props) => {
     setActiveStep(0)
   }
 
+  const handleDownloadButtonClick = async () => {
+    const resultDownloadFile = await downloadFileFromUrl(
+      mediaList[activeStep].url,
+      mediaList[activeStep].name,
+    )
+
+    if (resultDownloadFile.status !== 200 && resultDownloadFile.status !== 0) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Sorry, could not downlaod the file now',
+      })
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -117,7 +139,7 @@ const DialogMediasPreview = (props) => {
             spacing='8px'
           >
             {/* DOWNLOAD ICON */}
-            <IconButton>
+            <IconButton onClick={() => handleDownloadButtonClick()}>
               <IconFileDownload/>
             </IconButton>
 
