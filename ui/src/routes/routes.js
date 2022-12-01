@@ -18,6 +18,7 @@ const FormsSubmissionsDetail = lazy(() => import('pages/FormsSubmissionsDetail/F
 const Groups = lazy(() => import('pages/Groups/Groups'))
 const Home = lazy(() => import('pages/Home/Home'))
 const ResetPassword = lazy(() => import('pages/ResetPassword/ResetPassword'))
+const Settings = lazy(() => import('pages/Settings/Settings'))
 const SignIn = lazy(() => import('pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('pages/SignUp/SignUp'))
 
@@ -86,6 +87,11 @@ const routes = [
   {
     path: '/groups',
     element: <Groups/>,
+    routeType: 'private',
+  },
+  {
+    path: '/settings',
+    element: <Settings/>,
     routeType: 'private',
   },
   // FILL FORM
