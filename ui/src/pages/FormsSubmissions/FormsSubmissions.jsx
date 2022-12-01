@@ -375,7 +375,7 @@ const FormsSubmissions = () => {
 
   const updateColumnsDynamically = () => {
     if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
-      const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
+      let newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
           field: item.id,
           headerName: item.label,
@@ -390,6 +390,9 @@ const FormsSubmissions = () => {
           renderCell: (params) => getRenderCellByColumnType(params),
         }
       })]
+
+      // DELETE THE SEPARATOR TYPE COLUMNS
+      newColumnList = newColumnList.filter(item => item?.fieldInformation?.type !== 'separator')
 
       setColumnList(newColumnList)
     }
