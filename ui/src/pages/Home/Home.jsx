@@ -36,6 +36,8 @@ const Home = () => {
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
+  const initialList = { id: 'all', label: 'All' }
+
   const initialFilterParameters = {
     form: 'all',
     device: 'all',
@@ -44,8 +46,8 @@ const Home = () => {
   }
   const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
 
-  const [formList, setFormList] = useState([])
-  const [deviceList, setDeviceList] = useState([])
+  const [formList, setFormList] = useState([initialList])
+  const [deviceList, setDeviceList] = useState([initialList])
 
   // FETCH FILTER DATA
   const fetchDeviceList = async (abortController, inputIsMounted) => {
@@ -59,10 +61,7 @@ const Home = () => {
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setDeviceList(
         [
-          {
-            id: 'all',
-            label: 'All'
-          },
+          initialList,
           ...response.data.content
         ]
       )
@@ -87,10 +86,7 @@ const Home = () => {
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setFormList(
         [
-          {
-            id: 'all',
-            label: 'All'
-          },
+          initialList,
           ...response.data.content
         ]
       )
