@@ -1,11 +1,8 @@
 package id.worx.worx.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import id.worx.worx.entity.users.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +33,8 @@ public class File extends BaseEntity {
     @Default
     private FileState state = FileState.CREATED;
     private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "dashboard_logo", nullable = false)
+    private Users users;
 
 }

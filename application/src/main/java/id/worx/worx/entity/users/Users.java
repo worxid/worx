@@ -2,20 +2,15 @@ package id.worx.worx.entity.users;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
+import id.worx.worx.entity.File;
+import id.worx.worx.entity.Form;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,7 +58,14 @@ public class Users extends Audit {
     @Column(name = "country", nullable = false)
     private String country;
 
+    @Column(name = "dashboard_logo", nullable = false)
+    private Long dashboardLogo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "files", orphanRemoval = true)
+    @Builder.Default
+    private Set<File> files = new HashSet<>();
 
 }
