@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 // COMPONENTS
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -34,12 +37,14 @@ import { doesObjectContainDesiredValue } from 'utilities/validation'
 const Settings = () => {
   const classes = useStyles()
 
+  // CONTEXT
+  const { auth } = useContext(AllPagesContext)
+
   const initialFormObject = {
-    email: '',
+    email: auth?.user?.email,
     fullName: '',
-    organizationName: '',
-    country: null,
-    phoneNumber: '',
+    organizationName: auth?.user?.organization_name,
+    phoneNumber: auth?.user?.phone,
     password: '',
   }
 
@@ -47,7 +52,6 @@ const Settings = () => {
     email: null,
     fullName: null,
     organizationName: null,
-    country: null,
     phoneNumber: null,
     password: null,
   }
