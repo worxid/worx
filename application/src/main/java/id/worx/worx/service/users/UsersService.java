@@ -36,6 +36,7 @@ public interface UsersService {
     JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest);
 
     UserResponse toDTO(Users users);
+    UserDetailsResponse toDTOUserDetails(Users users);
     UserDetailsResponse getByEmail(String email);
 
     Users findByEmail(String email);

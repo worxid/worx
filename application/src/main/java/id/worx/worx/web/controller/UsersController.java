@@ -68,22 +68,6 @@ public class UsersController {
             .body(response);
     }
 
-    @PutMapping(value = "/user-details")
-    public ResponseEntity<BaseValueResponse<UserResponse>> updateUserDetails(
-        @RequestBody UserUpdateRequest userUpdateRequest) {
-
-        Users users = usersService.updateInformation(userUpdateRequest);
-        UserResponse dto = usersService.toDTO(users);
-
-        BaseValueResponse<UserResponse> response = BaseValueResponse.<UserResponse>builder()
-            .value(dto)
-            .build();
-
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(response);
-
-    }
-
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -189,5 +173,21 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(response);
+    }
+
+    @PutMapping(value = "/user-details")
+    public ResponseEntity<BaseValueResponse<UserDetailsResponse>> updateUserDetails(
+        @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        Users users = usersService.updateInformation(userUpdateRequest);
+        UserDetailsResponse dto = usersService.toDTOUserDetails(users);
+
+        BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
+            .value(dto)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
+
     }
 }

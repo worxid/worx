@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import id.worx.worx.mapper.UsersUpdateMapper;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -73,6 +75,10 @@ public class UsersServiceImpl implements UsersService {
     private final GroupService groupService;
 
     private final UsersMapper usersMapper;
+
+    private final UsersUpdateMapper usersUpdateMapper;
+
+    private final AuthenticationContext authenticationContext;
 
     @Override
     @Transactional
@@ -422,14 +428,13 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users updateInformation(UserUpdateRequest userUpdateRequest) {
-        Optional<Users> checkUsersByEmail = usersRepository.findByEmail(userUpdateRequest.getEmail());
-        if(checkUsersByEmail.isEmpty()){
-            throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
+        Optional<Users> checkUsers = usersRepository.findById(authenticationContext.getUsers().getId());
+        if(checkUsers.isEmpty()){
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }else{
 
-            Users user = checkUsersByEmail.get();
-            user.setEmail(userUpdateRequest.getEmail());
-            user.setCountry(userUpdateRequest.getCountry());
+            Users user = checkUsers.get();
+            user.setFullname(userUpdateRequest.getFullname());
             user.setPhone(userUpdateRequest.getPhone());
             user.setOrganizationName(user.getOrganizationName());
             usersRepository.save(user);
@@ -438,10 +443,13 @@ public class UsersServiceImpl implements UsersService {
         }
     }
 
+    public UserDetailsResponse toDTOUserDetails(Users users) {
+        return usersUpdateMapper.toDto(users);
+    }
+
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
     }
-
     public Users findByEmail(String email) {
 
         Optional<Users> getUser = usersRepository.findByEmail(email);

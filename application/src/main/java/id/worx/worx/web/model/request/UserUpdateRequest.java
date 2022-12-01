@@ -16,8 +16,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserUpdateRequest implements Serializable {
 
-    private String email;
-    private String country;
+    private String fullname;
     private String phone;
     @JsonProperty("organization_name")
     private String organizationName;
