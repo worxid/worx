@@ -225,12 +225,6 @@ const Settings = () => {
                 Allowed file extensions: JPG, JPEG, PNG
               </Typography>
               <Stack>
-                <Input
-                  id='logo-upload'
-                  accept='image/*'
-                  type='file'
-                  className='displayNone'
-                />
                 {/* UPLOAD LOGO BUTTON */}
                 <Button
                   variant='text'
@@ -240,6 +234,12 @@ const Settings = () => {
                 >
                   Upload Logo
                 </Button>
+                <Input
+                  id='logo-upload'
+                  accept='image/*'
+                  type='file'
+                  className='displayNone'
+                />
               </Stack>
             </Stack>
           </Stack>
