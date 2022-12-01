@@ -234,7 +234,6 @@ const Settings = () => {
                 {/* UPLOAD LOGO BUTTON */}
                 <Button
                   variant='text'
-                  loading={isLoading}
                   startIcon={<IconUpload />}
                   className={classes.buttonUpload}
                   onClick={() => document.getElementById('logo-upload').click()}
