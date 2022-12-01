@@ -9,6 +9,7 @@ import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
+import Input from '@mui/material/Input'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -83,7 +84,7 @@ const Settings = () => {
         direction='row'
         position='relative'
         flex='1'
-        height='100%'
+        height={0}
       >
         {/* MAIN CONTENT */}
         <LoadingPaper className={classes.mainContent}>
@@ -223,17 +224,24 @@ const Settings = () => {
                 File size: Maximum 512kb<br/>
                 Allowed file extensions: JPG, JPEG, PNG
               </Typography>
-              <input id='logo-upload' type='file' className='displayNone' ></input>
-              {/* UPLOAD LOGO BUTTON */}
-              <Button
-                variant='text'
-                loading={isLoading}
-                startIcon={<IconUpload />}
-                className={classes.buttonUpload}
-                onClick={() => document.getElementById('logo-upload').click()}
-              >
-                Upload Logo
-              </Button>
+              <Stack>
+                <Input
+                  id='logo-upload'
+                  accept='image/*'
+                  type='file'
+                  className='displayNone'
+                />
+                {/* UPLOAD LOGO BUTTON */}
+                <Button
+                  variant='text'
+                  loading={isLoading}
+                  startIcon={<IconUpload />}
+                  className={classes.buttonUpload}
+                  onClick={() => document.getElementById('logo-upload').click()}
+                >
+                  Upload Logo
+                </Button>
+              </Stack>
             </Stack>
           </Stack>
 

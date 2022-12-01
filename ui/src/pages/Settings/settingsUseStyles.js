@@ -4,10 +4,11 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   subtitle: {
     marginTop: 24,
-    marginBottom: 40,
+    marginBottom: 24,
   },
   mainContent: {
-    padding: '28px'
+    padding: 24,
+    overflow: 'auto'
   },
   dashboardLogoInfo: {
     marginTop: 8
