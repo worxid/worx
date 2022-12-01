@@ -104,13 +104,13 @@ const FormsSubmissions = () => {
     },
     {
       field: 'submissionAddress',
-      headerName: 'Submission Address',
+      headerName: 'Map',
       headerAlign: 'center',
       flex: 1,
-      minWidth: 180,
+      minWidth: 80,
       hide: false,
-      isFilterShown: true,
-      isSortShown: true,
+      isFilterShown: false,
+      isSortShown: false,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
@@ -375,7 +375,7 @@ const FormsSubmissions = () => {
 
   const updateColumnsDynamically = () => {
     if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
-      const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
+      let newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
           field: item.id,
           headerName: item.label,
@@ -390,6 +390,9 @@ const FormsSubmissions = () => {
           renderCell: (params) => getRenderCellByColumnType(params),
         }
       })]
+
+      // DELETE THE SEPARATOR TYPE COLUMNS
+      newColumnList = newColumnList.filter(item => item?.fieldInformation?.type !== 'separator')
 
       setColumnList(newColumnList)
     }
@@ -419,6 +422,7 @@ const FormsSubmissions = () => {
             ]
           }
         }
+        else result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
 
         return result
       }, {})
