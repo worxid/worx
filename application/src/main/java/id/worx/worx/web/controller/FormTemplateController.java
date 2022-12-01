@@ -129,8 +129,14 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Update a Form Template by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Form Template update is success."),
+            @ApiResponse(responseCode = "404", description = "Form Template not found")
+    })
     @PutMapping("{id}")
-    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(@PathVariable("id") Long id,
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(
+            @PathVariable("id") Long id,
             @RequestBody @Valid FormTemplateRequest request) {
         FormTemplate template = templateService.update(id, request);
         FormTemplateDTO dto = templateService.toDTO(template);
