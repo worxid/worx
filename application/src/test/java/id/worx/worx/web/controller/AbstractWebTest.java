@@ -107,6 +107,7 @@ public abstract class AbstractWebTest {
         request.setPhoneNo("62898555907");
         request.setOrganizationName("testadmin");
         request.setCountry("Indonesia");
+
         createUserAndLogin(request, ADMIN_USER_PASSWORD);
 
         log.info("Setup web test done");
