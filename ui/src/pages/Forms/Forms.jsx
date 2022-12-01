@@ -138,8 +138,6 @@ const Forms = () => {
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
-  const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
@@ -194,11 +192,6 @@ const Forms = () => {
     }
   }
 
-  const handleSelectDateRangePickerButtonClick = (newValue) => {
-    setDateRangeTimeValue(newValue)
-    setIsDateRangeTimePickerOpen(false)
-  }
-
   // FETCHING DATA TABLE FORMS
   const fetchingFormsList = async (abortController, inputIsMounted) => {
     let createdDate = handleDateSearchValue(filters?.created_on)
@@ -225,8 +218,8 @@ const Forms = () => {
             ? [filters?.assigned_groups] : null,
         submission_count: filters?.submission_count || null,
         global_search: pageSearch,
-        from: dateRangeTimeValue[0],
-        to: dateRangeTimeValue[1],
+        from: '',
+        to: '',
       },
       axiosPrivate,
     )
@@ -300,7 +293,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy, dateRangeTimeValue])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   return (
     <>
@@ -341,13 +334,8 @@ const Forms = () => {
             // TEXT
             contentTitle='Form List'
             // DATE RANGE TIME
-            isWithDateTimePicker={true}
+            isWithDateTimePicker={false}
             isWithTimePicker={false}
-            dateRangeValue={dateRangeTimeValue}
-            isDateRangeTimePickerOpen={isDateRangeTimePickerOpen} 
-            setIsDateRangeTimePickerOpen={setIsDateRangeTimePickerOpen}
-            handleSelectDateRangePickerButtonClick={handleSelectDateRangePickerButtonClick}
-            handleCancelDateRangePickerButtonClick={() => setIsDateRangeTimePickerOpen(false)}
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
