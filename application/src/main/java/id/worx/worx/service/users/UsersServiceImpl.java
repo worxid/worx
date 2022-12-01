@@ -437,6 +437,7 @@ public class UsersServiceImpl implements UsersService {
             user.setFullname(userUpdateRequest.getFullname());
             user.setPhone(userUpdateRequest.getPhone());
             user.setOrganizationName(user.getOrganizationName());
+            user.setDashboardLogo(user.getDashboardLogo());
             usersRepository.save(user);
 
             return user;

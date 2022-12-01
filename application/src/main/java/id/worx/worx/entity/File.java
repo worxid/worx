@@ -33,6 +33,7 @@ public class File extends BaseEntity {
     @Default
     private FileState state = FileState.CREATED;
     private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "dashboard_logo", nullable = false)
     private Users users;

@@ -64,7 +64,7 @@ public class Users extends Audit {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "files", orphanRemoval = true)
+    @OneToMany(mappedBy = "id", orphanRemoval = true)
     @Builder.Default
     private Set<File> files = new HashSet<>();
 

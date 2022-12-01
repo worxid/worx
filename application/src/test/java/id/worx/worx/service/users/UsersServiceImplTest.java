@@ -50,18 +50,18 @@ class UsersServiceImplTest {
 
     private UsersService usersService;
 
-    @BeforeEach
-    void init() {
-        usersService = new UsersServiceImpl(
-                usersRepository,
-                worxProps,
-                refreshTokenRepository,
-                emailTokenRepository,
-                jwtUtils,
-                emailService,
-                groupService,
-                usersMapper);
-    }
+//    @BeforeEach
+//    void init() {
+//        usersService = new UsersServiceImpl(
+//                usersRepository,
+//                worxProps,
+//                refreshTokenRepository,
+//                emailTokenRepository,
+//                jwtUtils,
+//                emailService,
+//                groupService,
+//                usersMapper);
+//    }
 
     @Test
     void givenUserRequest_whenCreateUser_thenReturn() {
