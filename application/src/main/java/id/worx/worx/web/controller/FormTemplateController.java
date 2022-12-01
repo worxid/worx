@@ -40,6 +40,7 @@ import id.worx.worx.service.FormExportService;
 import id.worx.worx.service.FormTemplateService;
 import id.worx.worx.web.model.request.FormExportRequest;
 import id.worx.worx.web.model.request.FormTemplateSearchRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +70,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(page);
     }
 
+    @Operation(summary = "Create a new Form Template")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Form Template is created.")
+            @ApiResponse(responseCode = "201", description = "Form Template is created."),
+            @ApiResponse(responseCode = "400", description = "Invalid FormTemplateRequest")
     })
     @PostMapping
     public ResponseEntity<BaseValueResponse<FormTemplateDTO>> create(

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import id.worx.worx.common.model.forms.field.Field;
@@ -18,6 +19,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FormTemplateDTO implements Serializable {
 
     private static final long serialVersionUID = -1081254233609145812L;
