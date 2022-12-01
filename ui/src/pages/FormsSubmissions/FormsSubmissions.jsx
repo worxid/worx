@@ -104,13 +104,13 @@ const FormsSubmissions = () => {
     },
     {
       field: 'submissionAddress',
-      headerName: 'Submission Address',
+      headerName: 'Map',
       headerAlign: 'center',
       flex: 1,
-      minWidth: 180,
+      minWidth: 80,
       hide: false,
-      isFilterShown: true,
-      isSortShown: true,
+      isFilterShown: false,
+      isSortShown: false,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
