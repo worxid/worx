@@ -75,13 +75,13 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
     minWidth: `${checkboxCellWidth}px !important`,
   },
 
-  // COLUMN 
-  '& .MuiDataGrid-columnHeaderTitleContainerContent': {
-    flex: 1,
-    '& .MuiCheckbox-root': {
-      margin: '0px auto',
-    },
-  },
+  // COLUMN (DON'T SURE WHAT IS THE PURPOSE OF THIS STYLE)
+  // '& .MuiDataGrid-columnHeaderTitleContainerContent': {
+  //   flex: 1,
+  //   '& .MuiCheckbox-root': {
+  //     margin: '0px auto',
+  //   },
+  // },
 
   // (INTENTIONALLY COMMENTED)
   // '& .MuiDataGrid-pinnedColumns': {

@@ -69,8 +69,9 @@ const MapMarkers = (props) => {
           feature,
         ),
       }).on('click', (event) => {
-        mapObject.setView(latitudeLongitude, mapObject._zoom + 1)
-        setMapZoom(current => current + 1)
+        const zoomTo = superclusterRef?.current?.getClusterExpansionZoom(feature?.properties?.cluster_id)
+        mapObject.setView(latitudeLongitude, zoomTo)
+        setMapZoom(zoomTo)
       })
     }
   }
@@ -123,7 +124,7 @@ const MapMarkers = (props) => {
   }, [mapObject])
 
   useEffect(() => {
-    if(mapBounds && mapZoom && submissionList.length) {
+    if(mapBounds && mapZoom && submissionList) {
       updateCluster()
     }
   }, [mapObject, mapBounds, mapZoom, submissionList])

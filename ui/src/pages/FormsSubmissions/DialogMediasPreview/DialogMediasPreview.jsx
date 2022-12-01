@@ -1,4 +1,7 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -21,9 +24,7 @@ import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
 import { postDetailMediaFiles } from 'services/media'
-
-// SWIPEABLE
-import SwipeableViews from 'react-swipeable-views'
+import { downloadFileFromUrl } from 'services/others'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
@@ -35,16 +36,47 @@ const DialogMediasPreview = (props) => {
 
   const axiosPrivate = useAxiosPrivate()
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const [ mediaList, setMediaList ] = useState([])
   const [ activeStep, setActiveStep ] = useState(0)
+  
+  const getContentPropertyFromMediaObject = (inputMediaObject) => {
+    let output = {}
+
+    // SOURCE: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    // IMAGE TYPE MEDIA
+    if (inputMediaObject?.mimeType?.includes('image/')) output = {
+      component: 'img',
+      src: inputMediaObject.url,
+      className: classes.mediaPreviewImage,
+    }
+    // EXCEL TYPE MEDIA
+    else if (
+      inputMediaObject?.mimeType === 'application/vnd.ms-excel' ||
+      inputMediaObject?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    ) output = {
+      component: 'iframe',
+      src: `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(inputMediaObject.url)}&embedded=true`,
+      className: classes.mediaPreviewDocument,
+    }
+    // OTHER DOCUMENT TYPE MEDIA
+    else if (
+      inputMediaObject?.mimeType?.includes('application/') || 
+      inputMediaObject?.mimeType?.includes('text/')
+    ) output = {
+      component: 'iframe',
+      src: `https://docs.google.com/gview?url=${encodeURIComponent(inputMediaObject.url)}&embedded=true`,
+      className: classes.mediaPreviewDocument,
+    }
+
+    return output
+  }
 
   const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
     const resultMediaFilesData = await postDetailMediaFiles(
       inputAbortController.signal,
-      { file_ids: mediasPreviewObject.type === 'signature' 
-        ? [ mediasPreviewObject.file_id ]
-        : mediasPreviewObject.file_ids
-      },
+      { media_ids: mediasPreviewObject?.fileList?.map(item => item.media_id) },
       axiosPrivate,
     )
 
@@ -57,6 +89,22 @@ const DialogMediasPreview = (props) => {
     setMediasPreviewObject(null)
     setMediaList([])
     setActiveStep(0)
+  }
+
+  const handleDownloadButtonClick = async () => {
+    const resultDownloadFile = await downloadFileFromUrl(
+      mediaList[activeStep].url,
+      mediaList[activeStep].name,
+    )
+
+    if (resultDownloadFile.status !== 200 && resultDownloadFile.status !== 0) {
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Sorry, could not downlaod the file now',
+      })
+    }
   }
 
   useEffect(() => {
@@ -91,7 +139,7 @@ const DialogMediasPreview = (props) => {
             spacing='8px'
           >
             {/* DOWNLOAD ICON */}
-            <IconButton>
+            <IconButton onClick={() => handleDownloadButtonClick()}>
               <IconFileDownload/>
             </IconButton>
 
@@ -110,22 +158,13 @@ const DialogMediasPreview = (props) => {
         alignItems='center'
         className={classes.content}
       >
-        <SwipeableViews
-          index={activeStep}
-          onChangeIndex={(newStep) => setActiveStep(newStep)}
-          enableMouseEvents
-        >
-          {mediaList.map((item, index) => (
-            <Fragment key={index}>
-              <Box
-                component='img'
-                src={item.url}
-                alt=''
-                className={classes.mediaPreview}
-              />
-            </Fragment>
-          ))}
-        </SwipeableViews>
+        {mediaList.length > 0 &&
+        <Box
+          component={getContentPropertyFromMediaObject(mediaList[activeStep]).component}
+          src={getContentPropertyFromMediaObject(mediaList[activeStep]).src}
+          alt=''
+          className={getContentPropertyFromMediaObject(mediaList[activeStep]).className}
+        />}
       </Stack>
 
       {/* BOTTOM MENU */}
