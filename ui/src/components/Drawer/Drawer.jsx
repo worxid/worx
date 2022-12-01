@@ -16,7 +16,10 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 import CustomDrawer, { DrawerHeader } from 'components/Customs/CustomDrawer'
 
 // DATA
-import { drawerNavigationList } from './drawerNavigationList'
+import { 
+  bottomNavigationList,
+  drawerNavigationList, 
+} from './drawerNavigationList'
 
 // MUIS
 import Avatar from '@mui/material/Avatar'
@@ -35,7 +38,6 @@ import IconArrowDropDown from '@mui/icons-material/ArrowDropDown'
 import IconArrowDropUp from '@mui/icons-material/ArrowDropUp'
 import IconCircle from '@mui/icons-material/Circle'
 import IconContentCopy from '@mui/icons-material/ContentCopy'
-import IconLogout from '@mui/icons-material/Logout'
 import IconMenuOpen from '@mui/icons-material/MenuOpen'
 
 // STYLES
@@ -308,59 +310,75 @@ const Drawer = () => {
 
       {/* BOTTOM NAVIGATION */}
       <List className='marginTopAuto'>
-        {/* LOGOUT BUTTON */}
-        <NavigationTooltip 
-          placement='right'
-          sx={drawerState.isDrawerExpanded ? { display: 'none' } : {}}
-          title={
-            <ListItemButton
-              className={`${classes.navigationItem} ${classes.navigationTooltipItem} no-zoom`}
-              onClick={() => setDialogLogOut({ show: true })}
-            >
-              {/* TEXT */}
-              <ListItemText primary={
-                <Typography
-                  variant='inherit'
-                  className={`${classes.navigationItemContentInactive} zoom`}
+        {bottomNavigationList.map((parentItem, parentIndex) => (
+          <Fragment key={parentIndex}>
+            <NavigationTooltip 
+              placement='right'
+              sx={drawerState.isDrawerExpanded ? { display: 'none' } : {}}
+              title={
+                <ListItemButton
+                  href={(parentItem.type === 'single' && parentItem.path) ? parentItem.path : null}
+                  className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
+                  onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(parentItem) : setDialogLogOut({ show: true })}
                 >
-                  Log Out
-                </Typography>
-              }/>
-            </ListItemButton>
-          }
-        >
-          <ListItemButton
-            className={`${classes.navigationItem} ${classes.logOutItemButton}`}
-            onClick={() => setDialogLogOut({ show: true })}
-          >
-            {/* ICON */}
-            <ListItemIcon className='zoom'>
-              <Avatar className={classes.logOutAvatar}>
-                <IconAccountCircle 
-                  fontSize='small'
-                  color='primary'
-                  className='no-zoom'
-                />
-              </Avatar>
-            </ListItemIcon>
-
-            {/* TEXT */}
-            <ListItemText primary={
-              <Typography
-                variant='inherit'
-                className={`${classes.navigationItemContentActive} zoom`}
+                  {/* TEXT */}
+                  <ListItemText primary={
+                    <Typography
+                      variant='inherit'
+                      className={`${getListItemTextClassName(parentItem.path)} zoom`}
+                    >
+                      {parentItem.title}
+                    </Typography>
+                  }/>
+                </ListItemButton>
+              }
+            >
+              {/* NAVIGATION ITEM - PARENT */}
+              <ListItemButton
+                href={(parentItem.type === 'single' && parentItem.path) ? parentItem.path : null}
+                className={getListItemButtonClassName(parentItem.path)}
+                onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(parentItem) : setDialogLogOut({ show: true })}
               >
-                Log Out
-              </Typography>
-            }/>
-            
-            {/* ICON */}
-            <IconLogout
-              fontSize='small' 
-              className={classes.navigationItemContentActive}
-            />
-          </ListItemButton>
-        </NavigationTooltip>
+                {/* ICON */}
+                <ListItemIcon className='zoom'>
+                  {parentItem.title !== 'Log Out' ? (
+                    // LOG OUT ICON
+                    <parentItem.icon className={isNavigationActive(parentItem.path)
+                      ? `${classes.navigationItemContentActive} no-zoom`
+                      : `${classes.navigationItemContentInactive} no-zoom`
+                    }/>
+                  ) : (
+                    // NON-LOG OUT ICON
+                    <Avatar className={classes.logOutAvatar}>
+                      <IconAccountCircle 
+                        fontSize='small'
+                        color='primary'
+                        className='no-zoom'
+                      />
+                    </Avatar>
+                  )}
+                </ListItemIcon>
+
+                {/* TEXT */}
+                <ListItemText primary={
+                  <Typography
+                    variant='inherit'
+                    className={`${getListItemTextClassName(parentItem.path)} zoom`}
+                  >
+                    {parentItem.title}
+                  </Typography>
+                }/>
+                
+                {/* EXPAND/COLLAPSE ICON */}
+                {(parentItem.type === 'collection' && drawerState.isDrawerExpanded) &&
+                (drawerState.expandParent === parentItem.text
+                  ? <IconArrowDropUp className={classes.navigationItemContentInactive}/>
+                  : <IconArrowDropDown className={classes.navigationItemContentInactive}/>
+                )}
+              </ListItemButton>
+            </NavigationTooltip>
+          </Fragment>
+        ))}
       </List>
 
       {/* DIALOG LOG OUT */}
