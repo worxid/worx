@@ -54,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
     width: 32,
     height: 32,
     backgroundColor: theme.palette.primary.outlinedHoverBackground,
+    marginLeft: -4,
+    [values.zoomBoundary]: {
+      marginLeft: -2,
+    }
   },
   navigationTooltipItem: {
     paddingLeft: 16,
