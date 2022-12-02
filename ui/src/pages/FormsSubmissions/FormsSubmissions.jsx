@@ -76,7 +76,7 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 160,
+      minWidth: 170,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
