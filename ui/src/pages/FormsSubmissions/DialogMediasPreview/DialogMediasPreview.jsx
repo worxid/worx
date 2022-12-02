@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -10,6 +10,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -37,9 +38,12 @@ const DialogMediasPreview = (props) => {
   const axiosPrivate = useAxiosPrivate()
 
   const { setSnackbarObject } = useContext(AllPagesContext)
+  const refreshIntervalRef = useRef(null)
 
   const [ mediaList, setMediaList ] = useState([])
   const [ activeStep, setActiveStep ] = useState(0)
+  const [ refreshKey, setRefreshKey ] = useState(1)
+  const [ isLoadingPreview, setIsLoadingPreview ] = useState(true)
   
   const getContentPropertyFromMediaObject = (inputMediaObject) => {
     let output = {}
@@ -82,6 +86,10 @@ const DialogMediasPreview = (props) => {
 
     if (resultMediaFilesData.status === 200 && inputIsMounted) {
       setMediaList(resultMediaFilesData.data.list)
+
+      refreshIntervalRef.current = setInterval(() => {
+        setRefreshKey(current => current+1)
+      }, 4000)
     }
   }
 
@@ -107,15 +115,21 @@ const DialogMediasPreview = (props) => {
     }
   }
 
+  const handleCancelRefreshInterval = () => {
+    refreshIntervalRef.current && clearInterval(refreshIntervalRef.current)
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
 
+    if(!isLoadingPreview) setIsLoadingPreview(true)
     if (Boolean(mediasPreviewObject)) loadMediaFilesData(abortController, isMounted)
 
     return () => {
       isMounted = false
       abortController.abort()
+      handleCancelRefreshInterval()
     }
   }, [mediasPreviewObject])
 
@@ -165,7 +179,18 @@ const DialogMediasPreview = (props) => {
           src={getContentPropertyFromMediaObject(mediaList[activeStep]).src}
           alt=''
           className={getContentPropertyFromMediaObject(mediaList[activeStep]).className}
+          onLoad={() => {
+            handleCancelRefreshInterval()
+            setIsLoadingPreview(false)
+          }}
+          key={refreshKey}
         />}
+
+        {/* LOADING */}
+        {isLoadingPreview &&
+        <Box className={classes.loadingContainer}>
+          <CircularProgress className={classes.loading}/>
+        </Box>}
       </Stack>
 
       {/* BOTTOM MENU */}
@@ -176,7 +201,10 @@ const DialogMediasPreview = (props) => {
             className={classes.actionButton}
             startIcon={<IconArrowBackIos/>}
             disabled={activeStep === 0}
-            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep - 1)}
+            onClick={() => {
+              setIsLoadingPreview(true)
+              setActiveStep((prevActiveStep) => prevActiveStep - 1)
+            }}
           >
             BACK
           </Button>
@@ -186,7 +214,10 @@ const DialogMediasPreview = (props) => {
             className={classes.actionButton}
             endIcon={<IconArrowForwardIos/>}
             disabled={activeStep === mediaList.length - 1}
-            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
+            onClick={() => {
+              setIsLoadingPreview(true)
+              setActiveStep((prevActiveStep) => prevActiveStep + 1)
+            }}
           >
             NEXT
           </Button>
