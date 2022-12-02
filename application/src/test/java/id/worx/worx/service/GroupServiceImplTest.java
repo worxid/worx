@@ -38,7 +38,11 @@ class GroupServiceImplTest {
 
     @BeforeEach
     void init() {
-        groupService = new GroupServiceImpl(groupRepository, groupMapper, authContext);
+
+        groupService = new GroupServiceImpl(
+            groupRepository,
+            groupMapper,
+            authContext);
     }
 
     @Test

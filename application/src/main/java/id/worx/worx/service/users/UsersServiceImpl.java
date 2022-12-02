@@ -80,6 +80,7 @@ public class UsersServiceImpl implements UsersService {
 
     private final AuthenticationContext authenticationContext;
 
+
     @Override
     @Transactional
     public Users createUser(UserRequest userRequest) {
@@ -116,6 +117,8 @@ public class UsersServiceImpl implements UsersService {
         users.setCountry(userRequest.getCountry().toUpperCase());
         users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         users.setOrganizationCode(organizationCode());
+        users.setDashboardLogo(1L);
+
         users = usersRepository.save(users);
 
             EmailToken emailToken = new EmailToken();

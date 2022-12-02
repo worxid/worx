@@ -5,6 +5,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import id.worx.worx.mapper.UsersUpdateMapper;
+import id.worx.worx.service.AuthenticationContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,20 +50,28 @@ class UsersServiceImplTest {
     @Mock
     UsersMapper usersMapper;
 
+    @Mock
+    UsersUpdateMapper usersUpdateMapper;
+
     private UsersService usersService;
 
-//    @BeforeEach
-//    void init() {
-//        usersService = new UsersServiceImpl(
-//                usersRepository,
-//                worxProps,
-//                refreshTokenRepository,
-//                emailTokenRepository,
-//                jwtUtils,
-//                emailService,
-//                groupService,
-//                usersMapper);
-//    }
+    @Mock
+    AuthenticationContext authenticationContext;
+
+    @BeforeEach
+    void init() {
+        usersService = new UsersServiceImpl(
+                usersRepository,
+                worxProps,
+                refreshTokenRepository,
+                emailTokenRepository,
+                jwtUtils,
+                emailService,
+                groupService,
+                usersMapper,
+                usersUpdateMapper,
+                authenticationContext);
+    }
 
     @Test
     void givenUserRequest_whenCreateUser_thenReturn() {
