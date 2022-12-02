@@ -124,9 +124,10 @@ const DialogMediasPreview = (props) => {
       fullScreen
       open={Boolean(mediasPreviewObject)}
       onClose={handleDialogClose}
+      className='no-zoom'
     >
       {/* HEADER */}
-      <AppBar className={classes.appBar}>
+      <AppBar className={`${classes.appBar} zoom`}>
         <Toolbar className={classes.toolbar}>
           {/* FILES COUNT */}
           <Typography variant='subtitle1'>
@@ -156,7 +157,7 @@ const DialogMediasPreview = (props) => {
         flex='1'
         justifyContent='center'
         alignItems='center'
-        className={classes.content}
+        className={`${classes.content} zoom`}
       >
         {mediaList.length > 0 &&
         <Box
@@ -168,7 +169,7 @@ const DialogMediasPreview = (props) => {
       </Stack>
 
       {/* BOTTOM MENU */}
-      <AppBar className={classes.appBar}>
+      <AppBar className={`${classes.appBar} zoom`}>
         <Toolbar className={classes.toolbar}>
           {/* BACK BUTTON */}
           <Button
