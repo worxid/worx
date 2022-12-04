@@ -1,4 +1,5 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,8 +15,9 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     backgroundColor: theme.palette.grey[900],
-    maxHeight: 'calc(100vh - (2 * 96px))',
+    maxHeight: '100%',
     maxWidth: '100%',
+    position: 'relative'
   },
   mediaPreviewDocument: {
     width: '100%',
@@ -34,6 +36,23 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       boxShadow: 'none',
     },
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 2,
+    backgroundColor: alpha(theme.palette.common.white, 0.7),
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderRadius: 'inherit',
+  },
+  loading: {
+    width: '48px !important',
+    height: '48px !important',
   },
 }))
 
