@@ -10,7 +10,6 @@ import javax.persistence.*;
 import id.worx.worx.common.enums.UserStatus;
 import id.worx.worx.entity.Audit;
 import id.worx.worx.entity.File;
-import id.worx.worx.entity.Form;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
