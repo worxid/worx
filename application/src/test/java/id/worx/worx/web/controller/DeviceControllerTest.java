@@ -8,8 +8,10 @@ import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
+import id.worx.worx.service.GroupServiceImpl;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -24,6 +26,11 @@ class DeviceControllerTest extends AbstractControllerTest{
 
     static class Config{
 
+    }
+
+    @BeforeEach
+    void init() {
+        
     }
 
     @Test
