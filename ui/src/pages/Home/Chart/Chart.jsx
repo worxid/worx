@@ -14,7 +14,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
-import useWindowSize from 'hooks/useWindowSize(Renamed)'
+import useWindowSize from 'hooks/useWindowSize'
 
 // MUIS
 import Stack from '@mui/material/Stack'
