@@ -97,7 +97,7 @@ const Map = (props) => {
 
   return (
     <Stack
-      flex='2'
+      flex='1'
       margin='0px -24px -24px'
     >
       <MapContainer
