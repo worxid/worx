@@ -1,10 +1,11 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   subtitle: {
     marginTop: 24,
-    marginBottom: 24,
+    marginBottom: 60,
   },
   mainContent: {
     padding: 24,
@@ -58,8 +59,37 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     minWidth: 168,
     marginTop: -12,
+    fontWeight: 700,
     display: 'flex',
     alignSelf: 'flex-end',
+    '&.Mui-disabled': {
+      color: `${alpha(theme.palette.common.black, 0.38)}`,
+      backgroundColor: `${alpha(theme.palette.common.black, 0.08)}`,
+    }
+  },
+  tabs: {
+    alignItems: 'center',
+    '& .Mui-selected': {
+      fontSize: 14,
+      fontWeight: 400,
+      color: '#2F2F30',
+      lineHeight: '20px',
+      letterSpacing: '0.15px',
+      backgroundColor: theme.palette.common.white,
+    },
+    
+  },
+  tab: {
+    minHeight: 68,
+    minWidth: 222,
+    textTransform: 'capitalize',
+
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: '20px',
+    letterSpacing: '0.15px',
+    color: `${alpha(theme.palette.common.black, 0.54)}`,
+    backgroundColor: `${alpha(theme.palette.common.black, 0.08)}`,
   }
 }))
 

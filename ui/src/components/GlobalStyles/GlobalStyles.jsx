@@ -45,6 +45,9 @@ const GlobalStyles = () => {
         '.displayBlock': {
           display: 'block'
         },
+        '.displayFlex': {
+          display: 'flex'
+        },
         '.displayNone': {
           display: 'none'
         },
