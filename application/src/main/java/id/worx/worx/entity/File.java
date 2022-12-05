@@ -2,7 +2,6 @@ package id.worx.worx.entity;
 
 import javax.persistence.*;
 
-import id.worx.worx.entity.users.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
