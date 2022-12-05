@@ -8,11 +8,16 @@ import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.mobile.model.request.MobileRegisterRequest;
+import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.GroupServiceImpl;
+import id.worx.worx.service.devices.DeviceService;
+import id.worx.worx.service.users.UsersServiceImpl;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
@@ -24,13 +29,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = { DeviceControllerTest.Config.class })
 class DeviceControllerTest extends AbstractControllerTest{
 
+    @Mock
+    DeviceService deviceWebService;
+
+    @Mock
+    AuthenticationContext authenticationContext;
+
+    private DeviceController deviceController;
     static class Config{
 
     }
 
     @BeforeEach
     void init() {
-        
+        deviceController = new DeviceController(
+            deviceWebService
+        );
     }
 
     @Test
