@@ -20,4 +20,5 @@ public class UserDetailsResponse implements Serializable {
     private String organizationCode;
     private String country;
     private String phone;
+    private String logoUrl;
 }

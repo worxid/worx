@@ -12,8 +12,11 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import id.worx.worx.entity.File;
 import id.worx.worx.mapper.UsersUpdateMapper;
+import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.AuthenticationContext;
+import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -80,6 +83,10 @@ public class UsersServiceImpl implements UsersService {
 
     private final AuthenticationContext authenticationContext;
 
+    private final FileRepository fileRepository;
+
+    private final FileStorageService fileStorageService;
+
 
     @Override
     @Transactional
@@ -117,7 +124,7 @@ public class UsersServiceImpl implements UsersService {
         users.setCountry(userRequest.getCountry().toUpperCase());
         users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         users.setOrganizationCode(organizationCode());
-        users.setDashboardLogo(1L);
+        users.setDashboardLogo(null);
 
         users = usersRepository.save(users);
 
@@ -435,15 +442,26 @@ public class UsersServiceImpl implements UsersService {
         if(checkUsers.isEmpty()){
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }else{
+            Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getDashboardLogoId());
+            if(checkFileId.isEmpty()){
+                throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+            }else{
+                File files = checkFileId.get();
+                if(fileStorageService.isObjectExist(files.getPath())){
+                    Users user = checkUsers.get();
+                    user.setFullname(userUpdateRequest.getFullname());
+                    user.setPhone(userUpdateRequest.getPhone());
+                    user.setOrganizationName(user.getOrganizationName());
+                    user.setDashboardLogo(files);
+                    usersRepository.save(user);
 
-            Users user = checkUsers.get();
-            user.setFullname(userUpdateRequest.getFullname());
-            user.setPhone(userUpdateRequest.getPhone());
-            user.setOrganizationName(user.getOrganizationName());
-            user.setDashboardLogo(user.getDashboardLogo());
-            usersRepository.save(user);
+                    return user;
+                }else{
+                    throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+                }
 
-            return user;
+            }
+
         }
     }
 

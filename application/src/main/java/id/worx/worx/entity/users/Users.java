@@ -2,8 +2,6 @@ package id.worx.worx.entity.users;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.*;
 
@@ -57,14 +55,11 @@ public class Users extends Audit {
     @Column(name = "country", nullable = false)
     private String country;
 
-    @Column(name = "dashboard_logo", nullable = false)
-    private Long dashboardLogo;
+    @OneToOne
+    @JoinColumn(name = "dashboard_logo", referencedColumnName = "id")
+    private File dashboardLogo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "id", orphanRemoval = true)
-    @Builder.Default
-    private Set<File> files = new HashSet<>();
 
 }

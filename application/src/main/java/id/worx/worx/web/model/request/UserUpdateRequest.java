@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
 import java.io.Serializable;
 
 @Setter
@@ -20,5 +21,6 @@ public class UserUpdateRequest implements Serializable {
     private String phone;
     @JsonProperty("organization_name")
     private String organizationName;
-    private Long dashboardLogo;
+    @JsonProperty("dashboard_logo_id")
+    private Long dashboardLogoId;
 }

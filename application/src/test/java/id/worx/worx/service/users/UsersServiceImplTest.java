@@ -6,7 +6,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import id.worx.worx.mapper.UsersUpdateMapper;
+import id.worx.worx.repository.*;
 import id.worx.worx.service.AuthenticationContext;
+import id.worx.worx.service.storage.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +20,6 @@ import id.worx.worx.config.properties.WebProperties;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.mapper.UsersMapper;
-import id.worx.worx.repository.EmailTokenRepository;
-import id.worx.worx.repository.GroupRepository;
-import id.worx.worx.repository.RefreshTokenRepository;
-import id.worx.worx.repository.UsersRepository;
 import id.worx.worx.service.EmailService;
 import id.worx.worx.service.GroupService;
 import id.worx.worx.util.JwtUtils;
@@ -58,6 +56,12 @@ class UsersServiceImplTest {
     @Mock
     AuthenticationContext authenticationContext;
 
+    @Mock
+    FileRepository fileRepository;
+
+    @Mock
+    FileStorageService fileStorageService;
+
     @BeforeEach
     void init() {
         usersService = new UsersServiceImpl(
@@ -70,7 +74,9 @@ class UsersServiceImplTest {
                 groupService,
                 usersMapper,
                 usersUpdateMapper,
-                authenticationContext);
+                authenticationContext,
+                fileRepository,
+                fileStorageService);
     }
 
     @Test
