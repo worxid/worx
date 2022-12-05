@@ -250,6 +250,14 @@ public abstract class AbstractWebTest {
         return mockMvc.perform(postRequest);
     }
 
+    protected <T> ResultActions doDelete(String urlTemplate, T content, String... params) throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = delete(urlTemplate, (Object[]) params);
+        setJwtToken(deleteRequest);
+        String json = json(content);
+        deleteRequest.contentType(contentType).content(json);
+        return mockMvc.perform(deleteRequest);
+    }
+
     protected ResultActions doDelete(String urlTemplate, String... params) throws Exception {
         MockHttpServletRequestBuilder deleteRequest = delete(urlTemplate);
         setJwtToken(deleteRequest);

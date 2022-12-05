@@ -72,7 +72,7 @@ public class FormTemplateController implements SecuredRestController {
 
     @Operation(summary = "Create a new Form Template")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Form Template is created."),
+            @ApiResponse(responseCode = "201", description = "Form Template is created"),
             @ApiResponse(responseCode = "400", description = "Invalid FormTemplateRequest")
     })
     @PostMapping
@@ -100,6 +100,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Delete Form Template(s) by id(s)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Form Template(s) is/are deleted")
+    })
     @DeleteMapping
     public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
         templateService.delete(request.getIds());
@@ -131,7 +135,7 @@ public class FormTemplateController implements SecuredRestController {
 
     @Operation(summary = "Update a Form Template by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Form Template update is success."),
+            @ApiResponse(responseCode = "200", description = "Form Template update is success"),
             @ApiResponse(responseCode = "404", description = "Form Template not found")
     })
     @PutMapping("{id}")
@@ -147,8 +151,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Delete a Form Template by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Form Template is deleted.")
+            @ApiResponse(responseCode = "204", description = "Form Template is deleted"),
+            @ApiResponse(responseCode = "404", description = "Form Template not found")
     })
     @DeleteMapping("{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") Long id) {
@@ -173,7 +179,6 @@ public class FormTemplateController implements SecuredRestController {
     @PostMapping("{id}/share")
     public ResponseEntity<BaseResponse> shareFormToEmail(@PathVariable("id") Long id,
             @RequestBody @Valid FormShareRequest request) {
-
         FormTemplate template = templateService.read(id);
         templateService.share(template, request.getRecipients());
         return ResponseEntity.status(HttpStatus.OK)
