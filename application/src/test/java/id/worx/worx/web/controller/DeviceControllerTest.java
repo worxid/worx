@@ -29,13 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = { DeviceControllerTest.Config.class })
 class DeviceControllerTest extends AbstractControllerTest{
 
-    @Mock
-    DeviceService deviceWebService;
-
-    @Mock
-    AuthenticationContext authenticationContext;
-
-    private DeviceController deviceController;
     static class Config{
 
     }
@@ -47,7 +40,7 @@ class DeviceControllerTest extends AbstractControllerTest{
         List<DeviceDTO> list = response.getList();
 
         String label = "kay";
-        String organizationCode = "WXOOACB";
+        String organizationCode = this.organizationCode;
         String deviceCode = "kay1234";
         String deviceModel = "xiaomi";
         String deviceOsVersion = "15.01";
@@ -89,7 +82,7 @@ class DeviceControllerTest extends AbstractControllerTest{
     void toUpdateDevice() throws Exception{
 
         String label = "kay";
-        String organizationCode = "WXOOACB";
+        String organizationCode = this.organizationCode;
         String deviceCode = "kay1234";
         String deviceModel = "xiaomi";
         String deviceOsVersion = "15.01";
@@ -131,7 +124,7 @@ class DeviceControllerTest extends AbstractControllerTest{
 
         Long deviceId = dto.getId();
         String UpdatedLabel = "kay-valud";
-        String UpdatedOrganizationCode = "WXOOACB";
+        String UpdatedOrganizationCode = this.organizationCode;
         String UpdatedDeviceCode = "kay1234";
         String UpdatedDeviceModel = "xiaomi";
         String UpdatedDeviceOsVersion = "15.01";
@@ -174,7 +167,7 @@ class DeviceControllerTest extends AbstractControllerTest{
     void testDeleteDevice() throws Exception{
 
         String label = "kay";
-        String organizationCode = "WXOOACB";
+        String organizationCode = this.organizationCode;
         String deviceCode = "kay1234";
         String deviceModel = "xiaomi";
         String deviceOsVersion = "15.01";
@@ -195,12 +188,15 @@ class DeviceControllerTest extends AbstractControllerTest{
             ip
         );
 
+        System.out.println(">>>>>> "+ request.getOrganizationCode());
+        System.out.println(">>>>>> "+ request.getLabel());
+
         BaseValueResponse<DeviceDTO> response = doPostWithTypedResponse(
             "/mobile/devices/register",
             request,
             new TypeReference<BaseValueResponse<DeviceDTO>>(){
             },
-            status().isCreated());
+            status().isOk());
 
         DeviceDTO dto = response.getValue();
 
