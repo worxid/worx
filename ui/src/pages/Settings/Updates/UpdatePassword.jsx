@@ -233,7 +233,7 @@ const UpdatePassword = () => {
         </FormHelperText>
       </FormControl>
 
-      <Stack className='displayFlex width100'>
+      <Stack className='width100'>
         {/* UPDATE BUTTON */}
         <LoadingButton
           variant='contained'
