@@ -40,6 +40,7 @@ import id.worx.worx.service.FormExportService;
 import id.worx.worx.service.FormTemplateService;
 import id.worx.worx.web.model.request.FormExportRequest;
 import id.worx.worx.web.model.request.FormTemplateSearchRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +70,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(page);
     }
 
+    @Operation(summary = "Create a new Form Template")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Form Template is created.")
+            @ApiResponse(responseCode = "201", description = "Form Template is created"),
+            @ApiResponse(responseCode = "400", description = "Invalid FormTemplateRequest")
     })
     @PostMapping
     public ResponseEntity<BaseValueResponse<FormTemplateDTO>> create(
@@ -97,6 +100,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Delete Form Template(s) by id(s)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Form Template(s) is/are deleted")
+    })
     @DeleteMapping
     public ResponseEntity<BaseResponse> delete(@RequestBody @Valid MultipleDeleteRequest request) {
         templateService.delete(request.getIds());
@@ -126,8 +133,14 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Update a Form Template by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Form Template update is success"),
+            @ApiResponse(responseCode = "404", description = "Form Template not found")
+    })
     @PutMapping("{id}")
-    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(@PathVariable("id") Long id,
+    public ResponseEntity<BaseValueResponse<FormTemplateDTO>> update(
+            @PathVariable("id") Long id,
             @RequestBody @Valid FormTemplateRequest request) {
         FormTemplate template = templateService.update(id, request);
         FormTemplateDTO dto = templateService.toDTO(template);
@@ -138,8 +151,10 @@ public class FormTemplateController implements SecuredRestController {
                 .body(response);
     }
 
+    @Operation(summary = "Delete a Form Template by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Form Template is deleted.")
+            @ApiResponse(responseCode = "204", description = "Form Template is deleted"),
+            @ApiResponse(responseCode = "404", description = "Form Template not found")
     })
     @DeleteMapping("{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") Long id) {
@@ -164,7 +179,6 @@ public class FormTemplateController implements SecuredRestController {
     @PostMapping("{id}/share")
     public ResponseEntity<BaseResponse> shareFormToEmail(@PathVariable("id") Long id,
             @RequestBody @Valid FormShareRequest request) {
-
         FormTemplate template = templateService.read(id);
         templateService.share(template, request.getRecipients());
         return ResponseEntity.status(HttpStatus.OK)
