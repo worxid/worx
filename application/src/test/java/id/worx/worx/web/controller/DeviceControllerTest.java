@@ -40,13 +40,6 @@ class DeviceControllerTest extends AbstractControllerTest{
 
     }
 
-    @BeforeEach
-    void init() {
-        deviceController = new DeviceController(
-            deviceWebService
-        );
-    }
-
     @Test
     void testGetListDevice() throws Exception{
         BaseListResponse<DeviceDTO> response = doGetTyped("/devices", new TypeReference<BaseListResponse<DeviceDTO>>() {

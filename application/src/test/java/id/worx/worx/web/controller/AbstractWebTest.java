@@ -65,6 +65,8 @@ public abstract class AbstractWebTest {
     protected String refreshToken;
     protected String username;
 
+    protected String organizationCode;
+
     @SuppressWarnings("rawtypes")
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
