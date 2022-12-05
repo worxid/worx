@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import id.worx.worx.common.FormConstants;
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.InvalidParameterException;
@@ -20,8 +21,6 @@ public class PhotoField extends Field {
 
     private static final long serialVersionUID = 7050599105120337475L;
 
-    private static final int MAXIMUM_ALLOWED_MAX_FILES = 6;
-
     @JsonProperty("max_files")
     private Integer maxFiles;
     @JsonProperty("allow_gallery_upload")
@@ -32,7 +31,7 @@ public class PhotoField extends Field {
             Boolean allowGalleryUpload) {
         super(id, label, description, FieldType.PHOTO, required);
 
-        if (maxFiles > MAXIMUM_ALLOWED_MAX_FILES) {
+        if (maxFiles > FormConstants.PHOTO_FIELD_MAXIMUM_ALLOWED_MAX_FILES) {
             throw new InvalidParameterException("Maximum number of photos to attach is up to 6");
         }
 
