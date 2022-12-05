@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles'
 const useStyles = makeStyles((theme) => ({
   subtitle: {
     marginTop: 24,
-    marginBottom: 60,
+    marginBottom: 24,
   },
   mainContent: {
     padding: 24,
