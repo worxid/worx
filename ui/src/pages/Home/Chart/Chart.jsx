@@ -14,6 +14,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
+import useWindowSize from 'hooks/useWindowSize'
 
 // MUIS
 import Stack from '@mui/material/Stack'
@@ -35,6 +36,8 @@ import {
 
 const Chart = (props) => {
   const axiosPrivate = useAxiosPrivate()
+  
+  const windowSize = useWindowSize()
 
   const { filterParameters } = props
 
@@ -47,6 +50,7 @@ const Chart = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [ chartList, setChartList ] = useState([])
+  const [ containerHeight, setContainerHeight ] = useState(300)
 
   const chartTitle = 'Submission Count'
 
@@ -65,13 +69,17 @@ const Chart = (props) => {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
+
     const bodyParams = {}
+
     if(filterParameters?.form !== 'all'){
       bodyParams.template_id = filterParameters.form
     } 
+
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
+
     const response = await postDashboardStatsChart(
       abortController.signal,
       requestParams,
@@ -97,9 +105,16 @@ const Chart = (props) => {
     }
   }
 
+  const updateContainerHeight = () => {
+    if (windowSize.height < 1500) setContainerHeight(300)
+    else if (windowSize.height >= 1500 && windowSize.height <= 2560) setContainerHeight(400)
+    else if (windowSize.height > 2560) setContainerHeight(500)
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDashboardChart(abortController.signal, isMounted)
 
     return () => {
@@ -113,11 +128,15 @@ const Chart = (props) => {
     filterParameters.startTime
   ])
 
+  useEffect(() => {
+    updateContainerHeight()
+  }, [windowSize.height])
+
   return (
     <Stack 
-      flex='1'
       ref={chartContainerRef}
       className={classes.root}
+      sx={{ height: containerHeight }}
     >
       <ReactApexChart
         className={classes.chart}
