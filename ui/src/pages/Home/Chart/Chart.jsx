@@ -91,7 +91,8 @@ const Chart = (props) => {
       setChartList(response?.data?.list?.map((data) => {
         return {
           x: convertDate(data?.date, 'dd'),
-          y: data?.count
+          y: data?.count,
+          date: data?.date,
         }
       }))
     }
@@ -143,8 +144,7 @@ const Chart = (props) => {
         options={getTransactionChartOptions(
           theme,
           chartTitle, 
-          chartList.map(item => item.x),
-          chartList.map(item => item.y),
+          chartList,
         )}
         series={getTransactionChartSeries(
           chartTitle, 
