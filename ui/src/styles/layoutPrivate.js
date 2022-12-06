@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     height: 32,
     fontSize: 12,
     fontWeight: 400,
+    minWidth: 'fit-content',
   },
   flyoutListItemActionLink: {
     cursor: 'pointer',

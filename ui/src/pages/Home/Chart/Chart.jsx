@@ -35,12 +35,14 @@ import {
 } from 'utilities/validation'
 
 const Chart = (props) => {
-  const axiosPrivate = useAxiosPrivate()
+  const { 
+    filterParameters, 
+    setSelectedBarChartItem,
+  } = props
   
+  const axiosPrivate = useAxiosPrivate()
   const windowSize = useWindowSize()
-
-  const { filterParameters } = props
-
+  
   const classes = useStyles()
 
   const chartContainerRef = useRef()
@@ -91,7 +93,8 @@ const Chart = (props) => {
       setChartList(response?.data?.list?.map((data) => {
         return {
           x: convertDate(data?.date, 'dd'),
-          y: data?.count
+          y: data?.count,
+          date: data?.date,
         }
       }))
     }
@@ -143,8 +146,8 @@ const Chart = (props) => {
         options={getTransactionChartOptions(
           theme,
           chartTitle, 
-          chartList.map(item => item.x),
-          chartList.map(item => item.y),
+          chartList,
+          setSelectedBarChartItem,
         )}
         series={getTransactionChartSeries(
           chartTitle, 
