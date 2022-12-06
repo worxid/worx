@@ -57,13 +57,16 @@ const Map = (props) => {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
+
     const bodyParams = {}
+
     if(filterParameters?.form !== 'all'){
       bodyParams.template_id = filterParameters.form
-    } 
+    }
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
+
     const response = await postDashboardStatsMap(
       abortController.signal,
       requestParams,
@@ -72,7 +75,10 @@ const Map = (props) => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
-      setSubmissionList(response?.data?.list)
+      const newSubmissionList = response?.data?.list
+
+      setSubmissionList(newSubmissionList)
+      setBoundCoordinateList(newSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
     }
     else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
@@ -103,6 +109,7 @@ const Map = (props) => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDashboardMap(abortController.signal, isMounted)
 
     return () => {
