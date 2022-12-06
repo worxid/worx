@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
 import InvalidateSize from './InvalidateSize'
+import MapCamera from './MapCamera'
 import Markers from './Markers'
 
 // CONTEXTS
@@ -127,6 +128,13 @@ const Map = (props) => {
           mapObject={mapObject}
           submissionList={submissionList}
         />
+
+        {/* MAP CAMERA */}
+        {submissionList.length > 0 &&
+        <MapCamera
+          mapObject={mapObject}
+          locationList={submissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ])}
+        />}
       </MapContainer>
     </Stack>
   )
