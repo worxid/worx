@@ -35,12 +35,14 @@ import {
 } from 'utilities/validation'
 
 const Chart = (props) => {
-  const axiosPrivate = useAxiosPrivate()
+  const { 
+    filterParameters, 
+    setSelectedBarChartItem,
+  } = props
   
+  const axiosPrivate = useAxiosPrivate()
   const windowSize = useWindowSize()
-
-  const { filterParameters } = props
-
+  
   const classes = useStyles()
 
   const chartContainerRef = useRef()
@@ -145,6 +147,7 @@ const Chart = (props) => {
           theme,
           chartTitle, 
           chartList,
+          setSelectedBarChartItem,
         )}
         series={getTransactionChartSeries(
           chartTitle, 

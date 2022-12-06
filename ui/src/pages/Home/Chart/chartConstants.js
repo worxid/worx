@@ -13,11 +13,18 @@ export const getTransactionChartOptions = (
   inputTheme, 
   inputTitle,
   inputList, 
+  inputSetSelectedBarChartItem,
 ) => {
   return {
     chart: {
       animations: {
         enabled: false,
+      },
+      events: {
+        click: (event, chartContext, config) => {
+          const selectedData = inputList.find((item, index) => index === config.dataPointIndex)
+          inputSetSelectedBarChartItem(selectedData)
+        }
       },
       fontFamily: values.fontFamilyDmMono,
       foreColor: inputTheme.palette.text.primary,

@@ -46,8 +46,9 @@ const Home = () => {
   }
   const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
 
-  const [formList, setFormList] = useState([initialList])
-  const [deviceList, setDeviceList] = useState([initialList])
+  const [ formList, setFormList ] = useState([initialList])
+  const [ deviceList, setDeviceList ] = useState([initialList])
+  const [ selectedBarChartItem, setSelectedBarChartItem ] = useState(null)
 
   // FETCH FILTER DATA
   const fetchDeviceList = async (abortController, inputIsMounted) => {
@@ -136,7 +137,10 @@ const Home = () => {
       <Divider className={classes.divider}/>
 
       {/* CHART */}
-      <Chart filterParameters={filterParameters}/>
+      <Chart 
+        filterParameters={filterParameters}
+        setSelectedBarChartItem={setSelectedBarChartItem}
+      />
 
       {/* MAP */}
       <Map filterParameters={filterParameters}/>
