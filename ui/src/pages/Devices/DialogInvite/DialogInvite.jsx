@@ -59,7 +59,7 @@ const DialogInvite = () => {
   const handleButtonInviteClick = async () => {
     const abortController = new AbortController()
     setIsLoading(true)
-   
+
     let requestBody = {
       send_to: [email]
     }
@@ -100,7 +100,7 @@ const DialogInvite = () => {
         <Typography variant='subtitle1' fontWeight={500} flex={1}>Invite a device</Typography>
       </Stack>}
       areActionsAvailable={false}
-      classNames={classes.dialogExport}
+      classNames={classes.root}
     >
       <Divider />
       <Stack className={classes.content}>
