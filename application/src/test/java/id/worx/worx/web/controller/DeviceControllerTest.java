@@ -2,6 +2,7 @@ package id.worx.worx.web.controller;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import id.worx.worx.common.enums.DeviceStatus;
 import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.response.BaseListResponse;
@@ -13,6 +14,7 @@ import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.GroupServiceImpl;
 import id.worx.worx.service.devices.DeviceService;
 import id.worx.worx.service.users.UsersServiceImpl;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -66,7 +69,7 @@ class DeviceControllerTest extends AbstractControllerTest{
             request,
             new TypeReference<BaseValueResponse<DeviceDTO>>(){
             },
-            status().isCreated());
+            status().isOk());
 
         BaseListResponse<DeviceDTO> response2 = doGetTyped("/devices", new TypeReference<BaseListResponse<DeviceDTO>>() {
         });
@@ -108,7 +111,7 @@ class DeviceControllerTest extends AbstractControllerTest{
             request,
             new TypeReference<BaseValueResponse<DeviceDTO>>(){
             },
-            status().isCreated());
+            status().isOk());
 
         DeviceDTO dto = response.getValue();
 
@@ -122,7 +125,6 @@ class DeviceControllerTest extends AbstractControllerTest{
         assertEquals(port, dto.getPort());
         assertEquals(ip, dto.getIp());
 
-        Long deviceId = dto.getId();
         String UpdatedLabel = "kay-valud";
         String UpdatedOrganizationCode = this.organizationCode;
         String UpdatedDeviceCode = "kay1234";
@@ -133,21 +135,18 @@ class DeviceControllerTest extends AbstractControllerTest{
         Integer UpdatedPort = 8900;
         String UpdatedIp = "127.0.0.1";
 
-        MobileRegisterRequest requestUpdate = new MobileRegisterRequest(
-            UpdatedLabel,
-            UpdatedOrganizationCode,
-            UpdatedDeviceCode,
-            UpdatedDeviceModel,
-            UpdatedDeviceOsVersion,
-            UpdatedDeviceAppVersion,
-            UpdatedDeviceLanguage,
-            UpdatedPort,
-            UpdatedIp
-        );
+        UpdateDeviceRequest dtoUpdate = new UpdateDeviceRequest();
+        dtoUpdate.setLabel(UpdatedLabel);
+        dtoUpdate.setDeviceModel(UpdatedDeviceModel);
+        dtoUpdate.setDeviceOsVersion(UpdatedDeviceOsVersion);
+        dtoUpdate.setDeviceAppVersion(UpdatedDeviceAppVersion);
+        dtoUpdate.setDeviceLanguage(UpdatedDeviceLanguage);
+        dtoUpdate.setPort(UpdatedPort);
+        dtoUpdate.setIp(UpdatedIp);
 
         BaseValueResponse<DeviceDTO> actualResponse = doPutWithTypedResponse(
-            "/devices/" + deviceId,
-            requestUpdate,
+            "/mobile/devices/update-info",
+            dtoUpdate,
             new TypeReference<BaseValueResponse<DeviceDTO>>() {
             });
 
@@ -176,28 +175,43 @@ class DeviceControllerTest extends AbstractControllerTest{
         Integer port = 8900;
         String ip = "127.0.0.1";
 
-        MobileRegisterRequest request = new MobileRegisterRequest(
-            label,
-            organizationCode,
-            deviceCode,
-            deviceModel,
-            deviceOsVersion,
-            deviceAppVersion,
-            deviceLanguage,
-            port,
-            ip
-        );
+//        MobileRegisterRequest request = new MobileRegisterRequest(
+//            label,
+//            organizationCode,
+//            deviceCode,
+//            deviceModel,
+//            deviceOsVersion,
+//            deviceAppVersion,
+//            deviceLanguage,
+//            port,
+//            ip
+//        );
 
-        System.out.println(">>>>>> "+ request.getOrganizationCode());
-        System.out.println(">>>>>> "+ request.getLabel());
+        DeviceDTO dtoReq = new DeviceDTO();
+        dtoReq.setLabel(label);
+        dtoReq.setOrganizationCode(organizationCode);
+        dtoReq.setDeviceCode(deviceCode);
+        dtoReq.setDeviceModel(deviceModel);
+        dtoReq.setDeviceOsVersion(deviceOsVersion);
+        dtoReq.setDeviceAppVersion(deviceAppVersion);
+        dtoReq.setDeviceLanguage(deviceLanguage);
+        dtoReq.setIp(ip);
+        dtoReq.setDeviceStatus(DeviceStatus.PENDING);
+        //dtoReq.setJoinedDate(Instant.now());
+        dtoReq.setPort(port);
+
+        System.out.println(">>>>>> "+ dtoReq.getOrganizationCode());
+        System.out.println(">>>>>> "+ dtoReq.getLabel());
+        System.out.println(">>>>>> "+ Instant.now());
 
         BaseValueResponse<DeviceDTO> response = doPostWithTypedResponse(
             "/mobile/devices/register",
-            request,
+            dtoReq,
             new TypeReference<BaseValueResponse<DeviceDTO>>(){
             },
             status().isOk());
 
+        System.out.println("DONEE INSERT");
         DeviceDTO dto = response.getValue();
 
         assertEquals(label, dto.getLabel());
