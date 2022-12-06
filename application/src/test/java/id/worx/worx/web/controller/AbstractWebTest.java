@@ -37,9 +37,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import id.worx.worx.common.model.request.auth.LoginRequest;
 import id.worx.worx.common.model.request.users.UserRequest;
@@ -52,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractWebTest {
 
-    protected ObjectMapper mapper = new ObjectMapper();
+    protected ObjectMapper mapper;
 
     protected static final String ADMIN_USER_EMAIL = "testadmin@worx.id";
     protected static final String ADMIN_USER_PASSWORD = "TestAdmin123!";
@@ -88,6 +90,12 @@ public abstract class AbstractWebTest {
                 .get();
 
         assertNotNull(this.mappingJackson2HttpMessageConverter, "the JSON message converter must not be null");
+    }
+
+    @Autowired
+    void setObjectMapper() {
+        this.mapper = new ObjectMapper();
+        mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
     }
 
     @BeforeEach
@@ -240,6 +248,14 @@ public abstract class AbstractWebTest {
         String json = json(content);
         postRequest.contentType(contentType).content(json);
         return mockMvc.perform(postRequest);
+    }
+
+    protected <T> ResultActions doDelete(String urlTemplate, T content, String... params) throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = delete(urlTemplate, (Object[]) params);
+        setJwtToken(deleteRequest);
+        String json = json(content);
+        deleteRequest.contentType(contentType).content(json);
+        return mockMvc.perform(deleteRequest);
     }
 
     protected ResultActions doDelete(String urlTemplate, String... params) throws Exception {

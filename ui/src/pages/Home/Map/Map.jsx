@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
 import InvalidateSize from './InvalidateSize'
+import MapCamera from './MapCamera'
 import Markers from './Markers'
 
 // CONTEXTS
@@ -35,15 +36,19 @@ import {
 } from 'utilities/validation'
 
 const Map = (props) => {
+  const { 
+    filterParameters, 
+    selectedBarChartItem,
+  } = props
+  
   const axiosPrivate = useAxiosPrivate()
-
-  const { filterParameters } = props
-
+  
   const { drawerState } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
+  const [ boundCoordinateList, setBoundCoordinateList ] = useState([])
 
   const classes = useStyles()
 
@@ -52,13 +57,16 @@ const Map = (props) => {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
+
     const bodyParams = {}
+
     if(filterParameters?.form !== 'all'){
       bodyParams.template_id = filterParameters.form
-    } 
+    }
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
+
     const response = await postDashboardStatsMap(
       abortController.signal,
       requestParams,
@@ -67,7 +75,10 @@ const Map = (props) => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
-      setSubmissionList(response?.data?.list)
+      const newSubmissionList = response?.data?.list
+
+      setSubmissionList(newSubmissionList)
+      setBoundCoordinateList(newSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
     }
     else if (!wasRequestCanceled(response?.status)) {
       setSnackbarObject({
@@ -79,9 +90,26 @@ const Map = (props) => {
     }
   }
 
+  const updateMapCameraBasedOnSelectedBarChartItem = () => {
+    const selectedSubmissionList = submissionList.filter(item => item.submit_date.includes(selectedBarChartItem.date))
+
+    if (selectedSubmissionList.length > 0) {
+      setBoundCoordinateList(selectedSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
+    }
+    else {
+      setSnackbarObject({
+        open: true,
+        severity: 'info',
+        title: '',
+        message: 'No submission location for the map',
+      })
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDashboardMap(abortController.signal, isMounted)
 
     return () => {
@@ -94,6 +122,10 @@ const Map = (props) => {
     filterParameters.endTime,
     filterParameters.startTime
   ])
+
+  useEffect(() => {
+    selectedBarChartItem && updateMapCameraBasedOnSelectedBarChartItem()
+  }, [selectedBarChartItem])
 
   return (
     <Stack
@@ -127,6 +159,13 @@ const Map = (props) => {
           mapObject={mapObject}
           submissionList={submissionList}
         />
+
+        {/* MAP CAMERA */}
+        {submissionList.length > 0 &&
+        <MapCamera
+          mapObject={mapObject}
+          locationList={boundCoordinateList}
+        />}
       </MapContainer>
     </Stack>
   )

@@ -1,4 +1,5 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -20,8 +21,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 12,
   },
   boxAddLogo: {
-    width: 68,
-    height: 68,
+    minWidth: 68,
+    minHeight: 68,
+    height: 92,
+    width: 92,
     borderRadius: 4,
     marginRight: 28,
     display: 'flex',
@@ -32,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
   iconAddLogo: {
     width: 14,
     height: 14
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%'
   },
   buttonUpload: {
     height: 28,
@@ -58,8 +65,37 @@ const useStyles = makeStyles((theme) => ({
     height: 48,
     minWidth: 168,
     marginTop: -12,
+    fontWeight: 700,
     display: 'flex',
     alignSelf: 'flex-end',
+    '&.Mui-disabled': {
+      color: `${alpha(theme.palette.common.black, 0.38)}`,
+      backgroundColor: `${alpha(theme.palette.common.black, 0.08)}`,
+    }
+  },
+  tabs: {
+    alignItems: 'center',
+    '& .Mui-selected': {
+      fontSize: 14,
+      fontWeight: 400,
+      color: '#2F2F30',
+      lineHeight: '20px',
+      letterSpacing: '0.15px',
+      backgroundColor: theme.palette.common.white,
+    },
+    
+  },
+  tab: {
+    minHeight: 68,
+    minWidth: 222,
+    textTransform: 'capitalize',
+
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: '20px',
+    letterSpacing: '0.15px',
+    color: `${alpha(theme.palette.common.black, 0.54)}`,
+    backgroundColor: `${alpha(theme.palette.common.black, 0.08)}`,
   }
 }))
 
