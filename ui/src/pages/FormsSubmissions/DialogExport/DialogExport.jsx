@@ -48,7 +48,7 @@ const DialogExport = (props) => {
   const handleButtonSendClick = async () => {
     const abortController = new AbortController()
     setIsLoading(true)
-   
+
     if(fileFormat || fileFormat !== ''){
       postExportFormSubmission(abortController.signal, {
         templateId: id,
@@ -110,7 +110,7 @@ const DialogExport = (props) => {
               )}
             />
             <FormControlLabel
-              value={'XLS'}
+              value={'EXCEL'}
               control={<Radio size='small'/>}
               label={(
                 <Typography variant='caption' className='displayBlock'>XLS</Typography>
