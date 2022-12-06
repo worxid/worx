@@ -3,9 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
-import DialogExport from 'components/DialogExport/DialogExport'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
+import DialogExport from './DialogExport/DialogExport'
 import DialogMediasPreview from './DialogMediasPreview/DialogMediasPreview'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
