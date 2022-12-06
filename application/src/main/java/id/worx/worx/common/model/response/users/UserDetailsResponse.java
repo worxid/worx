@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class UserDetailsResponse implements Serializable {
 
     private String email;
+    private String fullname;
     @JsonProperty("organization_name")
     private String organizationName;
     @JsonProperty("organization_code")
