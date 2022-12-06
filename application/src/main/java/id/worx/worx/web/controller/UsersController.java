@@ -189,6 +189,7 @@ public class UsersController {
         Users users = usersService.updateInformation(userUpdateRequest);
         UserDetailsResponse dto = usersService.toDTOUserDetails(users);
 
+
         BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
             .value(dto)
             .build();

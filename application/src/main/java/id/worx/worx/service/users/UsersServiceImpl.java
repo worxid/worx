@@ -41,24 +41,18 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.config.properties.WorxProperties;
-import id.worx.worx.entity.File;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.UsersMapper;
-import id.worx.worx.mapper.UsersUpdateMapper;
 import id.worx.worx.repository.EmailTokenRepository;
-import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
-import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.EmailService;
 import id.worx.worx.service.GroupService;
-import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.JwtUtils;
-import id.worx.worx.web.model.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -443,31 +437,21 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users updateInformation(UserUpdateRequest userUpdateRequest) {
+        Users result;
+
         Optional<Users> checkUsers = usersRepository.findById(authenticationContext.getUsers().getId());
         if(checkUsers.isEmpty()){
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }else{
-            Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getLogoFileId());
-            if(checkFileId.isEmpty()){
-                throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+            if(userUpdateRequest.getLogoFileId() == null){
+
+                result = updateWithoutLogo(checkUsers.get(),userUpdateRequest);
             }else{
-                File files = checkFileId.get();
-                if(fileStorageService.isObjectExist(files.getPath())){
-                    Users user = checkUsers.get();
-                    user.setFullname(userUpdateRequest.getFullname());
-                    user.setPhone(userUpdateRequest.getPhone());
-                    user.setOrganizationName(user.getOrganizationName());
-                    user.setDashboardLogo(files);
-                    usersRepository.save(user);
-
-                    return user;
-                }else{
-                    throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
-                }
-
+                result = updateWithLogo(checkUsers.get(), userUpdateRequest);
             }
-
         }
+
+        return result;
     }
 
     public UserDetailsResponse toDTOUserDetails(Users users) {
@@ -486,6 +470,37 @@ public class UsersServiceImpl implements UsersService {
         return getUser.get();
     }
 
+    public Users updateWithoutLogo(Users userData,UserUpdateRequest userUpdateRequest){
+
+        userData.setFullname(userUpdateRequest.getFullname());
+        userData.setOrganizationName(userUpdateRequest.getOrganizationName());
+        userData.setPhone(userUpdateRequest.getPhone());
+        usersRepository.save(userData);
+
+        return userData;
+    }
+
+    public Users updateWithLogo(Users userData, UserUpdateRequest userUpdateRequest){
+
+        Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getLogoFileId());
+        if(checkFileId.isEmpty()){
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }else{
+            File files = checkFileId.get();
+            if(fileStorageService.isObjectExist(files.getPath())){
+
+                userData.setFullname(userUpdateRequest.getFullname());
+                userData.setOrganizationName(userUpdateRequest.getOrganizationName());
+                userData.setPhone(userUpdateRequest.getPhone());
+                userData.setDashboardLogo(files);
+                usersRepository.save(userData);
+
+                return userData;
+            }else{
+                throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+            }
+        }
+    }
     @Scheduled(cron = "59 59 23 * * ?")
     public void deleteEmailToken() {
 
