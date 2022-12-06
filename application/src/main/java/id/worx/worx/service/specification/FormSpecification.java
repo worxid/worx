@@ -8,6 +8,7 @@ import id.worx.worx.entity.Form;
 import id.worx.worx.entity.Form_;
 import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 
 @Component
 public class FormSpecification implements BaseSpecification<Form> {
@@ -70,7 +71,7 @@ public class FormSpecification implements BaseSpecification<Form> {
 
     public Specification<Form> getByUserId(Long userId){
         return (root, query, criteriaBuilder) -> {
-            Join<Form,FormTemplate> formFormTemplate= root.join("template");
+            Join<Form,FormTemplate> formFormTemplate= root.join("template",JoinType.LEFT);
             return criteriaBuilder.equal(formFormTemplate.get("userId"),userId);
         };
     }

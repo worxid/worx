@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -46,7 +45,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         List<DashboardStat> dashboardStatList = formRepository.getDasboardStat(from, to, deviceCode,
-                request.getTemplateId());
+                request.getTemplateId(),authContext.getUsers().getId());
         List<DashboardStatDTO> response = new ArrayList<>();
 
         for (DashboardStat data : dashboardStatList) {
@@ -66,7 +65,7 @@ public class DashboardServiceImpl implements DashboardService {
         FormSubmissionSearchRequest searchRequest = FormSubmissionSearchRequest.builder()
                 .templateId(request.getTemplateId())
                 .from(from.atStartOfDay(ZoneId.of("UTC")).toInstant())
-                .to(to.atStartOfDay(ZoneId.of("UTC")).toInstant())
+                .to(to.atTime(23,59,59).atZone(ZoneId.of("UTC")).toInstant())
                 .build();
         String deviceCode = null;
         if (request.getDeviceId() != null) {
