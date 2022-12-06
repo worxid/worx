@@ -19,6 +19,6 @@ public class UserUpdateRequest implements Serializable {
     private String phone;
     @JsonProperty("organization_name")
     private String organizationName;
-    @JsonProperty("dashboard_logo_id")
-    private Long dashboardLogoId;
+    @JsonProperty("dashboard_logo_file_id")
+    private Long dashboardLogoFileId;
 }
