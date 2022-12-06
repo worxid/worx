@@ -144,3 +144,19 @@ export const postChangePasswordUser = async (
     else return error.response
   }
 }
+
+export const putEditProfile = async (inputSignal, inputBodyParams, inputAxiosPrivate) => {
+  try {
+    const response = await inputAxiosPrivate.put(
+      '/api/users/user-details', 
+      inputBodyParams, 
+      { signal: inputSignal },
+    )
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}

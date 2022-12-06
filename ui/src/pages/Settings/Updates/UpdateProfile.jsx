@@ -1,7 +1,10 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
+
+// HOOKS
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -21,6 +24,10 @@ import IconUpload from '@mui/icons-material/Upload'
 // MUI LABS
 import LoadingButton from '@mui/lab/LoadingButton'
 
+// SERVICES
+import { getMediaPresignedUrl } from 'services/media'
+import { putEditProfile } from 'services/users'
+
 // STYLES
 import useStyles from '../settingsUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -34,6 +41,8 @@ import {
 const UpdateProfile = () => {
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
+
+  const axiosPrivate = useAxiosPrivate()
 
   // CONTEXT
   const { auth, setSnackbarObject } = useContext(AllPagesContext)
@@ -52,6 +61,8 @@ const UpdateProfile = () => {
     phoneNumber: null,
   }
 
+  const [initialLogo, setInitialLogo] = useState(auth?.user?.logo_url)
+
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isLoading, setIsLoading ] = useState(false)
@@ -63,6 +74,29 @@ const UpdateProfile = () => {
         [inputKey]: inputNewValue,
       }
     })
+  }
+  const [selectedFile, setSelectedFile] = useState()
+  const [preview, setPreview] = useState()
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined)
+      return
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile)
+    setPreview(objectUrl)
+
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [selectedFile])
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined)
+      return
+    }
+
+    setSelectedFile(e.target.files[0])
   }
 
   // HANDLE BUTTON CLICK
@@ -82,8 +116,77 @@ const UpdateProfile = () => {
     // USER INPUTS ARE VALID
     else {
       const abortController = new AbortController()
+      if (selectedFile){
+        const response = await getMediaPresignedUrl(abortController.signal, {
+          filename: selectedFile.name
+        }, selectedFile)
+        const resultEditProfile = await putEditProfile(
+          abortController.signal,
+          {
+            fullname: formObject.fullName,
+            phone: formObject.phoneNumber,
+            organization_name: formObject.organizationName,
+            logo_file_id: response.data.value.fileId,
+          },
+          axiosPrivate,
+        )
+          
+        // REDIRECT THE USER IF SUCCESSFULLY CALLING THE API
+        if (didSuccessfullyCallTheApi(resultEditProfile.status)) {            
+          setSnackbarObject({
+            open: true,
+            severity: 'success',
+            title: '',
+            message: 'Profile changed successfully',
+          })
+        }
+        // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
+        else {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: resultEditProfile?.data?.error?.status?.replaceAll('_', ' ') || '',
+            message: resultEditProfile?.data?.error?.message || 'Something went wrong',
+          })
+        }
+          
+        abortController.abort()
+          
+      } else {
+        const resultEditProfile = await putEditProfile(
+          abortController.signal,
+          {
+            fullname: formObject.fullName,
+            phone: formObject.phoneNumber,
+            organization_name: formObject.organizationName,
+            logo_file_id: null,
+          },
+          axiosPrivate,
+        )
+  
+        // REDIRECT THE USER IF SUCCESSFULLY CALLING THE API
+        if (didSuccessfullyCallTheApi(resultEditProfile.status)) {
+          setSnackbarObject({
+            open: true,
+            severity: 'success',
+            title: '',
+            message: 'Profile changed successfully',
+          })
+        }
+        // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
+        else {
+          setSnackbarObject({
+            open: true,
+            severity: 'error',
+            title: resultEditProfile?.data?.error?.status?.replaceAll('_', ' ') || '',
+            message: resultEditProfile?.data?.error?.message || 'Something went wrong',
+          })
+        }
+  
+        abortController.abort()
 
-      abortController.abort()
+      }
+
     }
 
     setIsLoading(false)
@@ -193,7 +296,9 @@ const UpdateProfile = () => {
       </Typography>
       <Stack direction={'row'}>
         <Box className={classes.boxAddLogo}>
-          <IconAdd className={classes.iconAddLogo} />
+          {selectedFile &&  <img src={preview} className={classes.imagePreview} alt='' /> }
+          {initialLogo && !selectedFile &&  <img src={initialLogo} className={classes.imagePreview} alt='' /> }
+          {!selectedFile && !initialLogo && <IconAdd className={classes.iconAddLogo} />}
         </Box>
         <Stack>
           <Typography className={classes.infoLogo}>
@@ -216,6 +321,8 @@ const UpdateProfile = () => {
               accept='image/*'
               type='file'
               className='displayNone'
+              sx={{display: 'none'}}
+              onChange={onSelectFile}
             />
           </Stack>
         </Stack>

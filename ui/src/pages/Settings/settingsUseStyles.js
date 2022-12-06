@@ -21,8 +21,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 12,
   },
   boxAddLogo: {
-    width: 68,
-    height: 68,
+    minWidth: 68,
+    minHeight: 68,
+    height: 92,
+    width: 92,
     borderRadius: 4,
     marginRight: 28,
     display: 'flex',
@@ -33,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
   iconAddLogo: {
     width: 14,
     height: 14
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%'
   },
   buttonUpload: {
     height: 28,
