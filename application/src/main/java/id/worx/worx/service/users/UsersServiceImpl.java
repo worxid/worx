@@ -443,7 +443,7 @@ public class UsersServiceImpl implements UsersService {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
 
-        Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getDashboardLogoFileId());
+        Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getLogoFileId());
         if (checkFileId.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
         }
