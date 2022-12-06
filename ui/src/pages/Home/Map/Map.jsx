@@ -36,15 +36,19 @@ import {
 } from 'utilities/validation'
 
 const Map = (props) => {
+  const { 
+    filterParameters, 
+    selectedBarChartItem,
+  } = props
+  
   const axiosPrivate = useAxiosPrivate()
-
-  const { filterParameters } = props
-
+  
   const { drawerState } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
+  const [ boundCoordinateList, setBoundCoordinateList ] = useState([])
 
   const classes = useStyles()
 
@@ -80,6 +84,22 @@ const Map = (props) => {
     }
   }
 
+  const updateMapCameraBasedOnSelectedBarChartItem = () => {
+    const selectedSubmissionList = submissionList.filter(item => item.submit_date.includes(selectedBarChartItem.date))
+
+    if (selectedSubmissionList.length > 0) {
+      setBoundCoordinateList(selectedSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
+    }
+    else {
+      setSnackbarObject({
+        open: true,
+        severity: 'info',
+        title: '',
+        message: 'No submission location for the map',
+      })
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -95,6 +115,10 @@ const Map = (props) => {
     filterParameters.endTime,
     filterParameters.startTime
   ])
+
+  useEffect(() => {
+    selectedBarChartItem && updateMapCameraBasedOnSelectedBarChartItem()
+  }, [selectedBarChartItem])
 
   return (
     <Stack
@@ -133,7 +157,7 @@ const Map = (props) => {
         {submissionList.length > 0 &&
         <MapCamera
           mapObject={mapObject}
-          locationList={submissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ])}
+          locationList={boundCoordinateList}
         />}
       </MapContainer>
     </Stack>

@@ -143,7 +143,10 @@ const Home = () => {
       />
 
       {/* MAP */}
-      <Map filterParameters={filterParameters}/>
+      <Map 
+        filterParameters={filterParameters}
+        selectedBarChartItem={selectedBarChartItem}
+      />
     </Stack>
   )
 }
