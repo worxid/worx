@@ -2,7 +2,9 @@ package id.worx.worx.service.users;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -13,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,23 +35,26 @@ import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import id.worx.worx.common.model.response.users.UserResponse;
 import id.worx.worx.config.properties.WorxProperties;
+import id.worx.worx.entity.File;
 import id.worx.worx.entity.users.EmailToken;
 import id.worx.worx.entity.users.RefreshToken;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.UsersMapper;
+import id.worx.worx.mapper.UsersUpdateMapper;
 import id.worx.worx.repository.EmailTokenRepository;
+import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.EmailService;
 import id.worx.worx.service.GroupService;
+import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.JwtUtils;
+import id.worx.worx.web.model.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
 
 @Service
 @Slf4j
@@ -72,6 +78,14 @@ public class UsersServiceImpl implements UsersService {
     private final GroupService groupService;
 
     private final UsersMapper usersMapper;
+
+    private final UsersUpdateMapper usersUpdateMapper;
+
+    private final AuthenticationContext authenticationContext;
+
+    private final FileRepository fileRepository;
+
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional
@@ -109,14 +123,16 @@ public class UsersServiceImpl implements UsersService {
         users.setCountry(userRequest.getCountry().toUpperCase());
         users.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         users.setOrganizationCode(organizationCode());
+        users.setDashboardLogo(null);
+
         users = usersRepository.save(users);
 
-            EmailToken emailToken = new EmailToken();
-            emailToken.setToken(random);
-            emailToken.setStatus(EmailTokenStatus.UNUSED);
-            emailToken.setEmail(userRequest.getEmail());
-            emailToken.setType(EmailTokenType.NEWACC);
-            emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
+        EmailToken emailToken = new EmailToken();
+        emailToken.setToken(random);
+        emailToken.setStatus(EmailTokenStatus.UNUSED);
+        emailToken.setEmail(userRequest.getEmail());
+        emailToken.setType(EmailTokenType.NEWACC);
+        emailToken.setExpiredToken(Instant.now().plus(15, ChronoUnit.MINUTES));
         groupService.createDefaultGroup(users.getId());
 
         String url = String.format("%s/account-confirmation?code=%s", worxProps.getWeb().getEndpoint(), random);
@@ -419,6 +435,39 @@ public class UsersServiceImpl implements UsersService {
         return usersRepository.findByOrganizationCode(token);
     }
 
+    @Override
+    public Users updateInformation(UserUpdateRequest userUpdateRequest) {
+        Optional<Users> checkUsers = usersRepository.findById(authenticationContext.getUsers().getId());
+
+        if (checkUsers.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        Optional<File> checkFileId = fileRepository.findById(userUpdateRequest.getDashboardLogoFileId());
+        if (checkFileId.isEmpty()) {
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        File files = checkFileId.get();
+        if (!fileStorageService.isObjectExist(files.getPath())) {
+            // TODO Change to invalid file state error
+            throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
+        }
+
+        Users user = checkUsers.get();
+        user.setFullname(userUpdateRequest.getFullname());
+        user.setPhone(userUpdateRequest.getPhone());
+        user.setOrganizationName(user.getOrganizationName());
+        user.setDashboardLogo(files);
+        user = usersRepository.save(user);
+
+        return user;
+    }
+
+    public UserDetailsResponse toDTOUserDetails(Users users) {
+        return usersUpdateMapper.toDto(users);
+    }
+
     public UserResponse toDTO(Users users) {
         return usersMapper.toDto(users);
     }
@@ -433,21 +482,20 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Scheduled(cron = "59 59 23 * * ?")
-    public void deleteEmailToken(){
+    public void deleteEmailToken() {
 
         List<Long> ids = emailTokenRepository.getAllByLessThan(Instant.now());
-        log.info("Delete {} ",ids.size()," email token");
+        log.info("Delete {} ", ids.size(), " email token");
         emailTokenRepository.deleteAllById(ids);
     }
 
     @Scheduled(cron = "59 59 23 * * ?")
-    public void deleteRefreshToken(){
+    public void deleteRefreshToken() {
 
         List<Long> ids = refreshTokenRepository.getAllByLessThan(Instant.now());
-        log.info("Delete {} ",ids.size()," refresh token");
+        log.info("Delete {} ", ids.size(), " refresh token");
         refreshTokenRepository.deleteAllById(ids);
 
     }
-
 
 }
