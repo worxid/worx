@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG

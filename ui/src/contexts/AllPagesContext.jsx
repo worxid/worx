@@ -1,5 +1,8 @@
 import { createContext, useState } from 'react'
 
+// CONSTANTS
+import { values } from 'constants/values'
+
 // MUIS
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -19,12 +22,21 @@ const AllPagesContextProvider = (props) => {
   const isLgScreen = useMediaQuery((theme) => theme.breakpoints.only('lg'))
   const isXlScreen = useMediaQuery((theme) => theme.breakpoints.only('xl'))
 
+  // BREAKPOINT ZOOM
+  const isZoomBoundary = useMediaQuery(values.zoomBoundary)
+  const isNoZoomBoundary = useMediaQuery(values.noZoomBoundary)
+  // return true if in screen zoom boundary
+  const breakpointZoomBoundary = (isZoomBoundary && !isNoZoomBoundary) ? isZoomBoundary : false
+
   let breakpointType
   isXsScreen && (breakpointType = 'xs')
   isSmScreen && (breakpointType = 'sm')
   isMdScreen && (breakpointType = 'md')
   isLgScreen && (breakpointType = 'lg')
   isXlScreen && (breakpointType = 'xl')
+
+  // SNACKBAR
+  const [ snackbarObject, setSnackbarObject ] = useState(values.initialSnackbarObject)
 
   return (
     <AllPagesContext.Provider
@@ -33,6 +45,9 @@ const AllPagesContextProvider = (props) => {
         auth, setAuth,
         // BREAKPOINT
         breakpointType,
+        breakpointZoomBoundary,
+        // SNACKBAR
+        snackbarObject, setSnackbarObject,
       }}
     >
       {props.children}

@@ -1,0 +1,48 @@
+server:
+  port: ${HTTP_BIND_PORT:8080}
+  forward-headers-strategy: framework
+
+# SQL DAO Configuration
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/worx}
+    username: ${SPRING_DATASOURCE_USERNAME:worx}
+    password: ${SPRING_DATASOURCE_PASSWORD:worx}
+    driver-class-name: ${SPRING_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
+    hikari:
+      maximum-pool-size: ${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}
+
+  mail:
+    host: ${WORX_EMAIL_SMTP_HOST}
+    username: ${WORX_EMAIL_SMTP_USERNAME}
+    password: ${WORX_EMAIL_SMTP_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: ${WORX_EMAIL_SMTP_PORT}
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Application Properties
+worx:
+  web:
+    endpoint: ${WORX_WEB_ENDPOINT}
+  mail:
+    from-address: ${WORX_EMAIL_FROM_ADDRESS}
+    from-name: ${WORX_EMAIL_FROM_NAME}
+  storage:
+    endpoint: ${WORX_STORAGE_ENDPOINT}
+    access-key: ${WORX_STORAGE_ACCESS_KEY}
+    secret-key: ${WORX_STORAGE_SECRET_KEY}
+    bucket-name: ${WORX_STORAGE_BUCKET_NAME}
+  token:
+    access: ${WORX_ACCESS_TOKEN_EXPIRED_IN_MS}
+    refresh: ${WORX_REFRESH_TOKEN_EXPIRED_AT_MS}
+  geocoder:
+    enabled: ${WORX_GEOCODER_ENABLED:false}
+    default-option: ${WORX_GEOCODER_DEFAULT:google}
+    google-api-key: ${WORX_GEOCODER_GOOGLE_API_KEY}

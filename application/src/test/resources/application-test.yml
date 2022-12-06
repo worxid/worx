@@ -1,0 +1,46 @@
+server:
+  port: ${HTTP_BIND_PORT:8080}
+
+# SQL DAO Configuration
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  mail:
+    host: smtp.mailtrap.io
+    username: ae26ae5e25e8ff
+    password: 939398299e864b
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 2525
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Application Properties
+worx:
+  web:
+    endpoint: http://localhost:3000
+  mail:
+    from-address: from@example.com
+    from-name: Magic Elves
+  storage:
+    endpoint: http://103.30.246.130:9000
+    access-key: worxtest
+    secret-key: worxtest
+    bucket-name: worx-dev-test
+  token:
+    access: 3600000
+    refresh: 7200000
+  geocoder:
+    enabled: false
