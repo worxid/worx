@@ -60,6 +60,8 @@ const Drawer = () => {
 
   const [ dialogLogOut, setDialogLogOut ] = useState({})
 
+  const logoUrl = auth?.user?.logo_url
+
   const handleIdButtonClick = () => {
     navigator.clipboard.writeText(auth?.user?.organization_code)
     
@@ -162,7 +164,7 @@ const Drawer = () => {
         {drawerState.isDrawerExpanded &&
         <Box
           component='img'
-          src={LogoProduct}
+          src={logoUrl ? logoUrl : LogoProduct}
           alt=''
           className={classes.headerLogoProduct}
         />}
