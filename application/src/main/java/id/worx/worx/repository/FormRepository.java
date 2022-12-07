@@ -23,11 +23,14 @@ public interface FormRepository extends JpaRepository<Form, Long>, JpaSpecificat
         "   where dates < :to) " +
         "select dates, " +
         "(select count(*) from forms f " +
+        " left join form_templates as ft on f.template_id = ft.id " +
         " where f.submit_date like CONCAT('%',dates,'%') " +
         " and (:deviceCode is null OR(lower(f.respondent_device_code)like concat('%',lower(:deviceCode),'%'))) " +
         " and (:templateId is null OR(lower(f.template_id)like concat('%',lower(:templateId),'%'))) " +
+        " and f.deleted= 0 " +
+        " and ft.user_id= :userId " +
         " ) as totalCount " +
         "from Date_Ranges  ", nativeQuery = true)
-    List<DashboardStat> getDasboardStat(LocalDate from, LocalDate to, String deviceCode, Long templateId);
+    List<DashboardStat> getDasboardStat(LocalDate from, LocalDate to, String deviceCode, Long templateId, Long userId);
 
 }
