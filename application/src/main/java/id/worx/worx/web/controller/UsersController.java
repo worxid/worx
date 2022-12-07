@@ -6,7 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
+import id.worx.worx.common.model.response.BaseResponse;
+import id.worx.worx.common.model.request.EmailRequestDTO;
+import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.exception.TokenException;
-import id.worx.worx.common.model.request.EmailRequestDTO;
 import id.worx.worx.common.model.request.auth.ChangePasswordRequest;
 import id.worx.worx.common.model.request.auth.ChangePasswordToken;
 import id.worx.worx.common.model.request.auth.LoginRequest;
 import id.worx.worx.common.model.request.auth.ResetPasswordRequest;
 import id.worx.worx.common.model.request.auth.TokenRefreshRequest;
 import id.worx.worx.common.model.request.users.UserRequest;
-import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.auth.JwtResponse;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
@@ -41,7 +41,6 @@ import id.worx.worx.entity.users.Users;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.users.UsersService;
 import id.worx.worx.util.JwtUtils;
-import id.worx.worx.web.model.request.UserUpdateRequest;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -186,6 +185,7 @@ public class UsersController {
 
         Users users = usersService.updateInformation(userUpdateRequest);
         UserDetailsResponse dto = usersService.toDTOUserDetails(users);
+
 
         BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
             .value(dto)

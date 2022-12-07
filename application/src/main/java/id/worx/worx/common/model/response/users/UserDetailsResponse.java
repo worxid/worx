@@ -16,6 +16,7 @@ public class UserDetailsResponse implements Serializable {
     private static final long serialVersionUID = 6669512422636422620L;
 
     private String email;
+    private String fullname;
     @JsonProperty("organization_name")
     private String organizationName;
     @JsonProperty("organization_code")
@@ -24,5 +25,4 @@ public class UserDetailsResponse implements Serializable {
     private String phone;
     @JsonProperty("logo_url")
     private String logoUrl;
-
 }
