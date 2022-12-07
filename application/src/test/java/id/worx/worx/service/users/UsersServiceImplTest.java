@@ -16,12 +16,16 @@ import id.worx.worx.config.properties.WebProperties;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.mapper.UsersMapper;
+import id.worx.worx.mapper.UsersUpdateMapper;
 import id.worx.worx.repository.EmailTokenRepository;
+import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.repository.RefreshTokenRepository;
 import id.worx.worx.repository.UsersRepository;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.EmailService;
 import id.worx.worx.service.GroupService;
+import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.JwtUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +52,19 @@ class UsersServiceImplTest {
     @Mock
     UsersMapper usersMapper;
 
+    @Mock
+    UsersUpdateMapper usersUpdateMapper;
+
     private UsersService usersService;
+
+    @Mock
+    AuthenticationContext authenticationContext;
+
+    @Mock
+    FileRepository fileRepository;
+
+    @Mock
+    FileStorageService fileStorageService;
 
     @BeforeEach
     void init() {
@@ -60,7 +76,11 @@ class UsersServiceImplTest {
                 jwtUtils,
                 emailService,
                 groupService,
-                usersMapper);
+                usersMapper,
+                usersUpdateMapper,
+                authenticationContext,
+                fileRepository,
+                fileStorageService);
     }
 
     @Test
