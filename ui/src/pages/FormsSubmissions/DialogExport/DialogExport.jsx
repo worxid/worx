@@ -49,7 +49,8 @@ const DialogExport = (props) => {
     const abortController = new AbortController()
     setIsLoading(true)
 
-    if(fileFormat || fileFormat !== ''){
+    // TO DO: CHANGE PROMISE THEN CATCH WITH ASYNC AWAIT
+    if(fileFormat || fileFormat !== '') {
       postExportFormSubmission(abortController.signal, {
         templateId: id,
         option: fileFormat

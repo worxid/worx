@@ -29,7 +29,12 @@ import {
 } from 'services/group'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const Groups = () => {
   const initialColumns = [
@@ -158,6 +163,9 @@ const Groups = () => {
       setTableData(resultGroupList.data.content)
       setTotalRow(resultGroupList.data.totalElements)
     }
+    else if (!wasRequestCanceled(resultGroupList?.status) && !wasAccessTokenExpired(resultGroupList.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultGroupList))
+    }
 
     setMustReloadDataGrid(false)
   }
@@ -184,6 +192,9 @@ const Groups = () => {
           title: '',
           message: 'Successfully delete the selected group'
         })
+      }
+      else if (!wasRequestCanceled(resultDeleteGroup?.status) && !wasAccessTokenExpired(resultDeleteGroup.status)) {
+        setSnackbarObject(getDefaultErrorMessage(resultDeleteGroup))
       }
 
       abortController.abort()

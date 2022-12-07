@@ -30,9 +30,12 @@ import useStyles from '../settingsUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import {
   didSuccessfullyCallTheApi,
-  doesObjectContainDesiredValue
+  doesObjectContainDesiredValue,
+  wasAccessTokenExpired,
+  wasRequestCanceled,
 } from 'utilities/validation'
 
 const UpdatePassword = () => {
@@ -123,13 +126,8 @@ const UpdatePassword = () => {
         })
       }
       // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
-      else {
-        setSnackbarObject({
-          open: true,
-          severity: 'error',
-          title: resultResetPasswordUser?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: resultResetPasswordUser?.data?.error?.message || 'Something went wrong',
-        })
+      else if (!wasRequestCanceled(resultResetPasswordUser?.status) && !wasAccessTokenExpired(resultResetPasswordUser.status)) {
+        setSnackbarObject(getDefaultErrorMessage(resultResetPasswordUser))
       }
 
       abortController.abort()

@@ -29,8 +29,10 @@ import useStyles from './chartUseStyles'
 // UTILITIES
 import { convertDate } from 'utilities/date'
 import moment from 'moment'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
-  didSuccessfullyCallTheApi, 
+  didSuccessfullyCallTheApi,
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -98,13 +100,8 @@ const Chart = (props) => {
         }
       }))
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 

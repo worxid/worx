@@ -39,12 +39,14 @@ import {
 } from 'services/formTemplate'
 
 // UTILITIES
+import { convertDate } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
   isFormatDateSearchValid, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
-import { convertDate } from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
@@ -160,13 +162,8 @@ const Forms = () => {
     if (didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
     } 
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     abortController.abort()
@@ -228,6 +225,9 @@ const Forms = () => {
       setTableData(response.data.content)
       setTotalRow(response.data.totalElements)
     }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
 
     isDataGridLoading && setIsDataGridLoading(false)
   }
@@ -260,13 +260,8 @@ const Forms = () => {
 
         setSelectionModel([])
       } 
-      else if (!wasRequestCanceled(response?.status)) {
-        setSnackbarObject({
-          open: true,
-          severity:'error',
-          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something went wrong',
-        })
+      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        setSnackbarObject(getDefaultErrorMessage(response))
       }
     }
 

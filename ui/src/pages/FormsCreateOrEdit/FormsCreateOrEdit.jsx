@@ -20,11 +20,16 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { getDetailFormTemplate, putUpdateFormTemplate } from 'services/formTemplate'
+import { 
+  getDetailFormTemplate, 
+  putUpdateFormTemplate, 
+} from 'services/formTemplate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -61,13 +66,8 @@ const FormsCreateOrEdit = () => {
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 
@@ -102,13 +102,8 @@ const FormsCreateOrEdit = () => {
         message:'Change have been save'
       })
     } 
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     setHasFormChanged(false)

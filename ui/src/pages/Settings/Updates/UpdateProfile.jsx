@@ -33,9 +33,12 @@ import useStyles from '../settingsUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import {
   didSuccessfullyCallTheApi,
-  doesObjectContainDesiredValue
+  doesObjectContainDesiredValue,
+  wasAccessTokenExpired,
+  wasRequestCanceled,
 } from 'utilities/validation'
 
 const UpdateProfile = () => {
@@ -120,6 +123,7 @@ const UpdateProfile = () => {
         const response = await getMediaPresignedUrl(abortController.signal, {
           filename: selectedFile.name
         }, selectedFile)
+
         const resultEditProfile = await putEditProfile(
           abortController.signal,
           {
@@ -141,18 +145,19 @@ const UpdateProfile = () => {
           })
         }
         // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
-        else {
-          setSnackbarObject({
-            open: true,
-            severity: 'error',
-            title: resultEditProfile?.data?.error?.status?.replaceAll('_', ' ') || '',
-            message: resultEditProfile?.data?.error?.message || 'Something went wrong',
-          })
+        else if (
+          !wasRequestCanceled(response?.status) && 
+          !wasAccessTokenExpired(response.status) &&
+          !wasRequestCanceled(resultEditProfile?.status) && 
+          !wasAccessTokenExpired(resultEditProfile.status)
+        ) {
+          setSnackbarObject(getDefaultErrorMessage(resultEditProfile))
         }
           
         abortController.abort()
           
-      } else {
+      } 
+      else {
         const resultEditProfile = await putEditProfile(
           abortController.signal,
           {
@@ -174,19 +179,12 @@ const UpdateProfile = () => {
           })
         }
         // SHOW AN ERROR MESSAGE IF UNSUCCESSFULLY CALLING THE API
-        else {
-          setSnackbarObject({
-            open: true,
-            severity: 'error',
-            title: resultEditProfile?.data?.error?.status?.replaceAll('_', ' ') || '',
-            message: resultEditProfile?.data?.error?.message || 'Something went wrong',
-          })
+        else if (!wasRequestCanceled(resultEditProfile?.status) && !wasAccessTokenExpired(resultEditProfile.status)) {
+          setSnackbarObject(getDefaultErrorMessage(resultEditProfile))
         }
   
         abortController.abort()
-
       }
-
     }
 
     setIsLoading(false)
