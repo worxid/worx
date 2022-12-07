@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -30,6 +33,12 @@ import useStyles from './formsFlyoutUseStyles'
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
 import { convertDate } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const Submissions = (props) => {
   const { rows } = props
@@ -37,6 +46,8 @@ const Submissions = (props) => {
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
   const axiosPrivate = useAxiosPrivate()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STATES
   const [ currentForm, setCurrentForm ] = useState(0)
@@ -51,7 +62,7 @@ const Submissions = (props) => {
   }
 
   // GET SUBMISSION LIST
-  const getSubmissionList = async (inputSignal) => {
+  const getSubmissionList = async (inputSignal, inputIsMounted) => {
     const response = await postSearchFormSubmissionList(inputSignal.signal, {
       page: currentPage-1,
       size: 10
@@ -59,19 +70,29 @@ const Submissions = (props) => {
       template_id: rows[0].id,
     }, axiosPrivate)
 
-    setSubmissionData(response?.data)
+    if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+      setSubmissionData(response?.data)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
   }
 
   useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
     if(currentForm !== rows[0]?.id) {
       setCurrentForm(rows[0]?.id)
       setCurrentPage(1)
     }
 
-    const abortController = new AbortController()
-    rows.length === 1 && getSubmissionList(abortController)
+    rows.length === 1 && getSubmissionList(abortController, isMounted)
 
-    return () => abortController.abort()
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
   }, [rows, currentPage])
 
   return (

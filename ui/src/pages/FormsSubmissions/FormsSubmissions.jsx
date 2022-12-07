@@ -12,6 +12,7 @@ import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // HOOKS
@@ -44,9 +45,16 @@ import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const FormsSubmissions = () => {
   // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STYLES
@@ -176,6 +184,9 @@ const FormsSubmissions = () => {
     if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
       setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
     }
+    else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && !wasAccessTokenExpired(resultFormTemplateDetail.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultFormTemplateDetail))
+    }
 
     setIsDataGridLoading(false)
   }
@@ -207,7 +218,7 @@ const FormsSubmissions = () => {
       axiosPrivate
     )
 
-    if (resultSubmissionList.status === 200 && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(resultSubmissionList?.status) && inputIsMounted) {
       const submissionList = resultSubmissionList?.data?.content?.map(submissionItem => {
         return {
           id: submissionItem?.id,
@@ -223,6 +234,9 @@ const FormsSubmissions = () => {
 
       setRawTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
+    }
+    else if (!wasRequestCanceled(resultSubmissionList?.status) && !wasAccessTokenExpired(resultSubmissionList.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultSubmissionList))
     }
 
     setIsDataGridLoading(false)

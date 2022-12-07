@@ -25,8 +25,10 @@ import useStyles from './homeUseStyles'
 
 // UTILITIES
 import { getLast30Days } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -67,15 +69,11 @@ const Home = () => {
         ]
       )
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
+
   const fetchFormList = async (abortController, inputIsMounted) => {
     const response = await postGetListFormTemplate(
       abortController.signal,
@@ -92,18 +90,15 @@ const Home = () => {
         ]
       )
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
+  
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDeviceList(abortController.signal, isMounted)
     fetchFormList(abortController.signal, isMounted)
 

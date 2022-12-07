@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -35,11 +38,18 @@ import useStyles from './formsSubmissionsDetailUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const InputComponent = (props) => {
   const { item, defaultValue, attachments } = props
   const axiosPrivate = useAxiosPrivate()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STYLES
   const classes = useStyles()
@@ -63,6 +73,7 @@ const InputComponent = (props) => {
     })
 
     const abortController = new AbortController()
+
     const response = await postDetailMediaFiles(
       abortController.signal,
       {
@@ -71,9 +82,13 @@ const InputComponent = (props) => {
       axiosPrivate
     )
 
-    if(didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status)) {
       setCurrentFiles(response.data.list)
-    } else setCurrentFiles([])
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setCurrentFiles([])
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
 
     abortController.abort()
   }

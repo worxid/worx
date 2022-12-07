@@ -30,8 +30,10 @@ import 'leaflet/dist/leaflet.css'
 
 // UTILITIES
 import moment from 'moment'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
-  didSuccessfullyCallTheApi, 
+  didSuccessfullyCallTheApi,
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -80,13 +82,8 @@ const Map = (props) => {
       setSubmissionList(newSubmissionList)
       setBoundCoordinateList(newSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 

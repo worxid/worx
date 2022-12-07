@@ -30,6 +30,14 @@ import { downloadFileFromUrl } from 'services/others'
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
 
+// UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
+
 const DialogMediasPreview = (props) => {
   const { mediasPreviewObject, setMediasPreviewObject } = props
 
@@ -84,12 +92,15 @@ const DialogMediasPreview = (props) => {
       axiosPrivate,
     )
 
-    if (resultMediaFilesData.status === 200 && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(resultMediaFilesData.status) && inputIsMounted) {
       setMediaList(resultMediaFilesData.data.list)
 
       refreshIntervalRef.current = setInterval(() => {
         setRefreshKey(current => current+1)
       }, 4000)
+    }
+    else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))
     }
   }
 
@@ -105,13 +116,12 @@ const DialogMediasPreview = (props) => {
       mediaList[activeStep].name,
     )
 
-    if (resultDownloadFile.status !== 200 && resultDownloadFile.status !== 0) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: '',
-        message: 'Sorry, could not downlaod the file now',
-      })
+    if (
+      !didSuccessfullyCallTheApi(resultDownloadFile?.status) && 
+      !wasAccessTokenExpired(resultDownloadFile.status) && 
+      resultDownloadFile.status !== 0
+    ) {
+      setSnackbarObject(getDefaultErrorMessage(resultDownloadFile))
     }
   }
 

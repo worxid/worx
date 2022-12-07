@@ -21,7 +21,6 @@ import IconPassword from '@mui/icons-material/Password'
 // STYLES
 import useStyles from './settingsUseStyles'
 
-
 const Settings = () => {
   const classes = useStyles()
 

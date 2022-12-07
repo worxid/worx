@@ -33,8 +33,10 @@ import { putAssignGroupFormTemplate } from 'services/formTemplate'
 import useLayoutStyles from './dialogChangeGroupUseStyles'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -62,7 +64,7 @@ const DialogChangeGroup = (props) => {
       let response
       let message = {}
       
-      if(page === 'form-template') {
+      if (page === 'form-template') {
         response = await putAssignGroupFormTemplate(
           selectedItemId,
           abortController.signal,
@@ -71,7 +73,8 @@ const DialogChangeGroup = (props) => {
           },
           axiosPrivate,
         )
-      } else if (page === 'devices') {
+      } 
+      else if (page === 'devices') {
         response = await putAssignGroupDevices(
           selectedItemId,
           abortController.signal,
@@ -84,26 +87,23 @@ const DialogChangeGroup = (props) => {
 
       if (didSuccessfullyCallTheApi(response?.status)) {
         message = {
-          severity:'success',
-          title:'',
-          message:'Change group success'
+          severity: 'success',
+          title: '',
+          message: 'Change group success'
         }
 
         reloadData(abortController, true)
       } 
-      else if (!wasRequestCanceled(response?.status)) {
-        message = {
-          severity: 'error',
-          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something went wrong',
-        }
+      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        message = getDefaultErrorMessage(response)
       }
 
       setSnackbarObject({
         open: true,
         ...message,
       })
-    } else {
+    } 
+    else {
       setGroupChecked(dataChecked)
     }
 
@@ -142,6 +142,9 @@ const DialogChangeGroup = (props) => {
     if (didSuccessfullyCallTheApi(resultGroupList.status) && inputIsMounted) {
       setGroupList(resultGroupList.data.list)
     }
+    else if (!wasRequestCanceled(resultGroupList?.status) && !wasAccessTokenExpired(resultGroupList.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultGroupList))
+    } 
   }
 
   // SIDE EFFECT FETCHING

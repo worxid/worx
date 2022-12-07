@@ -45,9 +45,11 @@ import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/formT
 import useStyles from './dialogShareLinkUseStyles'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
   isEmailFormatValid, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -112,12 +114,8 @@ const DialogShareLink = (props) => {
           setReceivers([])
           setIsDialogFormOpen(false)
         } 
-        else if (!wasRequestCanceled(response?.status)) {
-          message = {
-            severity: 'error',
-            title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-            message: response?.data?.error?.message || 'Something went wrong',
-          }
+        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+          message = getDefaultErrorMessage(response)
         }
       } 
       else {
@@ -166,14 +164,10 @@ const DialogShareLink = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
-    } else if (!wasRequestCanceled(response?.status)) {
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
       setFormLink('')
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 

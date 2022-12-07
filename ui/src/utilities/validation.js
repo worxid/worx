@@ -36,6 +36,11 @@ export const isFormatDateSearchValid = (date) => {
   else return false
 }
 
+export const wasAccessTokenExpired = (inputStatus) => {
+  if (inputStatus === 401) return true
+  else return false
+}
+
 export const wasRequestCanceled = (inputStatus) => {
   if (inputStatus === 'Canceled') return true
   else return false
