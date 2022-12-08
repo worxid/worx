@@ -10,4 +10,7 @@ public class ModelConstants {
     public static final String GROUP_DEFAULT_NAME = "Main Group";
     public static final String GROUP_DEFAULT_COLOR = "#DA3630";
 
+    public static final String DEVICE_DEFAULT_LABEL = "Main Label";
+
+
 }
