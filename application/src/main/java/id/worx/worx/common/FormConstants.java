@@ -1,11 +1,10 @@
 package id.worx.worx.common;
 
-public class FormConstants {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    @Generated
-    private FormConstants() {
-        throw new IllegalStateException("Utility class");
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class FormConstants {
 
     public static final int PHOTO_FIELD_MAXIMUM_ALLOWED_MAX_FILES = 6;
 
