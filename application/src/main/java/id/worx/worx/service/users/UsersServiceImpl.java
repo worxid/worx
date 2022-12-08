@@ -327,6 +327,7 @@ public class UsersServiceImpl implements UsersService {
         }
         Users data = getEmail.get();
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+        userDetailsResponse.setFullname(data.getFullname());
         userDetailsResponse.setCountry(data.getCountry());
         userDetailsResponse.setOrganizationName(data.getOrganizationName());
         userDetailsResponse.setOrganizationCode(data.getOrganizationCode());
