@@ -67,7 +67,7 @@ export const getTransactionChartOptions = (
     },
     plotOptions: {
       bar: {
-        borderRadius: 15,
+        borderRadius: 12,
         columnWidth: '75%',
         borderRadiusApplication: 'end',
         endingShape: 'rounded',

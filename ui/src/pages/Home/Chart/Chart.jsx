@@ -56,7 +56,7 @@ const Chart = (props) => {
   const [ chartList, setChartList ] = useState([])
   const [ containerHeight, setContainerHeight ] = useState(300)
 
-  const chartTitle = 'Submission Count'
+  const chartTitle = 'Total'
 
   // const getChartWidth = () => {
   //   if (chartContainerRef.current) {
