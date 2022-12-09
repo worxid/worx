@@ -7,6 +7,7 @@ import IconEmail from 'assets/images/icons/authentication-email.svg'
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 // STYLES
@@ -32,16 +33,22 @@ const AuthenticationFinish = () => {
       if (inputType === 'sign-up') {
         informationObject.caption1 = 'Click the link in your email'
         informationObject.caption2 = 'to activate your account'
+        informationObject.navigationText = 'Didn’t receive the link? '
+        informationObject.linkText = 'Resend'
       }
       else if (inputType === 'forgot-password') {
         informationObject.caption1 = 'A link to reset your password'
         informationObject.caption2 = 'has been sent to your email'
+        informationObject.navigationText = 'Didn’t receive the link? '
+        informationObject.linkText = 'Resend'
       }
     }
     else if (inputType === 'reset-password') {
       informationObject = {
         title: 'Your password has been changed successfully',
         icon: IconCheck,
+        navigationText: 'Don’t have an account? ',
+        linkText: 'Sign Up',
       }
     }
 
@@ -89,6 +96,25 @@ const AuthenticationFinish = () => {
       >
         Sign In
       </Button>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+        textAlign='center'
+      >
+        {/* NORMAL TEXT */}
+        {getinformation(type).navigationText}
+
+        {/* LINK TEXT */}
+        <Link 
+          href={type === 'reset-password' ? '/sign-up' : '#'}
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          {getinformation(type).linkText}
+        </Link>
+      </Typography>
     </>
   )
 }

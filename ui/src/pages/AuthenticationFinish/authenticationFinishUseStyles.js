@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
   },
   buttonAction: {
-    margin: '28px 0px 16px',
+    margin: '24px 0px',
   },
 }))
 
