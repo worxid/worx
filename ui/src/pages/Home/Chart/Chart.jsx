@@ -58,15 +58,15 @@ const Chart = (props) => {
 
   const chartTitle = 'Submission Count'
 
-  const getChartWidth = () => {
-    if (chartContainerRef.current) {
-      const containerWidth = chartContainerRef.current.clientWidth
+  // const getChartWidth = () => {
+  //   if (chartContainerRef.current) {
+  //     const containerWidth = chartContainerRef.current.clientWidth
   
-      if (chartList.length * 50 < containerWidth) return '100%'
-      else return chartList.length * 50
-    }
-    else return '100%'
-  }
+  //     if (chartList.length * 50 < containerWidth) return '100%'
+  //     else return chartList.length * 50
+  //   }
+  //   else return '100%'
+  // }
 
   const fetchDashboardChart = async (abortController, inputIsMounted) => {
     let requestParams = {
@@ -152,7 +152,8 @@ const Chart = (props) => {
           chartList.map(item => item.y)
         )}
         type='bar'
-        width={getChartWidth()}
+        // width={getChartWidth()}
+        width='100%'
         height='100%'
       />
     </Stack>
