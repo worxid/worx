@@ -216,6 +216,21 @@ const SignIn = () => {
       >
         Sign In
       </LoadingButton>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+      >
+        Don’t have an account?&nbsp;
+        <Link 
+          href='/sign-up'
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          Sign Up
+        </Link>
+      </Typography>
     </form>
   )
 }
