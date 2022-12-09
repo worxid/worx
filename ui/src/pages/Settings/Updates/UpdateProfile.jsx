@@ -52,7 +52,7 @@ const UpdateProfile = () => {
 
   const initialFormObject = {
     email: auth?.user?.email,
-    fullName: '',
+    fullName: auth?.user?.fullname,
     organizationName: auth?.user?.organization_name,
     phoneNumber: auth?.user?.phone,
   }
@@ -65,10 +65,11 @@ const UpdateProfile = () => {
   }
 
   const [initialLogo, setInitialLogo] = useState(auth?.user?.logo_url)
-
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
   const [ isLoading, setIsLoading ] = useState(false)
+  const [selectedFile, setSelectedFile] = useState()
+  const [preview, setPreview] = useState()
 
   const handleFormObjectChange = (inputKey, inputNewValue) => {
     setFormObject(current => {
@@ -78,8 +79,6 @@ const UpdateProfile = () => {
       }
     })
   }
-  const [selectedFile, setSelectedFile] = useState()
-  const [preview, setPreview] = useState()
 
   useEffect(() => {
     if (!selectedFile) {
@@ -119,6 +118,7 @@ const UpdateProfile = () => {
     // USER INPUTS ARE VALID
     else {
       const abortController = new AbortController()
+
       if (selectedFile){
         const response = await getMediaPresignedUrl(abortController.signal, {
           filename: selectedFile.name

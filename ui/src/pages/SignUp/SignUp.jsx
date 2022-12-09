@@ -313,8 +313,7 @@ const SignUp = () => {
       {/* AGREEMENT TEXT */}
       <Typography 
         variant='body2'
-        className='colorTextSecondary'
-        textAlign='center'
+        className={layoutClasses.textAggreement}
       >
         Signing up for a Worx account means you agree to the&nbsp;
         <Link 
@@ -331,6 +330,21 @@ const SignUp = () => {
           className='fontWeight500'
         >
           Terms of Service
+        </Link>
+      </Typography>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+      >
+        Already have an account?&nbsp;
+        <Link 
+          href='/sign-in'
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          Sign In
         </Link>
       </Typography>
     </form>

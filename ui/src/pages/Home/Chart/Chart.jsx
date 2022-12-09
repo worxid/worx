@@ -56,17 +56,17 @@ const Chart = (props) => {
   const [ chartList, setChartList ] = useState([])
   const [ containerHeight, setContainerHeight ] = useState(300)
 
-  const chartTitle = 'Submission Count'
+  const chartTitle = 'Total'
 
-  const getChartWidth = () => {
-    if (chartContainerRef.current) {
-      const containerWidth = chartContainerRef.current.clientWidth
+  // const getChartWidth = () => {
+  //   if (chartContainerRef.current) {
+  //     const containerWidth = chartContainerRef.current.clientWidth
   
-      if (chartList.length * 50 < containerWidth) return '100%'
-      else return chartList.length * 50
-    }
-    else return '100%'
-  }
+  //     if (chartList.length * 50 < containerWidth) return '100%'
+  //     else return chartList.length * 50
+  //   }
+  //   else return '100%'
+  // }
 
   const fetchDashboardChart = async (abortController, inputIsMounted) => {
     let requestParams = {
@@ -106,9 +106,10 @@ const Chart = (props) => {
   }
 
   const updateContainerHeight = () => {
-    if (windowSize.height < 1500) setContainerHeight(300)
-    else if (windowSize.height >= 1500 && windowSize.height <= 2560) setContainerHeight(400)
-    else if (windowSize.height > 2560) setContainerHeight(500)
+    if (windowSize.height < 900) setContainerHeight(150)
+    else if (windowSize.height >= 900 && windowSize.height < 1500) setContainerHeight(300)
+    else if (windowSize.height >= 1500 && windowSize.height < 2560) setContainerHeight(400)
+    else if (windowSize.height >= 2560) setContainerHeight(500)
   }
 
   useEffect(() => {
@@ -151,7 +152,8 @@ const Chart = (props) => {
           chartList.map(item => item.y)
         )}
         type='bar'
-        width={getChartWidth()}
+        // width={getChartWidth()}
+        width='100%'
         height='100%'
       />
     </Stack>

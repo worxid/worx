@@ -67,7 +67,7 @@ export const getTransactionChartOptions = (
     },
     plotOptions: {
       bar: {
-        borderRadius: 15,
+        borderRadius: 12,
         columnWidth: '75%',
         borderRadiusApplication: 'end',
         endingShape: 'rounded',
@@ -80,7 +80,7 @@ export const getTransactionChartOptions = (
     stroke: {
       show: true,
       width: 2,
-      colors: [ 'red' ],
+      colors: [ inputTheme.palette.primary.main ],
     },
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {

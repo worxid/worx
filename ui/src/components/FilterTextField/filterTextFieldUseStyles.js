@@ -6,11 +6,11 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginBottom: 8,
     '& .MuiInputLabel-root': {
-      fontSize: 12,
+      fontSize: 14,
       fontWeight: 500,
     },
     '& .MuiInputBase-input': {
-      fontSize: 12,
+      fontSize: 14,
       fontWeight: 500,
     },
   },

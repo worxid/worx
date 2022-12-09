@@ -1,9 +1,6 @@
 // ASSETS
 import LogoProductWithText from 'assets/images/logos/product-logo-with-text.svg'
 
-// COMPONENTS
-import AppBarText from './AppBarText'
-
 // MUIS
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -35,9 +32,6 @@ const AuthenticationHalf = (props) => {
               alt=''
             />
           </Link>
-
-          {/* APP BAR TEXT */}
-          <AppBarText/>
         </Toolbar>
       </AppBar>
 

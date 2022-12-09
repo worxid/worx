@@ -83,13 +83,11 @@ const useStyles = makeStyles((theme) => ({
       letterSpacing: '0.15px',
       backgroundColor: theme.palette.common.white,
     },
-    
   },
   tab: {
     minHeight: 68,
     minWidth: 222,
     textTransform: 'capitalize',
-
     fontSize: 14,
     fontWeight: 500,
     lineHeight: '20px',

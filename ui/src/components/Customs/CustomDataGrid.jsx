@@ -25,7 +25,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
           MenuProps: {
             sx: {
               '& .MuiMenuItem-root': {
-                fontSize: 12,
+                fontSize: 14,
               },
               [values.zoomBoundary]: {
                 '& .MuiPaper-root': {
@@ -45,7 +45,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   />
 ))(({ theme }) => ({
   border: 'none',
-  fontSize: 12,
+  fontSize: 14,
   color: theme.palette.text.primary,
 
   // HEADER
@@ -129,13 +129,13 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
 
   // PAGINATION
   '& .MuiTablePagination-selectLabel': {
-    fontSize: 12,
+    fontSize: 14,
   },
   '& .MuiTablePagination-select': {
-    fontSize: 12,
+    fontSize: 14,
   },
   '& .MuiTablePagination-displayedRows': {
-    fontSize: 12,
+    fontSize: 14,
   },
   '& .MuiIconButton-root': {
     padding: 8,
@@ -160,7 +160,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
     },
     '& .MuiDataGrid-footerContainer .MuiTablePagination-select': {
       zoom: values.zoomValue,
-      fontSize: 10,
+      fontSize: 14,
     },
     '& .MuiDataGrid-footerContainer .MuiSelect-nativeInput': {
       zoom: values.zoomValue,

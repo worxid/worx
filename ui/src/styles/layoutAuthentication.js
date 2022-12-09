@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
   buttonAction: {
     margin: '24px 0px',
   },
+  textAggreement: {
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    marginBottom: 20,
+  },
 }))
 
 export default useStyles

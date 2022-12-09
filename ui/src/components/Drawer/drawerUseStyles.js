@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   navigationItem: {
     paddingLeft: 20,
     height: 48,
+    fontWeight: 600,
     '&:hover': {
       backgroundColor: theme.palette.additional.drawer.hover,
     },
