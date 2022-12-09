@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
     '&.formControlGrouped': {
       marginBottom: 24,
     },
-    '& .MuiOutlinedInput-notchedOutline': {
-      border: `2px solid ${theme.palette.action.selected}`
-    },
     '& .MuiFormControlLabel-label': {
       fontSize: 14,
     }

@@ -111,7 +111,7 @@ customTheme = createTheme(customTheme, {
           fontSize: 14,
           height: 48,
           '& fieldset': {
-            border: `2px solid ${customTheme.palette.common.black}`,
+            border: `2px solid ${customTheme.palette.action.focus}`,
           },
         },
       },
