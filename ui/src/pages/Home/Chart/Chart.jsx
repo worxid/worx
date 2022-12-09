@@ -106,9 +106,10 @@ const Chart = (props) => {
   }
 
   const updateContainerHeight = () => {
-    if (windowSize.height < 1500) setContainerHeight(300)
-    else if (windowSize.height >= 1500 && windowSize.height <= 2560) setContainerHeight(400)
-    else if (windowSize.height > 2560) setContainerHeight(500)
+    if (windowSize.height < 900) setContainerHeight(150)
+    else if (windowSize.height >= 900 && windowSize.height < 1500) setContainerHeight(300)
+    else if (windowSize.height >= 1500 && windowSize.height < 2560) setContainerHeight(400)
+    else if (windowSize.height >= 2560) setContainerHeight(500)
   }
 
   useEffect(() => {
