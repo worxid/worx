@@ -1,8 +1,12 @@
+import { useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 // ASSETS
 import IconCheck from 'assets/images/icons/authentication-check.svg'
 import IconEmail from 'assets/images/icons/authentication-email.svg'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // MUIS
 import Box from '@mui/material/Box'
@@ -10,13 +14,25 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
+// SERVICES
+import { 
+  postResendEmailConfirmation, 
+  postForgotPasswordUser, 
+} from 'services/users'
+
 // STYLES
 import useStyles from './authenticationFinishUseStyles'
+
+// UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const AuthenticationFinish = () => {
   const classes = useStyles()
 
   const [ searchParams ] = useSearchParams()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const type = searchParams.get('type')
   const email = searchParams.get('email')
@@ -53,6 +69,46 @@ const AuthenticationFinish = () => {
     }
 
     return informationObject
+  }
+
+  const handleResendClick = async (event, type) => {
+    event.preventDefault()
+    const abortController = new AbortController()
+
+    if (type === 'sign-up' && email) {
+      const response = await postResendEmailConfirmation(
+        abortController.signal,
+        { email }
+      )
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Successfully requested to resend the confirmation email',
+        })
+      } 
+      else setSnackbarObject(getDefaultErrorMessage(response))
+    } 
+    else if (type === 'forgot-password' && email) {
+      const response = await await postForgotPasswordUser(
+        abortController.signal,
+        { email }
+      )
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Successfully requested to resend the forgot password email',
+        })
+      } 
+      else setSnackbarObject(getDefaultErrorMessage(response))
+    }
+
+    abortController.abort()
   }
 
   return (
@@ -111,6 +167,7 @@ const AuthenticationFinish = () => {
           href={type === 'reset-password' ? '/sign-up' : '#'}
           underline='none'
           className='fontFamilySpaceMono fontWeight700'
+          onClick={(event) => handleResendClick(event, type)}
         >
           {getinformation(type).linkText}
         </Link>
