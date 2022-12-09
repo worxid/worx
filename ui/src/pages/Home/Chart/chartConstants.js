@@ -80,7 +80,7 @@ export const getTransactionChartOptions = (
     stroke: {
       show: true,
       width: 2,
-      colors: [ 'red' ],
+      colors: [ inputTheme.palette.primary.main ],
     },
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
