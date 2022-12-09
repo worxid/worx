@@ -1,5 +1,7 @@
 package id.worx.worx.service.report;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +17,7 @@ public class FieldContext {
 
     private String label;
     private String description;
-    private String value;
+
+    private List<Value> values;
 
 }

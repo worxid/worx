@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.core.document.SyntaxKind;
 import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
+import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
@@ -33,62 +35,89 @@ public class ReportServiceImpl implements ReportService {
 
             FieldsMetadata metadata = report.createFieldsMetadata();
             metadata.addFieldAsTextStyling("submitAddress", SyntaxKind.Html);
-            metadata.load("fields", FieldContext.class, true);
+            metadata.load("v", Value.class);
+            metadata.load("organization", Organization.class);
 
             IContext context = report.createContext();
+
+            InputStream logo = new ClassPathResource("templates/default_logo.png").getInputStream();
+            IImageProvider logoImageProvider = new ByteArrayImageProvider(logo);
+            logoImageProvider.setSize(99.84f, 29.76f);
+            Organization org = Organization.builder()
+                    .logo(logoImageProvider)
+                    .build();
 
             FieldContext text = FieldContext.builder()
                     .label("Nama Fasilitas Umum")
                     .description("Deskripsi TextField")
-                    .value("Trotoar sekitar kalibata")
+                    .values(List.of(
+                            Value.builder()
+                                    .label("Trotoar sekitar kalibata")
+                                    .build()))
                     .build();
 
             FieldContext checkbox = FieldContext.builder()
                     .label("Kelayakan")
                     .description("Deskripsi CheckboxField")
-                    .value("Tidak Layak, Perlu Perbaikan")
+                    .values(List.of(
+                            Value.builder().label("Tidak Layak, Perlu Perbaikan").build()))
                     .build();
 
             FieldContext radiogroup = FieldContext.builder()
                     .label("Lokasi")
                     .description("Deskripsi RadiogroupField")
-                    .value("Jakarta Selatan")
+                    .values(List.of(Value.builder().label("Jakarta Selatan").build()))
                     .build();
 
             FieldContext dropdown = FieldContext.builder()
                     .label("Jenis Fasilitas Umum")
                     .description("Deskripsi DropdownField")
-                    .value("Fasilitas di Ruang Terbuka")
+                    .values(List.of(Value.builder().label("Fasilitas di Ruang Terbuka").build()))
                     .build();
 
             FieldContext date = FieldContext.builder()
                     .label("Tanggal Laporan")
                     .description("Deskripsi DateField")
-                    .value("01/12/2022")
+                    .values(List.of(Value.builder().label("01/12/2022").build()))
                     .build();
 
             FieldContext rating = FieldContext.builder()
                     .label("Tingkat Pelayanan Petugas terhadap Fasilitas Umum")
                     .description("Deskripsi RatingField")
-                    .value("★★☆☆☆")
+                    .values(List.of(Value.builder().label("★★☆☆☆").build()))
                     .build();
+
+            boolean useImageSize = true;
+            InputStream image1 = new ClassPathResource("templates/placholder_1.jpg").getInputStream();
+            IImageProvider image1ImageProvider = new ByteArrayImageProvider(image1, useImageSize);
+
+            InputStream image2 = new ClassPathResource("templates/placholder_2.jpg").getInputStream();
+            IImageProvider image2ImageProvider = new ByteArrayImageProvider(image2, useImageSize);
 
             FieldContext image = FieldContext.builder()
                     .label("Foto Fasilitas Umum (jika ada)")
                     .description("Deskripsi ImageField")
-                    .value("IMG_01.jpg \n IMG_02.jpg")
+                    .values(List.of(
+                            Value.builder()
+                                    .label("IMG_01.jpg")
+                                    .image(image1ImageProvider)
+                                    .build(),
+                            Value.builder()
+                                    .label("IMG_02.jpg")
+                                    .image(image2ImageProvider)
+                                    .build()))
                     .build();
 
             FieldContext file = FieldContext.builder()
-                    .label("Foto Fasilitas Umum (jika ada)")
-                    .description("Deskripsi ImageField")
-                    .value("VID_01.mov")
+                    .label("Video Fasilitas Umum (jika ada)")
+                    .description("Deskripsi FileField")
+                    .values(List.of(Value.builder().label("VID_01.mov").build()))
                     .build();
 
             FieldContext signature = FieldContext.builder()
                     .label("Tanda Tangan Pelapor")
-                    .description("Deskripsi ImageField")
-                    .value("VID_01.mov")
+                    .description("Deskripsi SignatureField")
+                    .values(List.of(Value.builder().label("").build()))
                     .build();
 
             List<FieldContext> fields = List.of(
@@ -97,7 +126,10 @@ public class ReportServiceImpl implements ReportService {
                     radiogroup,
                     dropdown,
                     date,
-                    rating);
+                    rating,
+                    image,
+                    file,
+                    signature);
 
             FormContext form = FormContext.builder()
                     .name("Kelayakan Fasilitas Umum DKI Jakarta")
@@ -108,6 +140,7 @@ public class ReportServiceImpl implements ReportService {
                             "H47V+F44, Jl. Raya Buruan, Pitra, Kec. Penebel, Kel. Penipis. Jakarta Pusat", -7.2974468,
                             108.737638))
                     .build();
+            context.put("organization", org);
             context.put("form", form);
             context.put("fields", fields);
 
