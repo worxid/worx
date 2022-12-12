@@ -75,6 +75,12 @@ const FieldProperties = () => {
     return listFields[indexOfId][name] ? listFields[indexOfId][name] : ''
   }
 
+  // IS FIELD OWN A PROPERTY
+  const isFieldOwnProperty = (fieldId, key) => {
+    const indexOfId = listFields.findIndex(item => item.id === fieldId)
+    return listFields[indexOfId].hasOwnProperty(key)
+  }
+
   // HANDLE UPDATE OPTIONLIST
   const handleUpdateOptionList = (fieldId, indexOption, value) => {
     const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
@@ -200,25 +206,27 @@ const FieldProperties = () => {
           </FormControl>
 
           {/* DESCRIPTION */}
-          <FormControl
-            className={classes.formControl}
-            label='description'
-            variant='outlined' 
-            fullWidth
-            color='secondary'
-          >
-            <InputLabel>Description</InputLabel>
-        
-            <OutlinedInput
-              type='text'
-              label='Description'
-              placeholder='Description'
-              onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'description', event.target.value
-              ) }
-              value={getFieldPropertiesValueById(selectedFieldsId, 'description')}
-            />
-          </FormControl>
+          {isFieldOwnProperty(selectedFieldsId, 'description') && (
+            <FormControl
+              className={classes.formControl}
+              label='description'
+              variant='outlined' 
+              fullWidth
+              color='secondary'
+            >
+              <InputLabel>Description</InputLabel>
+          
+              <OutlinedInput
+                type='text'
+                label='Description'
+                placeholder='Description'
+                onChange={(event) => handleUpdateFieldPropertiesById(
+                  selectedFieldsId, 'description', event.target.value
+                ) }
+                value={getFieldPropertiesValueById(selectedFieldsId, 'description')}
+              />
+            </FormControl>
+          )}
         </>
       )}
 
@@ -569,8 +577,36 @@ const FieldProperties = () => {
         </FormGroup>
       )}
 
+      {/* TYPE BARCODE */}
+      {selectedFieldsType === 'barcode' && (
+        <FormGroup className={`${classes.formControl} marginBottom0`}>
+          {/* RESTRICT TO 1D BARCODES ONLY */}
+          <FormControlLabel
+            control={(<Checkbox
+              onChange={(event) => handleUpdateFieldPropertiesById(
+                selectedFieldsId, 'restrict_to_1d_barcodes_only', Boolean(event.target.checked)
+              )}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'restrict_to_1d_barcodes_only'))}
+            />)}
+            label='Restrict to 1D barcodes only'
+          />
+
+          {/* USER CAN MANUALLY OVERRIDE */}
+          <FormControlLabel
+            control={(<Checkbox
+              onChange={(event) => handleUpdateFieldPropertiesById(
+                selectedFieldsId, 'user_can_manually_override', Boolean(event.target.checked)
+              )}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'user_can_manually_override'))}
+            />)}
+            label='User can manually override'
+          />
+        </FormGroup>
+      )}
+
       {/* DEFAULT FIELD PROPERTIES */}
-      {(selectedFieldsType && selectedFieldsType !== 'formHeader' && selectedFieldsType !== 'separator') && (
+      {(selectedFieldsType && selectedFieldsType !== 'formHeader'
+        && selectedFieldsType !== 'separator' && isFieldOwnProperty(selectedFieldsId, 'required')) && (
         <FormGroup className={classes.formControl}>
           <FormControlLabel
             control={(<Checkbox

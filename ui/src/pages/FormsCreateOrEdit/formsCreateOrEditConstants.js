@@ -2,6 +2,8 @@
 import { v4 as uuid } from 'uuid'
 
 // MUI ICONS
+import IconAccessTimeFilled from '@mui/icons-material/AccessTimeFilled'
+import IconBrush from '@mui/icons-material/Brush'
 import IconCheckBox from '@mui/icons-material/CheckBox'
 import IconContentCut from '@mui/icons-material/ContentCut'
 import IconCreate from '@mui/icons-material/Create'
@@ -12,6 +14,8 @@ import IconPhotoCamera from '@mui/icons-material/PhotoCamera'
 import IconPlaylistAddCheck from '@mui/icons-material/PlaylistAddCheck'
 import IconStar from '@mui/icons-material/Star'
 import IconStop from '@mui/icons-material/Stop'
+import IconQrCode2 from '@mui/icons-material/QrCode2'
+import IconTag from '@mui/icons-material/Tag'
 
 export const dataListComponents = [
   {
@@ -66,6 +70,12 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
+    label: 'Yes/No',
+    type: 'boolean',
+    duplicateFrom: null,
+  },
+  {
+    id: uuid(),
     label: 'Dropdown',
     description: 'Description',
     required: false,
@@ -95,6 +105,12 @@ export const dataListComponents = [
   },
   {
     id: uuid(),
+    label: 'Time',
+    type: 'time',
+    duplicateFrom: null,
+  },
+  {
+    id: uuid(),
     label: 'Separator',
     description: 'Description',
     type: 'separator',
@@ -107,6 +123,12 @@ export const dataListComponents = [
     required: false,
     max_stars: 5,
     type: 'rating',
+    duplicateFrom: null,
+  },
+  {
+    id: uuid(),
+    label: 'Integer',
+    type: 'integer',
     duplicateFrom: null,
   },
   {
@@ -141,6 +163,21 @@ export const dataListComponents = [
     type: 'signature',
     duplicateFrom: null,
   },
+  {
+    id: uuid(),
+    label: 'Sketch',
+    type: 'sketch',
+    duplicateFrom: null,
+  },
+  {
+    id: uuid(),
+    label: 'Barcode',
+    type: 'barcode',
+    restrict_to_1d_barcodes_only: false,
+    user_can_manually_override: false,
+    required: false,
+    duplicateFrom: null,
+  },
 ]
 export const formatFiles = ['any', 'csv', 'doc', 'pdf', 'xls']
 export const formatSizeImages = [
@@ -168,6 +205,11 @@ export const getTypeIconComponent = (type) => {
   else if(type === 'file') return <IconFileCopy className='colorTextPrimary'/>
   else if(type === 'photo') return <IconPhotoCamera className='colorTextPrimary'/>
   else if(type === 'signature') return <IconCreate className='colorTextPrimary'/>
+  else if(type === 'time') return <IconAccessTimeFilled className='colorTextPrimary'/>
+  else if(type === 'barcode') return <IconQrCode2 className='colorTextPrimary'/>
+  else if(type === 'sketch') return <IconBrush className='colorTextPrimary'/>
+  else if(type === 'boolean') return <IconRadioButtonChecked className='colorTextPrimary'/>
+  else if(type === 'integer') return <IconTag className='colorTextPrimary'/>
 }
 export const getTypeTitle = (type) => {
   if(type === 'text') return 'Text Field'
@@ -180,6 +222,11 @@ export const getTypeTitle = (type) => {
   else if(type === 'file') return 'File'
   else if(type === 'photo') return 'Photo'
   else if(type === 'signature') return 'Signature'
+  else if(type === 'time') return 'Time'
+  else if(type === 'barcode') return 'Barcode'
+  else if(type === 'sketch') return 'Sketch'
+  else if(type === 'boolean') return 'Yes/No'
+  else if(type === 'integer') return 'Integer'
 }
 export const initObjectForm = {
   id: null,
