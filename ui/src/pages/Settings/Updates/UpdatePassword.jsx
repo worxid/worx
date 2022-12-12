@@ -38,7 +38,9 @@ import {
   wasRequestCanceled,
 } from 'utilities/validation'
 
-const UpdatePassword = () => {
+const UpdatePassword = (props) => {
+  const { isLoading, setIsLoading } = props
+
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
@@ -64,7 +66,6 @@ const UpdatePassword = () => {
   const [ isPasswordShown, setIsPasswordShown ] = useState(false)
   const [ isNewPasswordShown, setIsNewPasswordShown ] = useState(false)
   const [ isConfirmPasswordShown, setIsConfirmPasswordShown ] = useState(false)
-  const [ isLoading, setIsLoading ] = useState(false)
 
   const handleFormObjectChange = (inputKey, inputNewValue) => {
     setFormObject(current => {

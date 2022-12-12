@@ -33,6 +33,7 @@ const Settings = () => {
   const { breakpointType } = useContext(AllPagesContext)
 
   const [ currentTab, setCurrentTab ] = useState(0)
+  const [ isLoading, setIsLoading ] = useState(false)
   
   return (
     <>
@@ -67,9 +68,9 @@ const Settings = () => {
         height={0}
       >
         {/* MAIN CONTENT */}
-        <LoadingPaper className={classes.mainContent}>
-          {currentTab === 0 && (<UpdateProfile />)}
-          {currentTab === 1 && (<UpdatePassword />)}
+        <LoadingPaper className={classes.mainContent} isLoading={isLoading}>
+          {currentTab === 0 && (<UpdateProfile isLoading={isLoading} setIsLoading={setIsLoading}/>)}
+          {currentTab === 1 && (<UpdatePassword isLoading={isLoading} setIsLoading={setIsLoading} />)}
         </LoadingPaper>
       </Stack>
     </>

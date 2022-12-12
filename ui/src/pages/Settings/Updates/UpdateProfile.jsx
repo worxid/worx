@@ -41,7 +41,9 @@ import {
   wasRequestCanceled,
 } from 'utilities/validation'
 
-const UpdateProfile = () => {
+const UpdateProfile = (props) => {
+  const { isLoading, setIsLoading } = props
+
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
@@ -67,7 +69,6 @@ const UpdateProfile = () => {
   const [initialLogo, setInitialLogo] = useState(auth?.user?.logo_url)
   const [ formObject, setFormObject ] = useState(initialFormObject)
   const [ formHelperObject, setFormHelperObject ] = useState(initialFormHelperObject)
-  const [ isLoading, setIsLoading ] = useState(false)
   const [selectedFile, setSelectedFile] = useState()
   const [preview, setPreview] = useState()
 
