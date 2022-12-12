@@ -133,6 +133,12 @@ const useStyles = makeStyles((theme) => ({
   },
   dividerInput: {
     marginBottom: 12,
+  },
+  inputDateTime: {
+    flex: 1,
+  },
+  labelYesNo: {
+    width: '64px !important'
   }
 }))
 
