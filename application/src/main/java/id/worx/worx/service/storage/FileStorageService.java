@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import id.worx.worx.common.model.dto.FileDTO;
 import id.worx.worx.common.model.response.UrlPresignedResponse;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.errors.*;
@@ -15,6 +16,12 @@ import io.minio.errors.*;
 public interface FileStorageService {
 
     void store();
+
+    FileDTO get(Long id);
+
+    FileDTO get(String mediaId);
+
+    List<FileDTO> getAll(List<Long> ids);
 
     UrlPresignedResponse toDtoFilename(UrlPresignedResponse urlPresignedResponse);
 
@@ -38,5 +45,6 @@ public interface FileStorageService {
     }
 
     List<UrlPresignedResponse> getFiles(FileRequestDTO fileRequestDTO)
-        throws IOException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException, ServerException, ErrorResponseException, XmlParserException, InsufficientDataException, InternalException;
+            throws IOException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException,
+            ServerException, ErrorResponseException, XmlParserException, InsufficientDataException, InternalException;
 }

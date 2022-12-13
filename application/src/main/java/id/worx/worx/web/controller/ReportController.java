@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("report")
 @RequiredArgsConstructor
-public class ReportController {
+public class ReportController implements SecuredRestController {
 
     private final ReportService reportService;
 

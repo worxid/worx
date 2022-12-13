@@ -1,6 +1,7 @@
 package id.worx.worx.service.storage.client;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -12,6 +13,7 @@ import id.worx.worx.common.exception.ObjectStorageErrorDetail;
 import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
@@ -35,7 +37,6 @@ public class MinioClientService {
     private static final int PRESIGNED_URL_EXPIRY_DAYS = 1;
     private static final String NO_SUCH_KEY_STRING_VALUE = "NoSuchKey";
     private static final String MINIO_ERROR_MESSAGE_STRING = "Error while dowloading file from MinIO";
-
 
     private final WorxProperties props;
 
@@ -101,7 +102,7 @@ public class MinioClientService {
 
             if (e.errorResponse().code().equals(NO_SUCH_KEY_STRING_VALUE)) {
                 throw new WorxException(
-                    WorxErrorCode.OBJECT_STORAGE_ERROR, List.of(new ObjectStorageErrorDetail()));
+                        WorxErrorCode.OBJECT_STORAGE_ERROR, List.of(new ObjectStorageErrorDetail()));
             }
             log.error(MINIO_ERROR_MESSAGE_STRING, e);
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
@@ -113,6 +114,23 @@ public class MinioClientService {
             log.error(MINIO_ERROR_MESSAGE_STRING, e);
             throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
 
+        }
+    }
+
+    public InputStream getObject(String path) {
+        if (!isObjectExist(path)) {
+            return null;
+        }
+
+        try {
+            return client.getObject(GetObjectArgs.builder()
+                    .bucket(props.getStorage().getBucketName())
+                    .object(path)
+                    .build());
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
+                | IllegalArgumentException | IOException e) {
+            return null;
         }
     }
 

@@ -1,17 +1,20 @@
 package id.worx.worx.service.storage;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import id.worx.worx.mapper.FileMapper;
 import id.worx.worx.util.UrlUtils;
 import id.worx.worx.web.model.request.FileRequestDTO;
 import org.springframework.stereotype.Service;
 
+import id.worx.worx.common.model.dto.FileDTO;
 import id.worx.worx.common.model.response.UrlPresignedResponse;
 import id.worx.worx.entity.File;
 import id.worx.worx.exception.WorxErrorCode;
@@ -49,6 +52,26 @@ public class MinioService implements FileStorageService {
     public void store() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public FileDTO get(Long id) {
+        File file = this.findByIdorElseThrowNotFound(id);
+        return this.toDTO(file);
+    }
+
+    @Override
+    public FileDTO get(String mediaId) {
+        File file = this.findByMediaIdorElseThrowNotFound(mediaId);
+        return this.toDTO(file);
+    }
+
+    @Override
+    public List<FileDTO> getAll(List<Long> ids) {
+        List<File> files = fileRepository.findAllById(ids);
+        return files.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -266,4 +289,40 @@ public class MinioService implements FileStorageService {
 
         return file.get();
     }
+
+    private String getDownloadPresignedUrl(File file) {
+        String url = "";
+        try {
+            url = clientService.getDownloadPresignedObjectUrl(file.getPath());
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
+                | IllegalArgumentException | IOException e) {
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
+            throw new WorxException(WorxErrorCode.OBJECT_STORAGE_ERROR);
+        }
+        return url;
+    }
+
+    private FileDTO toDTO(File file) {
+        FileDTO result = FileDTO.builder()
+                .id(file.getId())
+                .mediaId(file.getMediaId())
+                .name(file.getName())
+                .originalName(file.getOriginalName())
+                .path(file.getPath())
+                .mimeType(file.getMimeType())
+                .size(file.getSize())
+                .build();
+
+        String url = this.getDownloadPresignedUrl(file);
+        result.setUrl(url);
+
+        if (MediaUtils.isImageType(file.getMimeType())) {
+            InputStream content = clientService.getObject(file.getPath());
+            result.setContent(content);
+        }
+
+        return result;
+    }
+
 }

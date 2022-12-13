@@ -59,7 +59,6 @@ public class SecurityConfiguration {
                         "/api/users/email-verify",
                         "/form/template/read",
                         "/form/submit",
-                        "/report/**",
                         "/media/presigned-url")
                 .permitAll()
                 .antMatchers("/guest/**").permitAll()

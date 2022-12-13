@@ -3,7 +3,10 @@ package id.worx.worx.service.report;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -18,16 +21,76 @@ import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import id.worx.worx.common.WorxConstants;
-import id.worx.worx.common.model.dto.LocationDTO;
+import id.worx.worx.common.model.dto.FileDTO;
+import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.forms.field.Field;
+import id.worx.worx.common.model.forms.value.FileValue;
+import id.worx.worx.common.model.forms.value.PhotoValue;
+import id.worx.worx.common.model.forms.value.SignatureValue;
+import id.worx.worx.common.model.forms.value.Value;
+import id.worx.worx.entity.Form;
+import id.worx.worx.entity.users.Users;
+import id.worx.worx.exception.WorxErrorCode;
+import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.FormMapper;
+import id.worx.worx.repository.FormRepository;
+import id.worx.worx.service.AuthenticationContext;
+import id.worx.worx.service.storage.FileStorageService;
+import id.worx.worx.util.FormUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
+
+    private final AuthenticationContext authContext;
+
+    private final FormMapper formMapper;
+
+    private final FormRepository formRepository;
+
+    private final FileStorageService storageService;
 
     @Override
     public ByteArrayOutputStream getSubmissionReport(Long formId) {
+        Users user = authContext.getUsers();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        FormDTO formDTO = formMapper.toDTO(form);
+        FormContext formContext = FormContext.builder()
+                .name(formDTO.getLabel())
+                .description(formDTO.getDescription())
+                .source(formDTO.getSource().getLabel())
+                .submitDate(formDTO.getSubmitDate())
+                .submitLocation(formDTO.getSubmitLocation())
+                .build();
+
+        IImageProvider logoImageProvider = null;
+        try {
+            InputStream defaultLogo = new ClassPathResource("templates/default_logo.png").getInputStream();
+            logoImageProvider = new ByteArrayImageProvider(defaultLogo);
+            logoImageProvider.setSize(99.84f, 29.76f);
+        } catch (IOException e) {
+            log.error("Failed to load default logo", e);
+        }
+
+        if (Objects.nonNull(user.getDashboardLogo())) {
+            try {
+                InputStream logoInputStream = new ClassPathResource("templates/default_logo.png").getInputStream();
+                logoImageProvider = new ByteArrayImageProvider(logoInputStream);
+                logoImageProvider.setSize(99.84f, 29.76f);
+            } catch (IOException e) {
+                log.error("Failed to load user logo", e);
+            }
+        }
+
+        Organization org = Organization.builder()
+                .logo(logoImageProvider)
+                .build();
+        List<FieldContext> fields = getFieldContexts(formDTO);
 
         try (InputStream in = new ClassPathResource(WorxConstants.TEMPLATE_REPORT_SUBMISSION_DOCX_PATH)
                 .getInputStream()) {
@@ -35,113 +98,12 @@ public class ReportServiceImpl implements ReportService {
 
             FieldsMetadata metadata = report.createFieldsMetadata();
             metadata.addFieldAsTextStyling("submitAddress", SyntaxKind.Html);
-            metadata.load("v", Value.class);
+            metadata.load("v", ValueContext.class);
             metadata.load("organization", Organization.class);
 
             IContext context = report.createContext();
-
-            InputStream logo = new ClassPathResource("templates/default_logo.png").getInputStream();
-            IImageProvider logoImageProvider = new ByteArrayImageProvider(logo);
-            logoImageProvider.setSize(99.84f, 29.76f);
-            Organization org = Organization.builder()
-                    .logo(logoImageProvider)
-                    .build();
-
-            FieldContext text = FieldContext.builder()
-                    .label("Nama Fasilitas Umum")
-                    .description("Deskripsi TextField")
-                    .values(List.of(
-                            Value.builder()
-                                    .label("Trotoar sekitar kalibata")
-                                    .build()))
-                    .build();
-
-            FieldContext checkbox = FieldContext.builder()
-                    .label("Kelayakan")
-                    .description("Deskripsi CheckboxField")
-                    .values(List.of(
-                            Value.builder().label("Tidak Layak, Perlu Perbaikan").build()))
-                    .build();
-
-            FieldContext radiogroup = FieldContext.builder()
-                    .label("Lokasi")
-                    .description("Deskripsi RadiogroupField")
-                    .values(List.of(Value.builder().label("Jakarta Selatan").build()))
-                    .build();
-
-            FieldContext dropdown = FieldContext.builder()
-                    .label("Jenis Fasilitas Umum")
-                    .description("Deskripsi DropdownField")
-                    .values(List.of(Value.builder().label("Fasilitas di Ruang Terbuka").build()))
-                    .build();
-
-            FieldContext date = FieldContext.builder()
-                    .label("Tanggal Laporan")
-                    .description("Deskripsi DateField")
-                    .values(List.of(Value.builder().label("01/12/2022").build()))
-                    .build();
-
-            FieldContext rating = FieldContext.builder()
-                    .label("Tingkat Pelayanan Petugas terhadap Fasilitas Umum")
-                    .description("Deskripsi RatingField")
-                    .values(List.of(Value.builder().label("★★☆☆☆").build()))
-                    .build();
-
-            boolean useImageSize = true;
-            InputStream image1 = new ClassPathResource("templates/placholder_1.jpg").getInputStream();
-            IImageProvider image1ImageProvider = new ByteArrayImageProvider(image1, useImageSize);
-
-            InputStream image2 = new ClassPathResource("templates/placholder_2.jpg").getInputStream();
-            IImageProvider image2ImageProvider = new ByteArrayImageProvider(image2, useImageSize);
-
-            FieldContext image = FieldContext.builder()
-                    .label("Foto Fasilitas Umum (jika ada)")
-                    .description("Deskripsi ImageField")
-                    .values(List.of(
-                            Value.builder()
-                                    .label("IMG_01.jpg")
-                                    .image(image1ImageProvider)
-                                    .build(),
-                            Value.builder()
-                                    .label("IMG_02.jpg")
-                                    .image(image2ImageProvider)
-                                    .build()))
-                    .build();
-
-            FieldContext file = FieldContext.builder()
-                    .label("Video Fasilitas Umum (jika ada)")
-                    .description("Deskripsi FileField")
-                    .values(List.of(Value.builder().label("VID_01.mov").build()))
-                    .build();
-
-            FieldContext signature = FieldContext.builder()
-                    .label("Tanda Tangan Pelapor")
-                    .description("Deskripsi SignatureField")
-                    .values(List.of(Value.builder().label("").build()))
-                    .build();
-
-            List<FieldContext> fields = List.of(
-                    text,
-                    checkbox,
-                    radiogroup,
-                    dropdown,
-                    date,
-                    rating,
-                    image,
-                    file,
-                    signature);
-
-            FormContext form = FormContext.builder()
-                    .name("Kelayakan Fasilitas Umum DKI Jakarta")
-                    .description("Penilaian masyarakat terhadap fasilitas umum di DKI Jakarta")
-                    .source("Device 1")
-                    .submitDate("2022-10-14 06:46:13.811982")
-                    .submitLocation(new LocationDTO(
-                            "H47V+F44, Jl. Raya Buruan, Pitra, Kec. Penebel, Kel. Penipis. Jakarta Pusat", -7.2974468,
-                            108.737638))
-                    .build();
             context.put("organization", org);
-            context.put("form", form);
+            context.put("form", formContext);
             context.put("fields", fields);
 
             report.process(context, output);
@@ -152,6 +114,49 @@ public class ReportServiceImpl implements ReportService {
             e.printStackTrace();
         }
         return output;
+    }
+
+    private List<FieldContext> getFieldContexts(FormDTO formDTO) {
+        List<Field> fields = formDTO.getFields();
+        Map<String, Value> values = formDTO.getValues();
+
+        List<FieldContext> results = new ArrayList<>();
+
+        for (Field field : fields) {
+            if (values.containsKey(field.getId())) {
+                Value value = values.get(field.getId());
+
+                if (field.getType().containsFile()) {
+                    List<FileDTO> files = this.getFiles(value);
+                    results.add(FormUtils.toFieldContext(field, files));
+                } else {
+                    results.add(FormUtils.toFieldContext(field, value));
+                }
+            }
+        }
+
+        return results;
+    }
+
+    private List<FileDTO> getFiles(Value value) {
+        List<Long> fileIds = new ArrayList<>();
+
+        if (value instanceof FileValue) {
+            FileValue temp = (FileValue) value;
+            fileIds = temp.getFileIds();
+        }
+
+        if (value instanceof PhotoValue) {
+            PhotoValue temp = (PhotoValue) value;
+            fileIds = temp.getFileIds();
+        }
+
+        if (value instanceof SignatureValue) {
+            SignatureValue temp = (SignatureValue) value;
+            fileIds = List.of(temp.getFileId());
+        }
+
+        return storageService.getAll(fileIds);
     }
 
 }

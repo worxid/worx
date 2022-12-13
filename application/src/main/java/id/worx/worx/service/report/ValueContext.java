@@ -1,5 +1,7 @@
 package id.worx.worx.service.report;
 
+import java.util.Objects;
+
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.opensagres.xdocreport.template.annotations.FieldMetadata;
 import fr.opensagres.xdocreport.template.annotations.ImageMetadata;
@@ -16,9 +18,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Value {
+public class ValueContext {
 
     private String label;
+    private String hyperlink;
     @Getter(AccessLevel.NONE)
     private IImageProvider image;
 
@@ -26,4 +29,9 @@ public class Value {
     public IImageProvider getImage() {
         return image;
     }
+
+    public boolean hasHyperlink() {
+        return Objects.nonNull(hyperlink) && !hyperlink.isBlank();
+    }
+
 }

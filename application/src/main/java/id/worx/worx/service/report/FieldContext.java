@@ -18,6 +18,6 @@ public class FieldContext {
     private String label;
     private String description;
 
-    private List<Value> values;
+    private List<ValueContext> values;
 
 }
