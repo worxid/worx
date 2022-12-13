@@ -110,8 +110,7 @@ public class ReportServiceImpl implements ReportService {
         } catch (IOException e) {
             log.error("Error during render PDF report", e);
         } catch (XDocReportException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("Error during render PDF report", e);
         }
         return output;
     }

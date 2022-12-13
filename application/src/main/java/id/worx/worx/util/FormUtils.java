@@ -1,7 +1,6 @@
 package id.worx.worx.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -27,11 +26,8 @@ import id.worx.worx.common.model.forms.field.RatingField;
 import id.worx.worx.common.model.forms.value.CheckboxGroupValue;
 import id.worx.worx.common.model.forms.value.DateValue;
 import id.worx.worx.common.model.forms.value.DropdownValue;
-import id.worx.worx.common.model.forms.value.FileValue;
-import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.RadioGroupValue;
 import id.worx.worx.common.model.forms.value.RatingValue;
-import id.worx.worx.common.model.forms.value.SignatureValue;
 import id.worx.worx.common.model.forms.value.TextValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.service.report.FieldContext;
