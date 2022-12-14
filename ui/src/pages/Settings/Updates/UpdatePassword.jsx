@@ -23,7 +23,7 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postChangePasswordUser } from 'services/users'
+import { postChangePasswordUser } from 'services/worx/users'
 
 // STYLES
 import useStyles from '../settingsUseStyles'
