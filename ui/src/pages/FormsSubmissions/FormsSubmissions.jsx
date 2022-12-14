@@ -37,7 +37,7 @@ import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 import IconMap from '@mui/icons-material/Map'
 
 // SERVICES
-import { postSearchFormSubmissionList } from 'services/form'
+import { postSearchFormSubmissionList } from 'services/worx/form'
 import { getDetailFormTemplate } from 'services/formTemplate'
 
 // STYLES

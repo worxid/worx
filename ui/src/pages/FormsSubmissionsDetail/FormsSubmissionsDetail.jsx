@@ -29,7 +29,7 @@ import Typography from '@mui/material/Typography'
 import { useReactToPrint } from 'react-to-print'
 
 // SERVICES
-import { getSubmissionListDetail } from 'services/form'
+import { getSubmissionListDetail } from 'services/worx/form'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
