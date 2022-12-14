@@ -22,7 +22,7 @@ import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.specification.FormSpecification;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -62,7 +62,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardStatMapDTO> getDashboardStatMap(LocalDate from, LocalDate to, DashboardRequest request) {
-        FormSubmissionSearchRequest searchRequest = FormSubmissionSearchRequest.builder()
+        FormSearchRequest searchRequest = FormSearchRequest.builder()
                 .templateId(request.getTemplateId())
                 .from(from.atStartOfDay(ZoneId.of("UTC")).toInstant())
                 .to(to.atTime(23,59,59).atZone(ZoneId.of("UTC")).toInstant())
@@ -77,7 +77,7 @@ public class DashboardServiceImpl implements DashboardService {
         return forms.stream().map(formMapper::toDashboardMapDTO).collect(Collectors.toList());
     }
 
-    public List<Form> listFormFilter(FormSubmissionSearchRequest request, String deviceCode) {
+    public List<Form> listFormFilter(FormSearchRequest request, String deviceCode) {
         Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId(), deviceCode);
         return formRepository.findAll(spec);
     }

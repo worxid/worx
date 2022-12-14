@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
@@ -36,6 +35,7 @@ import id.worx.worx.service.report.ValueContext;
 
 public class FormUtils {
 
+    private static final String NO_DATA_PROVIDED_STRING = "No data provided";
     private static final String FILL_STAR_VALUE = "★";
     private static final String EMPTY_STAR_VALUE = "☆";
 
@@ -249,7 +249,7 @@ public class FormUtils {
             return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
         }
 
-        return List.of(StringUtils.EMPTY);
+        return List.of(NO_DATA_PROVIDED_STRING);
     }
 
     public static List<String> getValueAsString(List<FileDTO> files) {

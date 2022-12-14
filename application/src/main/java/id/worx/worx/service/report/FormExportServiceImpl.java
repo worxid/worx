@@ -256,6 +256,7 @@ public class FormExportServiceImpl implements FormExportService {
 
         if (Objects.nonNull(user.getDashboardLogo())) {
             try {
+                // TODO change with custom logo
                 InputStream logoInputStream = new ClassPathResource("templates/default_logo.png").getInputStream();
                 logoImageProvider = new ByteArrayImageProvider(logoInputStream);
                 logoImageProvider.setSize(99.84f, 29.76f);

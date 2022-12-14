@@ -26,7 +26,7 @@ import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.entity.Form;
 import id.worx.worx.service.FormService;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -52,7 +52,7 @@ public class FormController implements SecuredRestController {
 
     @PostMapping("search")
     public ResponseEntity<Page<SearchFormDTO>> search(
-            @RequestBody @Valid FormSubmissionSearchRequest request,
+            @RequestBody @Valid FormSearchRequest request,
             @ParameterObject Pageable pageable) {
         Page<Form> forms = formService.search(request, pageable);
         List<SearchFormDTO> dtos = forms.stream()

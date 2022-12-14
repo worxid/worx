@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.service.report.FormExportService;
+import id.worx.worx.web.model.request.FormExportRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,7 +26,7 @@ public class ReportController implements SecuredRestController {
     private final FormExportService formExportService;
 
     @PostMapping("export")
-    public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid ReportRequest request) {
+    public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormExportRequest request) {
         ByteArrayOutputStream reportByte = formExportService.saveFormAsPDF(request.getFormId());
         String filename = "forms.docx";
 
