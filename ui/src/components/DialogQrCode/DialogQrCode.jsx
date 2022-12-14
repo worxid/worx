@@ -23,8 +23,8 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 
 // SERVICES
-import { getGuestShareLinkFormTemplate } from 'services/guest'
-import { postShareLinkFormTemplate } from 'services/formTemplate'
+import { getGuestShareLinkFormTemplate } from 'services/worx/guest'
+import { postShareLinkFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './dialogQrCodeUseStyles'

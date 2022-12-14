@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // SERVICES
-import { postRefreshToken } from 'services/users'
+import { postRefreshToken } from 'services/worx/users'
 
 // UTILS
 import { signOutUser } from 'utilities/authentication'

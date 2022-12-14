@@ -21,7 +21,7 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 
 // SERVICES
-import { postDashboardStatsChart } from 'services/dashboard'
+import { postDashboardStatsChart } from 'services/worx/dashboard'
 
 // STYLES
 import useStyles from './chartUseStyles'

@@ -27,7 +27,7 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postRegisterUser } from 'services/users'
+import { postRegisterUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'

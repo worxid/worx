@@ -25,8 +25,8 @@ import IconUpload from '@mui/icons-material/Upload'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { getMediaPresignedUrl } from 'services/media'
-import { putEditProfile } from 'services/users'
+import { getMediaPresignedUrl } from 'services/worx/media'
+import { putEditProfile } from 'services/worx/users'
 
 // STYLES
 import useStyles from '../settingsUseStyles'

@@ -29,7 +29,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { putApprovedDevices } from 'services/devices'
+import { putApprovedDevices } from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'

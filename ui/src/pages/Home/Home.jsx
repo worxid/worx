@@ -17,8 +17,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { postGetDeviceList } from 'services/devices'
-import { postGetListFormTemplate } from 'services/formTemplate'
+import { postGetDeviceList } from 'services/worx/devices'
+import { postGetListFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './homeUseStyles'

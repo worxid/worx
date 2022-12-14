@@ -38,8 +38,8 @@ import {
 } from 'react-share'
 
 // SERVICES
-import { getGuestShareLinkFormTemplate } from 'services/guest'
-import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/formTemplate'
+import { getGuestShareLinkFormTemplate } from 'services/worx/guest'
+import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './dialogShareLinkUseStyles'

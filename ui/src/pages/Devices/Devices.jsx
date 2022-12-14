@@ -36,7 +36,7 @@ import IconVerified from '@mui/icons-material/Verified'
 import { 
   deleteDevices, 
   postGetDeviceList, 
-} from 'services/devices'
+} from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from './devicesUseStyles'

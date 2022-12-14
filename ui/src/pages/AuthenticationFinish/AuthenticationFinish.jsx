@@ -18,7 +18,7 @@ import Typography from '@mui/material/Typography'
 import { 
   postResendEmailConfirmation, 
   postForgotPasswordUser, 
-} from 'services/users'
+} from 'services/worx/users'
 
 // STYLES
 import useStyles from './authenticationFinishUseStyles'

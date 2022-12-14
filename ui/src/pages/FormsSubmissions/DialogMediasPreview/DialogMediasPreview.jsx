@@ -24,8 +24,8 @@ import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
-import { postDetailMediaFiles } from 'services/media'
-import { downloadFileFromUrl } from 'services/others'
+import { postDetailMediaFiles } from 'services/worx/media'
+import { downloadFileFromUrl } from 'services/worx/others'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'

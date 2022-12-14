@@ -25,9 +25,9 @@ import IconClear from '@mui/icons-material/Clear'
 import IconSearch from '@mui/icons-material/Search'
 
 // SERVICES
-import { getGroupList } from 'services/group'
-import { putAssignGroupDevices } from 'services/devices'
-import { putAssignGroupFormTemplate } from 'services/formTemplate'
+import { getGroupList } from 'services/worx/group'
+import { putAssignGroupDevices } from 'services/worx/devices'
+import { putAssignGroupFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useLayoutStyles from './dialogChangeGroupUseStyles'

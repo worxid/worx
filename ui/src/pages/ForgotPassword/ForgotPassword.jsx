@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postForgotPasswordUser } from 'services/users'
+import { postForgotPasswordUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'

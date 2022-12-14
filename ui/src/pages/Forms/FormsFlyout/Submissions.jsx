@@ -24,7 +24,7 @@ import IconAssignment from '@mui/icons-material/Assignment'
 import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
 
 // SERVICES
-import { postSearchFormSubmissionList } from 'services/form'
+import { postSearchFormSubmissionList } from 'services/worx/form'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'

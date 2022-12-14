@@ -28,7 +28,7 @@ import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
-import { putUpdateLabelDevices } from 'services/devices'
+import { putUpdateLabelDevices } from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'

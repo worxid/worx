@@ -29,7 +29,7 @@ import IconShare from '@mui/icons-material/Share'
 import { 
   getReadFormTemplate, 
   postSubmitFormSubmission, 
-} from 'services/guest'
+} from 'services/worx/guest'
 
 // STYLES
 import useStyles from './fillFormUseStyles'
