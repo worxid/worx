@@ -158,7 +158,7 @@ public class FormUtils {
         return context;
     }
 
-    private static List<String> getValueAsString(Field field, Value value) {
+    public static List<String> getValueAsString(Field field, Value value) {
         Assert.isTrue(!field.getType().containsFile(), "only accept non file field");
 
         if (value instanceof TextValue) {
@@ -215,6 +215,18 @@ public class FormUtils {
         }
 
         return List.of(StringUtils.EMPTY);
+    }
+
+    public static List<String> getValueAsString(List<FileDTO> files) {
+        return files.stream()
+                .map(FileDTO::getName)
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> getHyperlinkAsString(List<FileDTO> files) {
+        return files.stream()
+                .map(FileDTO::getUrl)
+                .collect(Collectors.toList());
     }
 
 }

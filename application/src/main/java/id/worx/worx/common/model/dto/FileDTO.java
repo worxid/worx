@@ -3,6 +3,7 @@ package id.worx.worx.common.model.dto;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +37,8 @@ public class FileDTO implements Serializable {
     private Long size;
 
     private String url;
+
+    @JsonIgnore
     private InputStream content;
 
 }
