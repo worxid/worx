@@ -84,31 +84,13 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 170,
+      minWidth: 210,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      renderCell: (params) => (
-        <Stack
-          minHeight={48}
-          justifyContent='center'
-        >
-          {/* DATE */}
-          <Typography variant='inherit'>
-            {convertDate(params.value, 'dd-MM-yyyy')}
-          </Typography>
-
-          {/* TIME */}
-          <Typography 
-            variant='inherit'
-            color='text.secondary'
-          >
-            {convertDate(params.value, 'hh:mm a')}
-          </Typography>
-        </Stack>
-      ),
+      valueGetter: (params) => convertDate(params.value),
     },
     {
       field: 'submissionAddress',
