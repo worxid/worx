@@ -25,7 +25,7 @@ import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
 import { postDetailMediaFiles } from 'services/worx/media'
-import { downloadFileFromUrl } from 'services/others'
+import { downloadFileFromUrl } from 'services/worx/others'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
