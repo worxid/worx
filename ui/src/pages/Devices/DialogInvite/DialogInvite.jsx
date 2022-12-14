@@ -22,7 +22,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { postDeviceInvite } from 'services/devices'
+import { postDeviceInvite } from 'services/worx/devices'
 
 // STYLES
 import useStyles from './dialogInviteUseStyles'

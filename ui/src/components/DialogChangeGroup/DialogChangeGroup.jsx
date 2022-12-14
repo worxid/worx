@@ -26,7 +26,7 @@ import IconSearch from '@mui/icons-material/Search'
 
 // SERVICES
 import { getGroupList } from 'services/group'
-import { putAssignGroupDevices } from 'services/devices'
+import { putAssignGroupDevices } from 'services/worx/devices'
 import { putAssignGroupFormTemplate } from 'services/formTemplate'
 
 // STYLES
