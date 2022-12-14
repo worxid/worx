@@ -238,7 +238,7 @@ const FormsSubmissions = () => {
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
       inputItem.type === 'signature'
-    ) return 260
+    ) return 280
     else return 150
   }
 
@@ -431,6 +431,16 @@ const FormsSubmissions = () => {
 
     setFinalTableData(newFinalTableData)
   }
+
+  const handleSubmissionDateSortChange = () => {
+    let newFinalTableData = [...finalTableData]
+
+    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
+    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
+    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
+
+    setFinalTableData(newFinalTableData)
+  }
   
   useEffect(() => {
     let isMounted = true
@@ -448,7 +458,8 @@ const FormsSubmissions = () => {
     let isMounted = true
     const abortController = new AbortController()
 
-    getSubmissionList(isMounted, abortController)
+    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
+    else getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
