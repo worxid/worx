@@ -1,5 +1,6 @@
-package id.worx.worx.service;
+package id.worx.worx.service.report;
 
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,10 +63,7 @@ import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
-import id.worx.worx.service.report.FieldContext;
-import id.worx.worx.service.report.FormContext;
-import id.worx.worx.service.report.Organization;
-import id.worx.worx.service.report.ValueContext;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.FormUtils;
 import kotlin.text.Charsets;
@@ -81,6 +79,8 @@ public class FormExportServiceImpl implements FormExportService {
     private static final int MAXIMUM_SUBMISSION_COUNT_VALUE = 1000;
 
     private static final int HEADER_ROW_NUMBER_VALUE = 0;
+
+    private static final Dimension DEFAULT_DIMENSION_VALUE = new Dimension(480, 360);
 
     private final AuthenticationContext authContext;
 
@@ -267,7 +267,7 @@ public class FormExportServiceImpl implements FormExportService {
         Organization org = Organization.builder()
                 .logo(logoImageProvider)
                 .build();
-        List<FieldContext> fields = getFieldContexts(formDTO);
+        List<FieldContext> fields = toFieldContexts(formDTO);
 
         try (InputStream in = new ClassPathResource(WorxConstants.TEMPLATE_REPORT_SUBMISSION_DOCX_PATH)
                 .getInputStream()) {
@@ -375,7 +375,7 @@ public class FormExportServiceImpl implements FormExportService {
         return valueRow;
     }
 
-    private List<FieldContext> getFieldContexts(FormDTO formDTO) {
+    private List<FieldContext> toFieldContexts(FormDTO formDTO) {
         List<Field> fields = formDTO.getFields();
         Map<String, Value> values = formDTO.getValues();
 
@@ -387,7 +387,7 @@ public class FormExportServiceImpl implements FormExportService {
 
                 if (field.getType().containsFile()) {
                     List<FileDTO> files = this.getFiles(value);
-                    results.add(FormUtils.toFieldContext(field, files));
+                    results.add(FormUtils.toFieldContext(field, files, DEFAULT_DIMENSION_VALUE));
                 } else {
                     results.add(FormUtils.toFieldContext(field, value));
                 }

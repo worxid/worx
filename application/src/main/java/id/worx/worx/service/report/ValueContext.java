@@ -20,14 +20,26 @@ import lombok.Setter;
 @Builder
 public class ValueContext {
 
+    @Getter(AccessLevel.NONE)
     private String label;
     private String hyperlink;
+
     @Getter(AccessLevel.NONE)
     private IImageProvider image;
 
     @FieldMetadata(images = { @ImageMetadata(name = "image", behaviour = NullImageBehaviour.RemoveImageTemplate) })
     public IImageProvider getImage() {
         return image;
+    }
+
+    @FieldMetadata(syntaxKind = "Html")
+    public String getLabel() {
+        if (hasHyperlink()) {
+            String encodedHyperlink = hyperlink.replace("&", "&amp;");
+            return String.format("<a href=\"%s\"> %s </a>", encodedHyperlink, label);
+        }
+
+        return label;
     }
 
     public boolean hasHyperlink() {

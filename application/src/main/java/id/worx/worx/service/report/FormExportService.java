@@ -1,4 +1,4 @@
-package id.worx.worx.service;
+package id.worx.worx.service.report;
 
 import java.io.ByteArrayOutputStream;
 

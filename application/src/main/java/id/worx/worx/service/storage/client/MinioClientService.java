@@ -1,12 +1,12 @@
 package id.worx.worx.service.storage.client;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.exception.ObjectStorageErrorDetail;
@@ -14,6 +14,7 @@ import id.worx.worx.config.properties.WorxProperties;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
@@ -117,20 +118,21 @@ public class MinioClientService {
         }
     }
 
-    public InputStream getObject(String path) {
+    public byte[] getObject(String path) {
         if (!isObjectExist(path)) {
-            return null;
+            return new byte[0];
         }
 
         try {
-            return client.getObject(GetObjectArgs.builder()
+            GetObjectResponse response = client.getObject(GetObjectArgs.builder()
                     .bucket(props.getStorage().getBucketName())
                     .object(path)
                     .build());
+            return IOUtils.toByteArray(response);
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
                 | IllegalArgumentException | IOException e) {
-            return null;
+            return new byte[0];
         }
     }
 

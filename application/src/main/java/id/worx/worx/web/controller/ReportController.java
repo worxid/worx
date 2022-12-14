@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import id.worx.worx.service.FormExportService;
+import id.worx.worx.service.report.FormExportService;
 import lombok.RequiredArgsConstructor;
 
 @RestController

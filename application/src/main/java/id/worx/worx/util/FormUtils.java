@@ -1,5 +1,6 @@
 package id.worx.worx.util;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -139,9 +140,43 @@ public class FormUtils {
             if (MediaUtils.isImageType(file.getMimeType())) {
                 boolean useImageSize = true;
                 IImageProvider image = null;
+                image = new ByteArrayImageProvider(file.getContent(), useImageSize);
+                valueContext.setImage(image);
+            }
+
+            valueContexts.add(valueContext);
+        }
+
+        context.setValues(valueContexts);
+
+        return context;
+    }
+
+    public static FieldContext toFieldContext(Field field, List<FileDTO> files, Dimension boundary) {
+        Assert.isTrue(field.getType().containsFile(), "only accept file related field");
+
+        FieldContext context = FieldContext.builder()
+                .label(field.getLabel())
+                .description(field.getDescription())
+                .build();
+
+        List<ValueContext> valueContexts = new ArrayList<>();
+
+        for (FileDTO file : files) {
+            ValueContext valueContext = ValueContext.builder()
+                    .label(file.getName())
+                    .hyperlink(file.getUrl())
+                    .build();
+
+            if (MediaUtils.isImageType(file.getMimeType())) {
+                IImageProvider image = null;
 
                 try {
-                    image = new ByteArrayImageProvider(file.getContent(), useImageSize);
+                    byte[] content = file.getContent();
+                    Dimension newDim = ImageUtils.getScaledDimension(content, boundary);
+                    image = new ByteArrayImageProvider(content);
+                    image.setHeight((float) newDim.getHeight());
+                    image.setWidth((float) newDim.getWidth());
                 } catch (IOException e) {
                     // Image failed to load to image provider
                     // Load null image instead

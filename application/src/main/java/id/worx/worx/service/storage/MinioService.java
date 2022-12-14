@@ -1,7 +1,6 @@
 package id.worx.worx.service.storage;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -9,9 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import id.worx.worx.mapper.FileMapper;
-import id.worx.worx.util.UrlUtils;
-import id.worx.worx.web.model.request.FileRequestDTO;
 import org.springframework.stereotype.Service;
 
 import id.worx.worx.common.model.dto.FileDTO;
@@ -19,9 +15,12 @@ import id.worx.worx.common.model.response.UrlPresignedResponse;
 import id.worx.worx.entity.File;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.FileMapper;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.storage.client.MinioClientService;
 import id.worx.worx.util.MediaUtils;
+import id.worx.worx.util.UrlUtils;
+import id.worx.worx.web.model.request.FileRequestDTO;
 import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -318,7 +317,7 @@ public class MinioService implements FileStorageService {
         result.setUrl(url);
 
         if (MediaUtils.isImageType(file.getMimeType())) {
-            InputStream content = clientService.getObject(file.getPath());
+            byte[] content = clientService.getObject(file.getPath());
             result.setContent(content);
         }
 
