@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -21,12 +21,14 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
+import { getSignInMetaData } from 'services/strapi/dashboardSignIn'
 import { postLoginUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
 
 // UTILITIES
+import { updateMetaData } from 'utilities/dom'
 import { setUserProfileToLocalStorage } from 'utilities/localStorage'
 import { 
   didSuccessfullyCallTheApi,
@@ -126,6 +128,26 @@ const SignIn = () => {
 
     setIsLoading(false)
   }
+
+  const loadPageMetaData = async (inputIsMounted, inputAbortController) => {
+    const resultMetaData = await getSignInMetaData(inputAbortController.signal)
+    
+    if (resultMetaData.status === 200 && inputIsMounted) {
+      updateMetaData(resultMetaData?.data?.data?.attributes?.Metadata)
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    loadPageMetaData(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
 
   return (
     <form 
