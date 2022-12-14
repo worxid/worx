@@ -37,7 +37,7 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 import { 
   postCreateGroup, 
   putEditGroup,
-} from 'services/group'
+} from 'services/worx/group'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'

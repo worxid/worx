@@ -26,7 +26,7 @@ import IconCircle from '@mui/icons-material/Circle'
 import {
   deleteGroup, 
   postGetGroupList, 
-} from 'services/group'
+} from 'services/worx/group'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'
