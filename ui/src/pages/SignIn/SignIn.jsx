@@ -21,7 +21,7 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { getSignInMetaData } from 'services/strapi/dashboardSignIn'
+import { getDashboardMetaData } from 'services/strapi/dashboard'
 import { postLoginUser } from 'services/worx/users'
 
 // STYLES
@@ -130,7 +130,10 @@ const SignIn = () => {
   }
 
   const loadPageMetaData = async (inputIsMounted, inputAbortController) => {
-    const resultMetaData = await getSignInMetaData(inputAbortController.signal)
+    const resultMetaData = await getDashboardMetaData(
+      inputAbortController.signal,
+      'dashboard-sign-in',
+    )
     
     if (resultMetaData.status === 200 && inputIsMounted) {
       updateMetaData(resultMetaData?.data?.data?.attributes?.Metadata)
