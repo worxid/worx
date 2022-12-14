@@ -39,7 +39,7 @@ import {
 
 // SERVICES
 import { getGuestShareLinkFormTemplate } from 'services/guest'
-import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/formTemplate'
+import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './dialogShareLinkUseStyles'

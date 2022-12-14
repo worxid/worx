@@ -23,7 +23,7 @@ import Stack from '@mui/material/Stack'
 import { 
   getDetailFormTemplate, 
   putUpdateFormTemplate, 
-} from 'services/formTemplate'
+} from 'services/worx/formTemplate'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'

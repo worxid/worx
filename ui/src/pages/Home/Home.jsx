@@ -18,7 +18,7 @@ import Typography from '@mui/material/Typography'
 
 // SERVICES
 import { postGetDeviceList } from 'services/worx/devices'
-import { postGetListFormTemplate } from 'services/formTemplate'
+import { postGetListFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './homeUseStyles'

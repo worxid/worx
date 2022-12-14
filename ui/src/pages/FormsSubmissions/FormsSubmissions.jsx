@@ -38,7 +38,7 @@ import IconMap from '@mui/icons-material/Map'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/worx/form'
-import { getDetailFormTemplate } from 'services/formTemplate'
+import { getDetailFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'

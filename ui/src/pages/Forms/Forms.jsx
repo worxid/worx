@@ -36,7 +36,7 @@ import {
   deleteFormTemplate, 
   postCreateFormTemplate, 
   postGetListFormTemplate, 
-} from 'services/formTemplate'
+} from 'services/worx/formTemplate'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'

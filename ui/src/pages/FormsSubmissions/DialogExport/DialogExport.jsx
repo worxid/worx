@@ -25,7 +25,7 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 
 // SERVICES
-import { postExportFormSubmission } from 'services/formTemplate'
+import { postExportFormSubmission } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './dialogExportUseStyles'
