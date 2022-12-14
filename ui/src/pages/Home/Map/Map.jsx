@@ -22,7 +22,7 @@ import {
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { postDashboardStatsMap } from 'services/dashboard'
+import { postDashboardStatsMap } from 'services/worx/dashboard'
 
 // STYLES
 import useStyles from './mapUseStyles'
