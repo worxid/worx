@@ -231,7 +231,7 @@ public class FormExportServiceImpl implements FormExportService {
     }
 
     @Override
-    public ByteArrayOutputStream saveFormAsPDF(Long formId) {
+    public ByteArrayOutputStream saveFormAsDOCX(Long formId) {
         Users user = authContext.getUsers();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Form form = formRepository.findById(formId)

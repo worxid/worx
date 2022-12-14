@@ -95,8 +95,8 @@ public class FormController implements SecuredRestController {
         }
 
         @PostMapping("export")
-        public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormExportRequest request) {
-                ByteArrayOutputStream reportByte = formExportService.saveFormAsPDF(request.getFormId());
+        public ResponseEntity<ByteArrayResource> export(@RequestBody @Valid FormExportRequest request) {
+                ByteArrayOutputStream reportByte = formExportService.saveFormAsDOCX(request.getFormId());
                 String filename = "forms.docx";
 
                 ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
