@@ -38,7 +38,7 @@ import {
 } from 'react-share'
 
 // SERVICES
-import { getGuestShareLinkFormTemplate } from 'services/guest'
+import { getGuestShareLinkFormTemplate } from 'services/worx/guest'
 import { postShareFormTemplate, postShareLinkFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
