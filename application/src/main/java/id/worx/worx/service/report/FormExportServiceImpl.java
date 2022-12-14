@@ -1,7 +1,9 @@
-package id.worx.worx.service;
+package id.worx.worx.service.report;
 
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,30 +31,29 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFHyperlink;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import fr.opensagres.xdocreport.core.XDocReportException;
+import fr.opensagres.xdocreport.core.document.SyntaxKind;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
+import fr.opensagres.xdocreport.document.images.IImageProvider;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
+import id.worx.worx.common.WorxConstants;
+import id.worx.worx.common.model.dto.FileDTO;
 import id.worx.worx.common.model.dto.FormDTO;
 import id.worx.worx.common.model.dto.FormTemplateDTO;
 import id.worx.worx.common.model.export.FormExportEntry;
 import id.worx.worx.common.model.export.FormExportObject;
-import id.worx.worx.common.model.forms.field.CheckboxGroupField;
-import id.worx.worx.common.model.forms.field.DropdownField;
 import id.worx.worx.common.model.forms.field.Field;
-import id.worx.worx.common.model.forms.field.Option;
-import id.worx.worx.common.model.forms.field.RadioGroupField;
-import id.worx.worx.common.model.forms.field.RatingField;
-import id.worx.worx.common.model.forms.value.CheckboxGroupValue;
-import id.worx.worx.common.model.forms.value.DateValue;
-import id.worx.worx.common.model.forms.value.DropdownValue;
 import id.worx.worx.common.model.forms.value.FileValue;
 import id.worx.worx.common.model.forms.value.PhotoValue;
-import id.worx.worx.common.model.forms.value.RadioGroupValue;
-import id.worx.worx.common.model.forms.value.RatingValue;
 import id.worx.worx.common.model.forms.value.SignatureValue;
-import id.worx.worx.common.model.forms.value.TextValue;
 import id.worx.worx.common.model.forms.value.Value;
-import id.worx.worx.common.model.response.UrlPresignedResponse;
-import id.worx.worx.entity.File;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.users.Users;
@@ -60,8 +61,9 @@ import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.FormMapper;
 import id.worx.worx.mapper.FormTemplateMapper;
-import id.worx.worx.repository.FileRepository;
+import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
+import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.FormUtils;
 import kotlin.text.Charsets;
@@ -78,9 +80,11 @@ public class FormExportServiceImpl implements FormExportService {
 
     private static final int HEADER_ROW_NUMBER_VALUE = 0;
 
+    private static final Dimension DEFAULT_DIMENSION_VALUE = new Dimension(480, 360);
+
     private final AuthenticationContext authContext;
 
-    private final FileRepository fileRepository;
+    private final FormRepository formRepository;
     private final FormTemplateRepository templateRepository;
 
     private final FileStorageService storageService;
@@ -226,6 +230,69 @@ public class FormExportServiceImpl implements FormExportService {
         return size <= 1 && maxRows > 1;
     }
 
+    @Override
+    public ByteArrayOutputStream saveFormAsDOCX(Long formId) {
+        Users user = authContext.getUsers();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        FormDTO formDTO = formMapper.toDTO(form);
+        FormContext formContext = FormContext.builder()
+                .name(formDTO.getLabel())
+                .description(formDTO.getDescription())
+                .source(formDTO.getSource().getLabel())
+                .submitDate(formDTO.getSubmitDate())
+                .submitLocation(formDTO.getSubmitLocation())
+                .build();
+
+        IImageProvider logoImageProvider = null;
+        try {
+            InputStream defaultLogo = new ClassPathResource("templates/default_logo.png").getInputStream();
+            logoImageProvider = new ByteArrayImageProvider(defaultLogo);
+            logoImageProvider.setSize(99.84f, 29.76f);
+        } catch (IOException e) {
+            log.error("Failed to load default logo", e);
+        }
+
+        if (Objects.nonNull(user.getDashboardLogo())) {
+            try {
+                // TODO change with custom logo
+                InputStream logoInputStream = new ClassPathResource("templates/default_logo.png").getInputStream();
+                logoImageProvider = new ByteArrayImageProvider(logoInputStream);
+                logoImageProvider.setSize(99.84f, 29.76f);
+            } catch (IOException e) {
+                log.error("Failed to load user logo", e);
+            }
+        }
+
+        Organization org = Organization.builder()
+                .logo(logoImageProvider)
+                .build();
+        List<FieldContext> fields = toFieldContexts(formDTO);
+
+        try (InputStream in = new ClassPathResource(WorxConstants.TEMPLATE_REPORT_SUBMISSION_DOCX_PATH)
+                .getInputStream()) {
+            IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Freemarker);
+
+            FieldsMetadata metadata = report.createFieldsMetadata();
+            metadata.addFieldAsTextStyling("submitAddress", SyntaxKind.Html);
+            metadata.load("v", ValueContext.class);
+            metadata.load("organization", Organization.class);
+
+            IContext context = report.createContext();
+            context.put("organization", org);
+            context.put("form", formContext);
+            context.put("fields", fields);
+
+            report.process(context, output);
+        } catch (IOException e) {
+            log.error("Error during render PDF report", e);
+        } catch (XDocReportException e) {
+            log.error("Error during render PDF report", e);
+        }
+        return output;
+    }
+
     private FormTemplate findByIdorElseThrowNotFound(Long id, Long userId) {
         Optional<FormTemplate> optTemplate = templateRepository.findByIdAndUserId(id, userId);
 
@@ -285,10 +352,13 @@ public class FormExportServiceImpl implements FormExportService {
             if (!field.getType().isSeparator()) {
                 if (values.containsKey(field.getId())) {
                     Value value = values.get(field.getId());
-                    valueStrings = this.getValueAsString(field, value);
 
                     if (field.getType().containsFile()) {
-                        hyperlinks = this.getHyperlinkAsString(value);
+                        List<FileDTO> files = this.getFiles(value);
+                        valueStrings = FormUtils.getValueAsString(files);
+                        hyperlinks = FormUtils.getHyperlinkAsString(files);
+                    } else {
+                        valueStrings = FormUtils.getValueAsString(field, value);
                     }
                 }
 
@@ -306,117 +376,47 @@ public class FormExportServiceImpl implements FormExportService {
         return valueRow;
     }
 
-    private List<String> getValueAsString(Field field, Value value) {
-        if (value instanceof TextValue) {
-            TextValue temp = (TextValue) value;
-            return List.of(temp.getValue());
-        }
+    private List<FieldContext> toFieldContexts(FormDTO formDTO) {
+        List<Field> fields = formDTO.getFields();
+        Map<String, Value> values = formDTO.getValues();
 
-        if (value instanceof CheckboxGroupValue) {
-            CheckboxGroupField tempField = (CheckboxGroupField) field;
-            CheckboxGroupValue temp = (CheckboxGroupValue) value;
-            List<String> labels = new ArrayList<>();
-            List<Option> options = tempField.getGroup();
-            List<Boolean> values = temp.getValues();
+        List<FieldContext> results = new ArrayList<>();
 
-            for (int i = 0; i < options.size(); i++) {
-                if (values.get(i).booleanValue()) {
-                    Option option = options.get(i);
-                    labels.add(option.getLabel());
+        for (Field field : fields) {
+            if (values.containsKey(field.getId())) {
+                Value value = values.get(field.getId());
+
+                if (field.getType().containsFile()) {
+                    List<FileDTO> files = this.getFiles(value);
+                    results.add(FormUtils.toFieldContext(field, files, DEFAULT_DIMENSION_VALUE));
+                } else {
+                    results.add(FormUtils.toFieldContext(field, value));
                 }
             }
-
-            return labels;
         }
 
-        if (value instanceof DropdownValue) {
-            DropdownField tempField = (DropdownField) field;
-            DropdownValue temp = (DropdownValue) value;
-            List<Option> options = tempField.getOptions();
-            Integer index = temp.getValueIndex();
-            Option option = options.get(index);
-
-            return List.of(option.getLabel());
-        }
-
-        if (value instanceof RadioGroupValue) {
-            RadioGroupField tempField = (RadioGroupField) field;
-            RadioGroupValue temp = (RadioGroupValue) value;
-            List<Option> options = tempField.getOptions();
-            Integer index = temp.getValueIndex();
-            Option option = options.get(index);
-
-            return List.of(option.getLabel());
-        }
-
-        if (value instanceof DateValue) {
-            DateValue temp = (DateValue) value;
-            return List.of(temp.getValue().toString());
-        }
-
-        if (value instanceof RatingValue) {
-            RatingField tempField = (RatingField) field;
-            RatingValue temp = (RatingValue) value;
-            return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
-        }
-
-        if (value instanceof FileValue) {
-            FileValue temp = (FileValue) value;
-            List<Long> fileIds = temp.getFileIds();
-            List<File> files = fileRepository.findAllById(fileIds);
-            return files.stream()
-                    .map(File::getName)
-                    .collect(Collectors.toList());
-        }
-
-        if (value instanceof PhotoValue) {
-            PhotoValue temp = (PhotoValue) value;
-            List<Long> fileIds = temp.getFileIds();
-            List<File> files = fileRepository.findAllById(fileIds);
-            return files.stream()
-                    .map(File::getName)
-                    .collect(Collectors.toList());
-        }
-
-        if (value instanceof SignatureValue) {
-            SignatureValue temp = (SignatureValue) value;
-            Long fileId = temp.getFileId();
-            List<File> files = fileRepository.findAllById(List.of(fileId));
-            return files.stream()
-                    .map(File::getName)
-                    .collect(Collectors.toList());
-        }
-
-        return List.of(StringUtils.EMPTY);
+        return results;
     }
 
-    private List<String> getHyperlinkAsString(Value value) {
+    private List<FileDTO> getFiles(Value value) {
+        List<Long> fileIds = new ArrayList<>();
+
         if (value instanceof FileValue) {
             FileValue temp = (FileValue) value;
-            List<Long> fileIds = temp.getFileIds();
-            List<UrlPresignedResponse> responses = storageService.getDownloadUrls(fileIds);
-            return responses.stream()
-                    .map(UrlPresignedResponse::getUrl)
-                    .collect(Collectors.toList());
+            fileIds = temp.getFileIds();
         }
 
         if (value instanceof PhotoValue) {
             PhotoValue temp = (PhotoValue) value;
-            List<Long> fileIds = temp.getFileIds();
-            List<UrlPresignedResponse> responses = storageService.getDownloadUrls(fileIds);
-            return responses.stream()
-                    .map(UrlPresignedResponse::getUrl)
-                    .collect(Collectors.toList());
+            fileIds = temp.getFileIds();
         }
 
         if (value instanceof SignatureValue) {
             SignatureValue temp = (SignatureValue) value;
-            Long fileId = temp.getFileId();
-            UrlPresignedResponse response = storageService.getDownloadUrl(fileId);
-            return List.of(response.getUrl());
+            fileIds = List.of(temp.getFileId());
         }
 
-        return List.of(StringUtils.EMPTY);
+        return storageService.getAll(fileIds);
     }
 
 }

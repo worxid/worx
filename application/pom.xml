@@ -29,7 +29,17 @@
 		<google-maps-services.version>2.1.0</google-maps-services.version>
 		<guava.version>31.1-jre</guava.version>
 		<org.apache.poi.version>5.2.0</org.apache.poi.version>
+		<fr.opensagres.xdocreport.version>2.0.4</fr.opensagres.xdocreport.version>
+		<javaxt.version>1.12.1</javaxt.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>javaxt.com</id>
+			<url>https://www.javaxt.com/maven</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -154,6 +164,36 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>${org.apache.poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.core</artifactId>
+			<version>${fr.opensagres.xdocreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.document</artifactId>
+			<version>${fr.opensagres.xdocreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.document.docx</artifactId>
+			<version>${fr.opensagres.xdocreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.template</artifactId>
+			<version>${fr.opensagres.xdocreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.xdocreport.template.freemarker</artifactId>
+			<version>${fr.opensagres.xdocreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javaxt</groupId>
+			<artifactId>javaxt-core</artifactId>
+			<version>${javaxt.version}</version>
 		</dependency>
 	</dependencies>
 

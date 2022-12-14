@@ -36,9 +36,9 @@ import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.entity.FormTemplate;
-import id.worx.worx.service.FormExportService;
 import id.worx.worx.service.FormTemplateService;
-import id.worx.worx.web.model.request.FormExportRequest;
+import id.worx.worx.service.report.FormExportService;
+import id.worx.worx.web.model.request.FormTemplateExportRequest;
 import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -199,7 +199,7 @@ public class FormTemplateController implements SecuredRestController {
     }
 
     @PostMapping("export")
-    public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormExportRequest request) {
+    public ResponseEntity<ByteArrayResource> exportTest(@RequestBody @Valid FormTemplateExportRequest request) {
         ByteArrayOutputStream reportByte = new ByteArrayOutputStream();
         String filename = "";
         if (request.getOption().equals(ExportOption.EXCEL)) {

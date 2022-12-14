@@ -1,11 +1,10 @@
 package id.worx.worx.common;
 
-public class ModelConstants {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    @Generated
-    private ModelConstants() {
-        throw new IllegalStateException("Utility class");
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ModelConstants {
 
     public static final String GROUP_DEFAULT_NAME = "Main Group";
     public static final String GROUP_DEFAULT_COLOR = "#DA3630";

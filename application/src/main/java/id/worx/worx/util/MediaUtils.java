@@ -4,6 +4,8 @@ import java.net.URLConnection;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.common.net.MediaType;
+
 public class MediaUtils {
 
     private MediaUtils() {
@@ -16,6 +18,10 @@ public class MediaUtils {
 
     public static String getExtension(String filename) {
         return FilenameUtils.getExtension(filename);
+    }
+
+    public static boolean isImageType(String mimeType) {
+        return MediaType.parse(mimeType).is(MediaType.ANY_IMAGE_TYPE);
     }
 
 }

@@ -6,20 +6,20 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import lombok.extern.slf4j.Slf4j;
+import id.worx.worx.common.WorxConstants;
 
-@Slf4j
 public class GoogleGeocoderCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        log.info("{}", context.getEnvironment().getProperty("worx.geocoder.enabled", boolean.class));
-        boolean isGeocoderEnabled = context.getEnvironment().getProperty("worx.geocoder.enabled", boolean.class);
+        boolean isGeocoderEnabled = context.getEnvironment().getProperty(WorxConstants.ENV_GEOCODER_ENABLED_STRING,
+                boolean.class);
         if (!isGeocoderEnabled) {
             return false;
         }
 
-        String apiKey = context.getEnvironment().getProperty("worx.geocoder.google-api-key", String.class);
+        String apiKey = context.getEnvironment().getProperty(WorxConstants.ENV_GEOCODER_GOOGLE_API_KEY_STRING,
+                String.class);
 
         if (Objects.isNull(apiKey)) {
             return false;

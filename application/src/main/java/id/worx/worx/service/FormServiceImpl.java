@@ -46,7 +46,7 @@ import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.service.storage.FileStorageService;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,7 +69,7 @@ public class FormServiceImpl implements FormService {
     private final AuthenticationContext authContext;
 
     @Override
-    public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
+    public Page<Form> search(FormSearchRequest request, Pageable pageable) {
         Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
         return formRepository.findAll(spec, pageable);
     }
