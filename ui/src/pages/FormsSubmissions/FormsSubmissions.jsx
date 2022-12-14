@@ -84,31 +84,13 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 170,
+      minWidth: 210,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      renderCell: (params) => (
-        <Stack
-          minHeight={48}
-          justifyContent='center'
-        >
-          {/* DATE */}
-          <Typography variant='inherit'>
-            {convertDate(params.value, 'dd-MM-yyyy')}
-          </Typography>
-
-          {/* TIME */}
-          <Typography 
-            variant='inherit'
-            color='text.secondary'
-          >
-            {convertDate(params.value, 'hh:mm a')}
-          </Typography>
-        </Stack>
-      ),
+      valueGetter: (params) => convertDate(params.value),
     },
     {
       field: 'submissionAddress',
@@ -256,7 +238,7 @@ const FormsSubmissions = () => {
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
       inputItem.type === 'signature'
-    ) return 260
+    ) return 280
     else return 150
   }
 
@@ -449,6 +431,16 @@ const FormsSubmissions = () => {
 
     setFinalTableData(newFinalTableData)
   }
+
+  const handleSubmissionDateSortChange = () => {
+    let newFinalTableData = [...finalTableData]
+
+    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
+    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
+    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
+
+    setFinalTableData(newFinalTableData)
+  }
   
   useEffect(() => {
     let isMounted = true
@@ -466,7 +458,8 @@ const FormsSubmissions = () => {
     let isMounted = true
     const abortController = new AbortController()
 
-    getSubmissionList(isMounted, abortController)
+    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
+    else getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
