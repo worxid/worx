@@ -59,7 +59,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 
 // SERVICES
-import { getMediaPresignedUrl } from 'services/media'
+import { getMediaPresignedUrl } from 'services/worx/media'
 
 // STYLES
 import useStyles from './fillFormUseStyles'

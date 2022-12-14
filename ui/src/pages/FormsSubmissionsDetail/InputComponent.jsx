@@ -31,7 +31,7 @@ import IconCalendarMonth from '@mui/icons-material/CalendarMonth'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
 // SERVICES
-import { postDetailMediaFiles } from 'services/media'
+import { postDetailMediaFiles } from 'services/worx/media'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
