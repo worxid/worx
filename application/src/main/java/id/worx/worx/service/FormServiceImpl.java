@@ -23,9 +23,11 @@ import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.FileField;
 import id.worx.worx.common.model.forms.field.PhotoField;
 import id.worx.worx.common.model.forms.field.SignatureField;
+import id.worx.worx.common.model.forms.field.SketchField;
 import id.worx.worx.common.model.forms.value.FileValue;
 import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.SignatureValue;
+import id.worx.worx.common.model.forms.value.SketchValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.File;
@@ -230,6 +232,19 @@ public class FormServiceImpl implements FormService {
             }
         }
 
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            List<ErrorDetail> fileValidations = this.validateFile(field.getId(), fileId);
+            details.addAll(fileValidations);
+        }
+
         return details;
     }
 
@@ -303,6 +318,18 @@ public class FormServiceImpl implements FormService {
             }
         }
 
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            updateFileStateHelper(form, fileId, field.getId());
+        }
+
     }
 
     private void updateFileStateHelper(Form form, Long fileId, String fieldId) {
@@ -369,6 +396,18 @@ public class FormServiceImpl implements FormService {
             PhotoValue photoValue = (PhotoValue) value;
             List<Long> fileIds = photoValue.getFileIds();
             results.addAll(fileIds);
+        }
+
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            results.add(fileId);
         }
 
         return results;

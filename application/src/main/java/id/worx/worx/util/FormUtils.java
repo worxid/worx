@@ -24,9 +24,11 @@ import id.worx.worx.common.model.forms.field.Option;
 import id.worx.worx.common.model.forms.field.RadioGroupField;
 import id.worx.worx.common.model.forms.field.RatingField;
 import id.worx.worx.common.model.forms.value.BarcodeValue;
+import id.worx.worx.common.model.forms.value.BooleanValue;
 import id.worx.worx.common.model.forms.value.CheckboxGroupValue;
 import id.worx.worx.common.model.forms.value.DateValue;
 import id.worx.worx.common.model.forms.value.DropdownValue;
+import id.worx.worx.common.model.forms.value.IntegerValue;
 import id.worx.worx.common.model.forms.value.RadioGroupValue;
 import id.worx.worx.common.model.forms.value.RatingValue;
 import id.worx.worx.common.model.forms.value.TextValue;
@@ -258,6 +260,16 @@ public class FormUtils {
 
         if (value instanceof TimeValue) {
             TimeValue temp = (TimeValue) value;
+            return List.of(temp.getValue().toString());
+        }
+
+        if (value instanceof BooleanValue) {
+            BooleanValue temp = (BooleanValue) value;
+            return List.of(temp.getValue().toString());
+        }
+
+        if (value instanceof IntegerValue) {
+            IntegerValue temp = (IntegerValue) value;
             return List.of(temp.getValue().toString());
         }
 
