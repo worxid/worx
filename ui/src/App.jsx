@@ -16,6 +16,9 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 // ROUTES
 import routes from 'routes/routes'
 
+// SERVICES
+import { getRootMetaData } from 'services/strapi/root'
+
 const App = () => {
   const { snackbarObject, setSnackbarObject } = useContext(AllPagesContext)
 
@@ -44,10 +47,30 @@ const App = () => {
     else if (inputItem.routeType === 'free') return inputItem.element
   }
 
+  const getRootMetaDataFromAPI = async (inputIsMounted, inputAbortController) => {
+    const resultMetaData = await getRootMetaData(inputAbortController.signal)
+    
+    if (resultMetaData.status === 200 && inputIsMounted) {
+      document.getElementsByTagName('meta')['keywords'].content = resultMetaData?.data?.data?.attributes?.Keywords
+    }
+  }
+
   // CHANGE THE FAVICON
   useEffect(() => {
     const faviconElement = document.getElementById('favicon')
     faviconElement.href = LogoProductLogoOnly
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    getRootMetaDataFromAPI(isMounted, abortController)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
   }, [])
 
   return (
