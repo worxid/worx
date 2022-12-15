@@ -23,6 +23,7 @@ import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.Option;
 import id.worx.worx.common.model.forms.field.RadioGroupField;
 import id.worx.worx.common.model.forms.field.RatingField;
+import id.worx.worx.common.model.forms.value.BarcodeValue;
 import id.worx.worx.common.model.forms.value.CheckboxGroupValue;
 import id.worx.worx.common.model.forms.value.DateValue;
 import id.worx.worx.common.model.forms.value.DropdownValue;
@@ -247,6 +248,11 @@ public class FormUtils {
             RatingField tempField = (RatingField) field;
             RatingValue temp = (RatingValue) value;
             return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
+        }
+
+        if (value instanceof BarcodeValue) {
+            BarcodeValue temp = (BarcodeValue) value;
+            return List.of(temp.getValue());
         }
 
         return List.of(NO_DATA_PROVIDED_STRING);

@@ -22,7 +22,8 @@ import lombok.experimental.SuperBuilder;
         @Type(value = FileField.class, name = "file"),
         @Type(value = PhotoField.class, name = "photo"),
         @Type(value = SignatureField.class, name = "signature"),
-        @Type(value = SeparatorField.class, name = "separator")
+        @Type(value = SeparatorField.class, name = "separator"),
+        @Type(value = BarcodeField.class, name = "barcode")
 })
 @SuperBuilder
 public abstract class Field implements Serializable {
