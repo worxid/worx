@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import id.worx.worx.common.exception.FormValidationErrorDetail;
@@ -19,6 +20,7 @@ public class BarcodeField extends Field {
 
     private static final long serialVersionUID = 2137880215635830361L;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("barcode_type")
     private BarcodeType barcodeType;
     @JsonProperty("allow_manual_override")

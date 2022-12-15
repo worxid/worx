@@ -30,6 +30,7 @@ import id.worx.worx.common.model.forms.value.DropdownValue;
 import id.worx.worx.common.model.forms.value.RadioGroupValue;
 import id.worx.worx.common.model.forms.value.RatingValue;
 import id.worx.worx.common.model.forms.value.TextValue;
+import id.worx.worx.common.model.forms.value.TimeValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.service.report.FieldContext;
 import id.worx.worx.service.report.ValueContext;
@@ -253,6 +254,11 @@ public class FormUtils {
         if (value instanceof BarcodeValue) {
             BarcodeValue temp = (BarcodeValue) value;
             return List.of(temp.getValue());
+        }
+
+        if (value instanceof TimeValue) {
+            TimeValue temp = (TimeValue) value;
+            return List.of(temp.getValue().toString());
         }
 
         return List.of(NO_DATA_PROVIDED_STRING);
