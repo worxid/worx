@@ -26,7 +26,8 @@ import lombok.experimental.SuperBuilder;
         @Type(value = BarcodeField.class, name = "barcode"),
         @Type(value = TimeField.class, name = "time"),
         @Type(value = BooleanField.class, name = "boolean"),
-        @Type(value = IntegerField.class, name = "integer")
+        @Type(value = IntegerField.class, name = "integer"),
+        @Type(value = SketchField.class, name = "sketch")
 })
 @SuperBuilder
 public abstract class Field implements Serializable {
