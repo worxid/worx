@@ -3,9 +3,6 @@ import { useState, useEffect, useContext, useRef } from 'react'
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
-// HOOKS
-import useAxiosPrivate from 'hooks/useAxiosPrivate'
-
 // MUIS
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -24,7 +21,6 @@ import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
 // SERVICES
-import { postDetailMediaFiles } from 'services/worx/media'
 import { downloadFileFromUrl } from 'services/worx/others'
 
 // STYLES
@@ -35,20 +31,20 @@ import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
   wasAccessTokenExpired,
-  wasRequestCanceled,
 } from 'utilities/validation'
 
 const DialogMediasPreview = (props) => {
-  const { mediasPreviewObject, setMediasPreviewObject } = props
+  const { 
+    isDialogOpen, setIsDialogOpen,
+    mediaList, setMediaList,
+    mediaPreviewType,
+  } = props
 
   const classes = useStyles()
-
-  const axiosPrivate = useAxiosPrivate()
 
   const { setSnackbarObject } = useContext(AllPagesContext)
   const refreshIntervalRef = useRef(null)
 
-  const [ mediaList, setMediaList ] = useState([])
   const [ activeStep, setActiveStep ] = useState(0)
   const [ refreshKey, setRefreshKey ] = useState(1)
   const [ isLoadingPreview, setIsLoadingPreview ] = useState(true)
@@ -85,27 +81,8 @@ const DialogMediasPreview = (props) => {
     return output
   }
 
-  const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
-    const resultMediaFilesData = await postDetailMediaFiles(
-      inputAbortController.signal,
-      { media_ids: mediasPreviewObject?.fileList?.map(item => item.media_id) },
-      axiosPrivate,
-    )
-
-    if (didSuccessfullyCallTheApi(resultMediaFilesData.status) && inputIsMounted) {
-      setMediaList(resultMediaFilesData.data.list)
-
-      refreshIntervalRef.current = setInterval(() => {
-        setRefreshKey(current => current+1)
-      }, 4000)
-    }
-    else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
-      setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))
-    }
-  }
-
   const handleDialogClose = () => {
-    setMediasPreviewObject(null)
+    setIsDialogOpen(false)
     setMediaList([])
     setActiveStep(0)
   }
@@ -130,23 +107,21 @@ const DialogMediasPreview = (props) => {
   }
 
   useEffect(() => {
-    let isMounted = true
-    const abortController = new AbortController()
-
     if(!isLoadingPreview) setIsLoadingPreview(true)
-    if (Boolean(mediasPreviewObject)) loadMediaFilesData(abortController, isMounted)
+
+    refreshIntervalRef.current = setInterval(() => {
+      setRefreshKey(current => current + 1)
+    }, 3000)
 
     return () => {
-      isMounted = false
-      abortController.abort()
       handleCancelRefreshInterval()
     }
-  }, [mediasPreviewObject])
+  }, [mediaList])
 
   return (
     <Dialog
       fullScreen
-      open={Boolean(mediasPreviewObject)}
+      open={isDialogOpen}
       onClose={handleDialogClose}
       className='no-zoom'
     >
@@ -155,7 +130,7 @@ const DialogMediasPreview = (props) => {
         <Toolbar className={classes.toolbar}>
           {/* FILES COUNT */}
           <Typography variant='subtitle1'>
-            {`${mediaList.length} ${mediasPreviewObject?.type}${mediaList.length > 1 ? 's' : ''} (${mediaList.length > 0 ? activeStep + 1 : 0}/${mediaList.length})`}
+            {`${mediaList.length} ${mediaPreviewType}${mediaList.length > 1 ? 's' : ''} (${mediaList.length > 0 ? activeStep + 1 : 0}/${mediaList.length})`}
           </Typography>
 
           {/* MENU */}

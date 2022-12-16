@@ -39,6 +39,7 @@ import IconMap from '@mui/icons-material/Map'
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/worx/form'
 import { getDetailFormTemplate } from 'services/worx/formTemplate'
+import { postDetailMediaFiles } from 'services/worx/media'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
@@ -146,8 +147,10 @@ const FormsSubmissions = () => {
   const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // DIALOG MEDIA PREVIEW
-  const [ mediasPreviewObject, setMediasPreviewObject ] = useState(null)
+  // DIALOG MEDIAS PREVIEW
+  const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
+  const [ mediaPreviewList, setMediaPreviewList ] = useState([])
+  const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -242,6 +245,25 @@ const FormsSubmissions = () => {
     else return 150
   }
 
+  const handleMediaTypeCellClick = async (inputValue) => {
+    const abortController = new AbortController()
+
+    const resultMediaFilesData = await postDetailMediaFiles(
+      abortController.signal,
+      { media_ids: inputValue?.fileList?.map(item => item.media_id) },
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(resultMediaFilesData.status)) {
+      setMediaPreviewType(inputValue.type)
+      setMediaPreviewList(resultMediaFilesData.data.list)
+      setIsDialogMediasPreviewOpen(true)
+    }
+    else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))
+    }
+  }
+
   const getRenderCellByColumnType = (inputParams) => {
     if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
       return (
@@ -334,7 +356,7 @@ const FormsSubmissions = () => {
           spacing='8px'
           padding='8px 0px'
           className='cursorPointer'
-          onClick={() => setMediasPreviewObject(inputParams.value)}
+          onClick={() => handleMediaTypeCellClick(inputParams.value)}
         >
           {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
@@ -608,8 +630,11 @@ const FormsSubmissions = () => {
 
       {/* DIALOG MEDIAS PREVIEW */}
       <DialogMediasPreview 
-        mediasPreviewObject={mediasPreviewObject}
-        setMediasPreviewObject={setMediasPreviewObject}
+        isDialogOpen={isDialogMediasPreviewOpen}
+        setIsDialogOpen={setIsDialogMediasPreviewOpen}
+        mediaList={mediaPreviewList}
+        setMediaList={setMediaPreviewList}
+        mediaPreviewType={mediaPreviewType}
       />
     </>
   )
