@@ -393,6 +393,8 @@ public class FormExportServiceImpl implements FormExportService {
                 } else {
                     results.add(FormUtils.toFieldContext(field, value));
                 }
+            } else {
+                results.add(FormUtils.toFieldContext(field));
             }
         }
 

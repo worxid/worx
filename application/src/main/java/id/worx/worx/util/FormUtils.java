@@ -197,6 +197,21 @@ public class FormUtils {
         return context;
     }
 
+    public static FieldContext toFieldContext(Field field) {
+        FieldContext context = FieldContext.builder()
+                .label(field.getLabel())
+                .description(field.getDescription())
+                .build();
+
+        List<ValueContext> valueContexts = List.of(
+                ValueContext.builder()
+                        .label(NO_DATA_PROVIDED_STRING)
+                        .build());
+        context.setValues(valueContexts);
+
+        return context;
+    }
+
     public static List<String> getValueAsString(Field field, Value value) {
         Assert.isTrue(!field.getType().containsFile(), "only accept non file field");
 

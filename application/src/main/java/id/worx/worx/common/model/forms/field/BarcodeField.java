@@ -13,9 +13,7 @@ import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.forms.value.BarcodeValue;
 import id.worx.worx.common.model.forms.value.Value;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
 public class BarcodeField extends Field {
 
     private static final long serialVersionUID = 2137880215635830361L;
@@ -23,6 +21,7 @@ public class BarcodeField extends Field {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("barcode_type")
     private BarcodeType barcodeType;
+
     @JsonProperty("allow_manual_override")
     private Boolean allowManualOverride;
 
@@ -32,7 +31,11 @@ public class BarcodeField extends Field {
         super(id, label, description, FieldType.BARCODE, required);
 
         this.barcodeType = barcodeType;
-        this.allowManualOverride = allowManualOverride;
+
+        this.allowManualOverride = false;
+        if (Objects.nonNull(allowManualOverride)) {
+            this.allowManualOverride = allowManualOverride;
+        }
     }
 
     public BarcodeType getBarcodeType() {

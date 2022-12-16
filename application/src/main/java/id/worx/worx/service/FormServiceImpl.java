@@ -177,8 +177,6 @@ public class FormServiceImpl implements FormService {
         details.addAll(fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
-                    log.info(field.getId());
-                    log.info("{}", value);
                     return field.validate(value);
                 })
                 .flatMap(Collection::stream)
