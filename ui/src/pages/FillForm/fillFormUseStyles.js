@@ -230,7 +230,45 @@ const useStyles = makeStyles((theme) => ({
   iconSuccessUpload: {
     fontSize: 14,
     marginLeft: 4,
-  }
+  },
+  booleanGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    '& .MuiFormControlLabel-root': {
+      marginRight: 28,
+    }
+  },
+  actionClock: {
+    '& .MuiButton-root': {
+      boxShadow: 'unset',
+      border: 'none',
+      padding: 0,
+    },
+    '& .MuiTimePickerToolbar-root': {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      '& .MuiTypography-root': {
+        color: theme.palette.common.white,
+      },
+      '& .PrivatePickersToolbarText-root': {
+        color: alpha(theme.palette.common.white, 0.54),
+        '&.Mui-selected': {
+          color: theme.palette.common.white,
+        }
+      }
+    },
+    '& .MuiPickersToolbar-content': {
+      alignItems: 'center',
+    },
+    '& .MuiTimePickerToolbar-ampmSelection': {
+      '& .MuiButton-root': {
+        height: 'auto'
+      }
+    },
+    '& .MuiPickersToolbar-penIconButton': {
+      alignSelf: 'flex-end',
+    }
+  },
 }))
 
 export default useStyles
