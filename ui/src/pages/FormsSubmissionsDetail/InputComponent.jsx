@@ -61,6 +61,7 @@ const InputComponent = (props) => {
   const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
   const [ mediaPreviewList, setMediaPreviewList ] = useState([])
   const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
+  const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
 
   // FIND VALUES BY KEY
   const findValuesKey = (inputType) => {
@@ -99,9 +100,10 @@ const InputComponent = (props) => {
     abortController.abort()
   }
 
-  const handleMediaTypeViewClick = (inputType) => {
+  const handleMediaTypeViewClick = (inputType, inputActiveStep) => {
     setMediaPreviewType(inputType)
     setMediaPreviewList([...currentFiles])
+    setMediaPreviewActiveStep(inputActiveStep)
     setIsDialogMediasPreviewOpen(true)
   }
 
@@ -212,7 +214,7 @@ const InputComponent = (props) => {
             <ListItem 
               className={classes.listItem} 
               key={index}
-              onClick={() => handleMediaTypeViewClick('file')}
+              onClick={() => handleMediaTypeViewClick('file', index)}
             >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <IconInsertDriveFile className={classes.listFileIcon}/>
@@ -234,7 +236,7 @@ const InputComponent = (props) => {
             <ListItem 
               className={classes.listItem} 
               key={index}
-              onClick={() => handleMediaTypeViewClick('photo')}
+              onClick={() => handleMediaTypeViewClick('photo', index)}
             >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <Box
@@ -259,7 +261,7 @@ const InputComponent = (props) => {
           className={classes.signatureBox}
           component='img'
           src={currentFiles[0]?.url}
-          onClick={() => handleMediaTypeViewClick('signature')}
+          onClick={() => handleMediaTypeViewClick('signature', 0)}
         />
       )}
 
@@ -270,6 +272,8 @@ const InputComponent = (props) => {
         mediaList={mediaPreviewList}
         setMediaList={setMediaPreviewList}
         mediaPreviewType={mediaPreviewType}
+        activeStep={mediaPreviewActiveStep}
+        setActiveStep={setMediaPreviewActiveStep}
       />
     </>
   )

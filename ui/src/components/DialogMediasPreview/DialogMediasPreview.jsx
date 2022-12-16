@@ -37,6 +37,7 @@ const DialogMediasPreview = (props) => {
   const { 
     isDialogOpen, setIsDialogOpen,
     mediaList, setMediaList,
+    activeStep, setActiveStep,
     mediaPreviewType,
   } = props
 
@@ -45,7 +46,6 @@ const DialogMediasPreview = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
   const refreshIntervalRef = useRef(null)
 
-  const [ activeStep, setActiveStep ] = useState(0)
   const [ refreshKey, setRefreshKey ] = useState(1)
   const [ isLoadingPreview, setIsLoadingPreview ] = useState(true)
   

@@ -151,6 +151,7 @@ const FormsSubmissions = () => {
   const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
   const [ mediaPreviewList, setMediaPreviewList ] = useState([])
   const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
+  const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -257,6 +258,7 @@ const FormsSubmissions = () => {
     if (didSuccessfullyCallTheApi(resultMediaFilesData.status)) {
       setMediaPreviewType(inputValue.type)
       setMediaPreviewList(resultMediaFilesData.data.list)
+      setMediaPreviewActiveStep(0)
       setIsDialogMediasPreviewOpen(true)
     }
     else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
@@ -635,6 +637,8 @@ const FormsSubmissions = () => {
         mediaList={mediaPreviewList}
         setMediaList={setMediaPreviewList}
         mediaPreviewType={mediaPreviewType}
+        activeStep={mediaPreviewActiveStep}
+        setActiveStep={setMediaPreviewActiveStep}
       />
     </>
   )
