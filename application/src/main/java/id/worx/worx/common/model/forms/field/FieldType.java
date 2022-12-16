@@ -52,7 +52,32 @@ public enum FieldType {
     /**
      * Separator field
      */
-    SEPARATOR("separator");
+    SEPARATOR("separator"),
+
+    /**
+     * Barcode field
+     */
+    BARCODE("barcode"),
+
+    /**
+     * Sketch field
+     */
+    SKETCH("sketch"),
+
+    /**
+     * Time field
+     */
+    TIME("time"),
+
+    /**
+     * Boolean field
+     */
+    BOOLEAN("boolean"),
+
+    /**
+     * Integer field
+     */
+    INTEGER("integer");
 
     private final String text;
 
@@ -66,7 +91,7 @@ public enum FieldType {
     }
 
     public boolean containsFile() {
-        return this.equals(FILE) || this.equals(PHOTO) || this.equals(SIGNATURE);
+        return this.equals(FILE) || this.equals(PHOTO) || this.equals(SIGNATURE) || this.equals(SKETCH);
     }
 
     public boolean isSeparator() {

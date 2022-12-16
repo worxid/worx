@@ -23,12 +23,16 @@ import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.Option;
 import id.worx.worx.common.model.forms.field.RadioGroupField;
 import id.worx.worx.common.model.forms.field.RatingField;
+import id.worx.worx.common.model.forms.value.BarcodeValue;
+import id.worx.worx.common.model.forms.value.BooleanValue;
 import id.worx.worx.common.model.forms.value.CheckboxGroupValue;
 import id.worx.worx.common.model.forms.value.DateValue;
 import id.worx.worx.common.model.forms.value.DropdownValue;
+import id.worx.worx.common.model.forms.value.IntegerValue;
 import id.worx.worx.common.model.forms.value.RadioGroupValue;
 import id.worx.worx.common.model.forms.value.RatingValue;
 import id.worx.worx.common.model.forms.value.TextValue;
+import id.worx.worx.common.model.forms.value.TimeValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.service.report.FieldContext;
 import id.worx.worx.service.report.ValueContext;
@@ -193,6 +197,21 @@ public class FormUtils {
         return context;
     }
 
+    public static FieldContext toFieldContext(Field field) {
+        FieldContext context = FieldContext.builder()
+                .label(field.getLabel())
+                .description(field.getDescription())
+                .build();
+
+        List<ValueContext> valueContexts = List.of(
+                ValueContext.builder()
+                        .label(NO_DATA_PROVIDED_STRING)
+                        .build());
+        context.setValues(valueContexts);
+
+        return context;
+    }
+
     public static List<String> getValueAsString(Field field, Value value) {
         Assert.isTrue(!field.getType().containsFile(), "only accept non file field");
 
@@ -247,6 +266,26 @@ public class FormUtils {
             RatingField tempField = (RatingField) field;
             RatingValue temp = (RatingValue) value;
             return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
+        }
+
+        if (value instanceof BarcodeValue) {
+            BarcodeValue temp = (BarcodeValue) value;
+            return List.of(temp.getValue());
+        }
+
+        if (value instanceof TimeValue) {
+            TimeValue temp = (TimeValue) value;
+            return List.of(temp.getValue().toString());
+        }
+
+        if (value instanceof BooleanValue) {
+            BooleanValue temp = (BooleanValue) value;
+            return List.of(temp.getValue().toString());
+        }
+
+        if (value instanceof IntegerValue) {
+            IntegerValue temp = (IntegerValue) value;
+            return List.of(temp.getValue().toString());
         }
 
         return List.of(NO_DATA_PROVIDED_STRING);
