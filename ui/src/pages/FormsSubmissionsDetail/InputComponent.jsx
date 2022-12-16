@@ -1,5 +1,8 @@
 import { useEffect, useState, useContext } from 'react'
 
+// COMPONENTS
+import DialogMediasPreview from 'components/DialogMediasPreview/DialogMediasPreview'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
@@ -54,7 +57,11 @@ const InputComponent = (props) => {
   // STYLES
   const classes = useStyles()
 
-  const [currentFiles, setCurrentFiles] = useState([])
+  const [ currentFiles, setCurrentFiles ] = useState([])
+  const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
+  const [ mediaPreviewList, setMediaPreviewList ] = useState([])
+  const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
+  const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
 
   // FIND VALUES BY KEY
   const findValuesKey = (inputType) => {
@@ -91,6 +98,13 @@ const InputComponent = (props) => {
     }
 
     abortController.abort()
+  }
+
+  const handleMediaTypeViewClick = (inputType, inputActiveStep) => {
+    setMediaPreviewType(inputType)
+    setMediaPreviewList([...currentFiles])
+    setMediaPreviewActiveStep(inputActiveStep)
+    setIsDialogMediasPreviewOpen(true)
   }
 
   useEffect(() => {
@@ -197,7 +211,11 @@ const InputComponent = (props) => {
       {item.type === 'file' && (
         <List className='padding0'>
           {currentFiles?.map((itemFile, index) => (
-            <ListItem className={classes.listItem} key={index}>
+            <ListItem 
+              className={classes.listItem} 
+              key={index}
+              onClick={() => handleMediaTypeViewClick('file', index)}
+            >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <IconInsertDriveFile className={classes.listFileIcon}/>
               </ListItemAvatar>
@@ -215,7 +233,11 @@ const InputComponent = (props) => {
       {item.type === 'photo' && (
         <List className='padding0'>
           {currentFiles?.map((itemPhoto, index) => (
-            <ListItem className={classes.listItem} key={index}>
+            <ListItem 
+              className={classes.listItem} 
+              key={index}
+              onClick={() => handleMediaTypeViewClick('photo', index)}
+            >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <Box
                   className={classes.listImage}
@@ -239,8 +261,20 @@ const InputComponent = (props) => {
           className={classes.signatureBox}
           component='img'
           src={currentFiles[0]?.url}
+          onClick={() => handleMediaTypeViewClick('signature', 0)}
         />
       )}
+
+      {/* DIALOG MEDIAS PREVIEW */}
+      <DialogMediasPreview
+        isDialogOpen={isDialogMediasPreviewOpen}
+        setIsDialogOpen={setIsDialogMediasPreviewOpen}
+        mediaList={mediaPreviewList}
+        setMediaList={setMediaPreviewList}
+        mediaPreviewType={mediaPreviewType}
+        activeStep={mediaPreviewActiveStep}
+        setActiveStep={setMediaPreviewActiveStep}
+      />
     </>
   )
 }
