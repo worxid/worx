@@ -59,9 +59,13 @@ const DialogExport = (props) => {
         option: fileFormat
       }, axiosPrivate)
         .then((response) => {
+          let fileExtension
+          if (fileFormat === 'CSV') fileExtension = 'csv'
+          else if (fileFormat === 'EXCEL') fileExtension = 'xlsx'
+
           downloadFileFromFileObject(
             new Blob([response]),
-            `Form_Submissions${title ? `_${title}` : ''}.${fileFormat.toLowerCase()}`,
+            `Form_Submissions${title ? `_${title}` : ''}.${fileFormat.toLowerCase()}.${fileExtension}`,
           )
 
           setIsLoading(false)
