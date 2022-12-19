@@ -43,7 +43,10 @@ export const postExportSubmissionDetail = async (
     const response = await inputAxiosPrivate.post(
       '/form/export',
       inputBodyParams, 
-      { signal: inputSignal },
+      { 
+        responseType: 'arraybuffer',
+        signal: inputSignal, 
+      },
     )
 
     return response
