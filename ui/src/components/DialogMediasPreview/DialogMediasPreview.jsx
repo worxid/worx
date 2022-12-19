@@ -23,7 +23,6 @@ import IconArrowForwardIos from '@mui/icons-material/ArrowForwardIos'
 import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
-
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
 
