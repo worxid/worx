@@ -10,7 +10,7 @@ import IconDownload from '@mui/icons-material/Download'
 import useStyles from './formsSubmissionsDetailUseStyles'
 
 const Header = (props) => {
-  const { title, onClickDownload } = props
+  const { title, id } = props
 
   // STYLES
   const classes = useStyles()
@@ -30,7 +30,7 @@ const Header = (props) => {
       </Typography>
 
       {/* BUTTON DOWNLOAD */}
-      <IconButton onClick={onClickDownload}>
+      <IconButton>
         <IconDownload />
       </IconButton>
     </Stack>
