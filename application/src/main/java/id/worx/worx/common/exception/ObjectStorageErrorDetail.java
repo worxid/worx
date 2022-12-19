@@ -1,6 +1,5 @@
 package id.worx.worx.common.exception;
 
-import id.worx.worx.common.exception.detail.ErrorDetail;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder

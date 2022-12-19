@@ -1,4 +1,4 @@
-package id.worx.worx.common.exception.detail;
+package id.worx.worx.common.exception;
 
 import java.io.Serializable;
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.exception.ErrorDetail;
 
 @Getter
 public class WorxException extends RuntimeException {

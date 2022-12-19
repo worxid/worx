@@ -14,9 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import id.worx.worx.common.exception.ErrorDetail;
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
-import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.dto.Attachment;
 import id.worx.worx.common.model.dto.FormDTO;
 import id.worx.worx.common.model.forms.field.Field;

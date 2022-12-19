@@ -6,9 +6,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import id.worx.worx.common.exception.ErrorDetail;
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
-import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.forms.value.BooleanValue;
 import id.worx.worx.common.model.forms.value.Value;
 

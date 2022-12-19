@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.exception.ErrorDetail;
 import id.worx.worx.common.model.forms.value.Value;
 import lombok.experimental.SuperBuilder;
 

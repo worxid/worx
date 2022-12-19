@@ -8,10 +8,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import id.worx.worx.common.FormConstants;
+import id.worx.worx.common.exception.ErrorDetail;
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.InvalidParameterException;
-import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.Value;
 import lombok.experimental.SuperBuilder;

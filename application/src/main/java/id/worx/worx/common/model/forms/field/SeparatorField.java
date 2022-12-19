@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import id.worx.worx.common.exception.detail.ErrorDetail;
+import id.worx.worx.common.exception.ErrorDetail;
 import id.worx.worx.common.model.forms.value.Value;
 import lombok.experimental.SuperBuilder;
 
