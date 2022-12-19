@@ -50,7 +50,7 @@ const Header = (props) => {
     if (didSuccessfullyCallTheApi(resultDownload.status)) {
       downloadFileFromFileObject(
         new Blob([ resultDownload.data ]),
-        `Submission Detail_${title}_${id}`,
+        `Submission Detail_${title}_${id}.docx`,
       )
     }
     else if (!wasRequestCanceled(resultDownload?.status) && !wasAccessTokenExpired(resultDownload.status)) {
