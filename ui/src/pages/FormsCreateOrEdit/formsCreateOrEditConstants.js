@@ -173,8 +173,8 @@ export const dataListComponents = [
     id: uuid(),
     label: 'Barcode',
     type: 'barcode',
-    restrict_to_1d_barcodes_only: false,
-    user_can_manually_override: false,
+    barcode_type: null, // '1d' if checked
+    allow_manual_override: false,
     required: false,
     duplicateFrom: null,
   },

@@ -47,6 +47,13 @@ const FormsCreateOrEdit = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
+  // REMOVE MULTIPLE KEY
+  const removeMultipleKeyObject = (deleteKey, item) => {
+    let temp = item
+    deleteKey && deleteKey.forEach(item => delete temp[item])
+    return temp
+  }
+
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
     const response = await getDetailFormTemplate(
@@ -57,7 +64,22 @@ const FormsCreateOrEdit = () => {
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
-      const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
+      const addOtherKeyToFields = values.fields.map(item => {
+        let tempItem = item
+
+        // REMOVE KEY FROM THESE FIELD TYPE
+        if(item.type === 'integer' || item.type === 'sketch' || item.type === 'boolean' ||
+         item.type === 'time' || item.type === 'barcode') {
+          removeMultipleKeyObject(
+            item.type === 'barcode' ? ['description'] : ['description', 'required'],
+            tempItem
+          )
+        }
+
+        return {
+          ...tempItem, duplicateFrom: null
+        }
+      })
 
       setFormObject({
         label: values.label,
@@ -108,13 +130,6 @@ const FormsCreateOrEdit = () => {
 
     setHasFormChanged(false)
     abortController.abort()
-  }
-
-  // REMOVE MULTIPLE KEY
-  const removeMultipleKeyObject = (deleteKey, item) => {
-    let temp = item
-    deleteKey && deleteKey.forEach(item => delete temp[item])
-    return temp
   }
 
   // DEBOUNCE

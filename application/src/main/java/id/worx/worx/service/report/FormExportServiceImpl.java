@@ -53,6 +53,7 @@ import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.value.FileValue;
 import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.SignatureValue;
+import id.worx.worx.common.model.forms.value.SketchValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.FormTemplate;
@@ -392,6 +393,8 @@ public class FormExportServiceImpl implements FormExportService {
                 } else {
                     results.add(FormUtils.toFieldContext(field, value));
                 }
+            } else {
+                results.add(FormUtils.toFieldContext(field));
             }
         }
 
@@ -413,6 +416,11 @@ public class FormExportServiceImpl implements FormExportService {
 
         if (value instanceof SignatureValue) {
             SignatureValue temp = (SignatureValue) value;
+            fileIds = List.of(temp.getFileId());
+        }
+
+        if (value instanceof SketchValue) {
+            SketchValue temp = (SketchValue) value;
             fileIds = List.of(temp.getFileId());
         }
 

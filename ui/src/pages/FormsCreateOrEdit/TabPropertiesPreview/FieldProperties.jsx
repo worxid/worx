@@ -584,9 +584,9 @@ const FieldProperties = () => {
           <FormControlLabel
             control={(<Checkbox
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'restrict_to_1d_barcodes_only', Boolean(event.target.checked)
+                selectedFieldsId, 'barcode_type', Boolean(event.target.checked) ? '1d' : null
               )}
-              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'restrict_to_1d_barcodes_only'))}
+              checked={getFieldPropertiesValueById(selectedFieldsId, 'barcode_type') === '1d'}
             />)}
             label='Restrict to 1D barcodes only'
           />
@@ -595,9 +595,9 @@ const FieldProperties = () => {
           <FormControlLabel
             control={(<Checkbox
               onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'user_can_manually_override', Boolean(event.target.checked)
+                selectedFieldsId, 'allow_manual_override', Boolean(event.target.checked)
               )}
-              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'user_can_manually_override'))}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'allow_manual_override'))}
             />)}
             label='User can manually override'
           />

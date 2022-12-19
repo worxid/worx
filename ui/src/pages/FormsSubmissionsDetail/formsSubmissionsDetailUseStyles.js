@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     padding: 0,
-    width: 240
+    width: 240,
+    cursor: 'pointer',
   },
   listFileAvatar: {
     color: theme.palette.text.secondary,
@@ -79,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${alpha(theme.palette.common.black, 0.26)}`,
     maxWidth: 400,
     width: '100%',
+    cursor: 'pointer',
   }
 }))
 
