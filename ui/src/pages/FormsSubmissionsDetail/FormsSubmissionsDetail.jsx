@@ -25,9 +25,6 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-// REACT TO PRINT
-import { useReactToPrint } from 'react-to-print'
-
 // SERVICES
 import { getSubmissionListDetail } from 'services/worx/form'
 
@@ -86,30 +83,6 @@ const FormsSubmissionsDetail = () => {
     }
   }
 
-  const handleDownloadButtonClick = useReactToPrint({
-    content: () => downloadComponentRef.current.cloneNode(true),
-    documentTitle: submissionDetail?.label,
-    pageStyle: `
-      @page {
-        size: 210mm 297mm;
-        margin: 2.54cm,
-      }
-      @media all {
-        .pagebreak {
-          display: none;
-        }
-      }
-      @media print {
-        .pagebreak {
-          page-break-before: always;
-        }
-        .no-print {
-          display: none !important;
-        }
-      }
-    `,
-  })
-
   useEffect(() => {
     const abortController = new AbortController()
     getSubmissionDetail(
@@ -148,7 +121,7 @@ const FormsSubmissionsDetail = () => {
           {/* HEADER */}
           <Header
             title={submissionDetail?.label}
-            onClickDownload={() => handleDownloadButtonClick()}
+            id={submissionDetail?.id}
           />
 
           <Divider />
