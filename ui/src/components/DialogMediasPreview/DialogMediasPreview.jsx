@@ -1,5 +1,8 @@
 import { useState, useEffect, useContext, useRef } from 'react'
 
+// AXIOS
+import axios from 'axios'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
@@ -20,13 +23,12 @@ import IconArrowForwardIos from '@mui/icons-material/ArrowForwardIos'
 import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
-// SERVICES
-import { downloadFileFromUrl } from 'services/worx/others'
 
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
 
 // UTILITIES
+import { downloadFileFromFileObject } from 'utilities/file'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
@@ -88,17 +90,23 @@ const DialogMediasPreview = (props) => {
   }
 
   const handleDownloadButtonClick = async () => {
-    const resultDownloadFile = await downloadFileFromUrl(
-      mediaList[activeStep].url,
-      mediaList[activeStep].name,
-    )
+    const responseFile = await axios({
+      url: mediaList[activeStep].url,
+      method: 'GET',
+      responseType: 'blob',
+    })
 
-    if (
-      !didSuccessfullyCallTheApi(resultDownloadFile?.status) && 
-      !wasAccessTokenExpired(resultDownloadFile.status) && 
-      resultDownloadFile.status !== 0
-    ) {
-      setSnackbarObject(getDefaultErrorMessage(resultDownloadFile))
+    if (responseFile.status === 200) {
+      const resultDownloadFile = downloadFileFromFileObject(
+        responseFile.data,
+        mediaList[activeStep].name,
+      )
+
+      if (
+        !didSuccessfullyCallTheApi(resultDownloadFile?.status) && 
+        !wasAccessTokenExpired(resultDownloadFile.status) && 
+        resultDownloadFile.status !== 0
+      ) setSnackbarObject(getDefaultErrorMessage(resultDownloadFile))
     }
   }
 
