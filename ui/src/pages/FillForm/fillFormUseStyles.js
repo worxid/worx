@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiInputBase-input': {
       fontSize: 12,
+    },
+    '&.no-max-width': {
+      maxWidth: '100%'
     }
   },
   dividerFormControl: {
@@ -89,6 +92,12 @@ const useStyles = makeStyles((theme) => ({
     },
     '&.buttonAddFile': {
       maxWidth: 100,
+    },
+    '&.buttonScanBarcode': {
+      marginLeft: 12,
+      '& svg': {
+        marginRight: 8,
+      }
     },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
@@ -269,6 +278,9 @@ const useStyles = makeStyles((theme) => ({
       alignSelf: 'flex-end',
     }
   },
+  barcodeTextField: {
+    maxWidth: 328,
+  }
 }))
 
 export default useStyles
