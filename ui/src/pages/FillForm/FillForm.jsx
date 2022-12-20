@@ -199,58 +199,6 @@ const FillForm = () => {
                     setFormObject={setFormObject}
                   />
                 ))}
-
-                {/* INTEGER */}
-                <InputForm
-                  item={{
-                    type: 'integer',
-                    label: 'Integer',
-                  }}
-                  handleInputChange={handleInputChange}
-                  formObject={formObject}
-                  formObjectError={formObjectError}
-                  setFormObjectError={setFormObjectError}
-                  setFormObject={setFormObject}
-                />
-
-                {/* BOOLEAN */}
-                <InputForm
-                  item={{
-                    type: 'boolean',
-                    label: 'Boolean',
-                  }}
-                  handleInputChange={handleInputChange}
-                  formObject={formObject}
-                  formObjectError={formObjectError}
-                  setFormObjectError={setFormObjectError}
-                  setFormObject={setFormObject}
-                />
-
-                {/* TIME */}
-                <InputForm
-                  item={{
-                    type: 'time',
-                    label: 'Waktu',
-                  }}
-                  handleInputChange={handleInputChange}
-                  formObject={formObject}
-                  formObjectError={formObjectError}
-                  setFormObjectError={setFormObjectError}
-                  setFormObject={setFormObject}
-                />
-
-                {/* TIME */}
-                <InputForm
-                  item={{
-                    type: 'barcode',
-                    label: 'Scan Barcode & QR',
-                  }}
-                  handleInputChange={handleInputChange}
-                  formObject={formObject}
-                  formObjectError={formObjectError}
-                  setFormObjectError={setFormObjectError}
-                  setFormObject={setFormObject}
-                />
               </Stack>
 
               <Stack>
