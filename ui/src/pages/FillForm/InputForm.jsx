@@ -904,14 +904,14 @@ const InputForm = (props) => {
           onChange={(event) => handleInputChange(
             item.id, item.type,
             getKeyValue(item.type),
-            Number(event.target.value)
+            event.target.value === 'yes'
           )}
           required={item.required}
           error={Boolean(formObjectError?.[item.id])}
         >
           <RadioGroup className={classes.booleanGroup}>
             <FormControlLabel
-              value={'yes'}
+              value='yes'
               control={<Radio size='small'/>}
               label={(
                 <Typography variant='caption' className='displayBlock'>Yes</Typography>
@@ -919,7 +919,7 @@ const InputForm = (props) => {
             />
 
             <FormControlLabel
-              value={'no'}
+              value='no'
               control={<Radio size='small'/>}
               label={(
                 <Typography variant='caption' className='displayBlock'>No</Typography>
