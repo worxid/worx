@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 // COMPONENTS
 import DialogCamera from './DialogCamera/DialogCamera'
 import DialogForm from 'components/DialogForm/DialogForm'
+import DialogScanQrBarcode from './DialogScanQrBarcode/DialogScanQrBarcode'
 
 // CONTEXT
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -14,6 +15,7 @@ import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObjec
 
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
+import { Html5Qrcode } from 'html5-qrcode'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -50,6 +52,7 @@ import IconCreate from '@mui/icons-material/Create'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+import IconInsertPhoto from '@mui/icons-material/InsertPhoto'
 import IconStar from '@mui/icons-material/Star'
 import IconAccessTimeFilled from '@mui/icons-material/AccessTimeFilled'
 
@@ -363,6 +366,30 @@ const InputForm = (props) => {
     handleInputChange(fieldId, fieldType, getKeyValue(fieldType), remove.length > 0 ? remove : null)
   }
 
+  // HANDLE CANCEL DIALOG
+  const handleDialogForm = (inputSelect, inputOpen) => {
+    setSelectedDialog(inputSelect)
+    setIsDialogFormOpen(inputOpen)
+  }
+
+  // HANDLE SCAN IMAGE
+  const handleScanImage = async (event, fieldId, fieldType) => {
+    const images = event.target.files || []
+    if(images.length <= 0) return
+
+    const html5QrCode = new Html5Qrcode('fake-canvas-qr-scan')
+    html5QrCode.scanFile(images[0], true)
+      .then(decodeText => {
+        handleInputChange(fieldId, fieldType, getKeyValue(fieldType), decodeText)
+        handleDialogForm(null, false)
+      })
+      .catch(error => {
+        //console.log({ error })
+      })
+
+    html5QrCode.clear()
+  }
+
   return (
     <Stack
       sx={{
@@ -627,12 +654,9 @@ const InputForm = (props) => {
         >
           {selectedDialog === item.id && (
             <DialogCamera
-              handleCancel={() => {
-                setSelectedDialog('')
-                setIsDialogFormOpen(false)
-              }}
+              handleCancel={() => handleDialogForm('', false)}
               handleUsePhoto={(result) => handleCamera(item.id, item.type, result)}
-              handleBackdropClick={() => setSelectedDialog('')}
+              handleBackdropClick={() => handleDialogForm('', false)}
             />
           )}
 
@@ -796,7 +820,7 @@ const InputForm = (props) => {
               handleActionButtonClick={(inputType) => {
                 handleSignatureActionButtonClick(inputType, item.id, item.type)
               }}
-              onBackdropClick={() => setSelectedDialog('')}
+              onBackdropClick={() => handleDialogForm('', false)}
               areActionsAvailable={breakpointType !== 'xs' ? true : false}
             >
               <Stack className={classes.dialogSignatureContent} height='100%'>
@@ -859,10 +883,7 @@ const InputForm = (props) => {
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}
-              onClick={() => {
-                setSelectedDialog(item.id)
-                setIsDialogFormOpen('dialogSignature')
-              }}
+              onClick={() => handleDialogForm(item.id, 'dialogSignature')}
             >
               Add Signature
             </Button>)}
@@ -980,6 +1001,66 @@ const InputForm = (props) => {
           </FormControl>
         </LocalizationProvider>
       )}
+
+      {/* BARCODE */}
+      {item.type === 'barcode' && (
+        <FormControl
+          fullWidth
+          className={`${classes.formControl} no-max-width`}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
+          <Box id='fake-canvas-qr-scan' sx={{display: 'none'}}/>
+          <Stack direction='row' alignItems='center'>
+            <TextField
+              value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
+              label='Answer'
+              variant='filled'
+              size='small'
+              fullWidth
+              className={`heightFitContent ${classes.barcodeTextField}`}
+            />
+
+            <IconButton
+              size='large'
+              className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
+              onClick={() => handleDialogForm(item.id, 'dialogScanQrBarcode')}
+            >
+              <IconCameraAlt fontSize='small' /> Camera
+            </IconButton>
+
+            <IconButton
+              size='large'
+              className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
+              component='label'
+            >
+              <IconInsertPhoto fontSize='small' /> Upload Image
+              <input
+                hidden
+                accept='image/png,image/jpeg'
+                type='file'
+                onChange={(event) => handleScanImage(event, item.id, item.type)}
+              />
+            </IconButton>
+          </Stack>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
+
+          {selectedDialog === item.id && <DialogScanQrBarcode
+            handleBackdropClick={() => handleDialogForm('', false)}
+            handleCancel={() => handleDialogForm('', false)}
+            handleSuccess={(decode, result) => {
+              handleInputChange(item.id, item.type, getKeyValue(item.type), decode)
+              handleDialogForm(null, false)
+            }}
+          />}
+        </FormControl>
+      )}
+
 
       <Divider className={classes.dividerFormControl}/>
     </Stack>
