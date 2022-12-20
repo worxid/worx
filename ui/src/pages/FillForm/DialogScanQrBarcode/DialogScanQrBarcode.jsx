@@ -1,30 +1,83 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
+
+// LIBRARY
+import UAParser from 'ua-parser-js'
+import { Html5Qrcode } from 'html5-qrcode'
 
 // MUIS
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
-import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-
-// MUI ICONS
-import IconCameraAlt from '@mui/icons-material/CameraAlt'
-import IconCameraswitch from '@mui/icons-material/Cameraswitch'
-import IconCheck from '@mui/icons-material/Check'
-import IconFlashOn from '@mui/icons-material/FlashOn'
-import IconFlashOff from '@mui/icons-material/FlashOff'
-import IconReplay from '@mui/icons-material/Replay'
 
 // STYLES
 import useStyles from './dialogScanQrBarcodeUseStyles'
 
+const qrcodeRegionId = 'worx-cam-scan-id'
+
 const DialogScanQrBarcode = (props) => {
-  const { handleBackdropClick } = props
+  const { handleSuccess, handleCancel, handleBackdropClick } = props
+
+  const uaParserRef = useRef(new UAParser())
+  const scanCamRef = useRef()
+  const currentCameraRef = useRef()
 
   const classes = useStyles()
+
+  // STATES
+  const [isMounted, setIsMounted] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // DEVICE DETECTION
+  const detectDeviceType = () => {
+    const currentOs = uaParserRef.current.getResult().os.name
+    // IS DEKSTOP
+    if(currentOs === 'Windows' || currentOs === 'Mac OS') return true
+    else return false
+  }
+
+  const setupScanCamera = async () => {
+    scanCamRef.current = new Html5Qrcode(qrcodeRegionId, false)
+    const listCamera = await Html5Qrcode.getCameras()
+    currentCameraRef.current = listCamera[0]
+
+    await scanCamRef.current.start(
+      currentCameraRef.current.id,
+      {
+        fps: 20,
+        aspectRatio: 1.0
+      },
+      handleSuccess,
+      (errorMessage) => {
+        //console.log({ errorMessage })
+      }
+    )
+
+    setIsLoading(false)
+  }
+
+  const clearCam = async () => {
+    await scanCamRef.current?.stop()
+    await scanCamRef.current?.clear()
+  }
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if(isMounted) {
+      setupScanCamera()
+    }
+
+    // CLEAR HTML5 QRCODE WHEN UNMOUNT COMPONENT
+    return () => {
+      clearCam()
+    }
+  }, [isMounted])
 
   return (
     <DialogForm
@@ -33,7 +86,36 @@ const DialogScanQrBarcode = (props) => {
       areActionsAvailable={false}
       onBackdropClick={handleBackdropClick}
     >
+      <Stack width='100%' height='100%' alignItems='center'>
+        <Stack justifyContent='center' alignItems='center' width='100%' flex={1} className={classes.scanCamWrapper}>
+          <Box
+            className={`${classes.scanCam} no-zoom`}
+            id={qrcodeRegionId}
+          />
 
+          {isLoading && <Box className={classes.loadingWrapper}>
+            <CircularProgress />
+          </Box>}
+        </Stack>
+
+        {/* ACTION TAKE CAMERA */}
+        <Stack
+          width='100%'
+          flex={0}
+          className={`${classes.actionWrapper} ${!detectDeviceType() && 'mobile'}`}
+          alignItems='center'
+          justifyContent='center'
+        >
+          <Button
+            className={classes.buttonCancel}
+            variant='text'
+            disableRipple
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </Stack>
     </DialogForm>
   )
 }
