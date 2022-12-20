@@ -946,7 +946,7 @@ const InputForm = (props) => {
           >
             <Stack direction='row' alignItems='center'>
               <TextField
-                value={formObject[item.id]?.[getKeyValue(item.type)] ? new Date(formObject[item.id][getKeyValue(item.type)] || Date.now()).toLocaleDateString('ID') : ''}
+                value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
                 label='Answer'
                 variant='filled'
                 size='small'
@@ -985,10 +985,10 @@ const InputForm = (props) => {
             <MobileTimePicker
               label='For mobile'
               renderInput={(params) => <></>}
-              //onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'yyyy-MM-dd'))}
+              onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
               onClose={() => setIsTimePickerOpen(false)}
               open={isTimePickerOpen}
-              value={formObject[item.id]?.[getKeyValue(item.type)]}
+              value={new Date(`2022-01-01 ${formObject[item.id]?.[getKeyValue(item.type)] || '00:00:00'}`).toISOString()}
               componentsProps={{
                 actionBar: { className: classes.actionClock },
               }}

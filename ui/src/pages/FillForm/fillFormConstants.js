@@ -4,7 +4,8 @@ export const anyFormatFile = ['csv', 'doc', 'pdf', 'xls']
 export const anyFormatImage = ['jpg', 'jpeg', 'png']
 
 export const getKeyValue = (type) => {
-  if(type === 'text' || type === 'date' || type === 'rating' || type === 'signature' || type === 'barcode') return 'value'
+  if(type === 'text' || type === 'date' || type === 'rating'
+    || type === 'signature' || type === 'barcode' || type === 'time') return 'value'
   else if (type === 'checkbox_group') return  'values'
   else if (type === 'radio_group' || type === 'dropdown') return 'value_index'
   else if (type === 'file' || type === 'photo') return  'values'
@@ -134,6 +135,6 @@ export const scanQrCodeType = (accept1D = true, accept2D = true) => {
   if(accept2D) {
     typeArr = [...d2CodeType]
   }
-  
+
   return typeArr
 }
