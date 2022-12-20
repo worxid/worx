@@ -11,7 +11,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObject, formatBytes, formatFileValidation, getKeyValue, sizeFileValidation } from './fillFormConstants'
+import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObject, formatBytes, formatFileValidation, getKeyValue, scanQrCodeType, sizeFileValidation } from './fillFormConstants'
 
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
@@ -373,18 +373,26 @@ const InputForm = (props) => {
   }
 
   // HANDLE SCAN IMAGE
-  const handleScanImage = async (event, fieldId, fieldType) => {
+  const handleScanImage = async (event, fieldId, fieldType, isOnlyD1Type) => {
     const images = event.target.files || []
     if(images.length <= 0) return
 
-    const html5QrCode = new Html5Qrcode('fake-canvas-qr-scan')
+    const html5QrCode = new Html5Qrcode('fake-canvas-qr-scan', {
+      formatsToSupport: scanQrCodeType(true, isOnlyD1Type ? false : true),
+      verbose: false,
+    })
     html5QrCode.scanFile(images[0], true)
       .then(decodeText => {
         handleInputChange(fieldId, fieldType, getKeyValue(fieldType), decodeText)
         handleDialogForm(null, false)
       })
       .catch(error => {
-        //console.log({ error })
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: '',
+          message: 'Please upload a clear image or type format is not supported yet',
+        })
       })
 
     html5QrCode.clear()
@@ -1039,7 +1047,7 @@ const InputForm = (props) => {
                 hidden
                 accept='image/png,image/jpeg'
                 type='file'
-                onChange={(event) => handleScanImage(event, item.id, item.type)}
+                onChange={(event) => handleScanImage(event, item.id, item.type, item.barcode_type === '1d')}
               />
             </IconButton>)}
           </Stack>

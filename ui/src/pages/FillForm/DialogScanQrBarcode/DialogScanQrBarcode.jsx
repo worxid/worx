@@ -1,7 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 
 // COMPONENTS
 import DialogForm from 'components/DialogForm/DialogForm'
+
+// CONSTANTS
+import { scanQrCodeType } from '../fillFormConstants'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // LIBRARY
 import UAParser from 'ua-parser-js'
@@ -15,7 +21,6 @@ import Stack from '@mui/material/Stack'
 
 // STYLES
 import useStyles from './dialogScanQrBarcodeUseStyles'
-import { scanQrCodeType } from '../fillFormConstants'
 
 const qrcodeRegionId = 'worx-cam-scan-id'
 
@@ -25,6 +30,7 @@ const DialogScanQrBarcode = (props) => {
   const uaParserRef = useRef(new UAParser())
   const scanCamRef = useRef()
   const currentCameraRef = useRef()
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const classes = useStyles()
 
@@ -41,8 +47,6 @@ const DialogScanQrBarcode = (props) => {
   }
 
   const setupScanCamera = async () => {
-    console.log(scanQrCodeType(true, isOnlyD1Type ? false : true))
-    console.log({ isOnlyD1Type })
     scanCamRef.current = new Html5Qrcode(qrcodeRegionId, {
       formatsToSupport: scanQrCodeType(true, isOnlyD1Type ? false : true),
       verbose: false,
@@ -58,7 +62,12 @@ const DialogScanQrBarcode = (props) => {
       },
       handleSuccess,
       (errorMessage) => {
-        //console.log({ errorMessage })
+        setSnackbarObject({
+          open: true,
+          severity:'info',
+          title: '',
+          message: 'Bring the code closer to the camera or type format is not supported yet',
+        })
       }
     )
 

@@ -129,11 +129,11 @@ export const d2CodeType = [
 export const scanQrCodeType = (accept1D = true, accept2D = true) => {
   let typeArr = []
   if(accept1D) {
-    typeArr = [...d1CodeType]
+    typeArr = [...typeArr, ...d1CodeType]
   }
 
   if(accept2D) {
-    typeArr = [...d2CodeType]
+    typeArr = [...typeArr, ...d2CodeType]
   }
 
   return typeArr
