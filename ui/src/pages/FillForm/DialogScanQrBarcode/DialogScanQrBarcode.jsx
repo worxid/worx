@@ -15,11 +15,12 @@ import Stack from '@mui/material/Stack'
 
 // STYLES
 import useStyles from './dialogScanQrBarcodeUseStyles'
+import { scanQrCodeType } from '../fillFormConstants'
 
 const qrcodeRegionId = 'worx-cam-scan-id'
 
 const DialogScanQrBarcode = (props) => {
-  const { handleSuccess, handleCancel, handleBackdropClick } = props
+  const { isOnlyD1Type, handleSuccess, handleCancel, handleBackdropClick } = props
 
   const uaParserRef = useRef(new UAParser())
   const scanCamRef = useRef()
@@ -40,7 +41,12 @@ const DialogScanQrBarcode = (props) => {
   }
 
   const setupScanCamera = async () => {
-    scanCamRef.current = new Html5Qrcode(qrcodeRegionId, false)
+    console.log(scanQrCodeType(true, isOnlyD1Type ? false : true))
+    console.log({ isOnlyD1Type })
+    scanCamRef.current = new Html5Qrcode(qrcodeRegionId, {
+      formatsToSupport: scanQrCodeType(true, isOnlyD1Type ? false : true),
+      verbose: false,
+    })
     const listCamera = await Html5Qrcode.getCameras()
     currentCameraRef.current = listCamera[0]
 
@@ -89,7 +95,7 @@ const DialogScanQrBarcode = (props) => {
       <Stack width='100%' height='100%' alignItems='center'>
         <Stack justifyContent='center' alignItems='center' width='100%' flex={1} className={classes.scanCamWrapper}>
           <Box
-            className={`${classes.scanCam} no-zoom`}
+            className={classes.scanCam}
             id={qrcodeRegionId}
           />
 

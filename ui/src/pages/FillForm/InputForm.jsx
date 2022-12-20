@@ -1029,7 +1029,7 @@ const InputForm = (props) => {
               <IconCameraAlt fontSize='small' /> Camera
             </IconButton>
 
-            <IconButton
+            {item.allow_manual_override && (<IconButton
               size='large'
               className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
               component='label'
@@ -1041,7 +1041,7 @@ const InputForm = (props) => {
                 type='file'
                 onChange={(event) => handleScanImage(event, item.id, item.type)}
               />
-            </IconButton>
+            </IconButton>)}
           </Stack>
 
           {formObjectError?.[item.id] && (
@@ -1057,6 +1057,7 @@ const InputForm = (props) => {
               handleInputChange(item.id, item.type, getKeyValue(item.type), decode)
               handleDialogForm(null, false)
             }}
+            isOnlyD1Type={item.barcode_type === '1d'}
           />}
         </FormControl>
       )}
