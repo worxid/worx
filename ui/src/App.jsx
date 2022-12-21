@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useContext } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
 // ASSETS
 import LogoProductLogoOnly from 'assets/images/logos/product-logo-only.svg'
@@ -19,8 +19,13 @@ import routes from 'routes/routes'
 // SERVICES
 import { getRootMetaData } from 'services/strapi/root'
 
+// UTILITIES
+import { updateMetaData } from 'utilities/dom'
+
 const App = () => {
   const { snackbarObject, setSnackbarObject } = useContext(AllPagesContext)
+
+  const location = useLocation()
 
   const getRouteComponent = (inputItem) => {
     if (inputItem.routeType === 'authentication') {
@@ -55,10 +60,16 @@ const App = () => {
     }
   }
 
-  // CHANGE THE FAVICON
   useEffect(() => {
     const faviconElement = document.getElementById('favicon')
     faviconElement.href = LogoProductLogoOnly
+
+    if (location.pathname !== '/sign-up' || location.pathname !== '/sign-in') {
+      updateMetaData({
+        title: 'Worx',
+        description: 'Worx',
+      })
+    }
   }, [])
 
   useEffect(() => {

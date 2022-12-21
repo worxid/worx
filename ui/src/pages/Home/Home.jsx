@@ -25,6 +25,7 @@ import useStyles from './homeUseStyles'
 
 // UTILITIES
 import { getLast30Days } from 'utilities/date'
+import { updateMetaData } from 'utilities/dom'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
@@ -98,6 +99,11 @@ const Home = () => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
+    updateMetaData({
+      title: 'Worx',
+      description: 'Worx',
+    })
 
     fetchDeviceList(abortController.signal, isMounted)
     fetchFormList(abortController.signal, isMounted)
