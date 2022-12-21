@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiInputBase-input': {
       fontSize: 12,
+    },
+    '&.no-max-width': {
+      maxWidth: '100%'
     }
   },
   dividerFormControl: {
@@ -90,6 +93,16 @@ const useStyles = makeStyles((theme) => ({
     '&.buttonAddFile': {
       maxWidth: 100,
     },
+    '&.buttonScanBarcode': {
+      marginLeft: 12,
+      '& svg': {
+        marginRight: 8,
+      }
+    },
+    '&.buttonAddSketch': {
+      maxWidth: 120,
+      height: 44,
+    },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
       boxShadow: 'none'
@@ -103,6 +116,11 @@ const useStyles = makeStyles((theme) => ({
   signatureCanvas: {
     border: `2px solid ${theme.palette.common.black}`,
     height: 200,
+  },
+  canvasSketchImage: {
+    border: `2px solid ${theme.palette.common.black}`,
+    height: 200,
+    width: '100%'
   },
   dialogSignature: {
     '& .MuiPaper-root': {
@@ -230,6 +248,64 @@ const useStyles = makeStyles((theme) => ({
   iconSuccessUpload: {
     fontSize: 14,
     marginLeft: 4,
+  },
+  booleanGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    '& .MuiFormControlLabel-root': {
+      marginRight: 28,
+    }
+  },
+  actionClock: {
+    '& .MuiButton-root': {
+      boxShadow: 'unset',
+      border: 'none',
+      padding: 0,
+    },
+    '& .MuiTimePickerToolbar-root': {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      '& .MuiTypography-root': {
+        color: theme.palette.common.white,
+      },
+      '& .PrivatePickersToolbarText-root': {
+        color: alpha(theme.palette.common.white, 0.54),
+        '&.Mui-selected': {
+          color: theme.palette.common.white,
+        }
+      }
+    },
+    '& .MuiPickersToolbar-content': {
+      alignItems: 'center',
+    },
+    '& .MuiTimePickerToolbar-ampmSelection': {
+      '& .MuiButton-root': {
+        height: 'auto'
+      }
+    },
+    '& .MuiPickersToolbar-penIconButton': {
+      alignSelf: 'flex-end',
+    }
+  },
+  barcodeTextField: {
+    maxWidth: 328,
+  },
+  buttonDeleteSketch: {
+    position: 'absolute',
+    zIndex: 2,
+    top: -16,
+    right: -16,
+    color: theme.palette.action.active,
+    backgroundColor: theme.palette.common.white,
+    padding: 2,
+    '&:hover': {
+      backgroundColor: theme.palette.common.white,
+    }
+  },
+  timeControlWrapper: {
+    '& .MuiFormControl-root:last-child': {
+      display: 'none',
+    }
   }
 }))
 
