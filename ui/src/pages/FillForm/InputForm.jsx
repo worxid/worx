@@ -1005,6 +1005,7 @@ const InputForm = (props) => {
 
           <FormControl error={Boolean(formObjectError?.[item.id])}>
             <MobileTimePicker
+              orientation='potrait'
               label='For mobile'
               renderInput={(params) => <></>}
               onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
