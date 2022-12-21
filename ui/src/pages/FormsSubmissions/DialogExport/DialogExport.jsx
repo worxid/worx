@@ -30,6 +30,9 @@ import { postExportFormSubmission } from 'services/worx/formTemplate'
 // STYLES
 import useStyles from './dialogExportUseStyles'
 
+// UTILITIES
+import { downloadFileFromFileObject } from 'utilities/file'
+
 const DialogExport = (props) => {
   const { id, title } = props
   const axiosPrivate = useAxiosPrivate()
@@ -49,23 +52,21 @@ const DialogExport = (props) => {
     const abortController = new AbortController()
     setIsLoading(true)
 
-    // TO DO: CHANGE PROMISE THEN CATCH WITH ASYNC AWAIT
+    // TO-DO: CHANGE PROMISE THEN CATCH WITH ASYNC AWAIT
     if(fileFormat || fileFormat !== '') {
       postExportFormSubmission(abortController.signal, {
         templateId: id,
         option: fileFormat
       }, axiosPrivate)
         .then((response) => {
-          var a = document.createElement('a')
-          document.body.appendChild(a)
-          a.style = 'display: none'
-  
-          const blob = new Blob([response])
-          const url = window.URL.createObjectURL(blob)
-          a.href = url
-          a.download = `Form_Submissions${title ? `_${title}` : ''}.${fileFormat.toLowerCase()}`
-          a.click()
-          window.URL.revokeObjectURL(url)
+          let fileExtension
+          if (fileFormat === 'CSV') fileExtension = 'csv'
+          else if (fileFormat === 'EXCEL') fileExtension = 'xlsx'
+
+          downloadFileFromFileObject(
+            new Blob([response]),
+            `Form_Submissions${title ? `_${title}` : ''}.${fileFormat.toLowerCase()}.${fileExtension}`,
+          )
 
           setIsLoading(false)
           abortController.abort()

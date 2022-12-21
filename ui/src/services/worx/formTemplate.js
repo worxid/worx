@@ -121,8 +121,10 @@ export const postExportFormSubmission = async (inputSignal, inputParams, inputAx
   try {
     const { data } = await inputAxiosPrivate.post('/form/template/export',
       inputParams,
-      { signal: inputSignal },
-      {responseType: 'arraybuffer'}
+      { 
+        responseType: 'arraybuffer',
+        signal: inputSignal, 
+      },
     )
     return data
   } catch (error) {

@@ -34,7 +34,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
                 '& .MuiList-root': {
                   zoom: values.zoomValue, // zoom
                 },
-              }
+              },
             },
           },
         },
@@ -160,15 +160,16 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
     },
     '& .MuiDataGrid-footerContainer .MuiTablePagination-select': {
       zoom: values.zoomValue,
-      fontSize: 14,
+      fontSize: 12,
+      height: 22,
     },
     '& .MuiDataGrid-footerContainer .MuiSelect-nativeInput': {
       zoom: values.zoomValue,
     },
     '& .MuiDataGrid-footerContainer .MuiSvgIcon-root': {
       zoom: values.zoomValue,
-    }
-  }
+    },
+  },
 }))
 
 export default CustomDataGrid
