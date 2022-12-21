@@ -71,6 +71,14 @@ export const dataURLtoFileObject = (dataurl, filename) => {
   return new File([u8arr], filename, {type:mime})
 }
 
+// CONVERT IMAGE TO BASE64
+export const imageToBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => resolve(reader.result)
+  reader.onerror = error => reject(error)
+})
+
 // FORMAT FILE VALIDATION
 export const formatFileValidation = (fileObject, allowedExtensions = ['jpg', 'png', 'jpeg']) => {
   let isValid = false
