@@ -8,9 +8,6 @@ const useStyles = makeStyles((theme) => ({
   },
   canvas: {
     position: 'relative',
-    width: '100% !important',
-    maxWidth: 484,
-    height: '276px !important',
   },
   listActionButton: {
     marginTop: 32,

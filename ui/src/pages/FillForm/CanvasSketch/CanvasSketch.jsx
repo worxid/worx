@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 // LIBRARY
 import { ReactSketchCanvas } from 'react-sketch-canvas'
@@ -73,6 +73,10 @@ const CanvasSketch = (props) => {
     getResultCanvas(result)
   }
 
+  useEffect(() => {
+    canvasRef.current?.eraseMode(isEraseActive)
+  }, [isEraseActive])
+
   return (
     <Stack className={classes.root}>
       <Stack className='no-zoom' maxWidth='484px' position='relative'>
@@ -138,9 +142,7 @@ const CanvasSketch = (props) => {
             title='eraser'
             icon={<IconEditOff />}
             onClick={() => {
-              const modeOn = !isEraseActive
-              setIsEraseActive(!modeOn)
-              canvasRef.current?.eraseMode(modeOn)
+              setIsEraseActive(!isEraseActive)
             }}
           />
         </SpeedDial>)}
