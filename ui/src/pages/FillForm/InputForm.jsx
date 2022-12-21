@@ -960,68 +960,70 @@ const InputForm = (props) => {
       {/* TIME */}
       {item.type === 'time' && (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <FormControl
-            fullWidth
-            className={classes.formControl}
-            required={item.required}
-            error={Boolean(formObjectError?.[item.id])}
-          >
-            <Stack direction='row' alignItems='center'>
-              <TextField
-                value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
-                label='Answer'
-                variant='filled'
-                size='small'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
-                        <IconCancel
-                          fontSize='small'
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  )
+          <Stack className={classes.timeControlWrapper}>
+            <FormControl
+              fullWidth
+              className={classes.formControl}
+              required={item.required}
+              error={Boolean(formObjectError?.[item.id])}
+            >
+              <Stack direction='row' alignItems='center'>
+                <TextField
+                  value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
+                  label='Answer'
+                  variant='filled'
+                  size='small'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
+                          <IconCancel
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  className='heightFitContent'
+                  fullWidth
+                />
+
+                <IconButton
+                  size='large'
+                  className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}
+                  onClick={() => setIsTimePickerOpen(true)}
+                >
+                  <IconAccessTimeFilled fontSize='small'/>
+                </IconButton>
+              </Stack>
+
+              {formObjectError?.[item.id] && (
+                <FormHelperText variant='error' className={classes.formHelperText}>
+                  {formObjectError?.[item.id]}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            <FormControl error={Boolean(formObjectError?.[item.id])}>
+              <MobileTimePicker
+                orientation='potrait'
+                label='For mobile'
+                renderInput={(params) => <TextField {...params} />}
+                onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
+                onClose={() => setIsTimePickerOpen(false)}
+                open={isTimePickerOpen}
+                value={new Date(`2022-01-01 ${formObject[item.id]?.[getKeyValue(item.type)] || '00:00:00'}`).toISOString()}
+                componentsProps={{
+                  actionBar: { className: classes.actionClock },
                 }}
-                className='heightFitContent'
-                fullWidth
+                DialogProps={{
+                  PaperProps: {
+                    className: classes.actionClock
+                  }
+                }}
               />
-
-              <IconButton
-                size='large'
-                className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}
-                onClick={() => setIsTimePickerOpen(true)}
-              >
-                <IconAccessTimeFilled fontSize='small'/>
-              </IconButton>
-            </Stack>
-
-            {formObjectError?.[item.id] && (
-              <FormHelperText variant='error' className={classes.formHelperText}>
-                {formObjectError?.[item.id]}
-              </FormHelperText>
-            )}
-          </FormControl>
-
-          <FormControl error={Boolean(formObjectError?.[item.id])}>
-            <MobileTimePicker
-              orientation='potrait'
-              label='For mobile'
-              renderInput={(params) => <></>}
-              onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
-              onClose={() => setIsTimePickerOpen(false)}
-              open={isTimePickerOpen}
-              value={new Date(`2022-01-01 ${formObject[item.id]?.[getKeyValue(item.type)] || '00:00:00'}`).toISOString()}
-              componentsProps={{
-                actionBar: { className: classes.actionClock },
-              }}
-              DialogProps={{
-                PaperProps: {
-                  className: classes.actionClock
-                }
-              }}
-            />
-          </FormControl>
+            </FormControl>
+          </Stack>
         </LocalizationProvider>
       )}
 

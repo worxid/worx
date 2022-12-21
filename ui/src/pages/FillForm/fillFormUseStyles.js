@@ -301,6 +301,11 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.common.white,
     }
+  },
+  timeControlWrapper: {
+    '& .MuiFormControl-root:last-child': {
+      display: 'none',
+    }
   }
 }))
 
