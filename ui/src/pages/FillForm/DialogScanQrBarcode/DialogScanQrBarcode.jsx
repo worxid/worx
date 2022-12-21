@@ -61,14 +61,6 @@ const DialogScanQrBarcode = (props) => {
         aspectRatio: 1.0
       },
       handleSuccess,
-      (errorMessage) => {
-        setSnackbarObject({
-          open: true,
-          severity:'info',
-          title: '',
-          message: 'Bring the code closer to the camera or type format is not supported yet',
-        })
-      }
     )
 
     setIsLoading(false)
