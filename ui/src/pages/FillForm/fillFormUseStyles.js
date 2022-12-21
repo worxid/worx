@@ -99,6 +99,10 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 8,
       }
     },
+    '&.buttonAddSketch': {
+      maxWidth: 120,
+      height: 44,
+    },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
       boxShadow: 'none'
@@ -112,6 +116,11 @@ const useStyles = makeStyles((theme) => ({
   signatureCanvas: {
     border: `2px solid ${theme.palette.common.black}`,
     height: 200,
+  },
+  canvasSketchImage: {
+    border: `2px solid ${theme.palette.common.black}`,
+    height: 200,
+    width: '100%'
   },
   dialogSignature: {
     '& .MuiPaper-root': {
@@ -280,6 +289,18 @@ const useStyles = makeStyles((theme) => ({
   },
   barcodeTextField: {
     maxWidth: 328,
+  },
+  buttonDeleteSketch: {
+    position: 'absolute',
+    zIndex: 2,
+    top: -16,
+    right: -16,
+    color: theme.palette.action.active,
+    backgroundColor: theme.palette.common.white,
+    padding: 2,
+    '&:hover': {
+      backgroundColor: theme.palette.common.white,
+    }
   }
 }))
 

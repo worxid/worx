@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
+import CanvasSketch from './CanvasSketch/CanvasSketch'
 import DialogCamera from './DialogCamera/DialogCamera'
 import DialogForm from 'components/DialogForm/DialogForm'
 import DialogScanQrBarcode from './DialogScanQrBarcode/DialogScanQrBarcode'
@@ -45,6 +46,7 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconAttachFile from '@mui/icons-material/AttachFile'
+import IconBrush from '@mui/icons-material/Brush'
 import IconCameraAlt from '@mui/icons-material/CameraAlt'
 import IconCancel from '@mui/icons-material/Cancel'
 import IconCheckCircle from '@mui/icons-material/CheckCircle'
@@ -396,6 +398,18 @@ const InputForm = (props) => {
       })
 
     html5QrCode.clear()
+  }
+
+  // HANDLE SAVE SKETCH CANVAS
+  const handleSaveSketchCanvas =  async (fieldId, fieldType, result) => {
+    handleInputChange(item.id, item.type, 'isOpenSketch', false)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), result)
+  }
+
+  // HANDLE DELETE RESULT SKETCH
+  const handleDeleteSketchCanvas = (fieldId, fieldType) => {
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), null)
+    handleInputChange(fieldId, fieldType, 'file_id', null)
   }
 
   return (
@@ -1070,6 +1084,49 @@ const InputForm = (props) => {
         </FormControl>
       )}
 
+      {/* SKETCH */}
+      {item.type === 'sketch' && (
+        <>
+          <FormControl
+            className={`${classes.formControl} no-max-width`}
+            required={item.required}
+            error={Boolean(formObjectError?.[item.id])}
+          >
+            <Button
+              size='small'
+              className={`${classes.buttonRedPrimary} buttonAddSketch`}
+              startIcon={<IconBrush fontSize='small'/>}
+              onClick={() => handleInputChange(item.id, item.type, 'isOpenSketch', true)}
+            >
+              Add Sketch
+            </Button>
+
+            {(!formObject[item.id]?.[getKeyValue(item.type)]
+            && formObject[item.id]?.isOpenSketch) && (
+              <CanvasSketch
+                getResultCanvas={(result) => handleSaveSketchCanvas(item.id, item.type, result)}
+              />
+            )}
+
+            {formObject[item.id]?.[getKeyValue(item.type)] && (
+              <Stack direction='row' maxWidth={'328px'} position='relative' marginTop='32px'>
+                <Box
+                  component='img'
+                  className={classes.canvasSketchImage}
+                  src={formObject[item.id]?.[getKeyValue(item.type)]}
+                />
+
+                <IconButton
+                  className={`${classes.buttonDeleteSketch} heightFitContent`}
+                  onClick={() => handleDeleteSketchCanvas(item.id, item.type)}
+                >
+                  <IconCancel fontSize='large'/>
+                </IconButton>
+              </Stack>
+            )}
+          </FormControl>
+        </>
+      )}
 
       <Divider className={classes.dividerFormControl}/>
     </Stack>
