@@ -95,8 +95,15 @@ const useStyles = makeStyles((theme) => ({
     },
     '&.buttonScanBarcode': {
       marginLeft: 12,
+      padding: '12px 8px',
       '& svg': {
         marginRight: 8,
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: '12px 16px',
+        '& svg': {
+          marginRight: 0,
+        }
       }
     },
     '&.buttonAddSketch': {

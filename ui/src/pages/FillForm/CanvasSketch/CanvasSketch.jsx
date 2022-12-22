@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
 
+// CONSTANTS
+import { imageToBase64 } from '../fillFormConstants'
+
 // LIBRARY
 import { ReactSketchCanvas } from 'react-sketch-canvas'
 
 // MUIS
 import { alpha } from '@mui/material/styles'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import SpeedDial from '@mui/material/SpeedDial'
 import SpeedDialAction from '@mui/material/SpeedDialAction'
 import Stack from '@mui/material/Stack'
@@ -23,10 +27,9 @@ import IconRedo from '@mui/icons-material/Redo'
 
 // STYLES
 import useStyles from './canvasSketchUseStyles'
-import { imageToBase64 } from '../fillFormConstants'
 
 const CanvasSketch = (props) => {
-  const { getResultCanvas } = props
+  const { fieldId, getResultCanvas, isOnMediumLargeScreen } = props
   const classes = useStyles()
   const initColor = [
     {
@@ -63,7 +66,7 @@ const CanvasSketch = (props) => {
 
   // HANDLE CANVAS IMAGE
   const handleCanvasImage = async (event) => {
-    const image = await imageToBase64(event.target.files[0])
+    const image = await imageToBase64(event.target.files[event.target.files.length-1])
     setBackgroundImage(image)
   }
 
@@ -79,7 +82,7 @@ const CanvasSketch = (props) => {
 
   return (
     <Stack className={classes.root}>
-      <Stack className='no-zoom' maxWidth='484px' position='relative'>
+      <Stack className='no-zoom' maxWidth='484px' height='278px' position='relative'>
         <Button
           className={classes.buttonSave}
           onClick={() => convertCanvasToImage()}
@@ -87,6 +90,7 @@ const CanvasSketch = (props) => {
 
         <ReactSketchCanvas
           className={classes.canvas}
+          id={fieldId}
           strokeWidth={strokeWidth}
           strokeColor={strokeColor}
           eraserWidth={strokeWidth}
@@ -100,7 +104,7 @@ const CanvasSketch = (props) => {
           ariaLabel='choose color'
           hidden={true}
           open={true}
-          className={`${classes.speedDial} zoom`}
+          className={classes.speedDial}
           direction='up'
         >
           {initColor && initColor.map((item, index) => (
@@ -114,6 +118,7 @@ const CanvasSketch = (props) => {
               }}
               title={item.text}
               onClick={() => setStrokeColor(item.color)}
+              tooltipPlacement='right'
             />
           ))}
         </SpeedDial>)}
@@ -123,19 +128,21 @@ const CanvasSketch = (props) => {
           ariaLabel='choose stroke'
           hidden={true}
           open={true}
-          className={`${classes.speedDial} zoom`}
+          className={classes.speedDial}
           direction='up'
         >
           <SpeedDialAction
             title='regular'
             icon={<IconDriveFileRenameOutline />}
             onClick={() => setStrokeWidth(4)}
+            tooltipPlacement='right'
           />
 
           <SpeedDialAction
             title='bold'
             icon={<IconBorderColor />}
             onClick={() => setStrokeWidth(8)}
+            tooltipPlacement='right'
           />
 
           <SpeedDialAction
@@ -144,6 +151,7 @@ const CanvasSketch = (props) => {
             onClick={() => {
               setIsEraseActive(!isEraseActive)
             }}
+            tooltipPlacement='right'
           />
         </SpeedDial>)}
 
@@ -152,62 +160,62 @@ const CanvasSketch = (props) => {
           ariaLabel='canvas tool'
           hidden={true}
           open={true}
-          className={`${classes.speedDial} canvasTool zoom`}
+          className={`${classes.speedDial} canvasTool`}
           direction='up'
         >
           <SpeedDialAction
             title='undo'
             icon={<IconUndo />}
             onClick={() => canvasRef.current.undo()}
+            tooltipPlacement='right'
           />
 
           <SpeedDialAction
             title='redo'
             icon={<IconRedo />}
             onClick={() => canvasRef.current.redo()}
+            tooltipPlacement='right'
           />
 
           <SpeedDialAction
             title='clear'
             icon={<IconDeleteOutline />}
             onClick={() => canvasRef.current.clearCanvas()}
+            tooltipPlacement='right'
           />
         </SpeedDial>
       </Stack>
 
       <Stack direction='row' alignItems='center' className={classes.listActionButton}>
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonColor`}
-          startIcon={<IconPalette fontSize='small'/>}
           onClick={() => setIsDialogOpen(current => current === 'dialogColor' ? '' : 'dialogColor')}
         >
-          Select Color
-        </Button>
+          <IconPalette fontSize='small'/>{isOnMediumLargeScreen() && ' Select Color'}
+        </IconButton>
 
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonStroke`}
-          startIcon={<IconEdit fontSize='small'/>}
           onClick={() => setIsDialogOpen(current => current === 'dialogStroke' ? '' : 'dialogStroke')}
         >
-          Select Stroke
-        </Button>
+          <IconEdit fontSize='small'/>{isOnMediumLargeScreen() && ' Select Stroke'}
+        </IconButton>
 
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonAddImage`}
-          startIcon={<IconCameraAlt fontSize='small'/>}
           component='label'
         >
-          Add Image
+          <IconCameraAlt fontSize='small'/>{isOnMediumLargeScreen() && ' Add Image'}
           <input
             hidden
             accept='image/png,image/jpeg'
             type='file'
             onChange={(event) => handleCanvasImage(event)}
           />
-        </Button>
+        </IconButton>
       </Stack>
     </Stack>
   )
