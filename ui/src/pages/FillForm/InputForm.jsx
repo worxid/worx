@@ -412,6 +412,12 @@ const InputForm = (props) => {
     handleInputChange(fieldId, fieldType, 'file_id', null)
   }
 
+  // CHECK IS ON MEDIUM LARGE SCREEN
+  const isOnMediumLargeScreen = () => {
+    if(breakpointType === 'sm' || breakpointType === 'md' || breakpointType === 'lg' || breakpointType === 'xl') return true
+    else return false
+  }
+
   return (
     <Stack
       sx={{
@@ -1051,7 +1057,7 @@ const InputForm = (props) => {
               className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
               onClick={() => handleDialogForm(item.id, 'dialogScanQrBarcode')}
             >
-              <IconCameraAlt fontSize='small' /> Camera
+              <IconCameraAlt fontSize='small' />{isOnMediumLargeScreen() && ' Camera'}
             </IconButton>
 
             {item.allow_manual_override && (<IconButton
@@ -1059,7 +1065,7 @@ const InputForm = (props) => {
               className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
               component='label'
             >
-              <IconInsertPhoto fontSize='small' /> Upload Image
+              <IconInsertPhoto fontSize='small' />{isOnMediumLargeScreen() && ' Upload Image'}
               <input
                 hidden
                 accept='image/png,image/jpeg'
@@ -1108,6 +1114,7 @@ const InputForm = (props) => {
             && formObject[item.id]?.isOpenSketch) && (
               <CanvasSketch
                 getResultCanvas={(result) => handleSaveSketchCanvas(item.id, item.type, result)}
+                isOnMediumLargeScreen={isOnMediumLargeScreen}
               />
             )}
 

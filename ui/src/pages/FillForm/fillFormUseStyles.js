@@ -97,6 +97,11 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 12,
       '& svg': {
         marginRight: 8,
+      },
+      [theme.breakpoints.down('sm')]: {
+        '& svg': {
+          marginRight: 0,
+        }
       }
     },
     '&.buttonAddSketch': {
