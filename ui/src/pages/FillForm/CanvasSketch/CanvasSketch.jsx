@@ -9,6 +9,7 @@ import { ReactSketchCanvas } from 'react-sketch-canvas'
 // MUIS
 import { alpha } from '@mui/material/styles'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import SpeedDial from '@mui/material/SpeedDial'
 import SpeedDialAction from '@mui/material/SpeedDialAction'
 import Stack from '@mui/material/Stack'
@@ -28,7 +29,7 @@ import IconRedo from '@mui/icons-material/Redo'
 import useStyles from './canvasSketchUseStyles'
 
 const CanvasSketch = (props) => {
-  const { getResultCanvas } = props
+  const { getResultCanvas, isOnMediumLargeScreen } = props
   const classes = useStyles()
   const initColor = [
     {
@@ -185,38 +186,35 @@ const CanvasSketch = (props) => {
       </Stack>
 
       <Stack direction='row' alignItems='center' className={classes.listActionButton}>
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonColor`}
-          startIcon={<IconPalette fontSize='small'/>}
           onClick={() => setIsDialogOpen(current => current === 'dialogColor' ? '' : 'dialogColor')}
         >
-          Select Color
-        </Button>
+          <IconPalette fontSize='small'/>{isOnMediumLargeScreen() && ' Select Color'}
+        </IconButton>
 
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonStroke`}
-          startIcon={<IconEdit fontSize='small'/>}
           onClick={() => setIsDialogOpen(current => current === 'dialogStroke' ? '' : 'dialogStroke')}
         >
-          Select Stroke
-        </Button>
+          <IconEdit fontSize='small'/>{isOnMediumLargeScreen() && ' Select Stroke'}
+        </IconButton>
 
-        <Button
+        <IconButton
           size='small'
           className={`${classes.buttonRedPrimary} buttonAddImage`}
-          startIcon={<IconCameraAlt fontSize='small'/>}
           component='label'
         >
-          Add Image
+          <IconCameraAlt fontSize='small'/>{isOnMediumLargeScreen() && ' Add Image'}
           <input
             hidden
             accept='image/png,image/jpeg'
             type='file'
             onChange={(event) => handleCanvasImage(event)}
           />
-        </Button>
+        </IconButton>
       </Stack>
     </Stack>
   )

@@ -26,18 +26,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontWeight: 400,
     fontSize: 12,
-    width: '100%',
-    '&.buttonColor': {
-      height: 44,
-      maxWidth: 128,
+    height: 44,
+    '& svg': {
+      marginRight: 8,
     },
-    '&.buttonStroke': {
-      height: 44,
-      maxWidth: 132,
-    },
-    '&.buttonAddImage': {
-      height: 44,
-      maxWidth: 112,
+    [theme.breakpoints.down('sm')]: {
+      padding: '4px 16px',
+      '& svg': {
+        marginRight: 0,
+      }
     },
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.main, 0.1),
