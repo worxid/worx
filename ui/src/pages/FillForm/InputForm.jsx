@@ -1113,6 +1113,7 @@ const InputForm = (props) => {
             {(!formObject[item.id]?.[getKeyValue(item.type)]
             && formObject[item.id]?.isOpenSketch) && (
               <CanvasSketch
+                fieldId={item.id}
                 getResultCanvas={(result) => handleSaveSketchCanvas(item.id, item.type, result)}
                 isOnMediumLargeScreen={isOnMediumLargeScreen}
               />

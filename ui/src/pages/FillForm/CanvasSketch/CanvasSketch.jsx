@@ -29,7 +29,7 @@ import IconRedo from '@mui/icons-material/Redo'
 import useStyles from './canvasSketchUseStyles'
 
 const CanvasSketch = (props) => {
-  const { getResultCanvas, isOnMediumLargeScreen } = props
+  const { fieldId, getResultCanvas, isOnMediumLargeScreen } = props
   const classes = useStyles()
   const initColor = [
     {
@@ -66,7 +66,7 @@ const CanvasSketch = (props) => {
 
   // HANDLE CANVAS IMAGE
   const handleCanvasImage = async (event) => {
-    const image = await imageToBase64(event.target.files[0])
+    const image = await imageToBase64(event.target.files[event.target.files.length-1])
     setBackgroundImage(image)
   }
 
@@ -90,6 +90,7 @@ const CanvasSketch = (props) => {
 
         <ReactSketchCanvas
           className={classes.canvas}
+          id={fieldId}
           strokeWidth={strokeWidth}
           strokeColor={strokeColor}
           eraserWidth={strokeWidth}

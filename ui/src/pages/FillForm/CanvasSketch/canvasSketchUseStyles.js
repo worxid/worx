@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 400,
     fontSize: 12,
     height: 44,
+    padding: '4px 8px',
     '& svg': {
       marginRight: 8,
     },
