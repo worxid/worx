@@ -355,31 +355,11 @@ const FormsSubmissions = () => {
     ) {
       let valueList = inputParams?.value?.fileList
 
-      let columnIcon
-      if (inputParams?.value?.type === 'file') columnIcon = (
-        <IconInsertDriveFile 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'photo') columnIcon = (
-        <IconImage 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'signature') columnIcon = (
-        <IconGesture 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'sketch') columnIcon = (
-        <IconBrush 
-          color='primary'
-          fontSize='small'
-        />
-      )
+      let ColumnIcon
+      if (inputParams?.value?.type === 'file') ColumnIcon = IconInsertDriveFile
+      else if (inputParams?.value?.type === 'photo') ColumnIcon = IconImage
+      else if (inputParams?.value?.type === 'signature') ColumnIcon = IconGesture
+      else if (inputParams?.value?.type === 'sketch') ColumnIcon = IconBrush
       
       return (
         <Stack
@@ -396,7 +376,10 @@ const FormsSubmissions = () => {
               alignItems='center'
             >
               {/* ICON */}
-              {columnIcon}
+              <ColumnIcon 
+                color='primary'
+                fontSize='small'
+              />
 
               {/* TEXT */}
               <Typography 
