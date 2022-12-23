@@ -71,8 +71,10 @@ export const dataListComponents = [
   {
     id: uuid(),
     label: 'Yes/No',
+    description: '',
     type: 'boolean',
     duplicateFrom: null,
+    required: false,
   },
   {
     id: uuid(),
@@ -106,8 +108,10 @@ export const dataListComponents = [
   {
     id: uuid(),
     label: 'Time',
+    description: '',
     type: 'time',
     duplicateFrom: null,
+    required: false,
   },
   {
     id: uuid(),
@@ -128,8 +132,10 @@ export const dataListComponents = [
   {
     id: uuid(),
     label: 'Integer',
+    description: '',
     type: 'integer',
     duplicateFrom: null,
+    required: false,
   },
   {
     id: uuid(),
@@ -166,12 +172,15 @@ export const dataListComponents = [
   {
     id: uuid(),
     label: 'Sketch',
+    description: '',
     type: 'sketch',
     duplicateFrom: null,
+    required: false,
   },
   {
     id: uuid(),
     label: 'Barcode',
+    description: '',
     type: 'barcode',
     barcode_type: null, // '1d' if checked
     allow_manual_override: false,
@@ -234,4 +243,16 @@ export const initObjectForm = {
   description: 'Description',
   created: '',
   updated: '',
+}
+
+export const isNoRequiredProperties = (fieldType) => {
+  if(fieldType === 'integer' || fieldType === 'sketch' || fieldType === 'boolean' ||
+  fieldType === 'time') return true
+  else return false
+}
+
+export const isNoDescriptionProperties = (fieldType) => {
+  if(fieldType === 'integer' || fieldType === 'sketch' || fieldType === 'boolean' ||
+  fieldType === 'time' || fieldType === 'barcode') return true
+  else return false
 }

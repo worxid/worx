@@ -67,15 +67,6 @@ const FormsCreateOrEdit = () => {
       const addOtherKeyToFields = values.fields.map(item => {
         let tempItem = item
 
-        // REMOVE KEY FROM THESE FIELD TYPE
-        if(item.type === 'integer' || item.type === 'sketch' || item.type === 'boolean' ||
-         item.type === 'time' || item.type === 'barcode') {
-          removeMultipleKeyObject(
-            item.type === 'barcode' ? ['description'] : ['description', 'required'],
-            tempItem
-          )
-        }
-
         return {
           ...tempItem, duplicateFrom: null
         }
