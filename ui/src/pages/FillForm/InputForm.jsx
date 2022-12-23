@@ -402,8 +402,34 @@ const InputForm = (props) => {
 
   // HANDLE SAVE SKETCH CANVAS
   const handleSaveSketchCanvas =  async (fieldId, fieldType, result) => {
+    if(!result) return
+
     handleInputChange(item.id, item.type, 'isOpenSketch', false)
     handleInputChange(fieldId, fieldType, getKeyValue(fieldType), result)
+
+    const fileObject = dataURLtoFileObject(result, `sketch-${uuid()}.png`)
+
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: fileObject.name
+    }, fileObject)
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a sketch',
+      })
+      handleInputChange(fieldId, fieldType, 'file_id', response.data.value.fileId)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a sketch',
+      })
+    }
   }
 
   // HANDLE DELETE RESULT SKETCH
@@ -464,7 +490,12 @@ const InputForm = (props) => {
             variant='filled'
             size='small'
             className='heightFitContent'
-            onChange={(event) => handleInputChange(item.id, item.type, getKeyValue(item.type), event.target.value)}
+            onChange={(event) => handleInputChange(
+              item.id,
+              item.type,
+              getKeyValue(item.type),
+              item.type === 'integer' ? Number(event.target.value) : event.target.value
+            )}
             inputProps={{
               type: item.type === 'integer' ? 'number' : 'text'
             }}
