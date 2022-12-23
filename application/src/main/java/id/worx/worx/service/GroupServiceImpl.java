@@ -5,6 +5,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import id.worx.worx.entity.DeviceGroups;
+import id.worx.worx.entity.TemplateGroups;
+import id.worx.worx.repository.DeviceGroupsRepository;
+import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.repository.TemplateGroupsRepository;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +39,13 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
 
     private final AuthenticationContext authContext;
+
+    private final DeviceRepository deviceRepository;
+
+    private final DeviceGroupsRepository deviceGroupsRepository;
+    private final TemplateGroupsRepository templateGroupsRepository;
+
+
 
     @Override
     public List<Group> list() {
@@ -126,6 +139,35 @@ public class GroupServiceImpl implements GroupService {
                 authContext.getUsers().getId(),
                 globalCountSearch,
                 customPageable);
+    }
+
+    @Override
+    public Group updateDeviceAndForm(Long id, GroupUpdateRequest request) {
+
+     Group group = this.findByIdorElseThrowNotFound(id);
+
+     templateGroupsRepository.deleteByGroupId(id);
+     deviceGroupsRepository.deleteByGroupId(id);
+
+     group.setColor(request.getGorupColor());
+     group.setName(request.getGroupName());
+     groupRepository.save(group);
+
+     for(Long templateId:request.getTemplateId()){
+         TemplateGroups tmp = new TemplateGroups();
+         tmp.setGroupId(id);
+         tmp.setTemplateId(templateId);
+         templateGroupsRepository.save(tmp);
+     }
+
+     for(Long deviceId:request.getDeviceId()){
+         DeviceGroups deviceGroups = new DeviceGroups();
+         deviceGroups.setGroupId(id);
+         deviceGroups.setDeviceId(deviceId);
+         deviceGroupsRepository.save(deviceGroups);
+     }
+
+      return group;
     }
 
     private void delete(Group group) {

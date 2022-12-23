@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.web.model.request.GroupSearchRequest;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -110,4 +111,15 @@ public class GroupController implements SecuredRestController {
                 .body(BaseResponse.builder().build());
     }
 
+    @PutMapping("{id}/updateDeviceAndForm")
+    public ResponseEntity<BaseValueResponse<GroupDTO>> updateDeviceAndForm(@PathVariable("id") Long id,
+                                                              @RequestBody @Valid GroupUpdateRequest request) {
+        Group group = groupService.updateDeviceAndForm(id, request);
+        GroupDTO dto = groupService.toDTO(group);
+        BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
+            .value(dto)
+            .build();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
+    }
 }
