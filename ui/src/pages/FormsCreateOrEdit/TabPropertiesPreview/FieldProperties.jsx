@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 // CONSTANTS
-import { formatFiles, formatSizeImages } from '../formsCreateOrEditConstants'
+import { formatFiles, formatSizeImages, isNoDescriptionProperties, isNoRequiredProperties } from '../formsCreateOrEditConstants'
 
 // CONTEXT
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -206,7 +206,8 @@ const FieldProperties = () => {
           </FormControl>
 
           {/* DESCRIPTION */}
-          {isFieldOwnProperty(selectedFieldsId, 'description') && (
+          {(isFieldOwnProperty(selectedFieldsId, 'description')
+          && !isNoDescriptionProperties(selectedFieldsType)) && (
             <FormControl
               className={classes.formControl}
               label='description'
@@ -606,7 +607,8 @@ const FieldProperties = () => {
 
       {/* DEFAULT FIELD PROPERTIES */}
       {(selectedFieldsType && selectedFieldsType !== 'formHeader'
-        && selectedFieldsType !== 'separator' && isFieldOwnProperty(selectedFieldsId, 'required')) && (
+        && selectedFieldsType !== 'separator' && isFieldOwnProperty(selectedFieldsId, 'required')
+        && !isNoRequiredProperties(selectedFieldsType)) && (
         <FormGroup className={classes.formControl}>
           <FormControlLabel
             control={(<Checkbox
