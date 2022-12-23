@@ -241,7 +241,8 @@ const FormsSubmissions = () => {
     else if (
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
-      inputItem.type === 'signature'
+      inputItem.type === 'signature' ||
+      inputItem.type === 'barcode'
     ) return 280
     else if (inputItem.type === 'boolean') return 100
     else if (inputItem.type === 'time') return 120
@@ -274,7 +275,8 @@ const FormsSubmissions = () => {
       inputParams?.value?.type === 'date' ||
       inputParams?.value?.type === 'boolean' ||
       inputParams?.value?.type === 'time' ||
-      inputParams?.value?.type === 'integer'
+      inputParams?.value?.type === 'integer' ||
+      inputParams?.value?.type === 'barcode'
     ) {
       let selectedValue = inputParams?.value?.value
 
