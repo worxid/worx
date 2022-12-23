@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -7,6 +7,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
+import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -37,8 +38,12 @@ const Header = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
+
+  // STATES
+  const [isLoadingDownload, setIsLoadingDownload] = useState(false)
   
   const handleDownloadIconButtonClick = async () => {
+    setIsLoadingDownload(true)
     const abortController = new AbortController()
 
     const resultDownload = await postExportSubmissionDetail(
@@ -55,7 +60,9 @@ const Header = (props) => {
     }
     else if (!wasRequestCanceled(resultDownload?.status) && !wasAccessTokenExpired(resultDownload.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultDownload))
-    } 
+    }
+
+    setIsLoadingDownload(false)
   }
 
   return (
@@ -72,10 +79,12 @@ const Header = (props) => {
         {title}
       </Typography>
 
+      {isLoadingDownload && <CircularProgress color='primary' size={20} />}
+
       {/* BUTTON DOWNLOAD */}
-      <IconButton onClick={handleDownloadIconButtonClick}>
+      {!isLoadingDownload && (<IconButton onClick={handleDownloadIconButtonClick}>
         <IconDownload/>
-      </IconButton>
+      </IconButton>)}
     </Stack>
   )
 }
