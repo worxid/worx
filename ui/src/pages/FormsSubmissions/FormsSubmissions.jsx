@@ -31,6 +31,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconBrush from '@mui/icons-material/Brush'
 import IconGesture from '@mui/icons-material/Gesture'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
@@ -241,9 +242,12 @@ const FormsSubmissions = () => {
     else if (
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
-      inputItem.type === 'signature' ||
       inputItem.type === 'barcode'
     ) return 280
+    else if (
+      inputItem.type === 'signature' ||
+      inputItem.type === 'sketch'
+    ) return 240
     else if (inputItem.type === 'boolean') return 100
     else if (inputItem.type === 'time') return 120
     else return 150
@@ -346,7 +350,8 @@ const FormsSubmissions = () => {
     else if (
       inputParams?.value?.type === 'file' || 
       inputParams?.value?.type === 'photo' || 
-      inputParams?.value?.type === 'signature'
+      inputParams?.value?.type === 'signature' ||
+      inputParams?.value?.type === 'sketch'
     ) {
       let valueList = inputParams?.value?.fileList
 
@@ -365,6 +370,12 @@ const FormsSubmissions = () => {
       )
       else if (inputParams?.value?.type === 'signature') columnIcon = (
         <IconGesture 
+          color='primary'
+          fontSize='small'
+        />
+      )
+      else if (inputParams?.value?.type === 'sketch') columnIcon = (
+        <IconBrush 
           color='primary'
           fontSize='small'
         />
@@ -451,7 +462,7 @@ const FormsSubmissions = () => {
             })
           }
         }
-        else if (fileType === 'signature') {
+        else if (fileType === 'signature' || fileType === 'sketch') {
           result[columnItem.field] = {
             type: fileType,
             fileList: [ tableRowItem?.attachments?.find(attachmentItem => 
