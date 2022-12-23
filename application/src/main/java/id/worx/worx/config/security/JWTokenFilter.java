@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import id.worx.worx.exception.WorxErrorResponseHandler;
 import id.worx.worx.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -28,9 +28,12 @@ public class JWTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     private final WorxUserDetailsService userDetailsService;
+    private final WorxErrorResponseHandler errorResponseHandler;
+
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
         if (!hasAuthorizationHeader(request)) {
@@ -54,8 +57,9 @@ public class JWTokenFilter extends OncePerRequestFilter {
     private void setAuthenticationContext(String accessToken, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(accessToken);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                null);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null,
+                        null);
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
