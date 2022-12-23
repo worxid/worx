@@ -243,6 +243,8 @@ const FormsSubmissions = () => {
       inputItem.type === 'photo' || 
       inputItem.type === 'signature'
     ) return 280
+    else if (inputItem.type === 'boolean') return 100
+    else if (inputItem.type === 'time') return 120
     else return 150
   }
 
@@ -267,10 +269,23 @@ const FormsSubmissions = () => {
   }
 
   const getRenderCellByColumnType = (inputParams) => {
-    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
+    if (
+      inputParams?.value?.type === 'text' || 
+      inputParams?.value?.type === 'date' ||
+      inputParams?.value?.type === 'boolean' ||
+      inputParams?.value?.type === 'time' ||
+      inputParams?.value?.type === 'integer'
+    ) {
+      let selectedValue = inputParams?.value?.value
+
+      if (inputParams?.value?.type === 'boolean') selectedValue = inputParams?.value?.value.toString()
+
       return (
-        <Typography variant='inherit'>
-          {inputParams?.value?.value}
+        <Typography 
+          variant='inherit' 
+          noWrap
+        >
+          {selectedValue}
         </Typography>
       )
     }
