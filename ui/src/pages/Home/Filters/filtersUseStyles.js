@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   formControlInputWithStartIcon: {
     paddingLeft: 8,
   },
+  formControlSelectMenuItem: {
+    width: 240,
+  },
   buttonReset: {
     marginLeft: 'auto !important',
     boxShadow: 'none',

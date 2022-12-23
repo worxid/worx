@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     [values.noZoomBoundary]: {
       left: 16,
-    }
+    },
+  },
+  headerIconToggleOnCollapsed: {
+    transform: 'rotateY(180deg)',
   },
   headerLogoProduct: {
     height: 28,
