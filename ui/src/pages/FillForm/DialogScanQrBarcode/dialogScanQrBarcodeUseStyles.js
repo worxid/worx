@@ -54,7 +54,14 @@ const useStyles = makeStyles((theme) => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)'
-  }
+  },
+  buttonSwitchCamera: {
+    marginRight: 20,
+    color:theme.palette.common.white,
+    '&.mobile': {
+      marginRight: 16
+    }
+  },
 }))
 
 export default useStyles
