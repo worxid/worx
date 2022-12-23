@@ -50,6 +50,7 @@ const Map = (props) => {
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
+  const [ filteredSubmissionList, setFilteredSubmissionList ] = useState(submissionList)
   const [ boundCoordinateList, setBoundCoordinateList ] = useState([])
 
   const classes = useStyles()
@@ -91,6 +92,7 @@ const Map = (props) => {
     const selectedSubmissionList = submissionList.filter(item => item.submit_date.includes(selectedBarChartItem.date))
 
     if (selectedSubmissionList.length > 0) {
+      setFilteredSubmissionList(selectedSubmissionList)
       setBoundCoordinateList(selectedSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
     }
     else {
@@ -121,8 +123,9 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
-    selectedBarChartItem && updateMapCameraBasedOnSelectedBarChartItem()
-  }, [selectedBarChartItem])
+    if (selectedBarChartItem) updateMapCameraBasedOnSelectedBarChartItem()
+    else setFilteredSubmissionList([...submissionList])
+  }, [submissionList, selectedBarChartItem])
 
   return (
     <Stack
@@ -154,7 +157,7 @@ const Map = (props) => {
         {/* MARKERS */}
         <Markers 
           mapObject={mapObject}
-          submissionList={submissionList}
+          submissionList={filteredSubmissionList}
         />
 
         {/* MAP CAMERA */}
