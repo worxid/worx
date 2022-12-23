@@ -109,8 +109,14 @@ const Filters = (props) => {
               <MenuItem
                 key={index} 
                 value={item.id}
+                className={classes.formControlSelectMenuItem}
               >
-                {item.label}
+                <Typography
+                  variant='inherit'
+                  noWrap
+                >
+                  {item.label}
+                </Typography>
               </MenuItem>
             ))}
           </Select>
@@ -174,8 +180,14 @@ const Filters = (props) => {
               <MenuItem
                 key={index} 
                 value={item.id}
+                className={classes.formControlSelectMenuItem}
               >
-                {item.label}
+                <Typography
+                  variant='inherit'
+                  noWrap
+                >
+                  {item.label}
+                </Typography>
               </MenuItem>
             ))}
           </Select>
