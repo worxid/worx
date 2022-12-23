@@ -199,6 +199,24 @@ const GlobalStyles = () => {
           '.no-zoom': {
             zoom: 1 / values.zoomValue,
           },
+          '& [id^="choosestroke-action-"]': {
+            zoom: 1/values.zoomValue,
+            '& .MuiTooltip-tooltip': {
+              zoom: values.zoomValue
+            }
+          },
+          '& [id^="canvastool-action-"]': {
+            zoom: 1/values.zoomValue,
+            '& .MuiTooltip-tooltip': {
+              zoom: values.zoomValue
+            }
+          },
+          '& [id^="choosecolor-action-"]': {
+            zoom: 1/values.zoomValue,
+            '& .MuiTooltip-tooltip': {
+              zoom: values.zoomValue
+            }
+          }
         },
       })}
     />

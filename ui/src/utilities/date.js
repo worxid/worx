@@ -5,7 +5,7 @@ import moment from 'moment'
 export const convertDate = (inputDate, inputFormat = 'dd-MM-yyyy, hh:mm a') => {
   if (!inputDate) return ''
   else {
-    const date = new Date(inputDate).toLocaleString('en-US', {timeZone: 'Asia/Jakarta'})
+    const date = new Date(inputDate).toLocaleString('en-US')
     return date === 'Invalid Date' ? inputDate : format(new Date(date), inputFormat)
   }
 }

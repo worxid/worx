@@ -2,18 +2,21 @@ import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 
 // COMPONENTS
+import CanvasSketch from './CanvasSketch/CanvasSketch'
 import DialogCamera from './DialogCamera/DialogCamera'
 import DialogForm from 'components/DialogForm/DialogForm'
+import DialogScanQrBarcode from './DialogScanQrBarcode/DialogScanQrBarcode'
 
 // CONTEXT
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObject, formatBytes, formatFileValidation, getKeyValue, sizeFileValidation } from './fillFormConstants'
+import { anyFormatFile, anyFormatImage, checkboxErrorMessage, dataURLtoFileObject, formatBytes, formatFileValidation, getKeyValue, scanQrCodeType, sizeFileValidation } from './fillFormConstants'
 
 // LIBRARY
 import SignatureCanvas from 'react-signature-canvas'
+import { Html5Qrcode } from 'html5-qrcode'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -43,6 +46,7 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconAttachFile from '@mui/icons-material/AttachFile'
+import IconBrush from '@mui/icons-material/Brush'
 import IconCameraAlt from '@mui/icons-material/CameraAlt'
 import IconCancel from '@mui/icons-material/Cancel'
 import IconCheckCircle from '@mui/icons-material/CheckCircle'
@@ -50,13 +54,15 @@ import IconCreate from '@mui/icons-material/Create'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
+import IconInsertPhoto from '@mui/icons-material/InsertPhoto'
 import IconStar from '@mui/icons-material/Star'
-
+import IconAccessTimeFilled from '@mui/icons-material/AccessTimeFilled'
 
 // MUI X
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker'
 
 // SERVICES
 import { getMediaPresignedUrl } from 'services/worx/media'
@@ -80,6 +86,7 @@ const InputForm = (props) => {
 
   // STATES
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
   const [signatureRef, setSignatureRef] = useState()
   const [selectedDialog, setSelectedDialog] = useState('')
 
@@ -361,6 +368,82 @@ const InputForm = (props) => {
     handleInputChange(fieldId, fieldType, getKeyValue(fieldType), remove.length > 0 ? remove : null)
   }
 
+  // HANDLE CANCEL DIALOG
+  const handleDialogForm = (inputSelect, inputOpen) => {
+    setSelectedDialog(inputSelect)
+    setIsDialogFormOpen(inputOpen)
+  }
+
+  // HANDLE SCAN IMAGE
+  const handleScanImage = async (event, fieldId, fieldType, isOnlyD1Type) => {
+    const images = event.target.files || []
+    if(images.length <= 0) return
+
+    const html5QrCode = new Html5Qrcode('fake-canvas-qr-scan', {
+      formatsToSupport: scanQrCodeType(true, isOnlyD1Type ? false : true),
+      verbose: false,
+    })
+    html5QrCode.scanFile(images[0], true)
+      .then(decodeText => {
+        handleInputChange(fieldId, fieldType, getKeyValue(fieldType), decodeText)
+        handleDialogForm(null, false)
+      })
+      .catch(error => {
+        setSnackbarObject({
+          open: true,
+          severity:'error',
+          title: '',
+          message: 'Please upload a clear image or type format is not supported yet',
+        })
+      })
+
+    html5QrCode.clear()
+  }
+
+  // HANDLE SAVE SKETCH CANVAS
+  const handleSaveSketchCanvas =  async (fieldId, fieldType, result) => {
+    if(!result) return
+
+    handleInputChange(item.id, item.type, 'isOpenSketch', false)
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), result)
+
+    const fileObject = dataURLtoFileObject(result, `sketch-${uuid()}.png`)
+
+    // UPLOAD MEDIA
+    const abortController = new AbortController()
+    const response = await getMediaPresignedUrl(abortController.signal, {
+      filename: fileObject.name
+    }, fileObject)
+    if(didSuccessfullyCallTheApi(response?.status)) {
+      setSnackbarObject({
+        open: true,
+        severity:'success',
+        title: '',
+        message: 'Success upload a sketch',
+      })
+      handleInputChange(fieldId, fieldType, 'file_id', response.data.value.fileId)
+    } else {
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: '',
+        message: 'Failed upload a sketch',
+      })
+    }
+  }
+
+  // HANDLE DELETE RESULT SKETCH
+  const handleDeleteSketchCanvas = (fieldId, fieldType) => {
+    handleInputChange(fieldId, fieldType, getKeyValue(fieldType), null)
+    handleInputChange(fieldId, fieldType, 'file_id', null)
+  }
+
+  // CHECK IS ON MEDIUM LARGE SCREEN
+  const isOnMediumLargeScreen = () => {
+    if(breakpointType === 'sm' || breakpointType === 'md' || breakpointType === 'lg' || breakpointType === 'xl') return true
+    else return false
+  }
+
   return (
     <Stack
       sx={{
@@ -394,7 +477,7 @@ const InputForm = (props) => {
       </Box>
 
       {/* TEXTFIELD */}
-      {item.type === 'text' && (
+      {(item.type === 'text' || item.type === 'integer') && (
         <FormControl
           fullWidth
           className={classes.formControl}
@@ -407,7 +490,15 @@ const InputForm = (props) => {
             variant='filled'
             size='small'
             className='heightFitContent'
-            onChange={(event) => handleInputChange(item.id, item.type, getKeyValue(item.type), event.target.value)}
+            onChange={(event) => handleInputChange(
+              item.id,
+              item.type,
+              getKeyValue(item.type),
+              item.type === 'integer' ? Number(event.target.value) : event.target.value
+            )}
+            inputProps={{
+              type: item.type === 'integer' ? 'number' : 'text'
+            }}
           />
 
           {formObjectError?.[item.id] && (
@@ -622,12 +713,9 @@ const InputForm = (props) => {
         >
           {selectedDialog === item.id && (
             <DialogCamera
-              handleCancel={() => {
-                setSelectedDialog('')
-                setIsDialogFormOpen(false)
-              }}
+              handleCancel={() => handleDialogForm('', false)}
               handleUsePhoto={(result) => handleCamera(item.id, item.type, result)}
-              handleBackdropClick={() => setSelectedDialog('')}
+              handleBackdropClick={() => handleDialogForm('', false)}
             />
           )}
 
@@ -791,7 +879,7 @@ const InputForm = (props) => {
               handleActionButtonClick={(inputType) => {
                 handleSignatureActionButtonClick(inputType, item.id, item.type)
               }}
-              onBackdropClick={() => setSelectedDialog('')}
+              onBackdropClick={() => handleDialogForm('', false)}
               areActionsAvailable={breakpointType !== 'xs' ? true : false}
             >
               <Stack className={classes.dialogSignatureContent} height='100%'>
@@ -854,10 +942,7 @@ const InputForm = (props) => {
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSiganture heightFitContent`}
               startIcon={<IconCreate fontSize='small'/>}
-              onClick={() => {
-                setSelectedDialog(item.id)
-                setIsDialogFormOpen('dialogSignature')
-              }}
+              onClick={() => handleDialogForm(item.id, 'dialogSignature')}
             >
               Add Signature
             </Button>)}
@@ -866,6 +951,220 @@ const InputForm = (props) => {
               <FormHelperText variant='error' className={classes.formHelperText}>
                 {formObjectError?.[item.id]}
               </FormHelperText>
+            )}
+          </FormControl>
+        </>
+      )}
+
+      {/* BOOLEAN */}
+      {item.type === 'boolean' && (
+        <FormControl
+          className={classes.formControl}
+          onChange={(event) => handleInputChange(
+            item.id, item.type,
+            getKeyValue(item.type),
+            event.target.value === 'yes'
+          )}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
+          <RadioGroup className={classes.booleanGroup}>
+            <FormControlLabel
+              value='yes'
+              control={<Radio size='small'/>}
+              label={(
+                <Typography variant='caption' className='displayBlock'>Yes</Typography>
+              )}
+            />
+
+            <FormControlLabel
+              value='no'
+              control={<Radio size='small'/>}
+              label={(
+                <Typography variant='caption' className='displayBlock'>No</Typography>
+              )}
+            />
+          </RadioGroup>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
+        </FormControl>
+      )}
+
+      {/* TIME */}
+      {item.type === 'time' && (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Stack className={classes.timeControlWrapper}>
+            <FormControl
+              fullWidth
+              className={classes.formControl}
+              required={item.required}
+              error={Boolean(formObjectError?.[item.id])}
+            >
+              <Stack direction='row' alignItems='center'>
+                <TextField
+                  value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
+                  label='Answer'
+                  variant='filled'
+                  size='small'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
+                          <IconCancel
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  className='heightFitContent'
+                  fullWidth
+                />
+
+                <IconButton
+                  size='large'
+                  className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}
+                  onClick={() => setIsTimePickerOpen(true)}
+                >
+                  <IconAccessTimeFilled fontSize='small'/>
+                </IconButton>
+              </Stack>
+
+              {formObjectError?.[item.id] && (
+                <FormHelperText variant='error' className={classes.formHelperText}>
+                  {formObjectError?.[item.id]}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            <FormControl error={Boolean(formObjectError?.[item.id])}>
+              <MobileTimePicker
+                orientation='portrait'
+                label='For mobile'
+                renderInput={(params) => <TextField {...params} />}
+                onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
+                onClose={() => setIsTimePickerOpen(false)}
+                open={isTimePickerOpen}
+                value={new Date(`2022-01-01 ${formObject[item.id]?.[getKeyValue(item.type)] || '00:00:00'}`).toISOString()}
+                componentsProps={{
+                  actionBar: { className: classes.actionClock },
+                }}
+                DialogProps={{
+                  PaperProps: {
+                    className: classes.actionClock
+                  }
+                }}
+              />
+            </FormControl>
+          </Stack>
+        </LocalizationProvider>
+      )}
+
+      {/* BARCODE */}
+      {item.type === 'barcode' && (
+        <FormControl
+          fullWidth
+          className={`${classes.formControl} no-max-width`}
+          required={item.required}
+          error={Boolean(formObjectError?.[item.id])}
+        >
+          <Box id='fake-canvas-qr-scan' sx={{display: 'none'}}/>
+          <Stack direction='row' alignItems='center'>
+            <TextField
+              value={formObject[item.id]?.[getKeyValue(item.type)] || ''}
+              label='Answer'
+              variant='filled'
+              size='small'
+              fullWidth
+              className={`heightFitContent ${classes.barcodeTextField}`}
+            />
+
+            <IconButton
+              size='large'
+              className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
+              onClick={() => handleDialogForm(item.id, 'dialogScanQrBarcode')}
+            >
+              <IconCameraAlt fontSize='small' />{isOnMediumLargeScreen() && ' Camera'}
+            </IconButton>
+
+            {item.allow_manual_override && (<IconButton
+              size='large'
+              className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
+              component='label'
+            >
+              <IconInsertPhoto fontSize='small' />{isOnMediumLargeScreen() && ' Upload Image'}
+              <input
+                hidden
+                accept='image/png,image/jpeg'
+                type='file'
+                onChange={(event) => handleScanImage(event, item.id, item.type, item.barcode_type === '1d')}
+              />
+            </IconButton>)}
+          </Stack>
+
+          {formObjectError?.[item.id] && (
+            <FormHelperText variant='error' className={classes.formHelperText}>
+              {formObjectError?.[item.id]}
+            </FormHelperText>
+          )}
+
+          {selectedDialog === item.id && <DialogScanQrBarcode
+            handleBackdropClick={() => handleDialogForm('', false)}
+            handleCancel={() => handleDialogForm('', false)}
+            handleSuccess={(decode, result) => {
+              handleInputChange(item.id, item.type, getKeyValue(item.type), decode)
+              handleDialogForm(null, false)
+            }}
+            isOnlyD1Type={item.barcode_type === '1d'}
+          />}
+        </FormControl>
+      )}
+
+      {/* SKETCH */}
+      {item.type === 'sketch' && (
+        <>
+          <FormControl
+            className={`${classes.formControl} no-max-width`}
+            required={item.required}
+            error={Boolean(formObjectError?.[item.id])}
+          >
+            <Button
+              size='small'
+              className={`${classes.buttonRedPrimary} buttonAddSketch`}
+              startIcon={<IconBrush fontSize='small'/>}
+              onClick={() => handleInputChange(item.id, item.type, 'isOpenSketch', true)}
+            >
+              Add Sketch
+            </Button>
+
+            {(!formObject[item.id]?.[getKeyValue(item.type)]
+            && formObject[item.id]?.isOpenSketch) && (
+              <CanvasSketch
+                fieldId={item.id}
+                getResultCanvas={(result) => handleSaveSketchCanvas(item.id, item.type, result)}
+                isOnMediumLargeScreen={isOnMediumLargeScreen}
+              />
+            )}
+
+            {formObject[item.id]?.[getKeyValue(item.type)] && (
+              <Stack direction='row' maxWidth={'328px'} position='relative' marginTop='32px'>
+                <Box
+                  component='img'
+                  className={classes.canvasSketchImage}
+                  src={formObject[item.id]?.[getKeyValue(item.type)]}
+                />
+
+                <IconButton
+                  className={`${classes.buttonDeleteSketch} heightFitContent`}
+                  onClick={() => handleDeleteSketchCanvas(item.id, item.type)}
+                >
+                  <IconCancel fontSize='large'/>
+                </IconButton>
+              </Stack>
             )}
           </FormControl>
         </>

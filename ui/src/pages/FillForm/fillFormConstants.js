@@ -1,12 +1,14 @@
+import { Html5QrcodeSupportedFormats } from 'html5-qrcode'
+
 export const anyFormatFile = ['csv', 'doc', 'pdf', 'xls']
 export const anyFormatImage = ['jpg', 'jpeg', 'png']
 
 export const getKeyValue = (type) => {
-  if(type === 'text' || type === 'date' || type === 'rating') return 'value'
+  if(type === 'text' || type === 'date' || type === 'rating' || type === 'signature'
+  || type === 'barcode' || type === 'time' || type === 'integer' || type === 'boolean') return 'value'
   else if (type === 'checkbox_group') return  'values'
   else if (type === 'radio_group' || type === 'dropdown') return 'value_index'
   else if (type === 'file' || type === 'photo') return  'values'
-  else if (type === 'signature') return  'value'
   else return 'value'
 }
 
@@ -69,6 +71,14 @@ export const dataURLtoFileObject = (dataurl, filename) => {
   return new File([u8arr], filename, {type:mime})
 }
 
+// CONVERT IMAGE TO BASE64
+export const imageToBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => resolve(reader.result)
+  reader.onerror = error => reject(error)
+})
+
 // FORMAT FILE VALIDATION
 export const formatFileValidation = (fileObject, allowedExtensions = ['jpg', 'png', 'jpeg']) => {
   let isValid = false
@@ -97,4 +107,42 @@ export const sizeFileValidation = (fileObject, minSize, minFormat = 'byte', maxS
 
   if(fileInBytes >= minInBytes && fileInBytes <= maxInBytes) isValid = true
   return isValid
+}
+
+// D1 CODE SUPPORTED ON HTML5 QRCODE
+export const d1CodeType = [
+  Html5QrcodeSupportedFormats.CODABAR,
+  Html5QrcodeSupportedFormats.CODE_39,
+  Html5QrcodeSupportedFormats.CODE_93,
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.ITF,
+  Html5QrcodeSupportedFormats.EAN_13,
+  Html5QrcodeSupportedFormats.EAN_8,
+  Html5QrcodeSupportedFormats.PDF_417,
+  Html5QrcodeSupportedFormats.RSS_14,
+  Html5QrcodeSupportedFormats.RSS_EXPANDED,
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+]
+
+// D2 CODE SUPPORTED ON HTML5 QRCODE
+export const d2CodeType = [
+  Html5QrcodeSupportedFormats.QR_CODE,
+  Html5QrcodeSupportedFormats.AZTEC,
+  Html5QrcodeSupportedFormats.DATA_MATRIX,
+  Html5QrcodeSupportedFormats.MAXICODE,
+]
+
+export const scanQrCodeType = (accept1D = true, accept2D = true) => {
+  let typeArr = []
+  if(accept1D) {
+    typeArr = [...typeArr, ...d1CodeType]
+  }
+
+  if(accept2D) {
+    typeArr = [...typeArr, ...d2CodeType]
+  }
+
+  return typeArr
 }
