@@ -65,11 +65,13 @@ const InputComponent = (props) => {
 
   // FIND VALUES BY KEY
   const findValuesKey = (inputType) => {
-    if(inputType === 'text' || inputType === 'rating' || inputType === 'date') return 'value' // string
+    if(inputType === 'text' || inputType === 'rating' || inputType === 'date'
+    || inputType === 'integer' || inputType === 'time') return 'value' // string
     else if (inputType === 'checkbox_group') return 'values' // array<boolean>
     else if (inputType === 'radio_group' || inputType === 'dropdown') return 'value_index' // number
     else if (inputType === 'file' || inputType === 'photo') return 'file_ids' // array<number>
-    else if (inputType === 'signature') return 'file_id' // number
+    else if (inputType === 'signature' || inputType === 'sketch') return 'file_id' // number
+    else return 'value'
   }
 
   // GET FILE/MEDIA URL
@@ -112,7 +114,7 @@ const InputComponent = (props) => {
       getMediaURL(defaultValue?.[findValuesKey(item.type)])
     }
 
-    if(item.type === 'signature' && defaultValue?.[findValuesKey(item.type)]) {
+    if(item.type === 'signature' || item.type === 'sketch' && defaultValue?.[findValuesKey(item.type)]) {
       getMediaURL([defaultValue?.[findValuesKey(item.type)]])
     }
   }, [item])
@@ -120,7 +122,8 @@ const InputComponent = (props) => {
   return (
     <>
       {/* TEXTFIELD */}
-      {item.type === 'text' && (
+      {(item.type === 'text' || item.type === 'integer' || item.type === 'time'
+      || item.type === 'barcode') && (
         <FormControl
           variant='outlined' 
           fullWidth
@@ -256,13 +259,32 @@ const InputComponent = (props) => {
       )}
 
       {/* SIGNATURE */}
-      {(item.type === 'signature' && currentFiles[0]?.url) && (
+      {(item.type === 'signature' || item.type === 'sketch' && currentFiles[0]?.url) && (
         <Box
           className={classes.signatureBox}
           component='img'
           src={currentFiles[0]?.url}
-          onClick={() => handleMediaTypeViewClick('signature', 0)}
+          onClick={() => handleMediaTypeViewClick(item.type, 0)}
         />
+      )}
+
+      {/* BOOLEAN */}
+      {item.type === 'boolean' && (
+        <RadioGroup className={`${classes.radioGroup} radio-boolean`} disabled>
+          <FormControlLabel
+            control={<Radio checked={defaultValue?.[findValuesKey(item.type)] === true}/>}
+            disabled
+            value={true}
+            label='Yes'
+          />
+
+          <FormControlLabel
+            control={<Radio checked={defaultValue?.[findValuesKey(item.type)] === false}/>}
+            disabled
+            value={false}
+            label='No'
+          />
+        </RadioGroup>
       )}
 
       {/* DIALOG MEDIAS PREVIEW */}
