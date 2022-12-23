@@ -124,7 +124,10 @@ const Map = (props) => {
 
   useEffect(() => {
     if (selectedBarChartItem) updateMapCameraBasedOnSelectedBarChartItem()
-    else setFilteredSubmissionList([...submissionList])
+    else {
+      setFilteredSubmissionList([...submissionList])
+      setBoundCoordinateList(submissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
+    }
   }, [submissionList, selectedBarChartItem])
 
   return (
