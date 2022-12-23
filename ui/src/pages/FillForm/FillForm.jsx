@@ -96,7 +96,7 @@ const FillForm = () => {
         }
       }
 
-      if (formObject[key]?.type === 'signature') {
+      if (formObject[key]?.type === 'signature' || formObject[key]?.type === 'sketch') {
         if(formObject[key]?.value === null) delete tempFormObject[key]
       }
     }
