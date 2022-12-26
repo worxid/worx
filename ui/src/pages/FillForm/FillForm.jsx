@@ -97,7 +97,8 @@ const FillForm = () => {
       }
 
       // DELETE ITEM PARAM WHEN HAVE A NULL VALUE
-      if(formObject[key]?.[getKeyValue(formObject[key]?.type)] === null) delete tempFormObject[key]
+      if(formObject[key]?.[getKeyValue(formObject[key]?.type)] === null ||
+      formObject[key]?.[getKeyValue(formObject[key]?.type)] === '') delete tempFormObject[key]
     }
 
     const params = {
