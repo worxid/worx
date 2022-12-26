@@ -1081,6 +1081,8 @@ const InputForm = (props) => {
               size='small'
               fullWidth
               className={`heightFitContent ${classes.barcodeTextField}`}
+              disabled={!item.allow_manual_override}
+              onChange={(event) => handleInputChange(item.id, item.type, getKeyValue(item.type), event.target.value)}
             />
 
             <IconButton
@@ -1091,7 +1093,7 @@ const InputForm = (props) => {
               <IconCameraAlt fontSize='small' />{isOnMediumLargeScreen() && ' Camera'}
             </IconButton>
 
-            {item.allow_manual_override && (<IconButton
+            <IconButton
               size='large'
               className={`${classes.buttonRedPrimary} buttonScanBarcode heightFitContent`}
               component='label'
@@ -1103,7 +1105,7 @@ const InputForm = (props) => {
                 type='file'
                 onChange={(event) => handleScanImage(event, item.id, item.type, item.barcode_type === '1d')}
               />
-            </IconButton>)}
+            </IconButton>
           </Stack>
 
           {formObjectError?.[item.id] && (
