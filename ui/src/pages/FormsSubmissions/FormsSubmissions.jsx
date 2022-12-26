@@ -31,6 +31,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconBrush from '@mui/icons-material/Brush'
 import IconGesture from '@mui/icons-material/Gesture'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
@@ -241,8 +242,14 @@ const FormsSubmissions = () => {
     else if (
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
-      inputItem.type === 'signature'
+      inputItem.type === 'barcode'
     ) return 280
+    else if (
+      inputItem.type === 'signature' ||
+      inputItem.type === 'sketch'
+    ) return 240
+    else if (inputItem.type === 'boolean') return 100
+    else if (inputItem.type === 'time') return 120
     else return 150
   }
 
@@ -267,10 +274,24 @@ const FormsSubmissions = () => {
   }
 
   const getRenderCellByColumnType = (inputParams) => {
-    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
+    if (
+      inputParams?.value?.type === 'text' || 
+      inputParams?.value?.type === 'date' ||
+      inputParams?.value?.type === 'boolean' ||
+      inputParams?.value?.type === 'time' ||
+      inputParams?.value?.type === 'integer' ||
+      inputParams?.value?.type === 'barcode'
+    ) {
+      let selectedValue = inputParams?.value?.value
+
+      if (inputParams?.value?.type === 'boolean') selectedValue = inputParams?.value?.value.toString()
+
       return (
-        <Typography variant='inherit'>
-          {inputParams?.value?.value}
+        <Typography 
+          variant='inherit' 
+          noWrap
+        >
+          {selectedValue}
         </Typography>
       )
     }
@@ -329,29 +350,16 @@ const FormsSubmissions = () => {
     else if (
       inputParams?.value?.type === 'file' || 
       inputParams?.value?.type === 'photo' || 
-      inputParams?.value?.type === 'signature'
+      inputParams?.value?.type === 'signature' ||
+      inputParams?.value?.type === 'sketch'
     ) {
       let valueList = inputParams?.value?.fileList
 
-      let columnIcon
-      if (inputParams?.value?.type === 'file') columnIcon = (
-        <IconInsertDriveFile 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'photo') columnIcon = (
-        <IconImage 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'signature') columnIcon = (
-        <IconGesture 
-          color='primary'
-          fontSize='small'
-        />
-      )
+      let ColumnIcon
+      if (inputParams?.value?.type === 'file') ColumnIcon = IconInsertDriveFile
+      else if (inputParams?.value?.type === 'photo') ColumnIcon = IconImage
+      else if (inputParams?.value?.type === 'signature') ColumnIcon = IconGesture
+      else if (inputParams?.value?.type === 'sketch') ColumnIcon = IconBrush
       
       return (
         <Stack
@@ -368,7 +376,10 @@ const FormsSubmissions = () => {
               alignItems='center'
             >
               {/* ICON */}
-              {columnIcon}
+              <ColumnIcon 
+                color='primary'
+                fontSize='small'
+              />
 
               {/* TEXT */}
               <Typography 
@@ -434,7 +445,7 @@ const FormsSubmissions = () => {
             })
           }
         }
-        else if (fileType === 'signature') {
+        else if (fileType === 'signature' || fileType === 'sketch') {
           result[columnItem.field] = {
             type: fileType,
             fileList: [ tableRowItem?.attachments?.find(attachmentItem => 

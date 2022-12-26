@@ -72,6 +72,13 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover'
   },
   radioGroup: {
+    '&.radio-boolean': {
+      display: 'flex',
+      flexDirection: 'row',
+      '& .MuiFormControlLabel-root': {
+        marginRight: 28,
+      }
+    },
     '& .Mui-checked.Mui-disabled': {
       color: theme.palette.primary.main
     }

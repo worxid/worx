@@ -49,6 +49,7 @@ const DialogMediasPreview = (props) => {
 
   const [ refreshKey, setRefreshKey ] = useState(1)
   const [ isLoadingPreview, setIsLoadingPreview ] = useState(true)
+  const [ isLoadingDownload, setIsLoadingDownload ] = useState(false)
   
   const getContentPropertyFromMediaObject = (inputMediaObject) => {
     let output = {}
@@ -89,6 +90,8 @@ const DialogMediasPreview = (props) => {
   }
 
   const handleDownloadButtonClick = async () => {
+    setIsLoadingDownload(true)
+
     const responseFile = await axios({
       url: mediaList[activeStep].url,
       method: 'GET',
@@ -107,6 +110,8 @@ const DialogMediasPreview = (props) => {
         resultDownloadFile.status !== 0
       ) setSnackbarObject(getDefaultErrorMessage(resultDownloadFile))
     }
+
+    setIsLoadingDownload(false)
   }
 
   const handleCancelRefreshInterval = () => {
@@ -144,11 +149,14 @@ const DialogMediasPreview = (props) => {
           <Stack 
             direction='row'
             spacing='8px'
+            alignItems='center'
           >
+            {isLoadingDownload && <CircularProgress color='primary' size={20} />}
+            
             {/* DOWNLOAD ICON */}
-            <IconButton onClick={() => handleDownloadButtonClick()}>
+            {!isLoadingDownload && (<IconButton onClick={() => handleDownloadButtonClick()}>
               <IconFileDownload/>
-            </IconButton>
+            </IconButton>)}
 
             {/* CLOSE ICON */}
             <IconButton onClick={handleDialogClose}>

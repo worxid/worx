@@ -39,7 +39,7 @@ import {
 const Chart = (props) => {
   const { 
     filterParameters, 
-    setSelectedBarChartItem,
+    selectedBarChartItem, setSelectedBarChartItem,
   } = props
   
   const axiosPrivate = useAxiosPrivate()
@@ -145,6 +145,7 @@ const Chart = (props) => {
           theme,
           chartTitle, 
           chartList,
+          selectedBarChartItem,
           setSelectedBarChartItem,
         )}
         series={getTransactionChartSeries(
