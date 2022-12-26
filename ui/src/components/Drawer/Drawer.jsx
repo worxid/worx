@@ -154,7 +154,10 @@ const Drawer = () => {
       <DrawerHeader>
         {/* TOGGEL DRAWER ICON */}
         <IconButton   
-          className={`${classes.headerIconToggle} no-zoom`}
+          className={drawerState.isDrawerExpanded 
+            ? `${classes.headerIconToggle} no-zoom`
+            : `${classes.headerIconToggle} ${classes.headerIconToggleOnCollapsed} no-zoom`
+          }
           onClick={handleToggleDrawerIconClick}
         >
           <IconMenuOpen/>

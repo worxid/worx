@@ -140,6 +140,7 @@ const Home = () => {
       {/* CHART */}
       <Chart 
         filterParameters={filterParameters}
+        selectedBarChartItem={selectedBarChartItem}
         setSelectedBarChartItem={setSelectedBarChartItem}
       />
 

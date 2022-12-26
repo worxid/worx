@@ -13,6 +13,7 @@ export const getTransactionChartOptions = (
   inputTheme, 
   inputTitle,
   inputList, 
+  inputSelectedBarChartItem,
   inputSetSelectedBarChartItem,
 ) => {
   return {
@@ -22,9 +23,16 @@ export const getTransactionChartOptions = (
       },
       events: {
         click: (event, chartContext, config) => {
-          const selectedData = inputList.find((item, index) => index === config.dataPointIndex)
-          inputSetSelectedBarChartItem(selectedData)
-        }
+          if (!inputSelectedBarChartItem || (inputSelectedBarChartItem.dataPointIndex !== config.dataPointIndex)) {
+            const selectedData = inputList.find((item, index) => index === config.dataPointIndex)
+
+            inputSetSelectedBarChartItem({
+              ...selectedData,
+              dataPointIndex: config.dataPointIndex,
+            })
+          }
+          else inputSetSelectedBarChartItem(null)
+        },
       },
       fontFamily: values.fontFamilyDmMono,
       foreColor: inputTheme.palette.text.primary,
