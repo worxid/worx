@@ -1,5 +1,6 @@
 package id.worx.worx.web.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +8,10 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import id.worx.worx.common.model.dto.SearchFormDTO;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -112,5 +116,49 @@ public class FormController implements SecuredRestController {
                                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                                 .body(resource);
         }
+    @PostMapping("export-pdf")
+    public ResponseEntity<ByteArrayResource> exportPdf(@RequestBody @Valid FormExportRequest request) {
+        ByteArrayOutputStream reportByte = formExportService.saveFormAsDOCX(request.getFormId());
+        String filename = "forms.docx";
+
+        ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        header.add("Pragma", "no-cache");
+        header.add("Expires", "0");
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .headers(header)
+            .contentLength(reportByte.size())
+            .contentType(MediaType.parseMediaType("application/octet-stream"))
+            .body(resource);
+    }
+
+    public ResponseEntity<byte[]> exportPdfs(@RequestBody @Valid FormExportRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        String hasil = "";
+        try {
+            ByteArrayInputStream docFile = new ByteArrayInputStream(inputFileDTO.getBase64doc());
+            XWPFDocument doc = new XWPFDocument(docFile);
+
+            PdfOptions pdfOptions = PdfOptions.create();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PdfConverter.getInstance().convert(doc, out, pdfOptions);
+            doc.close();
+
+            headers.set("Content-Type", "application/pdf");
+
+            ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
+            out.close();
+
+            return responseEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }
