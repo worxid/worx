@@ -11,7 +11,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
+import { getKeyValue, structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -96,9 +96,8 @@ const FillForm = () => {
         }
       }
 
-      if (formObject[key]?.type === 'signature' || formObject[key]?.type === 'sketch') {
-        if(formObject[key]?.value === null) delete tempFormObject[key]
-      }
+      // DELETE ITEM PARAM WHEN HAVE A NULL VALUE
+      if(formObject[key]?.[getKeyValue(formObject[key]?.type)] === null) delete tempFormObject[key]
     }
 
     const params = {
