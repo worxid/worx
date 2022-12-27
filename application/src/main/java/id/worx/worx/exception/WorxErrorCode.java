@@ -40,6 +40,11 @@ public enum WorxErrorCode {
     INVALID_USERNAME_PASSWORD("Invalid username or password", HttpStatus.UNAUTHORIZED),
 
     /**
+     *
+     */
+    JWT_TOKEN_EXPIRED("Token has expired", HttpStatus.UNAUTHORIZED),
+
+    /**
      * {@code Entity not found}
      */
     ENTITY_NOT_FOUND_ERROR("Entity not found", HttpStatus.NOT_FOUND),

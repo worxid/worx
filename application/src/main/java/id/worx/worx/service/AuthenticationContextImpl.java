@@ -1,21 +1,15 @@
 package id.worx.worx.service;
 
 import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
+import id.worx.worx.config.security.WorxUserPrincipal;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.repository.UsersRepository;
-import id.worx.worx.util.JWTValue;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -32,15 +26,13 @@ public class AuthenticationContextImpl implements AuthenticationContext {
     @Override
     public String getEmail() {
         String email = "";
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
-            String token = httpServletRequest.getHeader("Authorization");
-            JWTValue jwtValue = JWTValue.getDecoded(token);
-            String[] data = jwtValue.getSub().split(", ");
-            return data[1];
+        Authentication authentication = this.getAuthentication();
+        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    (UsernamePasswordAuthenticationToken) authentication;
+            WorxUserPrincipal principal = (WorxUserPrincipal) authenticationToken.getPrincipal();
+            email = principal.getUsername();
         }
-
         return email;
     }
 

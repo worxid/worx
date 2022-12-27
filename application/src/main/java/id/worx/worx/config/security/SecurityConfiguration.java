@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -21,9 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import id.worx.worx.exception.WorxErrorResponseHandler;
 import id.worx.worx.util.JwtUtils;
@@ -31,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
     protected static final String[] NON_TOKEN_BASED_AUTH_ENTRY_POINTS =
@@ -43,7 +40,6 @@ public class SecurityConfiguration {
 
     private final WorxUserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
-    private final JWTokenFilter jwTokenFilter;
     private final WorxErrorResponseHandler errorResponseHandler;
 
     private final AuthenticationFailureHandler failureHandler;
@@ -121,13 +117,6 @@ public class SecurityConfiguration {
                 .and()
                 .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(),
                         UsernamePasswordAuthenticationFilter.class);
-
-        // http.exceptionHandling().authenticationEntryPoint(
-        // ((request, response, authException) ->
-        // response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-        // "this API requeire access token")));
-
-        // http.addFilterBefore(jwTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -152,8 +141,7 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http,
-            BCryptPasswordEncoder bCryptPasswordEncoder,
-            UserDetailsService userDetailsService)
+            BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsService userDetailsService)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)

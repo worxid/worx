@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.worx.worx.config.security.JwtExpiredTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +34,8 @@ public class WorxErrorResponseHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(AccessDeniedException.class)
     public void handle(HttpServletRequest request, HttpServletResponse response,
             AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.info("Processing exception {}", accessDeniedException.getMessage(), accessDeniedException);
+        log.trace("Processing exception {}", accessDeniedException.getMessage(),
+                accessDeniedException);
 
         if (!response.isCommitted()) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -75,8 +77,7 @@ public class WorxErrorResponseHandler extends ResponseEntityExceptionHandler
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        // TODO Auto-generated method stub
-        log.info("Processing handleExceptionInternal {}", ex.getMessage(), ex);
+        log.trace("Processing handleExceptionInternal {}", ex.getMessage(), ex);
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
@@ -102,6 +103,9 @@ public class WorxErrorResponseHandler extends ResponseEntityExceptionHandler
                 || authenticationException instanceof UsernameNotFoundException) {
             mapper.writeValue(response.getWriter(),
                     WorxErrorResponse.of(WorxErrorCode.INVALID_USERNAME_PASSWORD, request));
+        } else if (authenticationException instanceof JwtExpiredTokenException) {
+            mapper.writeValue(response.getWriter(),
+                    WorxErrorResponse.of(WorxErrorCode.JWT_TOKEN_EXPIRED, request));
         } else {
             mapper.writeValue(response.getWriter(),
                     WorxErrorResponse.of(WorxErrorCode.AUTHENTICATION_FAILURE, request));

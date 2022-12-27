@@ -11,12 +11,12 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
 import id.worx.worx.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +34,10 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     protected void successfulAuthentication(HttpServletRequest request,
             HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        // TODO Auto-generated method stub
-        super.successfulAuthentication(request, response, chain, authResult);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+		context.setAuthentication(authResult);
+		SecurityContextHolder.setContext(context);
+        chain.doFilter(request, response);
     }
 
     public JwtTokenAuthenticationProcessingFilter(AuthenticationFailureHandler failureHandler,
@@ -50,18 +52,12 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     public Authentication attemptAuthentication(HttpServletRequest request,
             HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        logger.info(request.getRequestURL().toString());
-        log.info("Processing extract token {}", "token");
         String token = this.extract(request);
-        log.info("Processing attemptAuthentication {}", token);
-
         String subject = jwtUtils.getUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
 
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(userDetails, null,
-                        null);
-        return authentication;
+        return new UsernamePasswordAuthenticationToken(userDetails, null,
+                null);
     }
 
     public String extract(HttpServletRequest request) {
