@@ -1,10 +1,7 @@
 package id.worx.worx.service.report;
 
 import java.awt.Dimension;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -16,6 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,7 +30,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFHyperlink;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import fr.opensagres.xdocreport.core.XDocReportException;
@@ -427,4 +431,29 @@ public class FormExportServiceImpl implements FormExportService {
         return storageService.getAll(fileIds);
     }
 
+    @Override
+    public ByteArrayOutputStream saveFormAsPDF(Long formId) {
+
+        try {
+
+            ByteArrayOutputStream reportByte = saveFormAsDOCX(formId);
+
+            ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
+
+            ByteArrayInputStream docFile = new ByteArrayInputStream(resource.getByteArray());
+            XWPFDocument doc = new XWPFDocument(docFile);
+
+            PdfOptions pdfOptions = PdfOptions.create();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PdfConverter.getInstance().convert(doc, out, pdfOptions);
+            doc.close();
+
+
+            return out;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

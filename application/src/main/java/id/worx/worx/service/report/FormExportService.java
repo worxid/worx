@@ -1,5 +1,6 @@
 package id.worx.worx.service.report;
 
+
 import java.io.ByteArrayOutputStream;
 
 public interface FormExportService {
@@ -9,5 +10,6 @@ public interface FormExportService {
     ByteArrayOutputStream toXLS(Long id);
 
     ByteArrayOutputStream saveFormAsDOCX(Long formId);
+    ByteArrayOutputStream saveFormAsPDF(Long formId);
 
 }
