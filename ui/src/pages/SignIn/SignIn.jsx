@@ -145,7 +145,6 @@ const SignIn = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.email}
-        color='secondary'
       >
         <InputLabel>
           Email
@@ -169,7 +168,6 @@ const SignIn = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.password}
-        color='secondary'
       >
         <InputLabel>
           Password

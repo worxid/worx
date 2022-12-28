@@ -147,7 +147,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
             required
           >
             <InputLabel>Form Name</InputLabel>
@@ -166,7 +165,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
             required
           >
             <InputLabel>Description</InputLabel>
@@ -189,7 +187,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Label</InputLabel>
         
@@ -213,7 +210,6 @@ const FieldProperties = () => {
               label='description'
               variant='outlined' 
               fullWidth
-              color='secondary'
             >
               <InputLabel>Description</InputLabel>
           
@@ -240,7 +236,6 @@ const FieldProperties = () => {
               className={classes.formControl}
               variant='outlined' 
               fullWidth
-              color='secondary'
             >
               <InputLabel>Option #{index+1}</InputLabel>
         
@@ -283,7 +278,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Min. Checked Positions</InputLabel>
         
@@ -303,7 +297,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Max. Checked Positions</InputLabel>
         
@@ -368,7 +361,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Stars Count</InputLabel>
         
@@ -399,7 +391,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Max. Number of {selectedFieldsType === 'file' ? 'Files' : 'Images'}</InputLabel>
         
@@ -426,7 +417,7 @@ const FieldProperties = () => {
       {selectedFieldsType === 'file' && (
         <>
           {/* FORMAT FILE */}
-          <FormControl className={classes.formControl} color='secondary'>
+          <FormControl className={classes.formControl}>
             <InputLabel>Format File</InputLabel>
 
             <Select
@@ -466,7 +457,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Min. File Size</InputLabel>
             
@@ -488,7 +478,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Min. File Size</InputLabel>
             
@@ -516,7 +505,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Max. File Size</InputLabel>
             
@@ -538,7 +526,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Max. File Size</InputLabel>
             

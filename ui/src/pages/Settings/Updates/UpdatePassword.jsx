@@ -147,7 +147,6 @@ const UpdatePassword = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.password}
-        color='secondary'
       >
         <InputLabel>
           Current Password
@@ -177,7 +176,6 @@ const UpdatePassword = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.newPassword}
-        color='secondary'
       >
         <InputLabel>
           New Password
@@ -207,7 +205,6 @@ const UpdatePassword = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.confirmPassword}
-        color='secondary'
       >
         <InputLabel>
           Confirm New Password

@@ -128,7 +128,6 @@ const InputComponent = (props) => {
           variant='outlined' 
           fullWidth
           disabled
-          color='secondary'
         >
           <InputLabel shrink={true}>
             {item?.label}
