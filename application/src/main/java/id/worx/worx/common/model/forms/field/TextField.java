@@ -3,17 +3,13 @@ package id.worx.worx.common.model.forms.field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
-import id.worx.worx.common.exception.InvalidParameterException;
 import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.forms.value.TextValue;
 import id.worx.worx.common.model.forms.value.Value;
-import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -22,47 +18,26 @@ public class TextField extends Field {
     private static final long serialVersionUID = -4016732888530143652L;
 
     private static final int MINIMUM_ALLOWED_MIN_LENGTH = 0;
-    private static final int MAXIMUM_ALLOWED_MIN_LENGTH = 1024;
     private static final int MINIMUM_ALLOWED_MAX_LENGTH = 1;
     private static final int MAXIMUM_ALLOWED_MAX_LENGTH = 1024;
 
-    @Builder.Default
     @JsonProperty("min_length")
-    private Integer minLength = 1;
+    private Integer minLength;
 
-    @Builder.Default
     @JsonProperty("max_length")
-    private Integer maxLength = 1000;
+    private Integer maxLength;
 
     @JsonCreator
-    public TextField(String id, String label, Boolean required, String description, Integer minLength,
-            Integer maxLength) {
+    public TextField(String id, String label, Boolean required, String description) {
         super(id, label, description, FieldType.TEXT, required);
 
-        Integer tempMinLength = minLength;
-        Integer tempMaxLength = maxLength;
-        if (Objects.isNull(tempMinLength)) {
-            tempMinLength = 1;
+        if (required.equals(Boolean.TRUE)) {
+            this.minLength = MINIMUM_ALLOWED_MAX_LENGTH;
+        } else {
+            this.minLength = MINIMUM_ALLOWED_MIN_LENGTH;
         }
 
-        if (Objects.isNull(tempMaxLength)) {
-            tempMaxLength = 1000;
-        }
-
-        if (tempMinLength < MINIMUM_ALLOWED_MIN_LENGTH || tempMinLength > MAXIMUM_ALLOWED_MIN_LENGTH) {
-            throw new InvalidParameterException("Allowed minimum length is from 0 to 1024");
-        }
-
-        if (tempMaxLength < MINIMUM_ALLOWED_MAX_LENGTH || tempMaxLength > MAXIMUM_ALLOWED_MAX_LENGTH) {
-            throw new InvalidParameterException("Allowed maximum length is from 1 to 1024");
-        }
-
-        if (required.equals(Boolean.TRUE) && tempMinLength == 0) {
-            throw new InvalidParameterException("Combination required: true, min_length: 0 is not allowed");
-        }
-
-        this.minLength = tempMinLength;
-        this.maxLength = tempMaxLength;
+        this.maxLength = MAXIMUM_ALLOWED_MAX_LENGTH;
     }
 
     public Integer getMinLength() {
