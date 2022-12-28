@@ -130,6 +130,12 @@ const FillForm = () => {
         else tempErrorMessage[keys] = ''
       }
       setFormObjectError(tempErrorMessage)
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Please check the form inputs again',
+      })
     } else {
       setSnackbarObject({
         open: true,
