@@ -28,14 +28,16 @@ import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
-import { putUpdateLabelDevices } from 'services/devices'
+import { putUpdateLabelDevices } from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -75,13 +77,8 @@ const DialogAddOrEditDevice = (props) => {
           reloadData(abortController.signal, true)
           handleClose()
         } 
-        else if (!wasRequestCanceled(response?.status)) {
-          setSnackbarObject({
-            open: true,
-            severity:'error',
-            title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-            message: response?.data?.error?.message || 'Something went wrong',
-          })
+        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+          setSnackbarObject(getDefaultErrorMessage(response))
         }
       } 
       else {

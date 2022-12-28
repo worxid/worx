@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import id.worx.worx.common.model.export.ExportOption;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FormExportRequest implements Serializable {
 
-    private static final long serialVersionUID = 7931578054469361249L;
+    private static final long serialVersionUID = 1171133912820375433L;
 
     @NotNull
-    private Long templateId;
-    @NotNull
-    private ExportOption option;
+    @JsonProperty("form_id")
+    private Long formId;
 
 }

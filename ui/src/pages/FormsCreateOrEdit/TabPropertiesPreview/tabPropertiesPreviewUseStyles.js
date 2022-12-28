@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
     '&.formControlGrouped': {
       marginBottom: 24,
     },
-    '& .MuiOutlinedInput-notchedOutline': {
-      border: `2px solid ${theme.palette.action.selected}`
-    },
     '& .MuiFormControlLabel-label': {
       fontSize: 14,
     }
@@ -136,6 +133,12 @@ const useStyles = makeStyles((theme) => ({
   },
   dividerInput: {
     marginBottom: 12,
+  },
+  inputDateTime: {
+    flex: 1,
+  },
+  labelYesNo: {
+    width: '64px !important'
   }
 }))
 

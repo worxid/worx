@@ -3,15 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
-import DialogExport from 'components/DialogExport/DialogExport'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogMediasPreview from './DialogMediasPreview/DialogMediasPreview'
+import DialogExport from './DialogExport/DialogExport'
+import DialogMediasPreview from 'components/DialogMediasPreview/DialogMediasPreview'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // HOOKS
@@ -30,23 +31,32 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconBrush from '@mui/icons-material/Brush'
 import IconGesture from '@mui/icons-material/Gesture'
 import IconImage from '@mui/icons-material/Image'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 import IconMap from '@mui/icons-material/Map'
 
 // SERVICES
-import { postSearchFormSubmissionList } from 'services/form'
-import { getDetailFormTemplate } from 'services/formTemplate'
+import { postSearchFormSubmissionList } from 'services/worx/form'
+import { getDetailFormTemplate } from 'services/worx/formTemplate'
+import { postDetailMediaFiles } from 'services/worx/media'
 
 // STYLES
 import useStyles from './formsSubmissionsUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const FormsSubmissions = () => {
   // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
   // STYLES
@@ -76,41 +86,23 @@ const FormsSubmissions = () => {
       field: 'submissionDate',
       headerName: 'Submission Date',
       flex: 0,
-      minWidth: 160,
+      minWidth: 210,
       hide: false,
       isFilterShown: false,
       isSortShown: true,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
-      renderCell: (params) => (
-        <Stack
-          minHeight={48}
-          justifyContent='center'
-        >
-          {/* DATE */}
-          <Typography variant='inherit'>
-            {convertDate(params.value, 'dd-MM-yyyy')}
-          </Typography>
-
-          {/* TIME */}
-          <Typography 
-            variant='inherit'
-            color='text.secondary'
-          >
-            {convertDate(params.value, 'hh:mm a')}
-          </Typography>
-        </Stack>
-      ),
+      valueGetter: (params) => convertDate(params.value),
     },
     {
       field: 'submissionAddress',
-      headerName: 'Submission Address',
+      headerName: 'Map',
       headerAlign: 'center',
       flex: 1,
-      minWidth: 180,
+      minWidth: 80,
       hide: false,
-      isFilterShown: true,
-      isSortShown: true,
+      isFilterShown: false,
+      isSortShown: false,
       headerClassName: 'cell-source-custom',
       cellClassName: 'cell-source-custom',
       renderCell: (params) => (
@@ -156,8 +148,11 @@ const FormsSubmissions = () => {
   const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // DIALOG MEDIA PREVIEW
-  const [ mediasPreviewObject, setMediasPreviewObject ] = useState(null)
+  // DIALOG MEDIAS PREVIEW
+  const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
+  const [ mediaPreviewList, setMediaPreviewList ] = useState([])
+  const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
+  const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -175,6 +170,9 @@ const FormsSubmissions = () => {
 
     if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
       setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
+    }
+    else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && !wasAccessTokenExpired(resultFormTemplateDetail.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultFormTemplateDetail))
     }
 
     setIsDataGridLoading(false)
@@ -207,7 +205,7 @@ const FormsSubmissions = () => {
       axiosPrivate
     )
 
-    if (resultSubmissionList.status === 200 && inputIsMounted) {
+    if (didSuccessfullyCallTheApi(resultSubmissionList?.status) && inputIsMounted) {
       const submissionList = resultSubmissionList?.data?.content?.map(submissionItem => {
         return {
           id: submissionItem?.id,
@@ -223,6 +221,9 @@ const FormsSubmissions = () => {
 
       setRawTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
+    }
+    else if (!wasRequestCanceled(resultSubmissionList?.status) && !wasAccessTokenExpired(resultSubmissionList.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultSubmissionList))
     }
 
     setIsDataGridLoading(false)
@@ -241,16 +242,56 @@ const FormsSubmissions = () => {
     else if (
       inputItem.type === 'file' || 
       inputItem.type === 'photo' || 
-      inputItem.type === 'signature'
-    ) return 260
+      inputItem.type === 'barcode'
+    ) return 280
+    else if (
+      inputItem.type === 'signature' ||
+      inputItem.type === 'sketch'
+    ) return 240
+    else if (inputItem.type === 'boolean') return 100
+    else if (inputItem.type === 'time') return 120
     else return 150
   }
 
+  const handleMediaTypeCellClick = async (inputValue) => {
+    const abortController = new AbortController()
+
+    const resultMediaFilesData = await postDetailMediaFiles(
+      abortController.signal,
+      { media_ids: inputValue?.fileList?.map(item => item.media_id) },
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(resultMediaFilesData.status)) {
+      setMediaPreviewType(inputValue.type)
+      setMediaPreviewList(resultMediaFilesData.data.list)
+      setMediaPreviewActiveStep(0)
+      setIsDialogMediasPreviewOpen(true)
+    }
+    else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))
+    }
+  }
+
   const getRenderCellByColumnType = (inputParams) => {
-    if (inputParams?.value?.type === 'text' || inputParams?.value?.type === 'date') {
+    if (
+      inputParams?.value?.type === 'text' || 
+      inputParams?.value?.type === 'date' ||
+      inputParams?.value?.type === 'boolean' ||
+      inputParams?.value?.type === 'time' ||
+      inputParams?.value?.type === 'integer' ||
+      inputParams?.value?.type === 'barcode'
+    ) {
+      let selectedValue = inputParams?.value?.value
+
+      if (inputParams?.value?.type === 'boolean') selectedValue = inputParams?.value?.value.toString()
+
       return (
-        <Typography variant='inherit'>
-          {inputParams?.value?.value}
+        <Typography 
+          variant='inherit' 
+          noWrap
+        >
+          {selectedValue}
         </Typography>
       )
     }
@@ -309,36 +350,23 @@ const FormsSubmissions = () => {
     else if (
       inputParams?.value?.type === 'file' || 
       inputParams?.value?.type === 'photo' || 
-      inputParams?.value?.type === 'signature'
+      inputParams?.value?.type === 'signature' ||
+      inputParams?.value?.type === 'sketch'
     ) {
       let valueList = inputParams?.value?.fileList
 
-      let columnIcon
-      if (inputParams?.value?.type === 'file') columnIcon = (
-        <IconInsertDriveFile 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'photo') columnIcon = (
-        <IconImage 
-          color='primary'
-          fontSize='small'
-        />
-      )
-      else if (inputParams?.value?.type === 'signature') columnIcon = (
-        <IconGesture 
-          color='primary'
-          fontSize='small'
-        />
-      )
+      let ColumnIcon
+      if (inputParams?.value?.type === 'file') ColumnIcon = IconInsertDriveFile
+      else if (inputParams?.value?.type === 'photo') ColumnIcon = IconImage
+      else if (inputParams?.value?.type === 'signature') ColumnIcon = IconGesture
+      else if (inputParams?.value?.type === 'sketch') ColumnIcon = IconBrush
       
       return (
         <Stack
           spacing='8px'
           padding='8px 0px'
           className='cursorPointer'
-          onClick={() => setMediasPreviewObject(inputParams.value)}
+          onClick={() => handleMediaTypeCellClick(inputParams.value)}
         >
           {valueList?.slice(0, 1)?.map((item, index) => (
             <Stack
@@ -348,7 +376,10 @@ const FormsSubmissions = () => {
               alignItems='center'
             >
               {/* ICON */}
-              {columnIcon}
+              <ColumnIcon 
+                color='primary'
+                fontSize='small'
+              />
 
               {/* TEXT */}
               <Typography 
@@ -375,7 +406,7 @@ const FormsSubmissions = () => {
 
   const updateColumnsDynamically = () => {
     if (formTemplateDetail && formTemplateDetail?.fields?.length > 0) {
-      const newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
+      let newColumnList = [ ...columnList, ...formTemplateDetail?.fields?.map(item => {
         return {
           field: item.id,
           headerName: item.label,
@@ -390,6 +421,9 @@ const FormsSubmissions = () => {
           renderCell: (params) => getRenderCellByColumnType(params),
         }
       })]
+
+      // DELETE THE SEPARATOR TYPE COLUMNS
+      newColumnList = newColumnList.filter(item => item?.fieldInformation?.type !== 'separator')
 
       setColumnList(newColumnList)
     }
@@ -411,7 +445,7 @@ const FormsSubmissions = () => {
             })
           }
         }
-        else if (fileType === 'signature') {
+        else if (fileType === 'signature' || fileType === 'sketch') {
           result[columnItem.field] = {
             type: fileType,
             fileList: [ tableRowItem?.attachments?.find(attachmentItem => 
@@ -419,6 +453,7 @@ const FormsSubmissions = () => {
             ]
           }
         }
+        else result[columnItem.field] = tableRowItem?.values?.[columnItem.field]
 
         return result
       }, {})
@@ -428,6 +463,16 @@ const FormsSubmissions = () => {
         ...columnWithValueObject,
       }
     })
+
+    setFinalTableData(newFinalTableData)
+  }
+
+  const handleSubmissionDateSortChange = () => {
+    let newFinalTableData = [...finalTableData]
+
+    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
+    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
+    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
 
     setFinalTableData(newFinalTableData)
   }
@@ -448,7 +493,8 @@ const FormsSubmissions = () => {
     let isMounted = true
     const abortController = new AbortController()
 
-    getSubmissionList(isMounted, abortController)
+    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
+    else getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
@@ -597,8 +643,13 @@ const FormsSubmissions = () => {
 
       {/* DIALOG MEDIAS PREVIEW */}
       <DialogMediasPreview 
-        mediasPreviewObject={mediasPreviewObject}
-        setMediasPreviewObject={setMediasPreviewObject}
+        isDialogOpen={isDialogMediasPreviewOpen}
+        setIsDialogOpen={setIsDialogMediasPreviewOpen}
+        mediaList={mediaPreviewList}
+        setMediaList={setMediaPreviewList}
+        mediaPreviewType={mediaPreviewType}
+        activeStep={mediaPreviewActiveStep}
+        setActiveStep={setMediaPreviewActiveStep}
       />
     </>
   )

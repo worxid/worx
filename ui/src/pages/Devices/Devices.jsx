@@ -36,17 +36,19 @@ import IconVerified from '@mui/icons-material/Verified'
 import { 
   deleteDevices, 
   postGetDeviceList, 
-} from 'services/devices'
+} from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from './devicesUseStyles'
 
 // UTILITIES
+import { getDeviceStatusColor } from 'utilities/component'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
-import { getDeviceStatusColor } from 'utilities/component'
 
 const Devices = () => {
   const classes = useLayoutStyles()
@@ -210,13 +212,8 @@ const Devices = () => {
       setTableData(response.data.content)
       setTotalRow(response.data.totalElements)
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     isDataGridLoading && setIsDataGridLoading(false)
@@ -253,13 +250,8 @@ const Devices = () => {
 
         setSelectionModel([])
       }
-      else if (!wasRequestCanceled(response?.status)) {
-        setSnackbarObject({
-          open: true,
-          severity: 'error',
-          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something went wrong',
-        })
+      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        setSnackbarObject(getDefaultErrorMessage(response))
       }
     }
 

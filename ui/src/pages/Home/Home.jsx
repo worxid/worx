@@ -17,16 +17,19 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { postGetDeviceList } from 'services/devices'
-import { postGetListFormTemplate } from 'services/formTemplate'
+import { postGetDeviceList } from 'services/worx/devices'
+import { postGetListFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './homeUseStyles'
 
 // UTILITIES
 import { getLast30Days } from 'utilities/date'
+import { updateMetaData } from 'utilities/dom'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -46,8 +49,9 @@ const Home = () => {
   }
   const [ filterParameters, setFilterParameters ] = useState(initialFilterParameters)
 
-  const [formList, setFormList] = useState([initialList])
-  const [deviceList, setDeviceList] = useState([initialList])
+  const [ formList, setFormList ] = useState([initialList])
+  const [ deviceList, setDeviceList ] = useState([initialList])
+  const [ selectedBarChartItem, setSelectedBarChartItem ] = useState(null)
 
   // FETCH FILTER DATA
   const fetchDeviceList = async (abortController, inputIsMounted) => {
@@ -66,15 +70,11 @@ const Home = () => {
         ]
       )
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
+
   const fetchFormList = async (abortController, inputIsMounted) => {
     const response = await postGetListFormTemplate(
       abortController.signal,
@@ -91,18 +91,20 @@ const Home = () => {
         ]
       )
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
+  
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
+    updateMetaData({
+      title: 'Worx',
+      description: 'Worx',
+    })
+
     fetchDeviceList(abortController.signal, isMounted)
     fetchFormList(abortController.signal, isMounted)
 
@@ -136,10 +138,17 @@ const Home = () => {
       <Divider className={classes.divider}/>
 
       {/* CHART */}
-      <Chart filterParameters={filterParameters}/>
+      <Chart 
+        filterParameters={filterParameters}
+        selectedBarChartItem={selectedBarChartItem}
+        setSelectedBarChartItem={setSelectedBarChartItem}
+      />
 
       {/* MAP */}
-      <Map filterParameters={filterParameters}/>
+      <Map 
+        filterParameters={filterParameters}
+        selectedBarChartItem={selectedBarChartItem}
+      />
     </Stack>
   )
 }

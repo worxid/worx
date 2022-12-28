@@ -25,17 +25,19 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-// REACT TO PRINT
-import { useReactToPrint } from 'react-to-print'
-
 // SERVICES
-import { getSubmissionListDetail } from 'services/form'
+import { getSubmissionListDetail } from 'services/worx/form'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
 
 // UTILITIES
-import { didSuccessfullyCallTheApi, wasRequestCanceled } from 'utilities/validation'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled, 
+} from 'utilities/validation'
 
 const FormsSubmissionsDetail = () => {
   const axiosPrivate = useAxiosPrivate()
@@ -61,15 +63,11 @@ const FormsSubmissionsDetail = () => {
       axiosPrivate
     )
 
-    if(didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status)) {
       setSubmissionDetail(response?.data?.value)
-    } else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     setIsFormLoading(false)
@@ -84,30 +82,6 @@ const FormsSubmissionsDetail = () => {
       return null
     }
   }
-
-  const handleDownloadButtonClick = useReactToPrint({
-    content: () => downloadComponentRef.current.cloneNode(true),
-    documentTitle: submissionDetail?.label,
-    pageStyle: `
-      @page {
-        size: 210mm 297mm;
-        margin: 2.54cm,
-      }
-      @media all {
-        .pagebreak {
-          display: none;
-        }
-      }
-      @media print {
-        .pagebreak {
-          page-break-before: always;
-        }
-        .no-print {
-          display: none !important;
-        }
-      }
-    `,
-  })
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -147,7 +121,7 @@ const FormsSubmissionsDetail = () => {
           {/* HEADER */}
           <Header
             title={submissionDetail?.label}
-            onClickDownload={() => handleDownloadButtonClick()}
+            id={submissionDetail?.id}
           />
 
           <Divider />

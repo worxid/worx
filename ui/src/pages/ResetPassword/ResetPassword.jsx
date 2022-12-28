@@ -11,6 +11,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
+import Link from '@mui/material/Link'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
 
@@ -22,7 +23,7 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postResetPasswordUser } from 'services/users'
+import { postResetPasswordUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
@@ -148,7 +149,6 @@ const ResetPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.newPassword}
-        color='secondary'
       >
         <InputLabel>
           New Password
@@ -178,7 +178,6 @@ const ResetPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.confirmPassword}
-        color='secondary'
       >
         <InputLabel>
           Confirm Password
@@ -215,6 +214,21 @@ const ResetPassword = () => {
       >
         Save New Password
       </LoadingButton>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+      >
+        Don’t have an account?&nbsp;
+        <Link 
+          href='/sign-up'
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          Sign Up
+        </Link>
+      </Typography>
     </form>
   )
 }

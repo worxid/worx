@@ -19,7 +19,12 @@ import id.worx.worx.common.model.forms.field.FieldType;
         @Type(value = FileValue.class, name = "file"),
         @Type(value = PhotoValue.class, name = "photo"),
         @Type(value = SignatureValue.class, name = "signature"),
-        @Type(value = SeparatorValue.class, name = "separator")
+        @Type(value = SeparatorValue.class, name = "separator"),
+        @Type(value = BarcodeValue.class, name = "barcode"),
+        @Type(value = TimeValue.class, name = "time"),
+        @Type(value = BooleanValue.class, name = "boolean"),
+        @Type(value = IntegerValue.class, name = "integer"),
+        @Type(value = SketchValue.class, name = "sketch")
 })
 public abstract class Value implements Serializable {
 

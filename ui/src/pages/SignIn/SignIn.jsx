@@ -21,7 +21,7 @@ import IconVisibilityOff from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postLoginUser } from 'services/users'
+import { postLoginUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
@@ -145,7 +145,6 @@ const SignIn = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.email}
-        color='secondary'
       >
         <InputLabel>
           Email
@@ -169,7 +168,6 @@ const SignIn = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.password}
-        color='secondary'
       >
         <InputLabel>
           Password
@@ -216,6 +214,21 @@ const SignIn = () => {
       >
         Sign In
       </LoadingButton>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+      >
+        Don’t have an account?&nbsp;
+        <Link 
+          href='/sign-up'
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          Sign Up
+        </Link>
+      </Typography>
     </form>
   )
 }

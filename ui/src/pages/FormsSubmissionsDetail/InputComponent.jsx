@@ -1,4 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+
+// COMPONENTS
+import DialogMediasPreview from 'components/DialogMediasPreview/DialogMediasPreview'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -28,31 +34,44 @@ import IconCalendarMonth from '@mui/icons-material/CalendarMonth'
 import IconInsertDriveFile from '@mui/icons-material/InsertDriveFile'
 
 // SERVICES
-import { postDetailMediaFiles } from 'services/media'
+import { postDetailMediaFiles } from 'services/worx/media'
 
 // STYLES
 import useStyles from './formsSubmissionsDetailUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const InputComponent = (props) => {
   const { item, defaultValue, attachments } = props
   const axiosPrivate = useAxiosPrivate()
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   // STYLES
   const classes = useStyles()
 
-  const [currentFiles, setCurrentFiles] = useState([])
+  const [ currentFiles, setCurrentFiles ] = useState([])
+  const [ isDialogMediasPreviewOpen, setIsDialogMediasPreviewOpen ] = useState(false)
+  const [ mediaPreviewList, setMediaPreviewList ] = useState([])
+  const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
+  const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
 
   // FIND VALUES BY KEY
   const findValuesKey = (inputType) => {
-    if(inputType === 'text' || inputType === 'rating' || inputType === 'date') return 'value' // string
+    if(inputType === 'text' || inputType === 'rating' || inputType === 'date'
+    || inputType === 'integer' || inputType === 'time') return 'value' // string
     else if (inputType === 'checkbox_group') return 'values' // array<boolean>
     else if (inputType === 'radio_group' || inputType === 'dropdown') return 'value_index' // number
     else if (inputType === 'file' || inputType === 'photo') return 'file_ids' // array<number>
-    else if (inputType === 'signature') return 'file_id' // number
+    else if (inputType === 'signature' || inputType === 'sketch') return 'file_id' // number
+    else return 'value'
   }
 
   // GET FILE/MEDIA URL
@@ -63,6 +82,7 @@ const InputComponent = (props) => {
     })
 
     const abortController = new AbortController()
+
     const response = await postDetailMediaFiles(
       abortController.signal,
       {
@@ -71,11 +91,22 @@ const InputComponent = (props) => {
       axiosPrivate
     )
 
-    if(didSuccessfullyCallTheApi(response?.status)) {
+    if (didSuccessfullyCallTheApi(response?.status)) {
       setCurrentFiles(response.data.list)
-    } else setCurrentFiles([])
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setCurrentFiles([])
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
 
     abortController.abort()
+  }
+
+  const handleMediaTypeViewClick = (inputType, inputActiveStep) => {
+    setMediaPreviewType(inputType)
+    setMediaPreviewList([...currentFiles])
+    setMediaPreviewActiveStep(inputActiveStep)
+    setIsDialogMediasPreviewOpen(true)
   }
 
   useEffect(() => {
@@ -83,7 +114,7 @@ const InputComponent = (props) => {
       getMediaURL(defaultValue?.[findValuesKey(item.type)])
     }
 
-    if(item.type === 'signature' && defaultValue?.[findValuesKey(item.type)]) {
+    if(item.type === 'signature' || item.type === 'sketch' && defaultValue?.[findValuesKey(item.type)]) {
       getMediaURL([defaultValue?.[findValuesKey(item.type)]])
     }
   }, [item])
@@ -91,12 +122,12 @@ const InputComponent = (props) => {
   return (
     <>
       {/* TEXTFIELD */}
-      {item.type === 'text' && (
+      {(item.type === 'text' || item.type === 'integer' || item.type === 'time'
+      || item.type === 'barcode') && (
         <FormControl
           variant='outlined' 
           fullWidth
           disabled
-          color='secondary'
         >
           <InputLabel shrink={true}>
             {item?.label}
@@ -182,7 +213,11 @@ const InputComponent = (props) => {
       {item.type === 'file' && (
         <List className='padding0'>
           {currentFiles?.map((itemFile, index) => (
-            <ListItem className={classes.listItem} key={index}>
+            <ListItem 
+              className={classes.listItem} 
+              key={index}
+              onClick={() => handleMediaTypeViewClick('file', index)}
+            >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <IconInsertDriveFile className={classes.listFileIcon}/>
               </ListItemAvatar>
@@ -200,7 +235,11 @@ const InputComponent = (props) => {
       {item.type === 'photo' && (
         <List className='padding0'>
           {currentFiles?.map((itemPhoto, index) => (
-            <ListItem className={classes.listItem} key={index}>
+            <ListItem 
+              className={classes.listItem} 
+              key={index}
+              onClick={() => handleMediaTypeViewClick('photo', index)}
+            >
               <ListItemAvatar className={classes.listFileAvatar}>
                 <Box
                   className={classes.listImage}
@@ -219,13 +258,44 @@ const InputComponent = (props) => {
       )}
 
       {/* SIGNATURE */}
-      {(item.type === 'signature' && currentFiles[0]?.url) && (
+      {(item.type === 'signature' || item.type === 'sketch' && currentFiles[0]?.url) && (
         <Box
           className={classes.signatureBox}
           component='img'
           src={currentFiles[0]?.url}
+          onClick={() => handleMediaTypeViewClick(item.type, 0)}
         />
       )}
+
+      {/* BOOLEAN */}
+      {item.type === 'boolean' && (
+        <RadioGroup className={`${classes.radioGroup} radio-boolean`} disabled>
+          <FormControlLabel
+            control={<Radio checked={defaultValue?.[findValuesKey(item.type)] === true}/>}
+            disabled
+            value={true}
+            label='Yes'
+          />
+
+          <FormControlLabel
+            control={<Radio checked={defaultValue?.[findValuesKey(item.type)] === false}/>}
+            disabled
+            value={false}
+            label='No'
+          />
+        </RadioGroup>
+      )}
+
+      {/* DIALOG MEDIAS PREVIEW */}
+      <DialogMediasPreview
+        isDialogOpen={isDialogMediasPreviewOpen}
+        setIsDialogOpen={setIsDialogMediasPreviewOpen}
+        mediaList={mediaPreviewList}
+        setMediaList={setMediaPreviewList}
+        mediaPreviewType={mediaPreviewType}
+        activeStep={mediaPreviewActiveStep}
+        setActiveStep={setMediaPreviewActiveStep}
+      />
     </>
   )
 }

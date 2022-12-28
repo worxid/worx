@@ -1,7 +1,13 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 // COMPONENTS
 import DateRangeTimePicker from 'components/DateRangeTimePicker/DateRangeTimePicker'
+
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
+// DATE AND TIME
+import moment from 'moment'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -38,12 +44,26 @@ const Filters = (props) => {
   const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
+  const { setSnackbarObject } = useContext(AllPagesContext)
+
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
 
   const handleSelectDateRangePickerButtonClick = (inputNewValue) => {
-    handleFormParametersChange('startTime', inputNewValue[0])
-    handleFormParametersChange('endTime', inputNewValue[1])
-    setIsDateRangeTimePickerOpen(false)
+    const startAndEndDifference = moment(inputNewValue[1]).diff(moment(inputNewValue[0]), 'days')
+
+    if (startAndEndDifference > 30) {
+      setSnackbarObject({
+        open: true,
+        severity: 'warning',
+        title: '',
+        message: 'The maximum range is 30 days',
+      })
+    }
+    else {
+      handleFormParametersChange('startTime', inputNewValue[0])
+      handleFormParametersChange('endTime', inputNewValue[1])
+      setIsDateRangeTimePickerOpen(false)
+    }
   }
 
   const handleFormParametersChange = (inputParameter, inputNewValue) => {
@@ -89,8 +109,14 @@ const Filters = (props) => {
               <MenuItem
                 key={index} 
                 value={item.id}
+                className={classes.formControlSelectMenuItem}
               >
-                {item.label}
+                <Typography
+                  variant='inherit'
+                  noWrap
+                >
+                  {item.label}
+                </Typography>
               </MenuItem>
             ))}
           </Select>
@@ -154,8 +180,14 @@ const Filters = (props) => {
               <MenuItem
                 key={index} 
                 value={item.id}
+                className={classes.formControlSelectMenuItem}
               >
-                {item.label}
+                <Typography
+                  variant='inherit'
+                  noWrap
+                >
+                  {item.label}
+                </Typography>
               </MenuItem>
             ))}
           </Select>

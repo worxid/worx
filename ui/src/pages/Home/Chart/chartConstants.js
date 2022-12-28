@@ -11,14 +11,28 @@ import { abbreviateNumber } from 'utilities/number'
 
 export const getTransactionChartOptions = (
   inputTheme, 
-  inputTitle, 
-  inputXList,
-  inputYList,
+  inputTitle,
+  inputList, 
+  inputSelectedBarChartItem,
+  inputSetSelectedBarChartItem,
 ) => {
   return {
     chart: {
       animations: {
         enabled: false,
+      },
+      events: {
+        click: (event, chartContext, config) => {
+          if (!inputSelectedBarChartItem || (inputSelectedBarChartItem.dataPointIndex !== config.dataPointIndex)) {
+            const selectedData = inputList.find((item, index) => index === config.dataPointIndex)
+
+            inputSetSelectedBarChartItem({
+              ...selectedData,
+              dataPointIndex: config.dataPointIndex,
+            })
+          }
+          else inputSetSelectedBarChartItem(null)
+        },
       },
       fontFamily: values.fontFamilyDmMono,
       foreColor: inputTheme.palette.text.primary,
@@ -50,8 +64,8 @@ export const getTransactionChartOptions = (
         fontWeight: 400,
       },
       formatter: function (value) {
-        if (value === Math.min(...inputYList)) return `min ${value}`
-        else if (value === Math.max(...inputYList)) return `max ${value}`
+        if (value === Math.min(...inputList.map(item => item.y))) return `min ${value}`
+        else if (value === Math.max(...inputList.map(item => item.y))) return `max ${value}`
         else return ''
       },
     },
@@ -61,7 +75,7 @@ export const getTransactionChartOptions = (
     },
     plotOptions: {
       bar: {
-        borderRadius: 15,
+        borderRadius: 12,
         columnWidth: '75%',
         borderRadiusApplication: 'end',
         endingShape: 'rounded',
@@ -74,14 +88,14 @@ export const getTransactionChartOptions = (
     stroke: {
       show: true,
       width: 2,
-      colors: [ 'red' ],
+      colors: [ inputTheme.palette.primary.main ],
     },
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
         return ReactDOMServer.renderToString(
           <CustomTooltip
-            xList={inputXList}
-            yList={inputYList}
+            xList={inputList.map(item => item.x)}
+            yList={inputList.map(item => item.y)}
             dataPointIndex={dataPointIndex}
             theme={inputTheme}
             title={inputTitle}
@@ -90,7 +104,7 @@ export const getTransactionChartOptions = (
       }
     },
     xaxis: {
-      categories: inputXList,
+      categories: inputList.map(item => item.x),
       labels: {
         style: {
           fontSize: 14,
@@ -100,7 +114,7 @@ export const getTransactionChartOptions = (
     },
     yaxis: {
       forceNiceScale: true,
-      max: function(max) { return max * 1.1 },
+      max: (max) => { return max * 1.1 },
       labels: {
         style: {
           fontSize: 14,

@@ -1,21 +1,38 @@
+import { useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 // ASSETS
 import IconCheck from 'assets/images/icons/authentication-check.svg'
 import IconEmail from 'assets/images/icons/authentication-email.svg'
 
+// CONTEXTS
+import { AllPagesContext } from 'contexts/AllPagesContext'
+
 // MUIS
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+
+// SERVICES
+import { 
+  postResendEmailConfirmation, 
+  postForgotPasswordUser, 
+} from 'services/worx/users'
 
 // STYLES
 import useStyles from './authenticationFinishUseStyles'
+
+// UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
+import { didSuccessfullyCallTheApi } from 'utilities/validation'
 
 const AuthenticationFinish = () => {
   const classes = useStyles()
 
   const [ searchParams ] = useSearchParams()
+
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   const type = searchParams.get('type')
   const email = searchParams.get('email')
@@ -32,20 +49,66 @@ const AuthenticationFinish = () => {
       if (inputType === 'sign-up') {
         informationObject.caption1 = 'Click the link in your email'
         informationObject.caption2 = 'to activate your account'
+        informationObject.navigationText = 'Didn’t receive the link? '
+        informationObject.linkText = 'Resend'
       }
       else if (inputType === 'forgot-password') {
         informationObject.caption1 = 'A link to reset your password'
         informationObject.caption2 = 'has been sent to your email'
+        informationObject.navigationText = 'Didn’t receive the link? '
+        informationObject.linkText = 'Resend'
       }
     }
     else if (inputType === 'reset-password') {
       informationObject = {
         title: 'Your password has been changed successfully',
         icon: IconCheck,
+        navigationText: 'Don’t have an account? ',
+        linkText: 'Sign Up',
       }
     }
 
     return informationObject
+  }
+
+  const handleResendClick = async (event, type) => {
+    event.preventDefault()
+    const abortController = new AbortController()
+
+    if (type === 'sign-up' && email) {
+      const response = await postResendEmailConfirmation(
+        abortController.signal,
+        { email }
+      )
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Successfully requested to resend the confirmation email',
+        })
+      } 
+      else setSnackbarObject(getDefaultErrorMessage(response))
+    } 
+    else if (type === 'forgot-password' && email) {
+      const response = await await postForgotPasswordUser(
+        abortController.signal,
+        { email }
+      )
+
+      if(didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity:'success',
+          title: '',
+          message: 'Successfully requested to resend the forgot password email',
+        })
+      } 
+      else setSnackbarObject(getDefaultErrorMessage(response))
+    }
+
+    abortController.abort()
   }
 
   return (
@@ -89,6 +152,26 @@ const AuthenticationFinish = () => {
       >
         Sign In
       </Button>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+        textAlign='center'
+      >
+        {/* NORMAL TEXT */}
+        {getinformation(type).navigationText}
+
+        {/* LINK TEXT */}
+        <Link 
+          href={type === 'reset-password' ? '/sign-up' : '#'}
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+          onClick={(event) => handleResendClick(event, type)}
+        >
+          {getinformation(type).linkText}
+        </Link>
+      </Typography>
     </>
   )
 }

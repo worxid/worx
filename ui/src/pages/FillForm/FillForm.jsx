@@ -11,7 +11,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CONSTANTS
-import { structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
+import { getKeyValue, structureErrorMessage, structureParamsValuesCheckbox } from './fillFormConstants'
 
 // MUIS
 import Button from '@mui/material/Button'
@@ -29,7 +29,7 @@ import IconShare from '@mui/icons-material/Share'
 import { 
   getReadFormTemplate, 
   postSubmitFormSubmission, 
-} from 'services/guest'
+} from 'services/worx/guest'
 
 // STYLES
 import useStyles from './fillFormUseStyles'
@@ -96,9 +96,9 @@ const FillForm = () => {
         }
       }
 
-      if (formObject[key]?.type === 'signature') {
-        if(formObject[key]?.value === null) delete tempFormObject[key]
-      }
+      // DELETE ITEM PARAM WHEN HAVE A NULL VALUE
+      if(formObject[key]?.[getKeyValue(formObject[key]?.type)] === null ||
+      formObject[key]?.[getKeyValue(formObject[key]?.type)] === '') delete tempFormObject[key]
     }
 
     const params = {
@@ -130,6 +130,12 @@ const FillForm = () => {
         else tempErrorMessage[keys] = ''
       }
       setFormObjectError(tempErrorMessage)
+      setSnackbarObject({
+        open: true,
+        severity:'error',
+        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
+        message: response?.data?.error?.message || 'Please check the form inputs again',
+      })
     } else {
       setSnackbarObject({
         open: true,

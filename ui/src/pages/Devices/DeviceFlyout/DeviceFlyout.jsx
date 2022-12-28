@@ -29,15 +29,17 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { putApprovedDevices } from 'services/devices'
+import { putApprovedDevices } from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -99,12 +101,8 @@ const DevicesFlyout = (props) => {
 
       reloadData(abortController.signal, true)
     } 
-    else if (!wasRequestCanceled(response?.status)) {
-      message = {
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      message = getDefaultErrorMessage(response)
     }
 
     setSnackbarObject({

@@ -22,15 +22,17 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // SERVICES
-import { postDeviceInvite } from 'services/devices'
+import { postDeviceInvite } from 'services/worx/devices'
 
 // STYLES
 import useStyles from './dialogInviteUseStyles'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -59,7 +61,7 @@ const DialogInvite = () => {
   const handleButtonInviteClick = async () => {
     const abortController = new AbortController()
     setIsLoading(true)
-   
+
     let requestBody = {
       send_to: [email]
     }
@@ -80,16 +82,10 @@ const DialogInvite = () => {
       })
       handleCloseDialog()
     }
-    else if (!wasRequestCanceled(response?.status)) {
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
       setIsLoading(false)
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
-
   }
 
   return (
@@ -100,7 +96,7 @@ const DialogInvite = () => {
         <Typography variant='subtitle1' fontWeight={500} flex={1}>Invite a device</Typography>
       </Stack>}
       areActionsAvailable={false}
-      classNames={classes.dialogExport}
+      classNames={classes.root}
     >
       <Divider />
       <Stack className={classes.content}>

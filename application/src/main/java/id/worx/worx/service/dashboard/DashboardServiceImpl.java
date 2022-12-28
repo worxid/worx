@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +22,7 @@ import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.specification.FormSpecification;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -46,7 +45,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         List<DashboardStat> dashboardStatList = formRepository.getDasboardStat(from, to, deviceCode,
-                request.getTemplateId());
+                request.getTemplateId(),authContext.getUsers().getId());
         List<DashboardStatDTO> response = new ArrayList<>();
 
         for (DashboardStat data : dashboardStatList) {
@@ -63,10 +62,10 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardStatMapDTO> getDashboardStatMap(LocalDate from, LocalDate to, DashboardRequest request) {
-        FormSubmissionSearchRequest searchRequest = FormSubmissionSearchRequest.builder()
+        FormSearchRequest searchRequest = FormSearchRequest.builder()
                 .templateId(request.getTemplateId())
                 .from(from.atStartOfDay(ZoneId.of("UTC")).toInstant())
-                .to(to.atStartOfDay(ZoneId.of("UTC")).toInstant())
+                .to(to.atTime(23,59,59).atZone(ZoneId.of("UTC")).toInstant())
                 .build();
         String deviceCode = null;
         if (request.getDeviceId() != null) {
@@ -78,7 +77,7 @@ public class DashboardServiceImpl implements DashboardService {
         return forms.stream().map(formMapper::toDashboardMapDTO).collect(Collectors.toList());
     }
 
-    public List<Form> listFormFilter(FormSubmissionSearchRequest request, String deviceCode) {
+    public List<Form> listFormFilter(FormSearchRequest request, String deviceCode) {
         Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId(), deviceCode);
         return formRepository.findAll(spec);
     }

@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 // CONSTANTS
-import { formatFiles, formatSizeImages } from '../formsCreateOrEditConstants'
+import { formatFiles, formatSizeImages, isNoDescriptionProperties, isNoRequiredProperties } from '../formsCreateOrEditConstants'
 
 // CONTEXT
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -75,6 +75,12 @@ const FieldProperties = () => {
     return listFields[indexOfId][name] ? listFields[indexOfId][name] : ''
   }
 
+  // IS FIELD OWN A PROPERTY
+  const isFieldOwnProperty = (fieldId, key) => {
+    const indexOfId = listFields.findIndex(item => item.id === fieldId)
+    return listFields[indexOfId].hasOwnProperty(key)
+  }
+
   // HANDLE UPDATE OPTIONLIST
   const handleUpdateOptionList = (fieldId, indexOption, value) => {
     const optionKey = selectedFieldsType === 'checkbox_group' ? 'group' : 'options'
@@ -141,7 +147,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
             required
           >
             <InputLabel>Form Name</InputLabel>
@@ -160,7 +165,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
             required
           >
             <InputLabel>Description</InputLabel>
@@ -183,7 +187,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Label</InputLabel>
         
@@ -200,25 +203,27 @@ const FieldProperties = () => {
           </FormControl>
 
           {/* DESCRIPTION */}
-          <FormControl
-            className={classes.formControl}
-            label='description'
-            variant='outlined' 
-            fullWidth
-            color='secondary'
-          >
-            <InputLabel>Description</InputLabel>
-        
-            <OutlinedInput
-              type='text'
-              label='Description'
-              placeholder='Description'
-              onChange={(event) => handleUpdateFieldPropertiesById(
-                selectedFieldsId, 'description', event.target.value
-              ) }
-              value={getFieldPropertiesValueById(selectedFieldsId, 'description')}
-            />
-          </FormControl>
+          {(isFieldOwnProperty(selectedFieldsId, 'description')
+          && !isNoDescriptionProperties(selectedFieldsType)) && (
+            <FormControl
+              className={classes.formControl}
+              label='description'
+              variant='outlined' 
+              fullWidth
+            >
+              <InputLabel>Description</InputLabel>
+          
+              <OutlinedInput
+                type='text'
+                label='Description'
+                placeholder='Description'
+                onChange={(event) => handleUpdateFieldPropertiesById(
+                  selectedFieldsId, 'description', event.target.value
+                ) }
+                value={getFieldPropertiesValueById(selectedFieldsId, 'description')}
+              />
+            </FormControl>
+          )}
         </>
       )}
 
@@ -231,7 +236,6 @@ const FieldProperties = () => {
               className={classes.formControl}
               variant='outlined' 
               fullWidth
-              color='secondary'
             >
               <InputLabel>Option #{index+1}</InputLabel>
         
@@ -274,7 +278,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Min. Checked Positions</InputLabel>
         
@@ -294,7 +297,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Max. Checked Positions</InputLabel>
         
@@ -359,7 +361,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Stars Count</InputLabel>
         
@@ -390,7 +391,6 @@ const FieldProperties = () => {
             className={classes.formControl}
             variant='outlined' 
             fullWidth
-            color='secondary'
           >
             <InputLabel>Max. Number of {selectedFieldsType === 'file' ? 'Files' : 'Images'}</InputLabel>
         
@@ -417,7 +417,7 @@ const FieldProperties = () => {
       {selectedFieldsType === 'file' && (
         <>
           {/* FORMAT FILE */}
-          <FormControl className={classes.formControl} color='secondary'>
+          <FormControl className={classes.formControl}>
             <InputLabel>Format File</InputLabel>
 
             <Select
@@ -457,7 +457,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Min. File Size</InputLabel>
             
@@ -479,7 +478,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Min. File Size</InputLabel>
             
@@ -507,7 +505,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Max. File Size</InputLabel>
             
@@ -529,7 +526,6 @@ const FieldProperties = () => {
                 className={`${classes.formControl} marginBottom0`}
                 variant='outlined' 
                 fullWidth
-                color='secondary'
               >
                 <InputLabel>Max. File Size</InputLabel>
             
@@ -569,8 +565,37 @@ const FieldProperties = () => {
         </FormGroup>
       )}
 
+      {/* TYPE BARCODE */}
+      {selectedFieldsType === 'barcode' && (
+        <FormGroup className={`${classes.formControl} marginBottom0`}>
+          {/* RESTRICT TO 1D BARCODES ONLY */}
+          <FormControlLabel
+            control={(<Checkbox
+              onChange={(event) => handleUpdateFieldPropertiesById(
+                selectedFieldsId, 'barcode_type', Boolean(event.target.checked) ? '1d' : null
+              )}
+              checked={getFieldPropertiesValueById(selectedFieldsId, 'barcode_type') === '1d'}
+            />)}
+            label='Restrict to 1D barcodes only'
+          />
+
+          {/* USER CAN MANUALLY OVERRIDE */}
+          <FormControlLabel
+            control={(<Checkbox
+              onChange={(event) => handleUpdateFieldPropertiesById(
+                selectedFieldsId, 'allow_manual_override', Boolean(event.target.checked)
+              )}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'allow_manual_override'))}
+            />)}
+            label='User can manually override'
+          />
+        </FormGroup>
+      )}
+
       {/* DEFAULT FIELD PROPERTIES */}
-      {(selectedFieldsType && selectedFieldsType !== 'formHeader' && selectedFieldsType !== 'separator') && (
+      {(selectedFieldsType && selectedFieldsType !== 'formHeader'
+        && selectedFieldsType !== 'separator' && isFieldOwnProperty(selectedFieldsId, 'required')
+        && !isNoRequiredProperties(selectedFieldsType)) && (
         <FormGroup className={classes.formControl}>
           <FormControlLabel
             control={(<Checkbox

@@ -8,6 +8,7 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import InputLabel from '@mui/material/InputLabel'
+import Link from '@mui/material/Link'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import Typography from '@mui/material/Typography'
 
@@ -15,7 +16,7 @@ import Typography from '@mui/material/Typography'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // SERVICES
-import { postForgotPasswordUser } from 'services/users'
+import { postForgotPasswordUser } from 'services/worx/users'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutAuthentication'
@@ -123,7 +124,6 @@ const ForgotPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.email}
-        color='secondary'
       >
         <InputLabel>
           Email
@@ -154,6 +154,21 @@ const ForgotPassword = () => {
       >
         Reset My Password
       </LoadingButton>
+
+      {/* NAVIGATION TEXT */}
+      <Typography 
+        variant='body2'
+        className='fontFamilySpaceMono'
+      >
+        Already have an account?&nbsp;
+        <Link 
+          href='/sign-in'
+          underline='none'
+          className='fontFamilySpaceMono fontWeight700'
+        >
+          Sign In
+        </Link>
+      </Typography>
     </form>
   )
 }

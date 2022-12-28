@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
 import InvalidateSize from './InvalidateSize'
+import MapCamera from './MapCamera'
 import Markers from './Markers'
 
 // CONTEXTS
@@ -21,7 +22,7 @@ import {
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { postDashboardStatsMap } from 'services/dashboard'
+import { postDashboardStatsMap } from 'services/worx/dashboard'
 
 // STYLES
 import useStyles from './mapUseStyles'
@@ -29,21 +30,28 @@ import 'leaflet/dist/leaflet.css'
 
 // UTILITIES
 import moment from 'moment'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
-  didSuccessfullyCallTheApi, 
+  didSuccessfullyCallTheApi,
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
 const Map = (props) => {
+  const { 
+    filterParameters, 
+    selectedBarChartItem,
+  } = props
+  
   const axiosPrivate = useAxiosPrivate()
-
-  const { filterParameters } = props
-
+  
   const { drawerState } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
   
   const [ mapObject, setMapObject ] = useState()
   const [ submissionList, setSubmissionList ] = useState([])
+  const [ filteredSubmissionList, setFilteredSubmissionList ] = useState(submissionList)
+  const [ boundCoordinateList, setBoundCoordinateList ] = useState([])
 
   const classes = useStyles()
 
@@ -52,13 +60,16 @@ const Map = (props) => {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
+
     const bodyParams = {}
+
     if(filterParameters?.form !== 'all'){
       bodyParams.template_id = filterParameters.form
-    } 
+    }
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
+
     const response = await postDashboardStatsMap(
       abortController.signal,
       requestParams,
@@ -67,14 +78,29 @@ const Map = (props) => {
     )
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
-      setSubmissionList(response?.data?.list)
+      const newSubmissionList = response?.data?.list
+
+      setSubmissionList(newSubmissionList)
+      setBoundCoordinateList(newSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
     }
-    else if (!wasRequestCanceled(response?.status)) {
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
+  }
+
+  const updateMapCameraBasedOnSelectedBarChartItem = () => {
+    const selectedSubmissionList = submissionList.filter(item => item.submit_date.includes(selectedBarChartItem.date))
+
+    if (selectedSubmissionList.length > 0) {
+      setFilteredSubmissionList(selectedSubmissionList)
+      setBoundCoordinateList(selectedSubmissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
+    }
+    else {
       setSnackbarObject({
         open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
+        severity: 'info',
+        title: '',
+        message: 'No submission location for the map',
       })
     }
   }
@@ -82,6 +108,7 @@ const Map = (props) => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDashboardMap(abortController.signal, isMounted)
 
     return () => {
@@ -95,9 +122,17 @@ const Map = (props) => {
     filterParameters.startTime
   ])
 
+  useEffect(() => {
+    if (selectedBarChartItem) updateMapCameraBasedOnSelectedBarChartItem()
+    else {
+      setFilteredSubmissionList([...submissionList])
+      setBoundCoordinateList(submissionList.map(item => [ item?.submit_location?.lat, item.submit_location?.lng ]))
+    }
+  }, [submissionList, selectedBarChartItem])
+
   return (
     <Stack
-      flex='2'
+      flex='1'
       margin='0px -24px -24px'
     >
       <MapContainer
@@ -125,8 +160,15 @@ const Map = (props) => {
         {/* MARKERS */}
         <Markers 
           mapObject={mapObject}
-          submissionList={submissionList}
+          submissionList={filteredSubmissionList}
         />
+
+        {/* MAP CAMERA */}
+        {submissionList.length > 0 &&
+        <MapCamera
+          mapObject={mapObject}
+          locationList={boundCoordinateList}
+        />}
       </MapContainer>
     </Stack>
   )

@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 const MarkerIcon = (
   type,
   classes,
-  feature,
+  pointCount,
 ) => {
   return L.divIcon({
     className: 'custom-icon',
@@ -22,10 +22,11 @@ const MarkerIcon = (
           variant='body1'
           className={classes.markerCount}
         >
-          {feature?.properties?.point_count}
+          {pointCount}
         </Typography>}
       </Box>
     ),
+    iconSize: type === 'cluster' ? [32, 32] : [20, 20]
   })
 }
 

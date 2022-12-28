@@ -1,15 +1,16 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
+
+// AXIOS
+import axios from 'axios'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
-
-// HOOKS
-import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -22,24 +23,33 @@ import IconArrowForwardIos from '@mui/icons-material/ArrowForwardIos'
 import IconClose from '@mui/icons-material/Close'
 import IconFileDownload from '@mui/icons-material/FileDownload'
 
-// SERVICES
-import { postDetailMediaFiles } from 'services/media'
-import { downloadFileFromUrl } from 'services/others'
-
 // STYLES
 import useStyles from './dialogMediasPreviewUseStyles'
 
+// UTILITIES
+import { downloadFileFromFileObject } from 'utilities/file'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+} from 'utilities/validation'
+
 const DialogMediasPreview = (props) => {
-  const { mediasPreviewObject, setMediasPreviewObject } = props
+  const { 
+    isDialogOpen, setIsDialogOpen,
+    mediaList, setMediaList,
+    activeStep, setActiveStep,
+    mediaPreviewType,
+  } = props
 
   const classes = useStyles()
 
-  const axiosPrivate = useAxiosPrivate()
-
   const { setSnackbarObject } = useContext(AllPagesContext)
+  const refreshIntervalRef = useRef(null)
 
-  const [ mediaList, setMediaList ] = useState([])
-  const [ activeStep, setActiveStep ] = useState(0)
+  const [ refreshKey, setRefreshKey ] = useState(1)
+  const [ isLoadingPreview, setIsLoadingPreview ] = useState(true)
+  const [ isLoadingDownload, setIsLoadingDownload ] = useState(false)
   
   const getContentPropertyFromMediaObject = (inputMediaObject) => {
     let output = {}
@@ -73,75 +83,80 @@ const DialogMediasPreview = (props) => {
     return output
   }
 
-  const loadMediaFilesData = async (inputAbortController, inputIsMounted) => {
-    const resultMediaFilesData = await postDetailMediaFiles(
-      inputAbortController.signal,
-      { media_ids: mediasPreviewObject?.fileList?.map(item => item.media_id) },
-      axiosPrivate,
-    )
-
-    if (resultMediaFilesData.status === 200 && inputIsMounted) {
-      setMediaList(resultMediaFilesData.data.list)
-    }
-  }
-
   const handleDialogClose = () => {
-    setMediasPreviewObject(null)
+    setIsDialogOpen(false)
     setMediaList([])
     setActiveStep(0)
   }
 
   const handleDownloadButtonClick = async () => {
-    const resultDownloadFile = await downloadFileFromUrl(
-      mediaList[activeStep].url,
-      mediaList[activeStep].name,
-    )
+    setIsLoadingDownload(true)
 
-    if (resultDownloadFile.status !== 200 && resultDownloadFile.status !== 0) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: '',
-        message: 'Sorry, could not downlaod the file now',
-      })
+    const responseFile = await axios({
+      url: mediaList[activeStep].url,
+      method: 'GET',
+      responseType: 'blob',
+    })
+
+    if (responseFile.status === 200) {
+      const resultDownloadFile = downloadFileFromFileObject(
+        responseFile.data,
+        mediaList[activeStep].name,
+      )
+
+      if (
+        !didSuccessfullyCallTheApi(resultDownloadFile?.status) && 
+        !wasAccessTokenExpired(resultDownloadFile.status) && 
+        resultDownloadFile.status !== 0
+      ) setSnackbarObject(getDefaultErrorMessage(resultDownloadFile))
     }
+
+    setIsLoadingDownload(false)
+  }
+
+  const handleCancelRefreshInterval = () => {
+    refreshIntervalRef.current && clearInterval(refreshIntervalRef.current)
   }
 
   useEffect(() => {
-    let isMounted = true
-    const abortController = new AbortController()
+    if(!isLoadingPreview) setIsLoadingPreview(true)
 
-    if (Boolean(mediasPreviewObject)) loadMediaFilesData(abortController, isMounted)
+    refreshIntervalRef.current = setInterval(() => {
+      setRefreshKey(current => current + 1)
+    }, 3000)
 
     return () => {
-      isMounted = false
-      abortController.abort()
+      handleCancelRefreshInterval()
     }
-  }, [mediasPreviewObject])
+  }, [mediaList])
 
   return (
     <Dialog
       fullScreen
-      open={Boolean(mediasPreviewObject)}
+      open={isDialogOpen}
       onClose={handleDialogClose}
+      className='no-zoom'
     >
       {/* HEADER */}
-      <AppBar className={classes.appBar}>
+      <AppBar className={`${classes.appBar} zoom`}>
         <Toolbar className={classes.toolbar}>
           {/* FILES COUNT */}
           <Typography variant='subtitle1'>
-            {`${mediaList.length} ${mediasPreviewObject?.type}${mediaList.length > 1 ? 's' : ''} (${mediaList.length > 0 ? activeStep + 1 : 0}/${mediaList.length})`}
+            {`${mediaList.length} ${mediaPreviewType}${mediaList.length > 1 ? 's' : ''} (${mediaList.length > 0 ? activeStep + 1 : 0}/${mediaList.length})`}
           </Typography>
 
           {/* MENU */}
           <Stack 
             direction='row'
             spacing='8px'
+            alignItems='center'
           >
+            {isLoadingDownload && <CircularProgress color='primary' size={20} />}
+            
             {/* DOWNLOAD ICON */}
-            <IconButton onClick={() => handleDownloadButtonClick()}>
+            {!isLoadingDownload && (<IconButton onClick={() => handleDownloadButtonClick()}>
               <IconFileDownload/>
-            </IconButton>
+            </IconButton>)}
 
             {/* CLOSE ICON */}
             <IconButton onClick={handleDialogClose}>
@@ -156,7 +171,7 @@ const DialogMediasPreview = (props) => {
         flex='1'
         justifyContent='center'
         alignItems='center'
-        className={classes.content}
+        className={`${classes.content} zoom`}
       >
         {mediaList.length > 0 &&
         <Box
@@ -164,18 +179,32 @@ const DialogMediasPreview = (props) => {
           src={getContentPropertyFromMediaObject(mediaList[activeStep]).src}
           alt=''
           className={getContentPropertyFromMediaObject(mediaList[activeStep]).className}
+          onLoad={() => {
+            handleCancelRefreshInterval()
+            setIsLoadingPreview(false)
+          }}
+          key={refreshKey}
         />}
+
+        {/* LOADING */}
+        {isLoadingPreview &&
+        <Box className={classes.loadingContainer}>
+          <CircularProgress className={classes.loading}/>
+        </Box>}
       </Stack>
 
       {/* BOTTOM MENU */}
-      <AppBar className={classes.appBar}>
+      <AppBar className={`${classes.appBar} zoom`}>
         <Toolbar className={classes.toolbar}>
           {/* BACK BUTTON */}
           <Button
             className={classes.actionButton}
             startIcon={<IconArrowBackIos/>}
             disabled={activeStep === 0}
-            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep - 1)}
+            onClick={() => {
+              setIsLoadingPreview(true)
+              setActiveStep((prevActiveStep) => prevActiveStep - 1)
+            }}
           >
             BACK
           </Button>
@@ -185,7 +214,10 @@ const DialogMediasPreview = (props) => {
             className={classes.actionButton}
             endIcon={<IconArrowForwardIos/>}
             disabled={activeStep === mediaList.length - 1}
-            onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
+            onClick={() => {
+              setIsLoadingPreview(true)
+              setActiveStep((prevActiveStep) => prevActiveStep + 1)
+            }}
           >
             NEXT
           </Button>

@@ -2,7 +2,7 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  dialogExport: {
+  root: {
     '& .MuiPaper-root': {
       width: 400,
       height: 'auto !important',

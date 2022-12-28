@@ -6,12 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import id.worx.worx.entity.Form;
 import id.worx.worx.entity.Form_;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 
 @Component
 public class FormSpecification implements BaseSpecification<Form> {
-    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId) {
+    public Specification<Form> fromSearchRequest(FormSearchRequest request, Long userId) {
         Specification<Form> spec = Specification.where(null);
 
         spec= spec.and(getByUserId(userId));
@@ -49,7 +50,7 @@ public class FormSpecification implements BaseSpecification<Form> {
         return spec;
     }
 
-    public Specification<Form> fromSearchRequest(FormSubmissionSearchRequest request, Long userId, String deviceCode) {
+    public Specification<Form> fromSearchRequest(FormSearchRequest request, Long userId, String deviceCode) {
         Specification<Form> spec = fromSearchRequest(request,userId);
 
         if(Objects.nonNull(deviceCode)){
@@ -70,7 +71,7 @@ public class FormSpecification implements BaseSpecification<Form> {
 
     public Specification<Form> getByUserId(Long userId){
         return (root, query, criteriaBuilder) -> {
-            Join<Form,FormTemplate> formFormTemplate= root.join("template");
+            Join<Form,FormTemplate> formFormTemplate= root.join("template",JoinType.LEFT);
             return criteriaBuilder.equal(formFormTemplate.get("userId"),userId);
         };
     }

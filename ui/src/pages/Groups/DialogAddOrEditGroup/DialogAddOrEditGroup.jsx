@@ -37,7 +37,7 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 import { 
   postCreateGroup, 
   putEditGroup,
-} from 'services/group'
+} from 'services/worx/group'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -45,7 +45,12 @@ import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
 import { capitalizeEachWord } from 'utilities/string'
-import { didSuccessfullyCallTheApi } from 'utilities/validation'
+import { getDefaultErrorMessage } from 'utilities/object'
+import { 
+  didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
+  wasRequestCanceled,
+} from 'utilities/validation'
 
 const DialogAddOrEditGroup = (props) => {
   const { 
@@ -139,6 +144,9 @@ const DialogAddOrEditGroup = (props) => {
           title: '',
           message: message,
         })
+      }
+      else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
+        setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
       }
     }
     // CANCEL BUTTON IS CLICKED

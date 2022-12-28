@@ -36,15 +36,17 @@ import {
   deleteFormTemplate, 
   postCreateFormTemplate, 
   postGetListFormTemplate, 
-} from 'services/formTemplate'
+} from 'services/worx/formTemplate'
 
 // UTILITIES
+import { convertDate } from 'utilities/date'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
   isFormatDateSearchValid, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
-import { convertDate } from 'utilities/date'
 
 const Forms = () => {
   // CONTEXT
@@ -138,8 +140,6 @@ const Forms = () => {
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
   const [ filters, setFilters ] = useState(initialFilters)
-  const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
-  const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
@@ -162,13 +162,8 @@ const Forms = () => {
     if (didSuccessfullyCallTheApi(response?.status)) {
       navigate(`/forms/edit/${response.data.value.id}`)
     } 
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     abortController.abort()
@@ -192,11 +187,6 @@ const Forms = () => {
     } else {
       return ''
     }
-  }
-
-  const handleSelectDateRangePickerButtonClick = (newValue) => {
-    setDateRangeTimeValue(newValue)
-    setIsDateRangeTimePickerOpen(false)
   }
 
   // FETCHING DATA TABLE FORMS
@@ -225,8 +215,8 @@ const Forms = () => {
             ? [filters?.assigned_groups] : null,
         submission_count: filters?.submission_count || null,
         global_search: pageSearch,
-        from: dateRangeTimeValue[0],
-        to: dateRangeTimeValue[1],
+        from: '',
+        to: '',
       },
       axiosPrivate,
     )
@@ -234,6 +224,9 @@ const Forms = () => {
     if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setTableData(response.data.content)
       setTotalRow(response.data.totalElements)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     isDataGridLoading && setIsDataGridLoading(false)
@@ -267,13 +260,8 @@ const Forms = () => {
 
         setSelectionModel([])
       } 
-      else if (!wasRequestCanceled(response?.status)) {
-        setSnackbarObject({
-          open: true,
-          severity:'error',
-          title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-          message: response?.data?.error?.message || 'Something went wrong',
-        })
+      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        setSnackbarObject(getDefaultErrorMessage(response))
       }
     }
 
@@ -300,7 +288,7 @@ const Forms = () => {
       isMounted = false
       abortController.abort()
     }
-  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy, dateRangeTimeValue])
+  }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   return (
     <>
@@ -341,13 +329,8 @@ const Forms = () => {
             // TEXT
             contentTitle='Form List'
             // DATE RANGE TIME
-            isWithDateTimePicker={true}
+            isWithDateTimePicker={false}
             isWithTimePicker={false}
-            dateRangeValue={dateRangeTimeValue}
-            isDateRangeTimePickerOpen={isDateRangeTimePickerOpen} 
-            setIsDateRangeTimePickerOpen={setIsDateRangeTimePickerOpen}
-            handleSelectDateRangePickerButtonClick={handleSelectDateRangePickerButtonClick}
-            handleCancelDateRangePickerButtonClick={() => setIsDateRangeTimePickerOpen(false)}
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}

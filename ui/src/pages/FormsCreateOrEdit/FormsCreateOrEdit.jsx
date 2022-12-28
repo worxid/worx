@@ -20,11 +20,16 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { getDetailFormTemplate, putUpdateFormTemplate } from 'services/formTemplate'
+import { 
+  getDetailFormTemplate, 
+  putUpdateFormTemplate, 
+} from 'services/worx/formTemplate'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -42,6 +47,13 @@ const FormsCreateOrEdit = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
+  // REMOVE MULTIPLE KEY
+  const removeMultipleKeyObject = (deleteKey, item) => {
+    let temp = item
+    deleteKey && deleteKey.forEach(item => delete temp[item])
+    return temp
+  }
+
   // FETCHING DETAIL FORM TEMPLATE
   const fetchingDetailFormTemplate = async (abortController, inputIsMounted) => {
     const response = await getDetailFormTemplate(
@@ -52,7 +64,13 @@ const FormsCreateOrEdit = () => {
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       const values = response.data.value
-      const addOtherKeyToFields = values.fields.map(item => ({...item, duplicateFrom: null}))
+      const addOtherKeyToFields = values.fields.map(item => {
+        let tempItem = item
+
+        return {
+          ...tempItem, duplicateFrom: null
+        }
+      })
 
       setFormObject({
         label: values.label,
@@ -61,13 +79,8 @@ const FormsCreateOrEdit = () => {
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 
@@ -102,24 +115,12 @@ const FormsCreateOrEdit = () => {
         message:'Change have been save'
       })
     } 
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
 
     setHasFormChanged(false)
     abortController.abort()
-  }
-
-  // REMOVE MULTIPLE KEY
-  const removeMultipleKeyObject = (deleteKey, item) => {
-    let temp = item
-    deleteKey && deleteKey.forEach(item => delete temp[item])
-    return temp
   }
 
   // DEBOUNCE

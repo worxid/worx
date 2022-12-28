@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import id.worx.worx.common.model.response.BaseResponse;
 import id.worx.worx.common.model.request.EmailRequestDTO;
+import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.exception.TokenException;
 import id.worx.worx.common.model.request.auth.ChangePasswordRequest;
@@ -171,5 +177,22 @@ public class UsersController {
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(response);
+    }
+
+    @PutMapping(value = "/user-details")
+    public ResponseEntity<BaseValueResponse<UserDetailsResponse>> updateUserDetails(
+        @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        Users users = usersService.updateInformation(userUpdateRequest);
+        UserDetailsResponse dto = usersService.toDTOUserDetails(users);
+
+
+        BaseValueResponse<UserDetailsResponse> response = BaseValueResponse.<UserDetailsResponse>builder()
+            .value(dto)
+            .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(response);
+
     }
 }

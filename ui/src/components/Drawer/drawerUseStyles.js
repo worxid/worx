@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     [values.noZoomBoundary]: {
       left: 16,
-    }
+    },
+  },
+  headerIconToggleOnCollapsed: {
+    transform: 'rotateY(180deg)',
   },
   headerLogoProduct: {
     height: 28,
@@ -21,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   navigationItem: {
     paddingLeft: 20,
     height: 48,
+    fontWeight: 600,
     '&:hover': {
       backgroundColor: theme.palette.additional.drawer.hover,
     },
@@ -54,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
     width: 32,
     height: 32,
     backgroundColor: theme.palette.primary.outlinedHoverBackground,
+    marginLeft: -4,
+    [values.zoomBoundary]: {
+      marginLeft: -2,
+    }
   },
   navigationTooltipItem: {
     paddingLeft: 16,

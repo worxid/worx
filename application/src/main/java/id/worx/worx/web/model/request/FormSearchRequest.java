@@ -3,7 +3,6 @@ package id.worx.worx.web.model.request;
 import java.io.Serializable;
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FormSubmissionSearchRequest implements Serializable {
+public class FormSearchRequest implements Serializable {
 
     private static final long serialVersionUID = 1068729504805818697L;
 

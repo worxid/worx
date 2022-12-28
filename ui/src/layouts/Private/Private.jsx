@@ -14,7 +14,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { getUserDetails } from 'services/users'
+import { getUserDetails } from 'services/worx/users'
 
 // STYLES
 import useStyles from './privateUseStyles'

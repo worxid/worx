@@ -23,8 +23,8 @@ import Typography from '@mui/material/Typography'
 import IconClose from '@mui/icons-material/Close'
 
 // SERVICES
-import { getGuestShareLinkFormTemplate } from 'services/guest'
-import { postShareLinkFormTemplate } from 'services/formTemplate'
+import { getGuestShareLinkFormTemplate } from 'services/worx/guest'
+import { postShareLinkFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
 import useStyles from './dialogQrCodeUseStyles'
@@ -33,8 +33,10 @@ import useStyles from './dialogQrCodeUseStyles'
 import QRCode from 'qrcode'
 
 // UTILITIES
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi,
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
@@ -73,13 +75,9 @@ const DialogQrCode = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       generateQR(response.data.value.link)
-    } else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity:'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
 

@@ -23,9 +23,11 @@ import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.FileField;
 import id.worx.worx.common.model.forms.field.PhotoField;
 import id.worx.worx.common.model.forms.field.SignatureField;
+import id.worx.worx.common.model.forms.field.SketchField;
 import id.worx.worx.common.model.forms.value.FileValue;
 import id.worx.worx.common.model.forms.value.PhotoValue;
 import id.worx.worx.common.model.forms.value.SignatureValue;
+import id.worx.worx.common.model.forms.value.SketchValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.common.model.request.FormSubmitRequest;
 import id.worx.worx.entity.File;
@@ -46,7 +48,7 @@ import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.service.storage.FileStorageService;
-import id.worx.worx.web.model.request.FormSubmissionSearchRequest;
+import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,7 +71,7 @@ public class FormServiceImpl implements FormService {
     private final AuthenticationContext authContext;
 
     @Override
-    public Page<Form> search(FormSubmissionSearchRequest request, Pageable pageable) {
+    public Page<Form> search(FormSearchRequest request, Pageable pageable) {
         Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
         return formRepository.findAll(spec, pageable);
     }
@@ -175,8 +177,6 @@ public class FormServiceImpl implements FormService {
         details.addAll(fields.stream()
                 .map(field -> {
                     Value value = values.get(field.getId());
-                    log.info(field.getId());
-                    log.info("{}", value);
                     return field.validate(value);
                 })
                 .flatMap(Collection::stream)
@@ -228,6 +228,19 @@ public class FormServiceImpl implements FormService {
                 List<ErrorDetail> fileValidations = this.validateFile(field.getId(), fileId);
                 details.addAll(fileValidations);
             }
+        }
+
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            List<ErrorDetail> fileValidations = this.validateFile(field.getId(), fileId);
+            details.addAll(fileValidations);
         }
 
         return details;
@@ -303,6 +316,18 @@ public class FormServiceImpl implements FormService {
             }
         }
 
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            updateFileStateHelper(form, fileId, field.getId());
+        }
+
     }
 
     private void updateFileStateHelper(Form form, Long fileId, String fieldId) {
@@ -369,6 +394,18 @@ public class FormServiceImpl implements FormService {
             PhotoValue photoValue = (PhotoValue) value;
             List<Long> fileIds = photoValue.getFileIds();
             results.addAll(fileIds);
+        }
+
+        List<Field> sketchField = fields.stream()
+                .filter(SketchField.class::isInstance)
+                .filter(field -> values.containsKey(field.getId()))
+                .collect(Collectors.toList());
+
+        for (Field field : sketchField) {
+            Value value = values.get(field.getId());
+            SketchValue sketchValue = (SketchValue) value;
+            Long fileId = sketchValue.getFileId();
+            results.add(fileId);
         }
 
         return results;

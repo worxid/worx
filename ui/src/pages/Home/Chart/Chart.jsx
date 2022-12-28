@@ -14,13 +14,14 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
+import useWindowSize from 'hooks/useWindowSize'
 
 // MUIS
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 
 // SERVICES
-import { postDashboardStatsChart } from 'services/dashboard'
+import { postDashboardStatsChart } from 'services/worx/dashboard'
 
 // STYLES
 import useStyles from './chartUseStyles'
@@ -28,16 +29,22 @@ import useStyles from './chartUseStyles'
 // UTILITIES
 import { convertDate } from 'utilities/date'
 import moment from 'moment'
+import { getDefaultErrorMessage } from 'utilities/object'
 import { 
-  didSuccessfullyCallTheApi, 
+  didSuccessfullyCallTheApi,
+  wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
 
 const Chart = (props) => {
+  const { 
+    filterParameters, 
+    selectedBarChartItem, setSelectedBarChartItem,
+  } = props
+  
   const axiosPrivate = useAxiosPrivate()
-
-  const { filterParameters } = props
-
+  const windowSize = useWindowSize()
+  
   const classes = useStyles()
 
   const chartContainerRef = useRef()
@@ -47,31 +54,36 @@ const Chart = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const [ chartList, setChartList ] = useState([])
+  const [ containerHeight, setContainerHeight ] = useState(300)
 
-  const chartTitle = 'Submission Count'
+  const chartTitle = 'Total'
 
-  const getChartWidth = () => {
-    if (chartContainerRef.current) {
-      const containerWidth = chartContainerRef.current.clientWidth
+  // const getChartWidth = () => {
+  //   if (chartContainerRef.current) {
+  //     const containerWidth = chartContainerRef.current.clientWidth
   
-      if (chartList.length * 50 < containerWidth) return '100%'
-      else return chartList.length * 50
-    }
-    else return '100%'
-  }
+  //     if (chartList.length * 50 < containerWidth) return '100%'
+  //     else return chartList.length * 50
+  //   }
+  //   else return '100%'
+  // }
 
   const fetchDashboardChart = async (abortController, inputIsMounted) => {
     let requestParams = {
       from: moment(filterParameters?.startTime).format('YYYY-MM-DD'),
       to: moment(filterParameters?.endTime).format('YYYY-MM-DD'),
     }
+
     const bodyParams = {}
+
     if(filterParameters?.form !== 'all'){
       bodyParams.template_id = filterParameters.form
     } 
+
     if (filterParameters?.device !== 'all') {
       bodyParams.device_id = filterParameters.device
     }
+
     const response = await postDashboardStatsChart(
       abortController.signal,
       requestParams,
@@ -83,23 +95,27 @@ const Chart = (props) => {
       setChartList(response?.data?.list?.map((data) => {
         return {
           x: convertDate(data?.date, 'dd'),
-          y: data?.count
+          y: data?.count,
+          date: data?.date,
         }
       }))
     }
-    else if (!wasRequestCanceled(response?.status)) {
-      setSnackbarObject({
-        open: true,
-        severity: 'error',
-        title: response?.data?.error?.status?.replaceAll('_', ' ') || '',
-        message: response?.data?.error?.message || 'Something went wrong',
-      })
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
     }
+  }
+
+  const updateContainerHeight = () => {
+    if (windowSize.height < 900) setContainerHeight(150)
+    else if (windowSize.height >= 900 && windowSize.height < 1500) setContainerHeight(300)
+    else if (windowSize.height >= 1500 && windowSize.height < 2560) setContainerHeight(400)
+    else if (windowSize.height >= 2560) setContainerHeight(500)
   }
 
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+
     fetchDashboardChart(abortController.signal, isMounted)
 
     return () => {
@@ -113,26 +129,32 @@ const Chart = (props) => {
     filterParameters.startTime
   ])
 
+  useEffect(() => {
+    updateContainerHeight()
+  }, [windowSize.height])
+
   return (
     <Stack 
-      flex='1'
       ref={chartContainerRef}
       className={classes.root}
+      sx={{ height: containerHeight }}
     >
       <ReactApexChart
         className={classes.chart}
         options={getTransactionChartOptions(
           theme,
           chartTitle, 
-          chartList.map(item => item.x),
-          chartList.map(item => item.y),
+          chartList,
+          selectedBarChartItem,
+          setSelectedBarChartItem,
         )}
         series={getTransactionChartSeries(
           chartTitle, 
           chartList.map(item => item.y)
         )}
         type='bar'
-        width={getChartWidth()}
+        // width={getChartWidth()}
+        width='100%'
         height='100%'
       />
     </Stack>

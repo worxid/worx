@@ -19,12 +19,15 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconAccessTimeFilled from '@mui/icons-material/AccessTimeFilled'
 import IconAttachFile from '@mui/icons-material/AttachFile'
+import IconBrush from '@mui/icons-material/Brush'
 import IconCameraAlt from '@mui/icons-material/CameraAlt'
 import IconCancel from '@mui/icons-material/Cancel'
 import IconCreate from '@mui/icons-material/Create'
 import IconDateRange from '@mui/icons-material/DateRange'
 import IconImage from '@mui/icons-material/Image'
+import IconQrCode2 from '@mui/icons-material/QrCode2'
 import IconStar from '@mui/icons-material/Star'
 
 // STYLES
@@ -49,8 +52,8 @@ const MobilePreview = (props) => {
           <Typography variant='caption' color='text.secondary' className='displayBlock' noWrap>{item.description}</Typography>
         </Box>
 
-        {/* TEXTFIELD */}
-        {item.type === 'text' && (
+        {/* TEXTFIELD AND INTEGER */}
+        {(item.type === 'text' || item.type === 'integer') && (
           <FormControl fullWidth className={classes.formControlMobile}>
             <TextField label='Answer' variant='filled' size='small' className='heightFitContent'/>
           </FormControl>
@@ -176,6 +179,78 @@ const MobilePreview = (props) => {
               Add Signature
             </Button>
           </FormControl>
+        )}
+
+        {/* TIME */}
+        {item.type === 'time' && (
+          <FormControl fullWidth className={classes.formControlMobile}>
+            <Stack direction='row' alignItems='center'>
+              <TextField
+                label='Answer'
+                variant='filled'
+                size='small'
+                className={`${classes.inputDateTime} heightFitContent`}
+              />
+
+              <IconButton size='large' className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}>
+                <IconAccessTimeFilled fontSize='small'/>
+              </IconButton>
+            </Stack>
+          </FormControl>
+        )}
+
+        {/* BARCODE */}
+        {item.type === 'barcode' && (
+          <FormControl fullWidth className={classes.formControlMobile}>
+            <Stack direction='row' alignItems='center'>
+              <TextField
+                label='Scan Barcode'
+                variant='filled'
+                size='small'
+                className={`${classes.inputDateTime} heightFitContent`}
+              />
+
+              <IconButton size='large' className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}>
+                <IconQrCode2 fontSize='small'/>
+              </IconButton>
+            </Stack>
+          </FormControl>
+        )}
+
+        {/* SKETCH */}
+        {item.type === 'sketch' && (
+          <FormControl fullWidth className={classes.formControlMobile}>
+            <Stack direction='row' alignItems='center'>
+              <IconButton size='large' className={`${classes.buttonRedPrimary} heightFitContent`}>
+                <IconBrush fontSize='small'/>
+              </IconButton>
+
+              <Typography marginLeft={'8px'} variant='caption'>Add Sketch</Typography>
+            </Stack>
+          </FormControl>
+        )}
+
+        {/* YES/NO */}
+        {item.type === 'boolean' && (
+          <RadioGroup className={classes.formControlMobile}>
+            <Stack direction='row'>
+              <FormControlLabel
+                value='yes'
+                control={<Radio size='small' readOnly/>}
+                label={(
+                  <Typography variant='caption' className={classes.labelYesNo}>Yes</Typography>
+                )}
+              />
+
+              <FormControlLabel
+                value='no'
+                control={<Radio size='small' readOnly/>}
+                label={(
+                  <Typography variant='caption' className={classes.labelYesNo}>No</Typography>
+                )}
+              />
+            </Stack>
+          </RadioGroup>
         )}
       </Box>
 
