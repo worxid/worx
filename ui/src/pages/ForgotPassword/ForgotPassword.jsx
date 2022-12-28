@@ -124,7 +124,6 @@ const ForgotPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.email}
-        color='secondary'
       >
         <InputLabel>
           Email

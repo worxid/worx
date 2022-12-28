@@ -201,7 +201,6 @@ const UpdateProfile = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.fullName}
-        color='secondary'
       >
         <InputLabel>
           Full Name
@@ -225,7 +224,6 @@ const UpdateProfile = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.organizationName}
-        color='secondary'
       >
         <InputLabel>
           Organization Name
@@ -248,7 +246,6 @@ const UpdateProfile = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.email}
-        color='secondary'
         disabled
       >
         <InputLabel>
@@ -272,7 +269,6 @@ const UpdateProfile = (props) => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.phoneNumber}
-        color='secondary'
       >
         <InputLabel>
           Phone Number
