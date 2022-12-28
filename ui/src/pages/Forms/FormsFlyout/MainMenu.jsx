@@ -18,11 +18,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconCheckCircle from '@mui/icons-material/CheckCircle'
-import IconDateRange from '@mui/icons-material/DateRange'
-import IconEventNote from '@mui/icons-material/EventNote'
 import IconGroups from '@mui/icons-material/Groups'
-import IconNotes from '@mui/icons-material/Notes'
 import IconTextSnippet from '@mui/icons-material/TextSnippet'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
@@ -31,7 +27,6 @@ import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getExpandOrCollapseIcon } from 'utilities/component'
-import { convertDate } from 'utilities/date'
 
 const MainMenu = (props) => {
   const { rows, setGroupData } = props
@@ -42,38 +37,24 @@ const MainMenu = (props) => {
 
   const mainMenuIconList = [
     IconTextSnippet,
-    IconNotes,
-    IconEventNote,
-    IconDateRange,
     IconGroups,
-    IconCheckCircle,
     IconViewHeadline,
   ]
 
-  const mainMenuTitleList = [ 'Form Title', 'Description', 'Created', 'Modified', 'Groups', 'Submissions', 'Fields' ]
+  const mainMenuTitleList = [ 'Form Title', 'Groups', 'Fields' ]
 
   let mainMenuList = []
   if (rows.length === 1) {
     mainMenuList = Object.keys(rows[0])
       .filter(key => {
-        return key !== 'id' && key !== 'fields' && key !== 'submit_in_zone' && key !== 'default'
+        return key === 'label' || key === 'assigned_groups' || key === 'fields_size'
       })
       .map((key, index) => {
-        if(key === 'modified_on' || key === 'created_on') {
-          return {
-            title: mainMenuTitleList[index],
-            value: convertDate(rows[0][key]),
-            icon: mainMenuIconList[index],
-          }
-        } 
-        else {
-          return {
-            title: mainMenuTitleList[index],
-            value: rows[0][key],
-            icon: mainMenuIconList[index],
-          }
+        return {
+          title: mainMenuTitleList[index],
+          value: rows[0][key],
+          icon: mainMenuIconList[index],
         }
-        
       })
   }
 
