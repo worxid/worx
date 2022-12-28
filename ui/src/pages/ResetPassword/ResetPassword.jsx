@@ -149,7 +149,6 @@ const ResetPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.newPassword}
-        color='secondary'
       >
         <InputLabel>
           New Password
@@ -179,7 +178,6 @@ const ResetPassword = () => {
         variant='outlined' 
         fullWidth
         error={formHelperObject.confirmPassword}
-        color='secondary'
       >
         <InputLabel>
           Confirm Password

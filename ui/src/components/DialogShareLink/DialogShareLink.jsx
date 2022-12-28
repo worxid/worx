@@ -239,7 +239,6 @@ const DialogShareLink = (props) => {
                 <TextField
                   {...params}
                   label='Add email'
-                  color='secondary'
                   fontWeight={600}
                 />
               )}
