@@ -22,8 +22,6 @@ export const dataListComponents = [
     id: uuid(),
     label: 'Text Field',
     description: 'Description',
-    min_length: 1,
-    max_length: 24,
     required: false,
     type: 'text',
     duplicateFrom: null,

@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[900],
     maxHeight: '100%',
     maxWidth: '100%',
-    position: 'relative'
+    position: 'relative',
+    overflowY: 'auto',
   },
   mediaPreviewDocument: {
     width: '100%',

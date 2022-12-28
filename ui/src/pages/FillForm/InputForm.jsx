@@ -1138,7 +1138,10 @@ const InputForm = (props) => {
               size='small'
               className={`${classes.buttonRedPrimary} buttonAddSketch`}
               startIcon={<IconBrush fontSize='small'/>}
-              onClick={() => handleInputChange(item.id, item.type, 'isOpenSketch', true)}
+              onClick={() => {
+                handleInputChange(item.id, item.type, 'isOpenSketch', true)
+                handleInputChange(item.id, item.type, getKeyValue(item.type), null)
+              }}
             >
               Add Sketch
             </Button>

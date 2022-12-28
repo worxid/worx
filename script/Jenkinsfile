@@ -14,6 +14,7 @@ node {
       file(credentialsId: 'worx-web-ui-env', variable: 'WORX_WEB_UI_ENV')
     ]) {
       dir("${env.WORKSPACE}/ui") {
+        sh 'rm .env'
         sh 'echo $WORX_WEB_UI_ENV'
         sh 'cp $WORX_WEB_UI_ENV .env'
       }
