@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,12 +41,8 @@ public class SecurityConfiguration {
 
     private final AuthenticationFailureHandler failureHandler;
 
-    @Lazy
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-
-    protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() {
+    protected JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter(
+            HttpSecurity http) throws Exception {
         List<String> pathsToSkip =
                 new ArrayList<>(Arrays.asList(NON_TOKEN_BASED_AUTH_ENTRY_POINTS));
         pathsToSkip.addAll(Arrays.asList("/api/users/register",
@@ -66,7 +59,7 @@ public class SecurityConfiguration {
         SkipPathRequestMatcher matchers = new SkipPathRequestMatcher(pathsToSkip);
         JwtTokenAuthenticationProcessingFilter filter = new JwtTokenAuthenticationProcessingFilter(
                 failureHandler, jwtUtils, userDetailsService, matchers);
-        filter.setAuthenticationManager(this.authenticationManager);
+        filter.setAuthenticationManager(authManager(http));
         return filter;
     }
 
@@ -115,7 +108,7 @@ public class SecurityConfiguration {
                 .and()
                 .exceptionHandling().accessDeniedHandler(errorResponseHandler)
                 .and()
-                .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(),
+                .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(http),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -135,17 +128,15 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http,
-            BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsService userDetailsService)
-            throws Exception {
+    AuthenticationManager authManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(bCryptPasswordEncoder)
+                .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
     }

@@ -18,9 +18,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import id.worx.worx.util.JwtUtils;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String HEADER_PREFIX = "Bearer ";
@@ -29,16 +27,6 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
 
     private final JwtUtils jwtUtils;
     private final WorxUserDetailsService userDetailsService;
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-		context.setAuthentication(authResult);
-		SecurityContextHolder.setContext(context);
-        chain.doFilter(request, response);
-    }
 
     public JwtTokenAuthenticationProcessingFilter(AuthenticationFailureHandler failureHandler,
             JwtUtils jwtUtils, WorxUserDetailsService userDetailsService, RequestMatcher matcher) {
@@ -55,7 +43,6 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
         String token = this.extract(request);
         String subject = jwtUtils.getUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
-
         return new UsernamePasswordAuthenticationToken(userDetails, null,
                 null);
     }
@@ -71,6 +58,16 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
         }
 
         return header.substring(HEADER_PREFIX.length(), header.length());
+    }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+            HttpServletResponse response, FilterChain chain, Authentication authResult)
+            throws IOException, ServletException {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+		context.setAuthentication(authResult);
+		SecurityContextHolder.setContext(context);
+        chain.doFilter(request, response);
     }
 
     @Override
