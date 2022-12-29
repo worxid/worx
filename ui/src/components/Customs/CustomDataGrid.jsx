@@ -25,9 +25,12 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
           MenuProps: {
             sx: {
               '& .MuiMenuItem-root': {
-                fontSize: 12,
+                fontSize: 14,
               },
               [values.zoomBoundary]: {
+                '& .MuiMenuItem-root': {
+                  fontSize: 12,
+                },
                 '& .MuiPaper-root': {
                   zoom: 1 / values.zoomValue,
                 },
