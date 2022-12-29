@@ -6,6 +6,7 @@ import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
@@ -33,5 +34,5 @@ public interface GroupService {
 
     Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
 
-    Group updateDeviceAndForm(Long id, GroupUpdateRequest request);
+    Group updateGroup(Long id, List<Long> formId,List<Long> deviceId);
 }

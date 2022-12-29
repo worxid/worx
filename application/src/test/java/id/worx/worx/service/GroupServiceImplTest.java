@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import id.worx.worx.entity.users.Users;
-import id.worx.worx.repository.DeviceGroupsRepository;
 import id.worx.worx.repository.DeviceRepository;
-import id.worx.worx.repository.TemplateGroupsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,12 +40,6 @@ class GroupServiceImplTest {
     @Mock
     DeviceRepository deviceRepository;
 
-    @Mock
-    DeviceGroupsRepository deviceGroupsRepository;
-
-    @Mock
-    TemplateGroupsRepository templateGroupsRepository;
-
     @BeforeEach
     void init() {
 
@@ -55,9 +47,7 @@ class GroupServiceImplTest {
             groupRepository,
             groupMapper,
             authContext,
-            deviceRepository,
-            deviceGroupsRepository,
-            templateGroupsRepository
+            deviceRepository
             );
     }
 

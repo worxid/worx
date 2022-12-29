@@ -5,10 +5,13 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.response.BasePageResponse;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 import id.worx.worx.web.model.request.GroupUpdateRequest;
+import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -111,15 +114,15 @@ public class GroupController implements SecuredRestController {
                 .body(BaseResponse.builder().build());
     }
 
-    @PutMapping("{id}/updateDeviceAndForm")
-    public ResponseEntity<BaseValueResponse<GroupDTO>> updateDeviceAndForm(@PathVariable("id") Long id,
-                                                              @RequestBody @Valid GroupUpdateRequest request) {
-        Group group = groupService.updateDeviceAndForm(id, request);
+    @PutMapping("/{id}/group")
+    public ResponseEntity<BaseValueResponse<GroupDTO>> updateGroup(@PathVariable("id") Long id,
+                                                                    @RequestBody List<Long> formId,
+                                                                    @RequestBody List<Long> deviceId) {
+        Group group = groupService.updateGroup(id, formId,deviceId);
         GroupDTO dto = groupService.toDTO(group);
-        BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
+        return ResponseEntity.ok().body(BaseValueResponse.<GroupDTO>builder()
             .value(dto)
-            .build();
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(response);
+            .build());
     }
+
 }
