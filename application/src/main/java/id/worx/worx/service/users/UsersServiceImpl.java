@@ -68,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
-    private static final String FAILED_GENERATE_UPLOAD_URL = "File Storage failed to generate upload url : {}";
+    private static final String FAILED_GENERATE_DOWNLOAD_URL = "File Storage failed to generate download url: {}";
     private final UsersRepository usersRepository;
 
     private final WorxProperties worxProps;
@@ -335,11 +335,11 @@ public class UsersServiceImpl implements UsersService {
         }
         Users data = getEmail.get();
         try {
-            url = clientService.getUploadPresignedObjectUrl(data.getDashboardLogo().getPath());
+            url = clientService.getDownloadPresignedObjectUrl(data.getDashboardLogo().getPath());
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                  | IllegalArgumentException | IOException e) {
-            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
             url = "";
         }
 
@@ -478,11 +478,11 @@ public class UsersServiceImpl implements UsersService {
         String url = "";
         UserDetailsResponse detailsResponse = usersUpdateMapper.toResponse(users);
         try {
-            url = clientService.getUploadPresignedObjectUrl(users.getDashboardLogo().getPath());
+            url = clientService.getDownloadPresignedObjectUrl(users.getDashboardLogo().getPath());
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                  | IllegalArgumentException | IOException e) {
-            log.trace(FAILED_GENERATE_UPLOAD_URL, e.getMessage());
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
             url = "";
         }
         detailsResponse.setLogoUrl(url);
