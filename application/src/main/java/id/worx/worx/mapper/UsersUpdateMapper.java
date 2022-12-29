@@ -1,8 +1,6 @@
 package id.worx.worx.mapper;
 
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.response.users.UserDetailsResponse;
-import id.worx.worx.entity.devices.Device;
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.web.model.request.UserUpdateRequest;
 import org.mapstruct.Mapper;
