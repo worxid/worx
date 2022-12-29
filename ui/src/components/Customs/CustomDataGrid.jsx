@@ -25,7 +25,7 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
           MenuProps: {
             sx: {
               '& .MuiMenuItem-root': {
-                fontSize: 14,
+                fontSize: 12,
               },
               [values.zoomBoundary]: {
                 '& .MuiPaper-root': {
@@ -145,6 +145,9 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
   [values.zoomBoundary]: {
     '& .MuiToolbar-root': {
       zoom: 1 / values.zoomValue,
+    },
+    '& .MuiDataGrid-footerContainer': {
+      zoom: values.zoomValue,
     },
     '& .MuiTablePagination-selectLabel': {
       zoom: values.zoomValue,
