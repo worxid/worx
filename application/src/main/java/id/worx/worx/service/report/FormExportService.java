@@ -10,6 +10,7 @@ public interface FormExportService {
     ByteArrayOutputStream toXLS(Long id);
 
     ByteArrayOutputStream saveFormAsDOCX(Long formId);
+
     ByteArrayOutputStream saveFormAsPDF(Long formId);
 
 }

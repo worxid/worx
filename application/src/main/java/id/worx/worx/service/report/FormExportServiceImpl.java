@@ -1,7 +1,11 @@
 package id.worx.worx.service.report;
 
 import java.awt.Dimension;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -12,9 +16,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
-import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -33,11 +34,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import fr.opensagres.poi.xwpf.converter.core.XWPFConverterException;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.core.document.SyntaxKind;
 import fr.opensagres.xdocreport.document.IXDocReport;
@@ -80,6 +80,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FormExportServiceImpl implements FormExportService {
 
+    private static final String ERROR_DURING_RENDER_PDF_REPORT = "Error during render PDF report";
     private static final int MINIMUM_SUBMISSION_COUNT_VALUE = 0;
     private static final int MAXIMUM_SUBMISSION_COUNT_VALUE = 1000;
 
@@ -133,7 +134,8 @@ public class FormExportServiceImpl implements FormExportService {
         return toXLSHelper(headers, valueRows);
     }
 
-    private ByteArrayOutputStream toXLSHelper(List<FormExportEntry> headers, List<List<FormExportEntry>> valueRows) {
+    private ByteArrayOutputStream toXLSHelper(List<FormExportEntry> headers,
+            List<List<FormExportEntry>> valueRows) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -163,7 +165,8 @@ public class FormExportServiceImpl implements FormExportService {
         }
     }
 
-    private void fillFormEntry(Workbook workbook, Sheet sheet, List<List<FormExportEntry>> valueRows) {
+    private void fillFormEntry(Workbook workbook, Sheet sheet,
+            List<List<FormExportEntry>> valueRows) {
         CreationHelper creationHelper = workbook.getCreationHelper();
 
         CellStyle hlinkstyle = workbook.createCellStyle();
@@ -192,7 +195,8 @@ public class FormExportServiceImpl implements FormExportService {
                     cell.setCellValue(entry.getValues().get(k));
 
                     if (entry.hasHyperlink()) {
-                        XSSFHyperlink link = (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
+                        XSSFHyperlink link =
+                                (XSSFHyperlink) creationHelper.createHyperlink(HyperlinkType.URL);
                         link.setAddress(entry.getHyperlinks().get(k));
                         cell.setHyperlink(link);
                         cell.setCellStyle(hlinkstyle);
@@ -201,7 +205,8 @@ public class FormExportServiceImpl implements FormExportService {
 
                 if (hasCellRange(size, maxRows)) {
                     sheet.addMergedRegion(
-                            new CellRangeAddress(rowNumber, rowNumber + maxRows - 1, columnIndex, columnIndex));
+                            new CellRangeAddress(rowNumber, rowNumber + maxRows - 1, columnIndex,
+                                    columnIndex));
                 }
             }
 
@@ -252,7 +257,8 @@ public class FormExportServiceImpl implements FormExportService {
 
         IImageProvider logoImageProvider = null;
         try {
-            InputStream defaultLogo = new ClassPathResource("templates/default_logo.png").getInputStream();
+            InputStream defaultLogo =
+                    new ClassPathResource("templates/default_logo.png").getInputStream();
             logoImageProvider = new ByteArrayImageProvider(defaultLogo);
             logoImageProvider.setSize(99.84f, 29.76f);
         } catch (IOException e) {
@@ -262,7 +268,8 @@ public class FormExportServiceImpl implements FormExportService {
         if (Objects.nonNull(user.getDashboardLogo())) {
             try {
                 // TODO change with custom logo
-                InputStream logoInputStream = new ClassPathResource("templates/default_logo.png").getInputStream();
+                InputStream logoInputStream =
+                        new ClassPathResource("templates/default_logo.png").getInputStream();
                 logoImageProvider = new ByteArrayImageProvider(logoInputStream);
                 logoImageProvider.setSize(99.84f, 29.76f);
             } catch (IOException e) {
@@ -275,9 +282,11 @@ public class FormExportServiceImpl implements FormExportService {
                 .build();
         List<FieldContext> fields = toFieldContexts(formDTO);
 
-        try (InputStream in = new ClassPathResource(WorxConstants.TEMPLATE_REPORT_SUBMISSION_DOCX_PATH)
-                .getInputStream()) {
-            IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Freemarker);
+        try (InputStream in =
+                new ClassPathResource(WorxConstants.TEMPLATE_REPORT_SUBMISSION_DOCX_PATH)
+                        .getInputStream()) {
+            IXDocReport report =
+                    XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Freemarker);
 
             FieldsMetadata metadata = report.createFieldsMetadata();
             metadata.addFieldAsTextStyling("submitAddress", SyntaxKind.Html);
@@ -291,9 +300,34 @@ public class FormExportServiceImpl implements FormExportService {
 
             report.process(context, output);
         } catch (IOException e) {
-            log.error("Error during render PDF report", e);
+            log.error(ERROR_DURING_RENDER_PDF_REPORT, e);
         } catch (XDocReportException e) {
-            log.error("Error during render PDF report", e);
+            log.error(ERROR_DURING_RENDER_PDF_REPORT, e);
+        }
+        return output;
+    }
+
+    @Override
+    public ByteArrayOutputStream saveFormAsPDF(Long formId) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream reportByte = saveFormAsDOCX(formId);
+
+            ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
+
+            ByteArrayInputStream docFile = new ByteArrayInputStream(resource.getByteArray());
+            XWPFDocument doc = new XWPFDocument(docFile);
+
+            PdfOptions pdfOptions = PdfOptions.create();
+
+            PdfConverter.getInstance().convert(doc, output, pdfOptions);
+
+            doc.close();
+            return output;
+        } catch (XWPFConverterException e) {
+            log.error(ERROR_DURING_RENDER_PDF_REPORT, e);
+        } catch (IOException e) {
+            log.error(ERROR_DURING_RENDER_PDF_REPORT, e);
         }
         return output;
     }
@@ -317,7 +351,8 @@ public class FormExportServiceImpl implements FormExportService {
         List<FormDTO> formDTOs = sorted.stream()
                 .map(formMapper::toDTO)
                 .collect(Collectors.toList());
-        Integer fromIndex = Math.max(MINIMUM_SUBMISSION_COUNT_VALUE, formDTOs.size() - MAXIMUM_SUBMISSION_COUNT_VALUE);
+        Integer fromIndex = Math.max(MINIMUM_SUBMISSION_COUNT_VALUE,
+                formDTOs.size() - MAXIMUM_SUBMISSION_COUNT_VALUE);
         formDTOs = formDTOs.subList(fromIndex, formDTOs.size());
 
         List<FormExportEntry> headers = new ArrayList<>();
@@ -431,29 +466,4 @@ public class FormExportServiceImpl implements FormExportService {
         return storageService.getAll(fileIds);
     }
 
-    @Override
-    public ByteArrayOutputStream saveFormAsPDF(Long formId) {
-
-        try {
-
-            ByteArrayOutputStream reportByte = saveFormAsDOCX(formId);
-
-            ByteArrayResource resource = new ByteArrayResource(reportByte.toByteArray());
-
-            ByteArrayInputStream docFile = new ByteArrayInputStream(resource.getByteArray());
-            XWPFDocument doc = new XWPFDocument(docFile);
-
-            PdfOptions pdfOptions = PdfOptions.create();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            PdfConverter.getInstance().convert(doc, out, pdfOptions);
-            doc.close();
-
-
-            return out;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 }

@@ -195,7 +195,6 @@
 			<artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
 			<version>${fr.opensagres.xdocreport.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>javaxt</groupId>
 			<artifactId>javaxt-core</artifactId>
