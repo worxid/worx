@@ -1,68 +1,84 @@
 #!/usr/bin/env groovy
 
 node {
-  stage('Checkout SCM') {
-    checkout scm
+  try {
+    pipeline()
+  } catch (e) {
+    postFailure(e)
+  } finally {
+    postAlways()
   }
+}
 
-  stage('Preparation') {
-    echo 'Prepartion'
-  }
+def pipeline() {
+    stage('Checkout SCM') {
+      checkout scm
+    }
 
-  stage('Update secrets') {
-    withCredentials([
-      file(credentialsId: 'worx-web-ui-env', variable: 'WORX_WEB_UI_ENV')
-    ]) {
+    stage('Preparation') {
+      echo 'Prepartion'
+    }
+
+    stage('Update secrets') {
+      withCredentials([
+        file(credentialsId: 'worx-web-ui-env', variable: 'WORX_WEB_UI_ENV')
+      ]) {
+        dir("${env.WORKSPACE}/ui") {
+          sh 'echo $WORX_WEB_UI_ENV'
+          sh 'cp $WORX_WEB_UI_ENV .env'
+        }
+      }
+
+      withCredentials([
+        file(credentialsId: 'worx-server-env', variable: 'WORX_SERVER_ENV')
+      ]) {
+        dir('/opt/worx/deployments/worx-dev') {
+          sh 'cp $WORX_SERVER_ENV worx-core.env'
+        }
+      }
+    }
+
+    stage('Build Server') {
+      dir("${env.WORKSPACE}/application") {
+        docker.image('maven:3.8.1-adoptopenjdk-11').inside('-v /home/worx/.m2:/root/.m2') { c ->
+          sh 'mvn clean install'
+        }
+        sh 'docker build -t shygnome3/worx:latest -f ../docker/core/Dockerfile .'
+      }
+    }
+
+    stage('Build UI') {
       dir("${env.WORKSPACE}/ui") {
-        sh 'rm .env'
-        sh 'echo $WORX_WEB_UI_ENV'
-        sh 'cp $WORX_WEB_UI_ENV .env'
+        sh 'docker build -t shygnome3/worx-web-ui:latest -f ../docker/ui/Dockerfile .'
       }
     }
 
-    withCredentials([
-      file(credentialsId: 'worx-server-env', variable: 'WORX_SERVER_ENV')
-    ]) {
-      dir('/opt/worx/deployments/worx-dev') {
-        sh 'cp $WORX_SERVER_ENV worx-core.env'
-      }
+    stage('Deploy') {
+      sh """
+        export project_dir=/opt/worx/deployments/worx-dev
+
+        echo "Change directory to deployments"
+        cd \$project_dir
+
+        echo "Up docker compose"
+        docker-compose -f docker-compose.yml down
+        docker-compose -f docker-compose.yml pull
+        docker-compose -f docker-compose.yml up -d
+      """
     }
-  }
 
-  stage('Build Server') {
-    dir("${env.WORKSPACE}/application") {
-      docker.image('maven:3.8.1-adoptopenjdk-11').inside('-v /home/worx/.m2:/root/.m2') { c ->
-        sh 'mvn clean install'
-      }
-      sh 'docker build -t shygnome3/worx:latest -f ../docker/core/Dockerfile .'
-    }
-  }
+}
 
-  stage('Build UI') {
-    dir("${env.WORKSPACE}/ui") {
-      sh 'docker build -t shygnome3/worx-web-ui:latest -f ../docker/ui/Dockerfile .'
-    }
-  }
+def postFailure(e) {
+    echo 'Failed because of $e'
+    throw e
+}
 
-  stage('Deploy') {
-    sh """
-      export project_dir=/opt/worx/deployments/worx-dev
-
-      echo "Change directory to deployments"
-      cd \$project_dir
-
-      echo "Up docker compose"
-      docker-compose -f docker-compose.yml down
-      docker-compose -f docker-compose.yml pull
-      docker-compose -f docker-compose.yml up -d
-    """
-  }
-
+def postAlways() {
   stage('Clean up') {
     sh 'docker image prune -f'
     dir("${env.WORKSPACE}/ui") {
       sh 'rm .env'
     }
   }
-
 }
