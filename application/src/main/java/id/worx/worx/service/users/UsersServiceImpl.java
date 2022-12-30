@@ -335,7 +335,12 @@ public class UsersServiceImpl implements UsersService {
         }
         Users data = getEmail.get();
         try {
-            url = clientService.getDownloadPresignedObjectUrl(data.getDashboardLogo().getPath());
+            if(data.getDashboardLogo().getPath() == null){
+                url = "";
+            }else{
+                url = clientService.getDownloadPresignedObjectUrl(data.getDashboardLogo().getPath());
+            }
+
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                  | IllegalArgumentException | IOException e) {
@@ -478,7 +483,11 @@ public class UsersServiceImpl implements UsersService {
         String url = "";
         UserDetailsResponse detailsResponse = usersUpdateMapper.toResponse(users);
         try {
-            url = clientService.getDownloadPresignedObjectUrl(users.getDashboardLogo().getPath());
+            if(users.getDashboardLogo().getPath() == null){
+                url = "";
+            }else{
+                url = clientService.getDownloadPresignedObjectUrl(users.getDashboardLogo().getPath());
+            }
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                  | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
                  | IllegalArgumentException | IOException e) {
