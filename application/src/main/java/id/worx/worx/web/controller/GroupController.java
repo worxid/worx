@@ -5,13 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import id.worx.worx.common.model.dto.DeviceDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.response.BasePageResponse;
-import id.worx.worx.entity.devices.Device;
 import id.worx.worx.web.model.request.GroupSearchRequest;
-import id.worx.worx.web.model.request.GroupUpdateRequest;
-import id.worx.worx.web.model.request.UpdateDeviceRequest;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
