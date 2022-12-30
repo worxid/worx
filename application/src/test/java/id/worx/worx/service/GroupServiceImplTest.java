@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import id.worx.worx.entity.users.Users;
 import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.repository.FormTemplateRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ class GroupServiceImplTest {
     @Mock
     DeviceRepository deviceRepository;
 
+    @Mock
+    FormTemplateRepository formTemplateRepository;
+
     @BeforeEach
     void init() {
 
@@ -47,7 +51,8 @@ class GroupServiceImplTest {
             groupRepository,
             groupMapper,
             authContext,
-            deviceRepository
+            deviceRepository,
+            formTemplateRepository
             );
     }
 

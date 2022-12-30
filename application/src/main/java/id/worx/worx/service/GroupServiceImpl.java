@@ -1,11 +1,11 @@
 package id.worx.worx.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.repository.FormTemplateRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +36,8 @@ public class GroupServiceImpl implements GroupService {
     private final AuthenticationContext authContext;
 
     private final DeviceRepository deviceRepository;
+
+    private final FormTemplateRepository formTemplateRepository;
 
 
 
@@ -154,6 +156,29 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group updateGroup(Long id, List<Long> formId, List<Long> deviceId) {
-        return null;
+        Group group = this.findByIdorElseThrowNotFound(id);
+
+        List<Device> devices = deviceRepository.findAllById(deviceId);
+        group.setDevices(new HashSet<>());
+        devices = devices.stream()
+            .map(device -> {
+                group.getDevices().add(device);
+                device.getAssignedGroups().add(group);
+                return device;
+            }).collect(Collectors.toList());
+
+        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(formId);
+        group.setTemplates(new HashSet<>());
+        formTemplates = formTemplates.stream()
+            .map(formTemplate -> {
+                group.getTemplates().add(formTemplate);
+                formTemplate.getAssignedGroups().add(group);
+                return formTemplate;
+            }).collect(Collectors.toList());
+
+        deviceRepository.saveAll(devices);
+        formTemplateRepository.saveAll(formTemplates);
+        groupRepository.save(group);
+        return group;
     }
 }
