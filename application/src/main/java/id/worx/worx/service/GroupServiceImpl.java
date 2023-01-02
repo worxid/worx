@@ -155,10 +155,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group updateGroup(Long id, List<Long> formId, List<Long> deviceId) {
+    public Group updateGroup(Long id, GroupRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
 
-        List<Device> devices = deviceRepository.findAllById(deviceId);
+        group.setName(request.getName());
+        group.setColor(request.getColor());
+        List<Device> devices = deviceRepository.findAllById(request.getDeviceId());
         group.setDevices(new HashSet<>());
         devices = devices.stream()
             .map(device -> {
@@ -167,7 +169,7 @@ public class GroupServiceImpl implements GroupService {
                 return device;
             }).collect(Collectors.toList());
 
-        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(formId);
+        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(request.getFormId());
         group.setTemplates(new HashSet<>());
         formTemplates = formTemplates.stream()
             .map(formTemplate -> {

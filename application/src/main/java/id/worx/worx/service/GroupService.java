@@ -32,5 +32,5 @@ public interface GroupService {
 
     Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
 
-    Group updateGroup(Long id, List<Long> formId,List<Long> deviceId);
+    Group updateGroup(Long id, GroupRequest request);
 }

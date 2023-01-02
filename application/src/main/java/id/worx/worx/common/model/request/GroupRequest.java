@@ -1,6 +1,7 @@
 package id.worx.worx.common.model.request;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 
@@ -24,5 +25,9 @@ public class GroupRequest implements Serializable {
     private String name;
     @NotBlank
     private String color;
+    @NotBlank
+    private List<Long> formId;
+    @NotBlank
+    private List<Long> deviceId;
 
 }

@@ -94,7 +94,7 @@ public class GroupController implements SecuredRestController {
     @PutMapping("{id}")
     public ResponseEntity<BaseValueResponse<GroupDTO>> update(@PathVariable("id") Long id,
             @RequestBody @Valid GroupRequest request) {
-        Group group = groupService.update(id, request);
+        Group group = groupService.updateGroup(id, request);
         GroupDTO dto = groupService.toDTO(group);
         BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
                 .value(dto)
@@ -108,17 +108,6 @@ public class GroupController implements SecuredRestController {
         groupService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(BaseResponse.builder().build());
-    }
-
-    @PutMapping("/{id}/group")
-    public ResponseEntity<BaseValueResponse<GroupDTO>> updateGroup(@PathVariable("id") Long id,
-                                                                    @RequestBody List<Long> formId,
-                                                                    @RequestBody List<Long> deviceId) {
-        Group group = groupService.updateGroup(id, formId,deviceId);
-        GroupDTO dto = groupService.toDTO(group);
-        return ResponseEntity.ok().body(BaseValueResponse.<GroupDTO>builder()
-            .value(dto)
-            .build());
     }
 
 }
