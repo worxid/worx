@@ -9,6 +9,7 @@ import id.worx.worx.mapper.UsersUpdateMapper;
 import id.worx.worx.repository.*;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.storage.FileStorageService;
+import id.worx.worx.service.storage.client.MinioClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,6 +68,9 @@ class UsersServiceImplTest {
     @Mock
     FileStorageService fileStorageService;
 
+    @Mock
+    MinioClientService clientService;
+
     @BeforeEach
     void init() {
         usersService = new UsersServiceImpl(
@@ -81,7 +85,8 @@ class UsersServiceImplTest {
                 usersUpdateMapper,
                 authenticationContext,
                 fileRepository,
-                fileStorageService);
+                fileStorageService,
+                clientService);
     }
 
     @Test
