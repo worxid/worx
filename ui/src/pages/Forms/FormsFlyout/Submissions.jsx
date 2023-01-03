@@ -63,12 +63,18 @@ const Submissions = (props) => {
 
   // GET SUBMISSION LIST
   const getSubmissionList = async (inputSignal, inputIsMounted) => {
-    const response = await postSearchFormSubmissionList(inputSignal.signal, {
-      page: currentPage-1,
-      size: 10
-    }, {
-      template_id: rows[0].id,
-    }, axiosPrivate)
+    const response = await postSearchFormSubmissionList(
+      inputSignal.signal, 
+      {
+        page: currentPage - 1,
+        size: 10,
+        sort: 'submission_date,desc',
+      },
+      {
+        template_id: rows[0].id,
+      }, 
+      axiosPrivate,
+    )
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setSubmissionData(response?.data)
