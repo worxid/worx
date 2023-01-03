@@ -53,6 +53,7 @@ import {
   wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
+import { convertCamelCaseToSnakeCase } from 'utilities/string'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -185,7 +186,7 @@ const FormsSubmissions = () => {
       size: pageSize,
       page: pageNumber,
     }
-    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+    if (order && orderBy) requestParams.sort = `${convertCamelCaseToSnakeCase(orderBy)},${order}`
 
     let bodyParams = { 
       submit_address: filters.submissionAddress,
@@ -467,16 +468,6 @@ const FormsSubmissions = () => {
     setFinalTableData(newFinalTableData)
   }
 
-  const handleSubmissionDateSortChange = () => {
-    let newFinalTableData = [...finalTableData]
-
-    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
-    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
-    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
-
-    setFinalTableData(newFinalTableData)
-  }
-  
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -492,9 +483,7 @@ const FormsSubmissions = () => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
-
-    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
-    else getSubmissionList(isMounted, abortController)
+    getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
