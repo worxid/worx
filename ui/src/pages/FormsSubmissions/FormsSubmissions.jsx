@@ -140,10 +140,10 @@ const FormsSubmissions = () => {
   const [ pageNumber, setPageNumber ] = useState(0)
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
-  const [ order, setOrder ] = useState(null)
-  const [ orderBy, setOrderBy ] = useState(null)
+  const [ order, setOrder ] = useState('desc')
+  const [ orderBy, setOrderBy ] = useState('submission_date')
   // DATA GRID - FILTER
-  const [ isFilterOn, setIsFilterOn ] = useState(false)
+  const [ isFilterOn, setIsFilterOn ] = useState(true)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
   const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
