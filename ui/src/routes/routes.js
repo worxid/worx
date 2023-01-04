@@ -4,21 +4,23 @@ import { lazy } from 'react'
 import { PageFormsCreateOrEditContextProvider } from 'contexts/PageFormsCreateOrEditContext'
 import { PrivateLayoutContextProvider } from 'contexts/PrivateLayoutContext'
 
+// PAGES (PREVENT FROM RELOADING THE PAGE AFTER THE USER CLICKS THE NAVIGATION ITEM FROM THE DRAWER COMPONENT)
+import Devices from 'pages/Devices/Devices'
+import Forms from 'pages/Forms/Forms'
+import Groups from 'pages/Groups/Groups'
+import Home from 'pages/Home/Home'
+import Settings from 'pages/Settings/Settings'
+
 // PAGES
 const AuthenticationFinish = lazy(() => import('pages/AuthenticationFinish/AuthenticationFinish'))
-const Devices = lazy(() => import('pages/Devices/Devices'))
 const Error = lazy(() => import('pages/Error'))
 const FillForm = lazy(() => import('pages/FillForm/FillForm'))
 const FillFormFinish = lazy(() => import('pages/FillFormFinish/FillFormFinish'))
 const ForgotPassword = lazy(() => import('pages/ForgotPassword/ForgotPassword'))
-const Forms = lazy(() => import('pages/Forms/Forms'))
 const FormsCreateOrEdit = lazy(() => import('pages/FormsCreateOrEdit/FormsCreateOrEdit'))
 const FormsSubmissions = lazy(() => import('pages/FormsSubmissions/FormsSubmissions'))
 const FormsSubmissionsDetail = lazy(() => import('pages/FormsSubmissionsDetail/FormsSubmissionsDetail'))
-const Groups = lazy(() => import('pages/Groups/Groups'))
-const Home = lazy(() => import('pages/Home/Home'))
 const ResetPassword = lazy(() => import('pages/ResetPassword/ResetPassword'))
-const Settings = lazy(() => import('pages/Settings/Settings'))
 const SignIn = lazy(() => import('pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('pages/SignUp/SignUp'))
 
