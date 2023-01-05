@@ -24,7 +24,7 @@ import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.web.model.request.FormSearchRequest;
 
 @ContextConfiguration(classes = {FormControllerTest.Config.class})
-public class FormControllerTest extends AbstractControllerTest {
+class FormControllerTest extends AbstractControllerTest {
 
     static class Config {
     }
