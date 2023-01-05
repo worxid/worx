@@ -156,8 +156,7 @@ public class FormServiceImpl implements FormService {
     }
 
     public Form getById(Long id) {
-        return formRepository.findById(id)
-                .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        return formRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
@@ -264,24 +263,19 @@ public class FormServiceImpl implements FormService {
         Optional<File> optFile = fileRepository.findById(fileId);
 
         if (optFile.isEmpty()) {
-            details.add(
-                    new FormValidationErrorDetail(
-                            FormValidationReason.INVALID_FILE_STATE,
-                            fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
             return details;
         }
 
         File file = optFile.get();
         if (!fileStorageService.isObjectExist(file.getPath())) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE,
-                    fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
             return details;
         }
 
         Optional<FileSubmission> fileSubmission = fileSubmissionRepository.findByFile(file);
         if (fileSubmission.isPresent()) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION,
-                    fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION, fieldId));
             return details;
         }
 
