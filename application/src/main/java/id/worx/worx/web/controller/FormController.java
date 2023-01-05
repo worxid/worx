@@ -3,7 +3,6 @@ package id.worx.worx.web.controller;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
@@ -69,9 +68,7 @@ public class FormController implements SecuredRestController {
     }
 
     @PostMapping("submit")
-    public ResponseEntity<BaseValueResponse<FormDTO>> submit(
-            HttpServletRequest httpServletRequest,
-            @RequestBody FormSubmitRequest request) {
+    public ResponseEntity<BaseValueResponse<FormDTO>> submit(@RequestBody FormSubmitRequest request) {
         Form form = formService.submit(request);
         FormDTO dto = formService.toDTO(form);
         BaseValueResponse<FormDTO> response = BaseValueResponse.<FormDTO>builder()
