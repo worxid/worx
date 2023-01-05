@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import id.worx.worx.common.model.dto.SearchFormDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import id.worx.worx.common.exception.FormValidationErrorDetail;
 import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.dto.Attachment;
 import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.dto.SearchFormDTO;
 import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.FileField;
 import id.worx.worx.common.model.forms.field.PhotoField;
@@ -30,6 +29,7 @@ import id.worx.worx.common.model.forms.value.SignatureValue;
 import id.worx.worx.common.model.forms.value.SketchValue;
 import id.worx.worx.common.model.forms.value.Value;
 import id.worx.worx.common.model.request.FormSubmitRequest;
+import id.worx.worx.common.model.response.BasePageResponse;
 import id.worx.worx.entity.File;
 import id.worx.worx.entity.FileSubmission;
 import id.worx.worx.entity.Form;
@@ -48,14 +48,16 @@ import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.service.storage.FileStorageService;
+import id.worx.worx.util.JpaUtils;
 import id.worx.worx.web.model.request.FormSearchRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FormServiceImpl implements FormService {
+
+    private static final Map<String, String> sortMap =
+            Map.ofEntries(Map.entry("source", "respondentLabel"));
 
     private final DeviceRepository deviceRepository;
     private final FormRepository formRepository;
@@ -70,10 +72,19 @@ public class FormServiceImpl implements FormService {
     private final FileSubmissionRepository fileSubmissionRepository;
     private final AuthenticationContext authContext;
 
+
     @Override
     public Page<Form> search(FormSearchRequest request, Pageable pageable) {
-        Specification<Form> spec = specification.fromSearchRequest(request, authContext.getUsers().getId());
-        return formRepository.findAll(spec, pageable);
+        Specification<Form> spec =
+                specification.fromSearchRequest(request, authContext.getUsers().getId());
+
+        Pageable adjustedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                JpaUtils.replaceSort(pageable.getSort(), sortMap));
+        Page<Form> page = formRepository.findAll(spec, adjustedPageable);
+        page = new BasePageResponse<>(page.toList(), pageable, page.getTotalElements());
+        return page;
     }
 
     @Override
@@ -145,7 +156,8 @@ public class FormServiceImpl implements FormService {
     }
 
     public Form getById(Long id) {
-        return formRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        return formRepository.findById(id)
+                .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
@@ -252,19 +264,24 @@ public class FormServiceImpl implements FormService {
         Optional<File> optFile = fileRepository.findById(fileId);
 
         if (optFile.isEmpty()) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
+            details.add(
+                    new FormValidationErrorDetail(
+                            FormValidationReason.INVALID_FILE_STATE,
+                            fieldId));
             return details;
         }
 
         File file = optFile.get();
         if (!fileStorageService.isObjectExist(file.getPath())) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE,
+                    fieldId));
             return details;
         }
 
         Optional<FileSubmission> fileSubmission = fileSubmissionRepository.findByFile(file);
         if (fileSubmission.isPresent()) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION, fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION,
+                    fieldId));
             return details;
         }
 
