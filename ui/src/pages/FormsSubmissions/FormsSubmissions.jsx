@@ -84,7 +84,7 @@ const FormsSubmissions = () => {
       valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
-      field: 'submissionDate',
+      field: 'submitDate',
       headerName: 'Submission Date',
       flex: 0,
       minWidth: 210,
@@ -141,7 +141,7 @@ const FormsSubmissions = () => {
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
   const [ order, setOrder ] = useState('desc')
-  const [ orderBy, setOrderBy ] = useState('submission_date')
+  const [ orderBy, setOrderBy ] = useState('submitDate')
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(true)
   const [ filters, setFilters ] = useState(initialFilters)
@@ -211,7 +211,7 @@ const FormsSubmissions = () => {
         return {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
-          submissionDate: submissionItem?.submit_date ?? '-',
+          submitDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem?.submit_location?.address ?? '-',
           submissionLatitude: submissionItem?.submit_location?.lat ?? null,
           submissionLongitude: submissionItem?.submit_location?.lng ?? null,
