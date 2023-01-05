@@ -68,7 +68,7 @@ const Submissions = (props) => {
       {
         page: currentPage - 1,
         size: 10,
-        sort: 'submission_date,desc',
+        sort: 'submit_date,desc',
       },
       {
         template_id: rows[0].id,
@@ -181,7 +181,7 @@ const Submissions = (props) => {
               <ListItemText
                 primary={
                   <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`} fontWeight={600}>
-                    {item?.source?.label?.replace(/_/g, ' ')}
+                    {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
                   </Typography>
                 }
                 secondary={
