@@ -53,6 +53,7 @@ import {
   wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
+import { convertCamelCaseToSnakeCase } from 'utilities/string'
 
 const FormsSubmissions = () => {
   // CONTEXT
@@ -83,7 +84,7 @@ const FormsSubmissions = () => {
       valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
-      field: 'submissionDate',
+      field: 'submitDate',
       headerName: 'Submission Date',
       flex: 0,
       minWidth: 210,
@@ -139,10 +140,10 @@ const FormsSubmissions = () => {
   const [ pageNumber, setPageNumber ] = useState(0)
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
-  const [ order, setOrder ] = useState(null)
-  const [ orderBy, setOrderBy ] = useState(null)
+  const [ order, setOrder ] = useState('desc')
+  const [ orderBy, setOrderBy ] = useState('submitDate')
   // DATA GRID - FILTER
-  const [ isFilterOn, setIsFilterOn ] = useState(false)
+  const [ isFilterOn, setIsFilterOn ] = useState(true)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
   const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
@@ -185,7 +186,7 @@ const FormsSubmissions = () => {
       size: pageSize,
       page: pageNumber,
     }
-    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+    if (order && orderBy) requestParams.sort = `${convertCamelCaseToSnakeCase(orderBy)},${order}`
 
     let bodyParams = { 
       submit_address: filters.submissionAddress,
@@ -210,7 +211,7 @@ const FormsSubmissions = () => {
         return {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
-          submissionDate: submissionItem?.submit_date ?? '-',
+          submitDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem?.submit_location?.address ?? '-',
           submissionLatitude: submissionItem?.submit_location?.lat ?? null,
           submissionLongitude: submissionItem?.submit_location?.lng ?? null,
@@ -467,16 +468,6 @@ const FormsSubmissions = () => {
     setFinalTableData(newFinalTableData)
   }
 
-  const handleSubmissionDateSortChange = () => {
-    let newFinalTableData = [...finalTableData]
-
-    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
-    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
-    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
-
-    setFinalTableData(newFinalTableData)
-  }
-  
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -492,9 +483,7 @@ const FormsSubmissions = () => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
-
-    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
-    else getSubmissionList(isMounted, abortController)
+    getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
