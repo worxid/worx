@@ -7,6 +7,7 @@ import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.web.model.request.GroupSearchRequest;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -32,5 +33,5 @@ public interface GroupService {
 
     Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
 
-    Group updateGroup(Long id, GroupRequest request);
+    Group updateGroup(Long id, GroupUpdateRequest request);
 }

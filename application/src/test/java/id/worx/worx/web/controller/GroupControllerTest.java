@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -42,9 +43,7 @@ class GroupControllerTest extends AbstractControllerTest {
     void testSaveGroup() throws Exception {
         String name = "Field 2 Group";
         String color = "#4287f5";
-        List<Long> deviceId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        List<Long> formId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color);
         BaseValueResponse<GroupDTO> actualResponse = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -59,9 +58,7 @@ class GroupControllerTest extends AbstractControllerTest {
     void testUpdateGroup() throws Exception {
         String name = "Field 3 Group";
         String color = "#4387f5";
-        List<Long> deviceId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        List<Long> formId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -72,12 +69,14 @@ class GroupControllerTest extends AbstractControllerTest {
         assertEquals(name, dto.getName());
         assertEquals(color, dto.getColor());
 
+        // TO DO TEST CREATE DEVICE AND FORM
+
         Long groupId = dto.getId();
         String updatedName = "Updated Field 3 Group";
         String updatedColor = "#4387f6";
-        List<Long> upadateDeviceId = new ArrayList<>(Arrays.asList(4L, 5L, 6L));
-        List<Long> updateFormId = new ArrayList<>(Arrays.asList(4L, 5L, 6L));
-        GroupRequest updateRequest = new GroupRequest(updatedName, updatedColor,upadateDeviceId,updateFormId);
+        List<Long> upadateDeviceId = new ArrayList<>(Arrays.asList());
+        List<Long> updateFormId = new ArrayList<>(Arrays.asList());
+        GroupUpdateRequest updateRequest = new GroupUpdateRequest(updatedName, updatedColor,upadateDeviceId,updateFormId);
         BaseValueResponse<GroupDTO> actualResponse = doPutWithTypedResponse(
                 "/groups/" + groupId,
                 updateRequest,
@@ -86,15 +85,15 @@ class GroupControllerTest extends AbstractControllerTest {
 
         assertEquals(updatedName, actualResponse.getValue().getName());
         assertEquals(updatedColor, actualResponse.getValue().getColor());
+        assertEquals(upadateDeviceId.size(), actualResponse.getValue().getDeviceCount());
+        assertEquals(updateFormId.size(), actualResponse.getValue().getFormCount());
     }
 
     @Test
     void testDeleteGroup() throws Exception {
         String name = "Field 4 Group";
         String color = "#4487f5";
-        List<Long> deviceId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        List<Long> formId = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,

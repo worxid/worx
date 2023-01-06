@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,8 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupUpdateRequest implements Serializable {
-    private String groupName;
-    private String gorupColor;
+    @NotBlank
+    private String name;
+    @NotBlank
+    private String color;
+    private List<Long> formId;
     private List<Long> deviceId;
-    private List<Long> templateId;
 }

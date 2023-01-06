@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -155,7 +156,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group updateGroup(Long id, GroupRequest request) {
+    public Group updateGroup(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
 
         group.setName(request.getName());

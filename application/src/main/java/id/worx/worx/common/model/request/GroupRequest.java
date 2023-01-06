@@ -25,9 +25,5 @@ public class GroupRequest implements Serializable {
     private String name;
     @NotBlank
     private String color;
-    @NotBlank
-    private List<Long> formId;
-    @NotBlank
-    private List<Long> deviceId;
 
 }
