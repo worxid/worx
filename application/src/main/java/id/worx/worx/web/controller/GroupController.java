@@ -95,7 +95,7 @@ public class GroupController implements SecuredRestController {
     @PutMapping("{id}")
     public ResponseEntity<BaseValueResponse<GroupDTO>> update(@PathVariable("id") Long id,
             @RequestBody @Valid GroupUpdateRequest request) {
-        Group group = groupService.updateGroup(id, request);
+        Group group = groupService.update(id, request);
         GroupDTO dto = groupService.toDTO(group);
         BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
                 .value(dto)

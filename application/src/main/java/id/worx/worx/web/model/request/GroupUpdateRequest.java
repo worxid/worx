@@ -1,6 +1,7 @@
 package id.worx.worx.web.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,16 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupUpdateRequest implements Serializable {
+
+    private static final long serialVersionUID = -6465388113918491543L;
+
     @NotBlank
     private String name;
     @NotBlank
     private String color;
-    private List<Long> formId;
-    private List<Long> deviceId;
+    @JsonProperty("form_ids")
+    private List<Long> formIds;
+    @JsonProperty("device_ids")
+    private List<Long> deviceIds;
+
 }

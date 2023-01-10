@@ -1,29 +1,31 @@
 package id.worx.worx.service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import id.worx.worx.entity.devices.Device;
-import id.worx.worx.repository.DeviceRepository;
-import id.worx.worx.repository.FormTemplateRepository;
-import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.FormTemplate;
 import id.worx.worx.entity.Group;
+import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.GroupMapper;
+import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.util.JpaUtils;
 import id.worx.worx.web.model.request.GroupSearchRequest;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -73,11 +75,31 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group update(Long id, GroupRequest request) {
+    public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
         groupMapper.update(group, request);
-        group = groupRepository.save(group);
-        return group;
+
+        List<Device> devices = deviceRepository.findAllById(request.getDeviceIds());
+        group.setDevices(new HashSet<>());
+        devices = devices.stream()
+                .map(device -> {
+                    group.getDevices().add(device);
+                    device.getAssignedGroups().add(group);
+                    return device;
+                }).collect(Collectors.toList());
+
+        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(request.getFormIds());
+        group.setTemplates(new HashSet<>());
+        formTemplates = formTemplates.stream()
+                .map(formTemplate -> {
+                    group.getTemplates().add(formTemplate);
+                    formTemplate.getAssignedGroups().add(group);
+                    return formTemplate;
+                }).collect(Collectors.toList());
+
+        deviceRepository.saveAll(devices);
+        formTemplateRepository.saveAll(formTemplates);
+        return groupRepository.save(group);
     }
 
     @Override
@@ -93,7 +115,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void delete(List<Long> ids) {
-        List<Group> groups = groupRepository.findByIdsAndUserId(ids, authContext.getUsers().getId());
+        List<Group> groups =
+                groupRepository.findByIdsAndUserId(ids, authContext.getUsers().getId());
 
         boolean defaultGroupFound = groups.stream()
                 .anyMatch(Group::isDefault);
@@ -118,16 +141,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable) {
+    public Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest,
+            Pageable pageable) {
         Pageable customPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 JpaUtils.replaceSort(pageable.getSort()));
-        Integer globalCountSearch= null;
-        String globalSearch=null;
-        if(Objects.nonNull(groupSearchRequest.getGlobalSearch())){
-            if(groupSearchRequest.getGlobalSearch().matches("[0-9]+")){
-                globalCountSearch=Integer.valueOf(groupSearchRequest.getGlobalSearch());
-            }else
-                globalSearch= groupSearchRequest.getGlobalSearch();
+        Integer globalCountSearch = null;
+        String globalSearch = null;
+        if (Objects.nonNull(groupSearchRequest.getGlobalSearch())) {
+            if (groupSearchRequest.getGlobalSearch().matches("[0-9]+")) {
+                globalCountSearch = Integer.valueOf(groupSearchRequest.getGlobalSearch());
+            } else
+                globalSearch = groupSearchRequest.getGlobalSearch();
         }
         return groupRepository.search(groupSearchRequest,
                 globalSearch,
@@ -146,7 +170,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Group findByIdorElseThrowNotFound(Long id) {
-        Optional<Group> group = groupRepository.findByIdAndUserId(id, authContext.getUsers().getId());
+        Optional<Group> group =
+                groupRepository.findByIdAndUserId(id, authContext.getUsers().getId());
 
         if (group.isEmpty()) {
             throw new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR);
@@ -155,33 +180,4 @@ public class GroupServiceImpl implements GroupService {
         return group.get();
     }
 
-    @Override
-    public Group updateGroup(Long id, GroupUpdateRequest request) {
-        Group group = this.findByIdorElseThrowNotFound(id);
-
-        group.setName(request.getName());
-        group.setColor(request.getColor());
-        List<Device> devices = deviceRepository.findAllById(request.getDeviceId());
-        group.setDevices(new HashSet<>());
-        devices = devices.stream()
-            .map(device -> {
-                group.getDevices().add(device);
-                device.getAssignedGroups().add(group);
-                return device;
-            }).collect(Collectors.toList());
-
-        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(request.getFormId());
-        group.setTemplates(new HashSet<>());
-        formTemplates = formTemplates.stream()
-            .map(formTemplate -> {
-                group.getTemplates().add(formTemplate);
-                formTemplate.getAssignedGroups().add(group);
-                return formTemplate;
-            }).collect(Collectors.toList());
-
-        deviceRepository.saveAll(devices);
-        formTemplateRepository.saveAll(formTemplates);
-        groupRepository.save(group);
-        return group;
-    }
 }

@@ -21,7 +21,7 @@ public interface GroupService {
 
     Group read(Long id);
 
-    Group update(Long id, GroupRequest request);
+    Group update(Long id, GroupUpdateRequest request);
 
     void delete(Long id);
 
@@ -31,7 +31,7 @@ public interface GroupService {
 
     GroupDTO toDTO(GroupSearchProjection groupSearchProjection);
 
-    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
+    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest,
+            Pageable pageable);
 
-    Group updateGroup(Long id, GroupUpdateRequest request);
 }
