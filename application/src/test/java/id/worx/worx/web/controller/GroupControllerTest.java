@@ -18,6 +18,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.dto.GroupDetailDTO;
+import id.worx.worx.common.model.dto.SimpleDeviceDTO;
+import id.worx.worx.common.model.dto.SimpleFormTemplateDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
@@ -69,24 +71,25 @@ class GroupControllerTest extends AbstractControllerTest {
         assertEquals(name, dto.getName());
         assertEquals(color, dto.getColor());
 
-        // TO DO TEST CREATE DEVICE AND FORM
-
         Long groupId = dto.getId();
         String updatedName = "Updated Field 3 Group";
         String updatedColor = "#4387f6";
-        List<Long> upadateDeviceId = new ArrayList<>(Arrays.asList());
+        List<Long> updateDeviceId = new ArrayList<>(Arrays.asList());
         List<Long> updateFormId = new ArrayList<>(Arrays.asList());
         GroupUpdateRequest updateRequest =
-                new GroupUpdateRequest(updatedName, updatedColor, upadateDeviceId, updateFormId);
+                new GroupUpdateRequest(updatedName, updatedColor, updateDeviceId, updateFormId);
         BaseValueResponse<GroupDetailDTO> actualResponse = doPutWithTypedResponse(
                 "/groups/" + groupId,
                 updateRequest,
                 new TypeReference<BaseValueResponse<GroupDetailDTO>>() {});
 
+        List<SimpleDeviceDTO> deviceDTOs = actualResponse.getValue().getDevices();
+        List<SimpleFormTemplateDTO> formTemplateDTOs = actualResponse.getValue().getForms();
+
         assertEquals(updatedName, actualResponse.getValue().getName());
         assertEquals(updatedColor, actualResponse.getValue().getColor());
-        assertEquals(upadateDeviceId.size(), actualResponse.getValue().getDeviceCount());
-        assertEquals(updateFormId.size(), actualResponse.getValue().getFormCount());
+        assertEquals(updateDeviceId.size(), deviceDTOs.size());
+        assertEquals(updateFormId.size(), formTemplateDTOs.size());
     }
 
     @Test
