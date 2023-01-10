@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 import id.worx.worx.entity.users.Users;
+import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.repository.FormTemplateRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,13 +38,22 @@ class GroupServiceImplTest {
     @Mock
     AuthenticationContext authContext;
 
+    @Mock
+    DeviceRepository deviceRepository;
+
+    @Mock
+    FormTemplateRepository formTemplateRepository;
+
     @BeforeEach
     void init() {
 
         groupService = new GroupServiceImpl(
             groupRepository,
             groupMapper,
-            authContext);
+            authContext,
+            deviceRepository,
+            formTemplateRepository
+            );
     }
 
     @Test

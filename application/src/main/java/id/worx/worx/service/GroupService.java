@@ -7,6 +7,7 @@ import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
 import id.worx.worx.web.model.request.GroupSearchRequest;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,7 +21,7 @@ public interface GroupService {
 
     Group read(Long id);
 
-    Group update(Long id, GroupRequest request);
+    Group update(Long id, GroupUpdateRequest request);
 
     void delete(Long id);
 
@@ -30,6 +31,7 @@ public interface GroupService {
 
     GroupDTO toDTO(GroupSearchProjection groupSearchProjection);
 
-    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
+    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest,
+            Pageable pageable);
 
 }

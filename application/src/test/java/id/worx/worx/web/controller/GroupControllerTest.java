@@ -5,8 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -66,10 +69,14 @@ class GroupControllerTest extends AbstractControllerTest {
         assertEquals(name, dto.getName());
         assertEquals(color, dto.getColor());
 
+        // TO DO TEST CREATE DEVICE AND FORM
+
         Long groupId = dto.getId();
         String updatedName = "Updated Field 3 Group";
         String updatedColor = "#4387f6";
-        GroupRequest updateRequest = new GroupRequest(updatedName, updatedColor);
+        List<Long> upadateDeviceId = new ArrayList<>(Arrays.asList());
+        List<Long> updateFormId = new ArrayList<>(Arrays.asList());
+        GroupUpdateRequest updateRequest = new GroupUpdateRequest(updatedName, updatedColor,upadateDeviceId,updateFormId);
         BaseValueResponse<GroupDTO> actualResponse = doPutWithTypedResponse(
                 "/groups/" + groupId,
                 updateRequest,
@@ -78,6 +85,8 @@ class GroupControllerTest extends AbstractControllerTest {
 
         assertEquals(updatedName, actualResponse.getValue().getName());
         assertEquals(updatedColor, actualResponse.getValue().getColor());
+        assertEquals(upadateDeviceId.size(), actualResponse.getValue().getDeviceCount());
+        assertEquals(updateFormId.size(), actualResponse.getValue().getFormCount());
     }
 
     @Test
