@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.dto.GroupDetailDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.common.model.request.MultipleDeleteRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
@@ -82,10 +83,10 @@ public class GroupController implements SecuredRestController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<BaseValueResponse<GroupDTO>> read(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseValueResponse<GroupDetailDTO>> read(@PathVariable("id") Long id) {
         Group group = groupService.read(id);
-        GroupDTO dto = groupService.toDTO(group);
-        BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
+        GroupDetailDTO dto = groupService.toDetailDTO(group);
+        BaseValueResponse<GroupDetailDTO> response = BaseValueResponse.<GroupDetailDTO>builder()
                 .value(dto)
                 .build();
         return ResponseEntity.status(HttpStatus.OK)
@@ -93,11 +94,11 @@ public class GroupController implements SecuredRestController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<BaseValueResponse<GroupDTO>> update(@PathVariable("id") Long id,
+    public ResponseEntity<BaseValueResponse<GroupDetailDTO>> update(@PathVariable("id") Long id,
             @RequestBody @Valid GroupUpdateRequest request) {
         Group group = groupService.update(id, request);
-        GroupDTO dto = groupService.toDTO(group);
-        BaseValueResponse<GroupDTO> response = BaseValueResponse.<GroupDTO>builder()
+        GroupDetailDTO dto = groupService.toDetailDTO(group);
+        BaseValueResponse<GroupDetailDTO> response = BaseValueResponse.<GroupDetailDTO>builder()
                 .value(dto)
                 .build();
         return ResponseEntity.status(HttpStatus.OK)

@@ -21,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.DeviceMapper;
+import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
 
@@ -29,31 +31,34 @@ class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    FormTemplateRepository formTemplateRepository;
+    @Mock
+    DeviceRepository deviceRepository;
 
     @Mock
     GroupMapper groupMapper;
+    @Mock
+    FormTemplateMapper templateMapper;
+    @Mock
+    DeviceMapper deviceMapper;
 
     private GroupService groupService;
 
     @Mock
     AuthenticationContext authContext;
 
-    @Mock
-    DeviceRepository deviceRepository;
-
-    @Mock
-    FormTemplateRepository formTemplateRepository;
-
     @BeforeEach
     void init() {
 
         groupService = new GroupServiceImpl(
-            groupRepository,
-            groupMapper,
-            authContext,
-            deviceRepository,
-            formTemplateRepository
-            );
+                groupRepository,
+                formTemplateRepository,
+                deviceRepository,
+                groupMapper,
+                templateMapper,
+                deviceMapper,
+                authContext);
     }
 
     @Test
@@ -113,7 +118,8 @@ class GroupServiceImplTest {
                 .id(1L)
                 .build();
 
-        when(groupRepository.findByIdsAndUserId(groupIds, userId)).thenReturn(List.of(group1, group2));
+        when(groupRepository.findByIdsAndUserId(groupIds, userId))
+                .thenReturn(List.of(group1, group2));
         when(authContext.getUsers()).thenReturn(users);
 
         groupService.delete(groupIds);
