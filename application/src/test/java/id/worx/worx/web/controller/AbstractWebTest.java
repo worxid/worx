@@ -16,6 +16,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import java.io.IOException;
 import java.util.Arrays;
 
+import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.response.BaseListResponse;
+import id.worx.worx.common.model.response.BaseValueResponse;
+import id.worx.worx.common.model.response.users.UserDetailsResponse;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +71,8 @@ public abstract class AbstractWebTest {
     protected String refreshToken;
     protected String username;
 
+    protected String organizationCode;
+
     @SuppressWarnings("rawtypes")
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
@@ -115,7 +121,16 @@ public abstract class AbstractWebTest {
         request.setPhoneNo("62898555907");
         request.setOrganizationName("testadmin");
         request.setCountry("Indonesia");
+
         createUserAndLogin(request, ADMIN_USER_PASSWORD);
+
+        //TO DO GET USER DETAILS
+
+        BaseValueResponse<UserDetailsResponse> response = doGetTyped("/api/users/user-details", new TypeReference<BaseValueResponse<UserDetailsResponse>>() {
+        });
+
+        UserDetailsResponse resp = response.getValue();
+        organizationCode = resp.getOrganizationCode();
 
         log.info("Setup web test done");
     }
