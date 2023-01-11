@@ -71,6 +71,8 @@ class GroupControllerTest extends AbstractControllerTest {
         assertEquals(name, dto.getName());
         assertEquals(color, dto.getColor());
 
+        // TODO add device and form testing
+
         Long groupId = dto.getId();
         String updatedName = "Updated Field 3 Group";
         String updatedColor = "#4387f6";
