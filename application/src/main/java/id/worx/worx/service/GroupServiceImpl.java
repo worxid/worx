@@ -1,5 +1,6 @@
 package id.worx.worx.service;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.dto.GroupDetailDTO;
+import id.worx.worx.common.model.dto.SimpleDeviceDTO;
+import id.worx.worx.common.model.dto.SimpleFormTemplateDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.FormTemplate;
@@ -19,6 +23,8 @@ import id.worx.worx.entity.Group;
 import id.worx.worx.entity.devices.Device;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.DeviceMapper;
+import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
@@ -33,16 +39,14 @@ import lombok.RequiredArgsConstructor;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-
-    private final GroupMapper groupMapper;
-
-    private final AuthenticationContext authContext;
-
+    private final FormTemplateRepository formTemplateRepository;
     private final DeviceRepository deviceRepository;
 
-    private final FormTemplateRepository formTemplateRepository;
+    private final GroupMapper groupMapper;
+    private final FormTemplateMapper templateMapper;
+    private final DeviceMapper deviceMapper;
 
-
+    private final AuthenticationContext authContext;
 
     @Override
     public List<Group> list() {
@@ -138,6 +142,36 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupDTO toDTO(GroupSearchProjection groupSearchProjection) {
         return groupMapper.toDTO(groupSearchProjection);
+    }
+
+    @Override
+    public GroupDetailDTO toDetailDTO(Group group) {
+        // TODO improve mapping performance
+        List<SimpleFormTemplateDTO> forms = group.getTemplates()
+                .stream()
+                .sorted(Comparator.comparing(FormTemplate::getId))
+                .map(templateMapper::toDTO)
+                .map(SimpleFormTemplateDTO::from)
+                .collect(Collectors.toList());
+
+        // TODO improve mapping performance
+        List<SimpleDeviceDTO> devices = group.getDevices()
+                .stream()
+                .sorted(Comparator.comparing(Device::getId))
+                .map(deviceMapper::toResponse)
+                .map(SimpleDeviceDTO::from)
+                .collect(Collectors.toList());
+
+        return GroupDetailDTO.builder()
+                .id(group.getId())
+                .name(group.getName())
+                .color(group.getColor())
+                .isDefault(group.isDefault())
+                .forms(forms)
+                .devices(devices)
+                .formCount(forms.size())
+                .deviceCount(devices.size())
+                .build();
     }
 
     @Override
