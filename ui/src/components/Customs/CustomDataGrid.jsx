@@ -149,9 +149,6 @@ const CustomDataGrid = styled(({ className, componentsProps, ...props }) => (
     '& .MuiToolbar-root': {
       zoom: 1 / values.zoomValue,
     },
-    '& .MuiDataGrid-footerContainer': {
-      zoom: values.zoomValue,
-    },
     '& .MuiTablePagination-selectLabel': {
       zoom: values.zoomValue,
     },
