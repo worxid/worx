@@ -691,7 +691,7 @@ const InputForm = (props) => {
 
             <FormControl error={Boolean(formObjectError?.[item.id])}>
               <MobileDatePicker
-                label='For mobile'
+                label='Date Picker'
                 renderInput={(params) => <TextField {...params}/>}
                 onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'yyyy-MM-dd'))}
                 onClose={() => setIsDatePickerOpen(false)}
@@ -1046,7 +1046,7 @@ const InputForm = (props) => {
             <FormControl error={Boolean(formObjectError?.[item.id])}>
               <MobileTimePicker
                 orientation='portrait'
-                label='For mobile'
+                label='Time Picker'
                 renderInput={(params) => <TextField {...params} />}
                 onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
                 onClose={() => setIsTimePickerOpen(false)}
