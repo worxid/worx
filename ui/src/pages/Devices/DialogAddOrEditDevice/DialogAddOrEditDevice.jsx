@@ -8,10 +8,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import CustomDialogActions from 'components/DialogAddOrEdit/Customs/CustomDialogActions'
+import CustomDialogActions from 'components/Customs/CustomDialogActions'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogContent from 'components/DialogAddOrEdit/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTitle'
+import CustomDialogContent from 'components/Customs/CustomDialogContent'
+import CustomDialogTitle from 'components/Customs/CustomDialogTitle'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
