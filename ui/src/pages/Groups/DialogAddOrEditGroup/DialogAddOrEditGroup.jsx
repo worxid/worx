@@ -312,6 +312,36 @@ const DialogAddOrEditGroup = (props) => {
             />
           )}
         />
+
+        {/* FORMS AUTOCOMPLETE */}
+        <Autocomplete
+          multiple
+          limitTags={2}
+          options={formList}
+          getOptionLabel={(option) => option.label}
+          className={layoutClasses.dialogAddOrEditFormControlContainer}
+          renderOption={(props, option, { selected }) => (
+            <ListItemButton 
+              {...props}
+              className={classes.autocompleteListItem}
+            >
+              {/* CHECKBOX */}
+              <ListItemIcon>
+                <Checkbox checked={selected}/>
+              </ListItemIcon>
+
+              {/* TEXT */}
+              <ListItemText primary={option.label}/>
+            </ListItemButton>
+          )}
+          renderInput={(params) => (
+            <TextField 
+              {...params} 
+              label='Form Names' 
+              placeholder='Form Names' 
+            />
+          )}
+        />
       </CustomDialogContent>
 
       {/* DIALOG ACTIONS */}
