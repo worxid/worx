@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '6px',
     cursor: 'pointer',
   },
+  autocomplete: {
+    marginTop: 12,
+  },
   autocompleteListItem: {
     padding: '0px 4px',
     '& .MuiListItemIcon-root': {

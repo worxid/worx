@@ -189,11 +189,9 @@ const DialogAddOrEditGroup = (props) => {
       const selectedFormIdList = response.data.value.forms.map(item => item.id)
 
       const newSelectedDeviceList = deviceList.filter(item => selectedDeviceIdList.includes(item.id))
-      console.log('newSelectedDeviceList', newSelectedDeviceList)
       setSelectedDeviceList(newSelectedDeviceList)
 
       const newSelectedFormList = formList.filter(item => selectedFormIdList.includes(item.id))
-      console.log('newSelectedFormList', newSelectedFormList)
       setSelectedFormList(newSelectedFormList)
     }
   }
@@ -325,7 +323,7 @@ const DialogAddOrEditGroup = (props) => {
           limitTags={2}
           options={deviceList}
           getOptionLabel={(option) => option.label}
-          className={layoutClasses.dialogAddOrEditFormControlContainer}
+          className={classes.autocomplete}
           renderOption={(props, option, { selected }) => (
             <ListItemButton 
               {...props}
@@ -345,6 +343,7 @@ const DialogAddOrEditGroup = (props) => {
               {...params} 
               label='Device Names' 
               placeholder='Device Names' 
+              variant='standard'
             />
           )}
           value={selectedDeviceList}
@@ -358,7 +357,7 @@ const DialogAddOrEditGroup = (props) => {
           limitTags={2}
           options={formList}
           getOptionLabel={(option) => option.label}
-          className={layoutClasses.dialogAddOrEditFormControlContainer}
+          className={classes.autocomplete}
           renderOption={(props, option, { selected }) => (
             <ListItemButton 
               {...props}
@@ -378,6 +377,7 @@ const DialogAddOrEditGroup = (props) => {
               {...params} 
               label='Form Names' 
               placeholder='Form Names' 
+              variant='standard'
             />
           )}
           value={selectedFormList}
