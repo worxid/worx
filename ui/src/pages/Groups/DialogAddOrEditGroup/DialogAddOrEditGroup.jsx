@@ -86,6 +86,8 @@ const DialogAddOrEditGroup = (props) => {
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
   const [ deviceList, setDeviceList ] = useState([])
   const [ formList, setFormList ] = useState([])
+  const [ selectedDeviceList, setSelectedDeviceList ] = useState([])
+  const [ selectedFormList, setSelectedFormList ] = useState([])
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -132,6 +134,8 @@ const DialogAddOrEditGroup = (props) => {
           {
             name: groupName,
             color: groupColor,
+            form_ids: selectedFormList.map(item => item.id),
+            device_ids: selectedDeviceList.map(item => item.id),
           },
           axiosPrivate,
         )
@@ -284,6 +288,7 @@ const DialogAddOrEditGroup = (props) => {
         </Stack>
 
         {/* DEVICES AUTOCOMPLETE */}
+        {dialogType === 'edit' &&
         <Autocomplete
           multiple
           limitTags={2}
@@ -311,9 +316,12 @@ const DialogAddOrEditGroup = (props) => {
               placeholder='Device Names' 
             />
           )}
-        />
+          value={selectedDeviceList}
+          onChange={(event, newValue) => setSelectedDeviceList(newValue)}
+        />}
 
         {/* FORMS AUTOCOMPLETE */}
+        {dialogType === 'edit' &&
         <Autocomplete
           multiple
           limitTags={2}
@@ -341,7 +349,9 @@ const DialogAddOrEditGroup = (props) => {
               placeholder='Form Names' 
             />
           )}
-        />
+          value={selectedFormList}
+          onChange={(event, newValue) => setSelectedFormList(newValue)}
+        />}
       </CustomDialogContent>
 
       {/* DIALOG ACTIONS */}
