@@ -43,6 +43,7 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 import { postGetDeviceList } from 'services/worx/devices'
 import { postGetListFormTemplate } from 'services/worx/formTemplate'
 import { 
+  getGroupById,
   postCreateGroup, 
   putEditGroup,
 } from 'services/worx/group'
@@ -176,6 +177,27 @@ const DialogAddOrEditGroup = (props) => {
     setIsDialogAddOrEditOpen(false)
   }
 
+  const updateSelectedDevicesAndForms = async (abortController, isMounted) => {
+    const response = await getGroupById(
+      abortController.signal,
+      axiosPrivate,
+      dataDialogEdit.id,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
+      const selectedDeviceIdList = response.data.value.devices.map(item => item.id)
+      const selectedFormIdList = response.data.value.forms.map(item => item.id)
+
+      const newSelectedDeviceList = deviceList.filter(item => selectedDeviceIdList.includes(item.id))
+      console.log('newSelectedDeviceList', newSelectedDeviceList)
+      setSelectedDeviceList(newSelectedDeviceList)
+
+      const newSelectedFormList = formList.filter(item => selectedFormIdList.includes(item.id))
+      console.log('newSelectedFormList', newSelectedFormList)
+      setSelectedFormList(newSelectedFormList)
+    }
+  }
+
   const fetchDeviceList = async (abortController, isMounted) => {
     const response = await postGetDeviceList(
       abortController.signal,
@@ -228,10 +250,19 @@ const DialogAddOrEditGroup = (props) => {
   }, [])
 
   useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
     // UPDATE THE DIALOG FORM IF THE DIALOG IS ON EDIT MODE
     if (dialogType === 'edit' && dataDialogEdit) {
+      updateSelectedDevicesAndForms(abortController, isMounted)
       setGroupName(dataDialogEdit?.name ?? initialFormObject.groupName)
       setGroupColor(dataDialogEdit?.color ?? initialFormObject.groupColor)
+    }
+
+    return () => {
+      isMounted = false
+      abortController.abort()
     }
   }, [dataDialogEdit])
 
