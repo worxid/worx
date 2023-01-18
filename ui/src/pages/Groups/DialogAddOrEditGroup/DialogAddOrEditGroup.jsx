@@ -20,13 +20,20 @@ import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTi
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
+import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
 import Input from '@mui/material/Input'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
@@ -256,6 +263,36 @@ const DialogAddOrEditGroup = (props) => {
             />
           </FormControl>
         </Stack>
+
+        {/* DEVICES AUTOCOMPLETE */}
+        <Autocomplete
+          multiple
+          limitTags={2}
+          options={deviceList}
+          getOptionLabel={(option) => option.label}
+          className={layoutClasses.dialogAddOrEditFormControlContainer}
+          renderOption={(props, option, { selected }) => (
+            <ListItemButton 
+              {...props}
+              className={classes.autocompleteListItem}
+            >
+              {/* CHECKBOX */}
+              <ListItemIcon>
+                <Checkbox checked={selected}/>
+              </ListItemIcon>
+
+              {/* TEXT */}
+              <ListItemText primary={option.label}/>
+            </ListItemButton>
+          )}
+          renderInput={(params) => (
+            <TextField 
+              {...params} 
+              label='Device Names' 
+              placeholder='Device Names' 
+            />
+          )}
+        />
       </CustomDialogContent>
 
       {/* DIALOG ACTIONS */}

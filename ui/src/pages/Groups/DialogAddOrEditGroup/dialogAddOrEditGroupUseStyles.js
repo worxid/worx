@@ -1,6 +1,6 @@
 // MUI STYLES
 import { makeStyles } from '@mui/styles'
-          
+
 const useStyles = makeStyles((theme) => ({
   pickerStyle: {
     width: '18px',
@@ -23,6 +23,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '6px',
     cursor: 'pointer',
   },
+  autocompleteListItem: {
+    padding: '0px 4px',
+    '& .MuiListItemIcon-root': {
+      minWidth: 'unset',
+      marginRight: 4,
+    },
+  },
 }))
-          
+
 export default useStyles
