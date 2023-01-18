@@ -37,7 +37,7 @@ const AppBar = (props) => {
     // SEARCH
     hasSearch,
     search, setSearch,
-    // FLYOUT
+    // FLYOUT (SHOULD BE DELETED)
     hasFlyout,
     isFlyoutShown,
     flyoutTitle,
@@ -119,7 +119,7 @@ const AppBar = (props) => {
         </Stack>}
 
         {/* FLYOUT TITLE */}
-        {hasFlyout &&
+        {/* {hasFlyout &&
         <Typography
           variant='h6'
           className={isFlyoutShown
@@ -129,10 +129,10 @@ const AppBar = (props) => {
           sx={{ marginRight: isFlyoutShown ? `${flyoutTitleMargin}px` : 0 }}
         >
           {flyoutTitle}
-        </Typography>}
+        </Typography>} */}
 
         {/* TOGGLE FLYOUT ICON */}
-        {hasFlyout &&
+        {/* {hasFlyout &&
         <IconButton 
           className={isFlyoutShown
             ? `${classes.flyoutInitialToggle} ${classes.flyoutRotateToggle}`
@@ -141,7 +141,7 @@ const AppBar = (props) => {
           onClick={onToggleFlyoutClick}
         >
           <IconKeyboardTab/>
-        </IconButton>}
+        </IconButton>} */}
 
         {/* EXTRA COMPONENT */}
         {extraComponent}
@@ -161,10 +161,10 @@ AppBar.defaultProps = {
   hasSearch: true,
   search: '',
   // FLYOUT
-  hasFlyout: false,
-  isFlyoutShown: false,
-  flyoutTitle: '',
-  flyoutTitleMargin: 0,
+  // hasFlyout: false,
+  // isFlyoutShown: false,
+  // flyoutTitle: '',
+  // flyoutTitleMargin: 0,
   // EXTRA COMPONENT
   extraComponent: null,
 }
@@ -182,11 +182,11 @@ AppBar.propTypes = {
   search: PropTypes.string.isRequired,
   setSearch: PropTypes.func,
   // FLYOUT
-  hasFlyout: PropTypes.bool.isRequired,
-  isFlyoutShown: PropTypes.bool.isRequired,
-  flyoutTitle: PropTypes.string.isRequired,
-  flyoutTitleMargin: PropTypes.number.isRequired,
-  onToggleFlyoutClick: PropTypes.func,
+  // hasFlyout: PropTypes.bool.isRequired,
+  // isFlyoutShown: PropTypes.bool.isRequired,
+  // flyoutTitle: PropTypes.string.isRequired,
+  // flyoutTitleMargin: PropTypes.number.isRequired,
+  // onToggleFlyoutClick: PropTypes.func,
   // EXTRA COMPONENT
   extraComponent: PropTypes.node,
 }

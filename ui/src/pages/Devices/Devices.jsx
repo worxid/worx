@@ -13,9 +13,6 @@ import DialogInvite from './DialogInvite/DialogInvite'
 import Flyout from 'components/Flyout/Flyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
-// CONSTANTS
-import { values } from 'constants/values'
-
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -54,6 +51,22 @@ const Devices = () => {
   const classes = useLayoutStyles()
 
   const axiosPrivate = useAxiosPrivate()
+
+  // CONTEXT
+  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
+
+  const initialFilters = {
+    label: '',
+    device_code: '',
+    device_model: '',
+    device_os_version: '',
+    device_app_version: '',
+    groups: [],
+  }
 
   const initialColumns = [
     {
@@ -141,19 +154,6 @@ const Devices = () => {
     }
   ]
 
-  // CONTEXT
-  const { setIsDialogFormOpen, setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
-  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
-
-  const initialFilters = {
-    label: '',
-    device_code: '',
-    device_model: '',
-    device_os_version: '',
-    device_app_version: '',
-    groups: [],
-  }
-
   // APP BAR
   const [ pageSearch, setPageSearch ] = useState('')
   // CONTENT
@@ -173,8 +173,6 @@ const Devices = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // FLYOUT
-  const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
   // DELETE DIALOG
@@ -186,7 +184,8 @@ const Devices = () => {
   const handleEditButtonClick = () => {
     const editData = tableData.filter(item => item.id === selectionModel[0])
     setDataDialogEdit(...editData)
-    setIsDialogAddOrEditOpen(true)
+    // TO DO: CHANGE WITH FLYOUT
+    // setIsDialogAddOrEditOpen(true)
   }
 
   // FETCH TABLE DATA
@@ -226,7 +225,7 @@ const Devices = () => {
     const abortController = new AbortController()
 
     setDialogDeleteDevice({})
-    setIsFlyoutShown(false)
+    setIsFlyoutOpen(false)
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
@@ -272,8 +271,8 @@ const Devices = () => {
   }, [filters, pageNumber, pageSize, pageSearch, order, orderBy])
 
   useEffect(() => {
-    if (selectionModel.length === 1) setIsFlyoutShown(true)
-    else setIsFlyoutShown(false)
+    if (selectionModel.length === 1) setIsFlyoutOpen(true)
+    else setIsFlyoutOpen(false)
   }, [selectionModel])
 
   return (
@@ -286,11 +285,6 @@ const Devices = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
-        hasFlyout={true}
-        isFlyoutShown={isFlyoutShown}
-        flyoutTitle='Information'
-        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
-        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
       {/* CONTENTS */}
@@ -300,7 +294,6 @@ const Devices = () => {
         flex='1'
         height='100%'
         className='contentContainer'
-        sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
         {/* MAIN CONTENT */}
         <LoadingPaper isLoading={isDataGridLoading}>
@@ -349,10 +342,7 @@ const Devices = () => {
         </LoadingPaper>
 
         {/* SIDE CONTENT */}
-        <Flyout
-          isFlyoutShown={isFlyoutShown}
-          flyoutWidth={values.flyoutWidth}
-        >
+        <Flyout position='right'>
           <DeviceFlyout
             rows={tableData.filter(item => selectionModel.includes(item.id))}
             reloadData={fetchDeviceList}
