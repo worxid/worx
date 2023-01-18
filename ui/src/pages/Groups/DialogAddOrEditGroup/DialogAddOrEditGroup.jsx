@@ -34,6 +34,7 @@ import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
+import { postGetDeviceList } from 'services/worx/devices'
 import { 
   postCreateGroup, 
   putEditGroup,
@@ -76,6 +77,7 @@ const DialogAddOrEditGroup = (props) => {
 
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
+  const [ deviceList, setDeviceList ] = useState([])
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -161,6 +163,39 @@ const DialogAddOrEditGroup = (props) => {
     setDataDialogEdit(null)
     setIsDialogAddOrEditOpen(false)
   }
+
+  const fetchDeviceList = async (abortController, isMounted) => {
+    let requestParams = {
+      page: 0,
+      size: 10000,
+    }
+
+    const response = await postGetDeviceList(
+      abortController.signal,
+      requestParams,
+      {},
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
+      setDeviceList(response.data.content)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    fetchDeviceList(abortController, isMounted)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
 
   useEffect(() => {
     // UPDATE THE DIALOG FORM IF THE DIALOG IS ON EDIT MODE
