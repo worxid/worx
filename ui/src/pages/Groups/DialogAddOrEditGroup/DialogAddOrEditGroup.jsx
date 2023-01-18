@@ -173,14 +173,12 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const fetchDeviceList = async (abortController, isMounted) => {
-    let requestParams = {
-      page: 0,
-      size: 10000,
-    }
-
     const response = await postGetDeviceList(
       abortController.signal,
-      requestParams,
+      {
+        size: 10000,
+        page: 0,
+      },
       {},
       axiosPrivate,
     )
@@ -194,14 +192,12 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const fetchFormList = async (abortController, inputIsMounted) => {
-    let requestParams = {
-      size: 10000,
-      page: 0,
-    }
-
     const response = await postGetListFormTemplate(
       abortController.signal,
-      requestParams,
+      {
+        size: 10000,
+        page: 0,
+      },
       {},
       axiosPrivate,
     )
