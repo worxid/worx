@@ -27,7 +27,6 @@ import Input from '@mui/material/Input'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
-import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -42,6 +41,7 @@ import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
 import { postGetDeviceList } from 'services/worx/devices'
+import { postGetListFormTemplate } from 'services/worx/formTemplate'
 import { 
   postCreateGroup, 
   putEditGroup,
@@ -85,6 +85,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
   const [ deviceList, setDeviceList ] = useState([])
+  const [ formList, setFormList ] = useState([])
 
   const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -192,11 +193,33 @@ const DialogAddOrEditGroup = (props) => {
     }
   }
 
+  const fetchFormList = async (abortController, inputIsMounted) => {
+    let requestParams = {
+      size: 10000,
+      page: 0,
+    }
+
+    const response = await postGetListFormTemplate(
+      abortController.signal,
+      requestParams,
+      {},
+      axiosPrivate,
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+      setFormList(response.data.content)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
 
     fetchDeviceList(abortController, isMounted)
+    fetchFormList(abortController, isMounted)
 
     return () => {
       isMounted = false
