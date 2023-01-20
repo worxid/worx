@@ -1,5 +1,5 @@
 import { Fragment, useState, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // ASSETS
 import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
@@ -51,6 +51,7 @@ const Drawer = () => {
   const classes = useStyles()
 
   const location = useLocation()
+  const navigate = useNavigate()
 
   const { 
     auth, setAuth, 
@@ -91,7 +92,9 @@ const Drawer = () => {
     else return false
   }
 
-  const handleParentItemClick = (inputParentItem) => {
+  const handleParentItemClick = (inputEvent, inputParentItem) => {
+    inputEvent.preventDefault()    
+
     let newDrawerState
 
     if (inputParentItem.type === 'single') {
@@ -119,9 +122,12 @@ const Drawer = () => {
 
     setDrawerStateToLocalStorage(newDrawerState)
     setDrawerState(newDrawerState)
+    navigate(inputParentItem.path)
   }
 
   const handleChildrenItemClick = (inputEvent, inputChildrenItem) => {
+    inputEvent.preventDefault()
+
     if (inputChildrenItem.title === 'Log Out') signOutUser(setAuth)
     else {
       const newDrawerState = {
@@ -131,6 +137,7 @@ const Drawer = () => {
       
       setDrawerStateToLocalStorage(newDrawerState)
       setDrawerState(newDrawerState)
+      navigate(inputChildrenItem.path)
     }
   }
 
@@ -229,7 +236,7 @@ const Drawer = () => {
                 <ListItemButton
                   href={parentItem.type === 'single' ? parentItem.path : null}
                   className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
-                  onClick={(event) => handleParentItemClick(parentItem)}
+                  onClick={(event) => handleParentItemClick(event, parentItem)}
                 >
                   {/* TEXT */}
                   <ListItemText primary={
@@ -247,7 +254,7 @@ const Drawer = () => {
               <ListItemButton
                 href={parentItem.type === 'single' ? parentItem.path : null}
                 className={getListItemButtonClassName(parentItem.path)}
-                onClick={(event) => handleParentItemClick(parentItem)}
+                onClick={(event) => handleParentItemClick(event, parentItem)}
               >
                 {/* ICON */}
                 <ListItemIcon className='zoom'>
@@ -324,7 +331,7 @@ const Drawer = () => {
                 <ListItemButton
                   href={(parentItem.type === 'single' && parentItem.path) ? parentItem.path : null}
                   className={`${getListItemButtonClassName(parentItem.path)} ${classes.navigationTooltipItem} no-zoom`}
-                  onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(parentItem) : setDialogLogOut({ show: true })}
+                  onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(event, parentItem) : setDialogLogOut({ show: true })}
                 >
                   {/* TEXT */}
                   <ListItemText primary={
@@ -342,7 +349,7 @@ const Drawer = () => {
               <ListItemButton
                 href={(parentItem.type === 'single' && parentItem.path) ? parentItem.path : null}
                 className={getListItemButtonClassName(parentItem.path)}
-                onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(parentItem) : setDialogLogOut({ show: true })}
+                onClick={(event) => parentItem.title !== 'Log Out' ? handleParentItemClick(event, parentItem) : setDialogLogOut({ show: true })}
               >
                 {/* ICON */}
                 <ListItemIcon className='zoom'>
