@@ -1,7 +1,9 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 
 // COMPONENTS
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
+import CustomDialogTitle from 'components/Customs/CustomDialogTitle'
+import Flyout from 'components/Flyout/Flyout'
 
 // CONSTANTS
 import { 
@@ -19,7 +21,6 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Button from '@mui/material/Button'
-import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -28,6 +29,9 @@ import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+// MUI ICONS
+import IconDelete from '@mui/icons-material/Delete'
+
 // SERVICES
 import { putApprovedDevices } from 'services/worx/devices'
 
@@ -35,7 +39,6 @@ import { putApprovedDevices } from 'services/worx/devices'
 import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
-import { getExpandOrCollapseIcon } from 'utilities/component'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
@@ -44,11 +47,19 @@ import {
 } from 'utilities/validation'
 
 const DevicesFlyout = (props) => {
-  const { rows, setGroupData, reloadData } = props
+  const { 
+    rows, 
+    setGroupData, 
+    reloadData, 
+    handleDeleteDevicesClick,
+  } = props
 
   const layoutClasses = useLayoutStyles()
 
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -64,8 +75,6 @@ const DevicesFlyout = (props) => {
       }
     }))
   }
-
-  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
 
   const handleChangeGroup = () => {
     setGroupData(rows[0].groups)
@@ -112,104 +121,99 @@ const DevicesFlyout = (props) => {
   }
 
   return (
-    <>
+    <Flyout 
+      position='right'
+      onCloseButtonClick={() => setIsFlyoutOpen(false)}
+    >
       {/* HEADER */}
-      <Stack 
-        direction='row'
-        justifyContent='space-between'
-        alignItems='center'
-        marginBottom='8px'
-      >
+      <CustomDialogTitle>
         {/* TITLE */}
-        <Typography variant='subtitle1' className='fontWeight500' >
-          Device Info
+        <Typography 
+          variant='h5' 
+          className='fontWeight500'
+          noWrap
+        >
+          {rows.length > 0 && rows[0].label}
         </Typography>
 
         {/* EXPAND/COLLAPSE ICON  */}
         <IconButton 
           size='small'
-          onClick={() => setIsMainMenuExpanded(current => !current)}
+          onClick={handleDeleteDevicesClick}
         >
-          {getExpandOrCollapseIcon(isMainMenuExpanded, 'small')}
+          <IconDelete color='primary'/>
         </IconButton>
-      </Stack>
+      </CustomDialogTitle>
 
       {/* LIST */}
-      <Collapse in={isMainMenuExpanded} timeout='auto' unmountOnExit>
-        {rows.length === 1 &&
-        <List>
-          {mainMenuList.map((item, index) => (
-            <ListItem key={index} disablePadding>
-              {/* ICON */}
-              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon/>
-              </ListItemIcon>
+      {rows.length === 1 &&
+      <List>
+        {mainMenuList.map((item, index) => (
+          <ListItem key={index} disablePadding>
+            {/* ICON */}
+            <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
+              <item.icon/>
+            </ListItemIcon>
 
-              {/* TEXT */}
-              <ListItemText
-                primary={
-                  <Typography 
-                    variant='caption'
-                    className='colorTextSecondary'
-                    fontWeight={600}
-                  >
-                    {item.title}
-                  </Typography>
-                }
-                secondary={
-                  item.title === 'Groups'
-                    ? <Stack className='colorTextPrimary'>
-                      <CellGroups
-                        dataValue={item.value.map(item => ({ name: item }))}
-                        limitShowGroup={false}
-                      />
-                    </Stack>
-                    : <Typography variant='body2'>
-                      {item.value}
-                    </Typography>
-                }
-              />
-
-              {/* ACTION */}
-              {item.title === 'Status' &&
-                <>
-                  {
-                    item.value === 'PENDING' &&
-                  (<Stack direction='row' spacing='8px'>
-                    <Button
-                      variant='contained'
-                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
-                      onClick={() => handleApprovedDevices('reject')}
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      variant='contained'
-                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
-                      onClick={() => handleApprovedDevices('approved')}
-                    >
-                      Approve
-                    </Button>
-                  </Stack>)
-                  }
-                  {
-                    (item.value === 'APPROVED' || item.value === 'ONLINE') && (
-                      <Button
-                        variant='contained'
-                        className={layoutClasses.flyoutListItemActionButton}
-                        onClick={handleChangeGroup}
-                      >
-                        Change Group
-                      </Button>
-                    )
-                  }
-                </>
+            {/* TEXT */}
+            <ListItemText
+              primary={
+                <Typography 
+                  variant='caption'
+                  className='colorTextSecondary'
+                  fontWeight={600}
+                >
+                  {item.title}
+                </Typography>
               }
-            </ListItem>
-          ))}
-        </List>}
-      </Collapse>
-    </>
+              secondary={item.title === 'Groups' ? (
+                <Stack className='colorTextPrimary'>
+                  <CellGroups
+                    dataValue={item.value.map(item => ({ name: item }))}
+                    limitShowGroup={false}
+                  />
+                </Stack>
+              ) : (
+                <Typography variant='body2'>
+                  {item.value}
+                </Typography>
+              )}
+            />
+
+            {/* ACTION */}
+            {item.title === 'Status' &&
+              <>
+                {item.value === 'PENDING' &&
+                <Stack direction='row' spacing='8px'>
+                  <Button
+                    variant='contained'
+                    className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
+                    onClick={() => handleApprovedDevices('reject')}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    variant='contained'
+                    className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
+                    onClick={() => handleApprovedDevices('approved')}
+                  >
+                    Approve
+                  </Button>
+                </Stack>}
+                {(item.value === 'APPROVED' || item.value === 'ONLINE') &&
+                <Button
+                  variant='contained'
+                  className={layoutClasses.flyoutListItemActionButton}
+                  onClick={handleChangeGroup}
+                >
+                  Change Group
+                </Button>}
+              </>
+            }
+          </ListItem>
+        ))}
+      </List>}
+    </Flyout>
   )
 }
 
