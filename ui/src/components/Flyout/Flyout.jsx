@@ -23,11 +23,12 @@ const Flyout = (props) => {
     className,
     position,
     width,
+    onCloseButtonClick,
   } = props
 
   const { 
     pageRef, 
-    isFlyoutOpen, setIsFlyoutOpen,
+    isFlyoutOpen,
   } = useContext(PrivateLayoutContext)
 
   const classes = useStyles()
@@ -57,7 +58,7 @@ const Flyout = (props) => {
             className={classes.closeIconContainer}
             justifyContent='center'
             alignItems='center'
-            onClick={() => setIsFlyoutOpen(false)}
+            onClick={onCloseButtonClick}
           >
             <IconClose fontSize='small'/>
           </Stack>
@@ -86,6 +87,7 @@ Flyout.propTypes = {
   className: PropTypes.string.isRequired,
   position: PropTypes.oneOf(positionList).isRequired,
   width: PropTypes.number.isRequired,
+  onCloseButtonClick: PropTypes.func,
 }
 
 export default Flyout
