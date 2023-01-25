@@ -10,13 +10,11 @@ import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
-import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
 import { paramsCreateForm } from './formsConstants'
-import { values } from 'constants/values'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -50,8 +48,11 @@ import {
 
 const Forms = () => {
   // CONTEXT
-  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -144,8 +145,6 @@ const Forms = () => {
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
   const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
-  // FLYOUT
-  const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
 
@@ -238,7 +237,7 @@ const Forms = () => {
     const abortController = new AbortController()
 
     setDialogDeleteForms({})
-    setIsFlyoutShown(false)
+    setIsFlyoutOpen(false)
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
@@ -271,9 +270,9 @@ const Forms = () => {
 
   useEffect(() => {
     if (selectionModel.length === 1) {
-      setIsFlyoutShown(true)
+      setIsFlyoutOpen(true)
     } else {
-      setIsFlyoutShown(false)
+      setIsFlyoutOpen(false)
     }
   }, [selectionModel])
 
@@ -300,23 +299,15 @@ const Forms = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
-        hasFlyout={true}
-        isFlyoutShown={isFlyoutShown}
-        flyoutTitle='Information'
-        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
-        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
-      {/* CONTENTS */}
+      {/* MAIN CONTENT */}
       <Stack 
         direction='row'
         position='relative'
         flex='1'
         height='100%'
-        className='contentContainer'
-        sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
-        {/* MAIN CONTENT */}
         <LoadingPaper isLoading={isDataGridLoading}>
           <DataGridFilters
             // COLUMN
@@ -369,15 +360,13 @@ const Forms = () => {
             onRowDoubleClick={(params, event, details) => navigate(`/forms/submissions/${params.row.id}`)}
           />
         </LoadingPaper>
-
-        {/* SIDE CONTENT */}
-        <Flyout
-          isFlyoutShown={isFlyoutShown}
-          flyoutWidth={values.flyoutWidth}
-        >
-          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData}/>
-        </Flyout>
       </Stack>
+
+      {/* SIDE CONTENT */}
+      <FormFlyout 
+        rows={tableData.filter(item => selectionModel.includes(item.id))} 
+        setGroupData={setGroupData}
+      />
 
       {/* DIALOG DELETE FORMS */}
       <DialogConfirmation
