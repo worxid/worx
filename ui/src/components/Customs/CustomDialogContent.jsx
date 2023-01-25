@@ -10,7 +10,7 @@ const CustomDialogContent = styled(({ className, ...props }) => (
 ))(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  padding: '0px 48px 20px',
+  padding: '0px 4px',
   overflowY: 'auto',
 }))
 
