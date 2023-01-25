@@ -232,7 +232,6 @@ const Groups = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
-        hasFlyout={false}
       />
 
       {/* CONTENTS */}

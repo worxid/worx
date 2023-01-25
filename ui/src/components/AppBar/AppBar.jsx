@@ -18,7 +18,6 @@ import Typography from '@mui/material/Typography'
 import IconAdd from '@mui/icons-material/Add'
 import IconArrowBack from '@mui/icons-material/ArrowBack'
 import IconClose from '@mui/icons-material/Close'
-import IconKeyboardTab from '@mui/icons-material/KeyboardTab'
 import IconSearch from '@mui/icons-material/Search'
 
 // STYLES
@@ -37,14 +36,6 @@ const AppBar = (props) => {
     // SEARCH
     hasSearch,
     search, setSearch,
-    // FLYOUT (SHOULD BE DELETED)
-    hasFlyout,
-    isFlyoutShown,
-    flyoutTitle,
-    flyoutTitleMargin,
-    onToggleFlyoutClick,
-    // EXTRA COMPONENT
-    extraComponent,
   } = props
 
   const classes = useStyles()
@@ -117,34 +108,6 @@ const AppBar = (props) => {
             }
           />
         </Stack>}
-
-        {/* FLYOUT TITLE */}
-        {/* {hasFlyout &&
-        <Typography
-          variant='h6'
-          className={isFlyoutShown
-            ? `${classes.flyoutTitle} ${classes.flyoutTitleShown}`
-            : classes.flyoutTitle
-          }
-          sx={{ marginRight: isFlyoutShown ? `${flyoutTitleMargin}px` : 0 }}
-        >
-          {flyoutTitle}
-        </Typography>} */}
-
-        {/* TOGGLE FLYOUT ICON */}
-        {/* {hasFlyout &&
-        <IconButton 
-          className={isFlyoutShown
-            ? `${classes.flyoutInitialToggle} ${classes.flyoutRotateToggle}`
-            : classes.flyoutInitialToggle
-          }
-          onClick={onToggleFlyoutClick}
-        >
-          <IconKeyboardTab/>
-        </IconButton>} */}
-
-        {/* EXTRA COMPONENT */}
-        {extraComponent}
       </Toolbar>
     </MuiAppBar>
   )
@@ -155,18 +118,12 @@ AppBar.defaultProps = {
   hasFab: true,
   // BACK
   hasBack: false,
+  backLink: '#',
   // TITLE
   pageTitle: '',
   // SEARCH
   hasSearch: true,
   search: '',
-  // FLYOUT
-  // hasFlyout: false,
-  // isFlyoutShown: false,
-  // flyoutTitle: '',
-  // flyoutTitleMargin: 0,
-  // EXTRA COMPONENT
-  extraComponent: null,
 }
 
 AppBar.propTypes = {
@@ -175,20 +132,13 @@ AppBar.propTypes = {
   onFabClick: PropTypes.func,
   // BACK
   hasBack: PropTypes.bool.isRequired,
+  backLink: PropTypes.string.isRequired,
   // TITLE
   pageTitle: PropTypes.string.isRequired,
   // SEARCH
   hasSearch: PropTypes.bool.isRequired,
   search: PropTypes.string.isRequired,
   setSearch: PropTypes.func,
-  // FLYOUT
-  // hasFlyout: PropTypes.bool.isRequired,
-  // isFlyoutShown: PropTypes.bool.isRequired,
-  // flyoutTitle: PropTypes.string.isRequired,
-  // flyoutTitleMargin: PropTypes.number.isRequired,
-  // onToggleFlyoutClick: PropTypes.func,
-  // EXTRA COMPONENT
-  extraComponent: PropTypes.node,
 }
 
 export default AppBar
