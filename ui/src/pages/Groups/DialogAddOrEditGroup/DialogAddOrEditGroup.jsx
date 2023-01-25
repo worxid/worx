@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
-import DialogAddOrEdit from 'components/DialogAddOrEdit/DialogAddOrEdit'
+import Flyout from 'components/Flyout/Flyout'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -36,7 +36,6 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
@@ -72,7 +71,7 @@ const DialogAddOrEditGroup = (props) => {
   const layoutClasses = useLayoutStyles()
   const classes = useStyles()
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
@@ -174,7 +173,7 @@ const DialogAddOrEditGroup = (props) => {
     setGroupName(initialFormObject.groupName)
     setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
-    setIsDialogAddOrEditOpen(false)
+    setIsFlyoutOpen(false)
   }
 
   const updateSelectedDevicesAndForms = async (abortController, isMounted) => {
@@ -265,24 +264,22 @@ const DialogAddOrEditGroup = (props) => {
   }, [dataDialogEdit])
 
   return (
-    <DialogAddOrEdit>
-      {/* DIALOG TITLE */}
+    <Flyout 
+      position='right'
+      onCloseButtonClick={handleClose}
+    >
+      {/* TITLE */}
       <CustomDialogTitle>
-        <Stack direction='row' alignItems='center'>
-          {/* CLOSE ICON */}
-          <IconClose
-            className={layoutClasses.dialogAddOrEditIconClose}
-            onClick={handleClose}
-          />
-
-          {/* TITLE */}
-          <Typography variant='h6' className='fontWeight500'>
-            {capitalizeEachWord(dialogType)} Group
-          </Typography>
-        </Stack>
+        <Typography 
+          variant='h6' 
+          className='fontWeight500'
+          noWrap
+        >
+          {capitalizeEachWord(dialogType)} Group
+        </Typography>
       </CustomDialogTitle>
 
-      {/* DIALOG CONTENT */}
+      {/* CONTENT */}
       <CustomDialogContent>
         <Typography variant='subtitle1'>
           Main Information
@@ -432,7 +429,7 @@ const DialogAddOrEditGroup = (props) => {
           })}
         </Box>
       </Popover>
-    </DialogAddOrEdit>
+    </Flyout>
   )
 }
 
