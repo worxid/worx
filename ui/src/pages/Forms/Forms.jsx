@@ -269,11 +269,8 @@ const Forms = () => {
   }
 
   useEffect(() => {
-    if (selectionModel.length === 1) {
-      setIsFlyoutOpen(true)
-    } else {
-      setIsFlyoutOpen(false)
-    }
+    if (selectionModel.length === 1) setIsFlyoutOpen(true)
+    else setIsFlyoutOpen(false)
   }, [selectionModel])
 
   // SIDE EFFECT FETCHING DATA
@@ -325,12 +322,6 @@ const Forms = () => {
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
-            // EDIT
-            isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
-            // DELETE
-            isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => setDialogDeleteForms({id: selectionModel})}
           />
 
           <DataGridTable

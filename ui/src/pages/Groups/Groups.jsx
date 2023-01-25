@@ -253,12 +253,6 @@ const Groups = () => {
             setIsFilterOn={setIsFilterOn}
             // TEXT
             contentTitle='Group List'
-            // EDIT
-            isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={handleEditButtonClick}
-            // DELETE
-            isDeleteButtonEnabled={selectionModel.length > 0}
-            handleDeleteButtonClick={() => setDialogDeleteObject({ id: selectionModel[0] })}
           />
 
           <DataGridTable
