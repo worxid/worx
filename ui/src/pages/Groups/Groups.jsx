@@ -117,13 +117,10 @@ const Groups = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-
   // DELETE DIALOG
   const [ dialogDeleteObject, setDialogDeleteObject ] = useState({})
-
   // DIALOG TYPE
   const [ dialogType, setDialogType ] = useState('')
-
   // DATA EDIT GROUP
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
 
@@ -192,6 +189,8 @@ const Groups = () => {
           title: '',
           message: 'Successfully delete the selected group'
         })
+
+        setIsFlyoutOpen(false)
       }
       else if (!wasRequestCanceled(resultDeleteGroup?.status) && !wasAccessTokenExpired(resultDeleteGroup.status)) {
         setSnackbarObject(getDefaultErrorMessage(resultDeleteGroup))
@@ -288,6 +287,7 @@ const Groups = () => {
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit}
         setMustReloadDataGrid={setMustReloadDataGrid}
+        setDialogDeleteObject={setDialogDeleteObject}
       />
 
       {/* DIALOG DELETE GROUP NAME */}

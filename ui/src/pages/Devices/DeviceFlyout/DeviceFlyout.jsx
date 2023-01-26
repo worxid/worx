@@ -137,7 +137,7 @@ const DevicesFlyout = (props) => {
           {rows.length > 0 && rows[0].label}
         </Typography>
 
-        {/* EXPAND/COLLAPSE ICON  */}
+        {/* DELETE ICON  */}
         <IconButton 
           size='small'
           onClick={handleDeleteDevicesClick}

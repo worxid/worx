@@ -23,10 +23,11 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Autocomplete from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
 import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -36,6 +37,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconDelete from '@mui/icons-material/Delete'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
@@ -52,7 +54,6 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
-import { capitalizeEachWord } from 'utilities/string'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
@@ -63,9 +64,9 @@ import {
 const DialogAddOrEditGroup = (props) => {
   const { 
     dialogType, 
-    dataDialogEdit, 
-    setDataDialogEdit, 
+    dataDialogEdit, setDataDialogEdit, 
     setMustReloadDataGrid,
+    setDialogDeleteObject,
   } = props
 
   const layoutClasses = useLayoutStyles()
@@ -88,8 +89,12 @@ const DialogAddOrEditGroup = (props) => {
   const [ formList, setFormList ] = useState([])
   const [ selectedDeviceList, setSelectedDeviceList ] = useState([])
   const [ selectedFormList, setSelectedFormList ] = useState([])
-
   const [ anchorEl, setAnchorEl ] = useState(null)
+
+  const getFlyoutTitle = (inputDialogType, inputLabel) => {
+    if (inputDialogType === 'add') return 'Add a Group'
+    else if (inputDialogType === 'edit') return inputLabel
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -268,15 +273,30 @@ const DialogAddOrEditGroup = (props) => {
       position='right'
       onCloseButtonClick={handleClose}
     >
-      {/* TITLE */}
+      {/* HEADER */}
       <FlyoutTitle>
+        {/* TITLE */}
         <Typography 
           variant='h6' 
           className='fontWeight500'
           noWrap
         >
-          {capitalizeEachWord(dialogType)} Group
+          {getFlyoutTitle(dialogType, dataDialogEdit ? dataDialogEdit.name : '-')}
         </Typography>
+
+        <Stack 
+          direction='row'
+          alignItems='center'
+        >
+          {/* DELETE ICON  */}
+          {dialogType === 'edit' &&
+          <IconButton 
+            size='small'
+            onClick={() => setDialogDeleteObject({ id: dataDialogEdit.id })}
+          >
+            <IconDelete color='primary'/>
+          </IconButton>}
+        </Stack>
       </FlyoutTitle>
 
       {/* CONTENT */}
