@@ -21,17 +21,15 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
-import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
-import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Popover from '@mui/material/Popover'
+import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -89,28 +87,16 @@ const DialogAddOrEditGroup = (props) => {
   const [ formList, setFormList ] = useState([])
   const [ selectedDeviceList, setSelectedDeviceList ] = useState([])
   const [ selectedFormList, setSelectedFormList ] = useState([])
-  const [ anchorEl, setAnchorEl ] = useState(null)
+  const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
 
   const getFlyoutTitle = (inputDialogType, inputLabel) => {
     if (inputDialogType === 'add') return 'Add a Group'
     else if (inputDialogType === 'edit') return inputLabel
   }
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-  
-  const handleClosePopOver = () => {
-    setAnchorEl(null)
-  }
-
-  const openPicker = Boolean(anchorEl)
-  const id = openPicker ? 'simple-popover' : undefined
-
   const onSelectColor = (color) => {
     setGroupColor(color)
-    setAnchorEl(null)
-    handleClosePopOver()
+    setColorPickerAnchorElement(null)
   }
 
   const handleActionButtonClick = async (inputType) => {
@@ -174,7 +160,7 @@ const DialogAddOrEditGroup = (props) => {
   
   // CLOSE DIALOG ADD OR EDIT GROUP
   const handleClose = () => {
-    setAnchorEl(null)
+    setColorPickerAnchorElement(null)
     setGroupName(initialFormObject.groupName)
     setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
@@ -288,6 +274,13 @@ const DialogAddOrEditGroup = (props) => {
           direction='row'
           alignItems='center'
         >
+          {/* COLOR PICKER */}
+          <Stack
+            className={classes.colorPicker}
+            style={{ backgroundColor: groupColor }}
+            onClick={(event) => setColorPickerAnchorElement(event.currentTarget)}
+          />
+
           {/* DELETE ICON  */}
           {dialogType === 'edit' &&
           <IconButton 
@@ -320,15 +313,6 @@ const DialogAddOrEditGroup = (props) => {
               type='text'
               value={groupName}
               onChange={(event) => setGroupName(event.target.value)}
-              endAdornment={
-                <InputAdornment position='end'>
-                  <Stack
-                    className={classes.pickerStyle}
-                    style={{ backgroundColor: groupColor }}
-                    onClick={handleClick}
-                  />
-                </InputAdornment>
-              }
             />
           </FormControl>
         </Stack>
@@ -421,11 +405,11 @@ const DialogAddOrEditGroup = (props) => {
         </CustomDialogActionButton>
       </FlyoutActions>
 
-      <Popover
-        id={id}
-        open={openPicker}
-        anchorEl={anchorEl}
-        onClose={handleClose}
+      {/* COLOR PICKER MENU */}
+      <Menu
+        open={Boolean(colorPickerAnchorElement)}
+        anchorEl={colorPickerAnchorElement}
+        onClose={() => setColorPickerAnchorElement(null)}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'left',
@@ -434,9 +418,11 @@ const DialogAddOrEditGroup = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        className={classes.popOverDialog}
+        className={classes.colorPickerMenu}
       >
-        <Box className={classes.colorWrap}>
+        <Stack
+          direction='row' 
+          className={classes.colorWrap}>
           {values?.colorsCst?.map((item, index) => {
             return (
               <Stack
@@ -447,8 +433,8 @@ const DialogAddOrEditGroup = (props) => {
               />
             )
           })}
-        </Box>
-      </Popover>
+        </Stack>
+      </Menu>
     </Flyout>
   )
 }
