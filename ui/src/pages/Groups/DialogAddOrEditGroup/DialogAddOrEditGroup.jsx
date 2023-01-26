@@ -11,8 +11,6 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import FlyoutActions from 'components/Flyout/FlyoutActions'
-import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
@@ -25,7 +23,6 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
-import InputLabel from '@mui/material/InputLabel'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -36,7 +33,7 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
-import IconFormatColorText from '@mui/icons-material/FormatColorText'
+import IconEdit from '@mui/icons-material/Edit'
 
 // SERVICES
 import { postGetDeviceList } from 'services/worx/devices'
@@ -48,7 +45,6 @@ import {
 } from 'services/worx/group'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
@@ -67,7 +63,6 @@ const DialogAddOrEditGroup = (props) => {
     setDialogDeleteObject,
   } = props
 
-  const layoutClasses = useLayoutStyles()
   const classes = useStyles()
 
   const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
@@ -88,74 +83,64 @@ const DialogAddOrEditGroup = (props) => {
   const [ selectedDeviceList, setSelectedDeviceList ] = useState([])
   const [ selectedFormList, setSelectedFormList ] = useState([])
   const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
-
-  const getFlyoutTitle = (inputDialogType, inputLabel) => {
-    if (inputDialogType === 'add') return 'Add a Group'
-    else if (inputDialogType === 'edit') return inputLabel
-  }
+  const [ isEditMode, setIsEditMode ] = useState(false)
 
   const onSelectColor = (color) => {
     setGroupColor(color)
     setColorPickerAnchorElement(null)
   }
 
-  const handleActionButtonClick = async (inputType) => {
-    // SAVE BUTTON
-    if (inputType === 'save') {
-      const abortController = new AbortController()
+  const handleSaveGroup = async () => {
+    const abortController = new AbortController()
 
-      let resultAddOrEditGroup = {}
-      
-      // CREATE A NEW GROUP ITEM
-      if (dialogType === 'add') {
-        resultAddOrEditGroup = await postCreateGroup(
-          abortController.signal,
-          {
-            name: groupName,
-            color: groupColor,
-          },
-          axiosPrivate,
-        )
-      }
-      // EDIT AN EXISTING GROUP ITEM
-      else if (dialogType === 'edit') {
-        resultAddOrEditGroup = await putEditGroup(
-          abortController.signal,
-          dataDialogEdit.id,
-          {
-            name: groupName,
-            color: groupColor,
-            form_ids: selectedFormList.map(item => item.id),
-            device_ids: selectedDeviceList.map(item => item.id),
-          },
-          axiosPrivate,
-        )
-      }
-
-      abortController.abort()
-
-      // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
-      if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
-        handleClose()
-        setMustReloadDataGrid(true)
-
-        let message = ''
-        if (dialogType === 'add') message = 'Successfully creating a new group'
-        if (dialogType === 'edit') message = 'Successfully editing the group properties'
-
-        setSnackbarObject({
-          open: true,
-          severity: 'success',
-          title: '',
-          message: message,
-        })
-      }
-      else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
-        setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
-      }
+    let resultAddOrEditGroup = {}
+    
+    // CREATE A NEW GROUP ITEM
+    if (dialogType === 'add') {
+      resultAddOrEditGroup = await postCreateGroup(
+        abortController.signal,
+        {
+          name: groupName,
+          color: groupColor,
+        },
+        axiosPrivate,
+      )
     }
-    // CANCEL BUTTON IS CLICKED
-    else if (inputType === 'cancel') handleClose()
+    // EDIT AN EXISTING GROUP ITEM
+    else if (dialogType === 'edit') {
+      resultAddOrEditGroup = await putEditGroup(
+        abortController.signal,
+        dataDialogEdit.id,
+        {
+          name: groupName,
+          color: groupColor,
+          form_ids: selectedFormList.map(item => item.id),
+          device_ids: selectedDeviceList.map(item => item.id),
+        },
+        axiosPrivate,
+      )
+    }
+
+    abortController.abort()
+
+    // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
+    if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
+      setMustReloadDataGrid(true)
+
+      let message = ''
+      if (dialogType === 'add') message = 'Successfully creating a new group'
+      if (dialogType === 'edit') message = 'Successfully editing the group properties'
+
+      setSnackbarObject({
+        open: true,
+        severity: 'success',
+        title: '',
+        message: message,
+      })
+    }
+    else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
+    }
   }
   
   // CLOSE DIALOG ADD OR EDIT GROUP
@@ -261,18 +246,53 @@ const DialogAddOrEditGroup = (props) => {
     >
       {/* HEADER */}
       <FlyoutTitle>
-        {/* TITLE */}
-        <Typography 
-          variant='h6' 
-          className='fontWeight500'
-          noWrap
+        {/* GROUP NAME */}
+        {(dialogType === 'add' || isEditMode) &&
+        <FormControl 
+          variant='standard' 
+          className='width100'
         >
-          {getFlyoutTitle(dialogType, dataDialogEdit ? dataDialogEdit.name : '-')}
-        </Typography>
+          <Input
+            placeholder='Group Name'
+            type='text'
+            value={groupName}
+            onChange={(event) => setGroupName(event.target.value)}
+            onBlur={() => handleSaveGroup()}
+          />
+        </FormControl>}
+
+        {dialogType === 'edit' &&
+        <Stack
+          direction='row'
+          alignItems='center'
+          className='editIconContainer'
+        >
+          {/* TITLE */}
+          {!isEditMode &&
+          <Typography 
+            variant='h6' 
+            className='fontWeight500'
+            noWrap
+            marginRight='8px'
+          >
+            {dataDialogEdit.name}
+          </Typography>}
+
+          {/* EDIT ICON */}
+          {!isEditMode &&
+          <IconButton 
+            size='small'
+            className='editIcon'
+            onClick={() => setIsEditMode(true)}
+          >
+            <IconEdit fontSize='small'/>
+          </IconButton>}
+        </Stack>}
 
         <Stack 
           direction='row'
           alignItems='center'
+          marginLeft='16px'
         >
           {/* COLOR PICKER */}
           <Stack
@@ -294,29 +314,6 @@ const DialogAddOrEditGroup = (props) => {
 
       {/* CONTENT */}
       <FlyoutContent>
-        <Typography variant='subtitle1'>
-          Main Information
-        </Typography>
-
-        {/* LABEL INPUT */}
-        <Stack direction='row' className={layoutClasses.dialogAddOrEditFormControlContainer}>
-          <IconFormatColorText className={layoutClasses.dialogAddOrEditFormControlIcon}/>
-          <FormControl 
-            variant='standard' 
-            className='width100'
-          >
-            <InputLabel>
-              Group Name
-            </InputLabel>
-            <Input
-              placeholder='Group Name'
-              type='text'
-              value={groupName}
-              onChange={(event) => setGroupName(event.target.value)}
-            />
-          </FormControl>
-        </Stack>
-
         {/* DEVICES AUTOCOMPLETE */}
         {dialogType === 'edit' &&
         <Autocomplete
@@ -385,25 +382,6 @@ const DialogAddOrEditGroup = (props) => {
           onChange={(event, newValue) => setSelectedFormList(newValue)}
         />}
       </FlyoutContent>
-
-      {/* DIALOG ACTIONS */}
-      <FlyoutActions>
-        {/* CANCEL BUTTON */}
-        <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
-          onClick={() => handleActionButtonClick('cancel')}
-        >
-          Cancel
-        </CustomDialogActionButton>
-
-        {/* SAVE BUTTON */}
-        <CustomDialogActionButton
-          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
-          onClick={() => handleActionButtonClick('save')}
-        >
-          Save
-        </CustomDialogActionButton>
-      </FlyoutActions>
 
       {/* COLOR PICKER MENU */}
       <Menu
