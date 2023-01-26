@@ -114,7 +114,7 @@ const FormsSubmissions = () => {
           width='100%'
           alignItems='center'
         >
-          <IconButton onClick={() => window.open(`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')}>
+          <IconButton onClick={() => handleMapIconButtonClick(params)}>
             <IconMap
               color='primary'
               fontSize='small'
@@ -158,6 +158,11 @@ const FormsSubmissions = () => {
   const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
   // FLYOUT
   const [ shouldFlyoutOpen, setShouldFlyoutOpen ] = useState(true)
+
+  const handleMapIconButtonClick = (inputParams) => {
+    setShouldFlyoutOpen(false)
+    window.open(`https://maps.google.com/?q=${inputParams.row.submissionLatitude},${inputParams.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')
+  }
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
