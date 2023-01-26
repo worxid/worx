@@ -2,15 +2,13 @@ import { useContext } from 'react'
 
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 import MainMenu from './MainMenu'
 import Submissions from './Submissions'
 
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
-
-// CUSTOM COMPONENTS
-import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
 // MUIS
 import Typography from '@mui/material/Typography'
