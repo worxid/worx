@@ -9,8 +9,8 @@ import Submissions from './Submissions'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import CustomDialogContent from 'components/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/Customs/CustomDialogTitle'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
 // MUIS
 import Typography from '@mui/material/Typography'
@@ -29,7 +29,7 @@ const FormsFlyout = (props) => {
       onCloseButtonClick={() => setIsFlyoutOpen(false)}
     >
       {/* TITLE */}
-      <CustomDialogTitle>
+      <FlyoutTitle>
         {/* TEXT */}
         <Typography 
           variant='h5' 
@@ -38,13 +38,13 @@ const FormsFlyout = (props) => {
         >
           {rows.length > 0 && rows[0].label}
         </Typography>
-      </CustomDialogTitle>
+      </FlyoutTitle>
 
       {/* CONTENT */}
-      <CustomDialogContent>
+      <FlyoutContent>
         <MainMenu rows={rows} setGroupData={setGroupData}/>
         <Submissions rows={rows}/>
-      </CustomDialogContent>
+      </FlyoutContent>
     </Flyout>
   )
 }

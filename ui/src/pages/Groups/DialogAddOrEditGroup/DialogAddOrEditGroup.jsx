@@ -11,10 +11,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import CustomDialogActions from 'components/Customs/CustomDialogActions'
+import FlyoutActions from 'components/Flyout/FlyoutActions'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogContent from 'components/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/Customs/CustomDialogTitle'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -269,7 +269,7 @@ const DialogAddOrEditGroup = (props) => {
       onCloseButtonClick={handleClose}
     >
       {/* TITLE */}
-      <CustomDialogTitle>
+      <FlyoutTitle>
         <Typography 
           variant='h6' 
           className='fontWeight500'
@@ -277,10 +277,10 @@ const DialogAddOrEditGroup = (props) => {
         >
           {capitalizeEachWord(dialogType)} Group
         </Typography>
-      </CustomDialogTitle>
+      </FlyoutTitle>
 
       {/* CONTENT */}
-      <CustomDialogContent>
+      <FlyoutContent>
         <Typography variant='subtitle1'>
           Main Information
         </Typography>
@@ -380,10 +380,10 @@ const DialogAddOrEditGroup = (props) => {
           value={selectedFormList}
           onChange={(event, newValue) => setSelectedFormList(newValue)}
         />}
-      </CustomDialogContent>
+      </FlyoutContent>
 
       {/* DIALOG ACTIONS */}
-      <CustomDialogActions>
+      <FlyoutActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
           className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
@@ -399,7 +399,7 @@ const DialogAddOrEditGroup = (props) => {
         >
           Save
         </CustomDialogActionButton>
-      </CustomDialogActions>
+      </FlyoutActions>
 
       <Popover
         id={id}

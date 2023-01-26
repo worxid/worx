@@ -2,7 +2,7 @@
 import DialogTitle from '@mui/material/DialogTitle'
 import { styled } from '@mui/material/styles'
 
-const CustomDialogTitle = styled(({ className, ...props }) => (
+const FlyoutTitle = styled(({ className, ...props }) => (
   <DialogTitle
     className={className} 
     {...props}
@@ -17,4 +17,4 @@ const CustomDialogTitle = styled(({ className, ...props }) => (
   margin: 24,
 }))
 
-export default CustomDialogTitle
+export default FlyoutTitle

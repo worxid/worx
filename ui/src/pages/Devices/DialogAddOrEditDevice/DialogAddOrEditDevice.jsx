@@ -1,3 +1,4 @@
+// TO DO: DELETE THIS COMPONENT
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
@@ -8,10 +9,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import CustomDialogActions from 'components/Customs/CustomDialogActions'
+import FlyoutActions from 'components/Flyout/FlyoutActions'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogContent from 'components/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/Customs/CustomDialogTitle'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -108,7 +109,7 @@ const DialogAddOrEditDevice = (props) => {
   return (
     <DialogAddOrEdit>
       {/* DIALOG TITLE */}
-      <CustomDialogTitle>
+      <FlyoutTitle>
         <Stack direction='row' alignItems='center'>
           {/* CLOSE ICON */}
           <IconClose
@@ -121,10 +122,10 @@ const DialogAddOrEditDevice = (props) => {
             Edit Device
           </Typography>
         </Stack>
-      </CustomDialogTitle>
+      </FlyoutTitle>
 
       {/* DIALOG CONTENT */}
-      <CustomDialogContent>
+      <FlyoutContent>
         <Typography variant='subtitle1'>
           Main Information
         </Typography>
@@ -147,10 +148,10 @@ const DialogAddOrEditDevice = (props) => {
             />
           </FormControl>
         </Stack>
-      </CustomDialogContent>
+      </FlyoutContent>
 
       {/* DIALOG ACTIONS */}
-      <CustomDialogActions>
+      <FlyoutActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
           className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
@@ -166,7 +167,7 @@ const DialogAddOrEditDevice = (props) => {
         >
           Save
         </CustomDialogActionButton>
-      </CustomDialogActions>
+      </FlyoutActions>
     </DialogAddOrEdit>
   )
 }
