@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -10,6 +10,7 @@ import DialogMediasPreview from 'components/DialogMediasPreview/DialogMediasPrev
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+import SubmissionDetailFlyout from './SubmissionDetailFlyout/SubmissionDetailFlyout'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -58,13 +59,15 @@ import { convertCamelCaseToSnakeCase } from 'utilities/string'
 const FormsSubmissions = () => {
   // CONTEXT
   const { setSnackbarObject } = useContext(AllPagesContext)
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
 
   // STYLES
   const classes = useStyles()
 
   // NAVIGATE
-  const navigate = useNavigate()
   const { formTemplateId } = useParams()
 
   const axiosPrivate = useAxiosPrivate()
@@ -130,7 +133,6 @@ const FormsSubmissions = () => {
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
-  // const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
   const [ rawTableData, setRawTableData ] = useState([])
@@ -154,6 +156,8 @@ const FormsSubmissions = () => {
   const [ mediaPreviewList, setMediaPreviewList ] = useState([])
   const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
   const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
+  // FLYOUT
+  const [ shouldFlyoutOpen, setShouldFlyoutOpen ] = useState(true)
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -255,6 +259,8 @@ const FormsSubmissions = () => {
   }
 
   const handleMediaTypeCellClick = async (inputValue) => {
+    setShouldFlyoutOpen(false)
+
     const abortController = new AbortController()
 
     const resultMediaFilesData = await postDetailMediaFiles(
@@ -499,6 +505,14 @@ const FormsSubmissions = () => {
     updateTableDataDynamically()
   }, [columnList, rawTableData])
 
+  useEffect(() => {
+    if (selectionModel.length === 1 && shouldFlyoutOpen) setIsFlyoutOpen(true)
+    else {
+      setIsFlyoutOpen(false)
+      setShouldFlyoutOpen(true)
+    }
+  }, [selectionModel])
+
   return (
     <>
       {/* APP BAR */}
@@ -614,8 +628,6 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
-            // ROW
-            onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
           />
         </LoadingPaper>
       </Stack>
@@ -639,6 +651,9 @@ const FormsSubmissions = () => {
         activeStep={mediaPreviewActiveStep}
         setActiveStep={setMediaPreviewActiveStep}
       />
+
+      {/* SUBMISSION DETAIL FLYOUT */}
+      <SubmissionDetailFlyout/>
     </>
   )
 }
