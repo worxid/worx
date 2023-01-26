@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 24,
   },
   childrenContainer: {
-    padding: 24,
     overflowY: 'auto',
     backgroundColor: theme.palette.common.white,
   },

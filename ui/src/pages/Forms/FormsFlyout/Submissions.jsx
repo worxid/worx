@@ -180,7 +180,11 @@ const Submissions = (props) => {
               {/* TEXT */}
               <ListItemText
                 primary={
-                  <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`} fontWeight={600}>
+                  <Typography 
+                    variant='caption' 
+                    className='textCapitalize colorTextSecondary' 
+                    fontWeight={600}
+                  >
                     {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
                   </Typography>
                 }
@@ -204,14 +208,16 @@ const Submissions = (props) => {
         </List>
 
         {/* PAGINATION */}
-        {submissionData?.content?.length ? (<Pagination
-          className={classes.pagination}
-          count={submissionData?.totalPages}
-          defaultPage={1}
-          siblingCount={0}
-          onChange={(event, page) => setCurrentPage(page)}
-          shape='rounded'
-        />) : ''}
+        {submissionData?.content?.length ? (
+          <Pagination
+            className={classes.pagination}
+            count={submissionData?.totalPages}
+            defaultPage={1}
+            siblingCount={0}
+            onChange={(event, page) => setCurrentPage(page)}
+            shape='rounded'
+          />
+        ) : ''}
       </Collapse>
     </>
   )

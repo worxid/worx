@@ -22,12 +22,9 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 24,
       '&:hover': {
         backgroundColor: 'transparent',
-      }
-    }
+      },
+    },
   },
-  textSource: {
-    textTransform: 'capitalize'
-  }
 }))
 
 export default useStyles

@@ -14,7 +14,7 @@ const CustomDialogTitle = styled(({ className, ...props }) => (
   padding: '16px 20px',
   backgroundColor: theme.palette.primary.outlinedHoverBackground,
   borderLeft: `2px solid ${theme.palette.primary.main}`,
-  marginBottom: 24,
+  margin: 24,
 }))
 
 export default CustomDialogTitle

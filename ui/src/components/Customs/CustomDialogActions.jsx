@@ -8,7 +8,7 @@ const CustomDialogActions = styled(({ className, ...props }) => (
     {...props}
   />
 ))(({ theme }) => ({
-  padding: 0,
+  padding: 24,
 }))
 
 export default CustomDialogActions
