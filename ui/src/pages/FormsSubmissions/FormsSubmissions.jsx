@@ -508,7 +508,6 @@ const FormsSubmissions = () => {
         backLink='/forms'
         pageTitle='Submissions'
         hasSearch={false}
-        hasFlyout={false}
       />
 
       {/* CONTENTS */}
