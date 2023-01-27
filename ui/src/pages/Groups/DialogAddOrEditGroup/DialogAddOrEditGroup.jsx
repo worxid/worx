@@ -12,7 +12,7 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -254,7 +254,7 @@ const DialogAddOrEditGroup = (props) => {
       onCloseButtonClick={handleClose}
     >
       {/* HEADER */}
-      <FlyoutTitle>
+      <FlyoutHeader>
         {/* GROUP NAME */}
         {(dialogType === 'add' || isEditMode) &&
         <FormControl 
@@ -321,7 +321,7 @@ const DialogAddOrEditGroup = (props) => {
             <IconDelete color='primary'/>
           </IconButton>}
         </Stack>
-      </FlyoutTitle>
+      </FlyoutHeader>
 
       {/* CONTENT */}
       <FlyoutContent>

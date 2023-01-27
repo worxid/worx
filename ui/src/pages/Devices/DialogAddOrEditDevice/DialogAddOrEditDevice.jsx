@@ -9,10 +9,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import FlyoutActions from 'components/Flyout/FlyoutActions'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
+import FlyoutActions from 'components/Flyout/FlyoutActions'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -109,7 +109,7 @@ const DialogAddOrEditDevice = (props) => {
   return (
     <DialogAddOrEdit>
       {/* DIALOG TITLE */}
-      <FlyoutTitle>
+      <FlyoutHeader>
         <Stack direction='row' alignItems='center'>
           {/* CLOSE ICON */}
           <IconClose
@@ -122,7 +122,7 @@ const DialogAddOrEditDevice = (props) => {
             Edit Device
           </Typography>
         </Stack>
-      </FlyoutTitle>
+      </FlyoutHeader>
 
       {/* DIALOG CONTENT */}
       <FlyoutContent>

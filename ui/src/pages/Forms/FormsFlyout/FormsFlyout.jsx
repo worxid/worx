@@ -3,7 +3,7 @@ import { useContext } from 'react'
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import MainMenu from './MainMenu'
 import Submissions from './Submissions'
 
@@ -27,7 +27,7 @@ const FormsFlyout = (props) => {
       onCloseButtonClick={() => setIsFlyoutOpen(false)}
     >
       {/* TITLE */}
-      <FlyoutTitle>
+      <FlyoutHeader>
         {/* TEXT */}
         <Typography 
           variant='h5' 
@@ -36,7 +36,7 @@ const FormsFlyout = (props) => {
         >
           {rows.length > 0 && rows[0].label}
         </Typography>
-      </FlyoutTitle>
+      </FlyoutHeader>
 
       {/* CONTENT */}
       <FlyoutContent>
