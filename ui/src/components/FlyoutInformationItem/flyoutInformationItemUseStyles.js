@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   icon: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.action.active,
     height: 14,
     width: 14,
   },

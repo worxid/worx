@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from 'react'
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutDeletableItem from 'components/FlyoutDeletableItem/FlyoutDeletableItem'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
@@ -361,6 +362,7 @@ const DialogAddOrEditGroup = (props) => {
           direction='row'
           alignItems='center'
           justifyContent='space-between'
+          marginBottom='24px'
         >
           {/* ITEM COUNT */}
           <Stack>
@@ -384,6 +386,28 @@ const DialogAddOrEditGroup = (props) => {
           >
             Add to Group
           </Button>
+        </Stack>
+
+        {/* ITEM LIST */}
+        <Stack spacing='8px'>
+          {[
+            {
+              primaryText: 'test',
+              secondaryText: 'test',
+            },
+            {
+              primaryText: 'test',
+              secondaryText: 'test',
+            },
+          ].map((item, index) => (
+            <FlyoutDeletableItem
+              key={index}
+              icon={IconCalendarToday}
+              primaryText={item.primaryText}
+              secondaryText={item.secondaryText}
+              onDeleteButtonClick={() => console.log('delete item')}
+            />
+          ))}
         </Stack>
 
         {/* DEVICES AUTOCOMPLETE */}
