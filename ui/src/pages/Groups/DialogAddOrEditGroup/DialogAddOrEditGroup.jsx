@@ -84,10 +84,12 @@ const DialogAddOrEditGroup = (props) => {
   const [ selectedFormList, setSelectedFormList ] = useState([])
   const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
   const [ isEditMode, setIsEditMode ] = useState(false)
+  const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
 
   const onSelectColor = (color) => {
-    setGroupColor(color)
     setColorPickerAnchorElement(null)
+    setGroupColor(color)
+    setShouldSaveGroup(true)
   }
 
   const handleSaveGroup = async () => {
@@ -126,6 +128,7 @@ const DialogAddOrEditGroup = (props) => {
     // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
     if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
       setMustReloadDataGrid(true)
+      setIsEditMode(false)
 
       let message = ''
       if (dialogType === 'add') message = 'Successfully creating a new group'
@@ -141,6 +144,8 @@ const DialogAddOrEditGroup = (props) => {
     else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
     }
+
+    setShouldSaveGroup(false)
   }
   
   // CLOSE DIALOG ADD OR EDIT GROUP
@@ -239,6 +244,10 @@ const DialogAddOrEditGroup = (props) => {
     }
   }, [dataDialogEdit])
 
+  useEffect(() => {
+    shouldSaveGroup && handleSaveGroup()
+  }, [shouldSaveGroup])
+
   return (
     <Flyout 
       position='right'
@@ -257,7 +266,7 @@ const DialogAddOrEditGroup = (props) => {
             type='text'
             value={groupName}
             onChange={(event) => setGroupName(event.target.value)}
-            onBlur={() => handleSaveGroup()}
+            onBlur={() => setShouldSaveGroup(true)}
           />
         </FormControl>}
 
@@ -266,6 +275,9 @@ const DialogAddOrEditGroup = (props) => {
           direction='row'
           alignItems='center'
           className='editIconContainer'
+          flex={1}
+          width={0}
+          spacing='8px'
         >
           {/* TITLE */}
           {!isEditMode &&
@@ -273,9 +285,8 @@ const DialogAddOrEditGroup = (props) => {
             variant='h6' 
             className='fontWeight500'
             noWrap
-            marginRight='8px'
           >
-            {dataDialogEdit.name}
+            {groupName}
           </Typography>}
 
           {/* EDIT ICON */}
