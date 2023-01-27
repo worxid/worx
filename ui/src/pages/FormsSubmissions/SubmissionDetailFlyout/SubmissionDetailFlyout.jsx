@@ -4,8 +4,6 @@ import { useContext } from 'react'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutTitle from 'components/Flyout/FlyoutTitle'
-import MainMenu from './MainMenu'
-import Submissions from './Submissions'
 
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -13,12 +11,7 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 // MUIS
 import Typography from '@mui/material/Typography'
 
-const FormsFlyout = (props) => {
-  const { 
-    rows, 
-    setGroupData, 
-  } = props
-
+const SubmissionDetailFlyout = () => {
   const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
   return (
@@ -34,17 +27,16 @@ const FormsFlyout = (props) => {
           className='fontWeight500'
           noWrap
         >
-          {rows.length > 0 && rows[0].label}
+          This is the title
         </Typography>
       </FlyoutTitle>
 
       {/* CONTENT */}
       <FlyoutContent>
-        <MainMenu rows={rows} setGroupData={setGroupData}/>
-        <Submissions rows={rows}/>
+        This is the content
       </FlyoutContent>
     </Flyout>
   )
 }
 
-export default FormsFlyout
+export default SubmissionDetailFlyout

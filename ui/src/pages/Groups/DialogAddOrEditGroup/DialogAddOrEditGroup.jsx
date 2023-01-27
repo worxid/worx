@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
-import DialogAddOrEdit from 'components/DialogAddOrEdit/DialogAddOrEdit'
+import Flyout from 'components/Flyout/Flyout'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -11,10 +11,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // CUSTOM COMPONENTS
-import CustomDialogActions from 'components/DialogAddOrEdit/Customs/CustomDialogActions'
+import FlyoutActions from 'components/Flyout/FlyoutActions'
 import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogContent from 'components/DialogAddOrEdit/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTitle'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -36,7 +36,6 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconClose from '@mui/icons-material/Close'
 import IconFormatColorText from '@mui/icons-material/FormatColorText'
 
 // SERVICES
@@ -72,7 +71,7 @@ const DialogAddOrEditGroup = (props) => {
   const layoutClasses = useLayoutStyles()
   const classes = useStyles()
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
@@ -174,7 +173,7 @@ const DialogAddOrEditGroup = (props) => {
     setGroupName(initialFormObject.groupName)
     setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
-    setIsDialogAddOrEditOpen(false)
+    setIsFlyoutOpen(false)
   }
 
   const updateSelectedDevicesAndForms = async (abortController, isMounted) => {
@@ -265,25 +264,23 @@ const DialogAddOrEditGroup = (props) => {
   }, [dataDialogEdit])
 
   return (
-    <DialogAddOrEdit>
-      {/* DIALOG TITLE */}
-      <CustomDialogTitle>
-        <Stack direction='row' alignItems='center'>
-          {/* CLOSE ICON */}
-          <IconClose
-            className={layoutClasses.dialogAddOrEditIconClose}
-            onClick={handleClose}
-          />
+    <Flyout 
+      position='right'
+      onCloseButtonClick={handleClose}
+    >
+      {/* TITLE */}
+      <FlyoutTitle>
+        <Typography 
+          variant='h6' 
+          className='fontWeight500'
+          noWrap
+        >
+          {capitalizeEachWord(dialogType)} Group
+        </Typography>
+      </FlyoutTitle>
 
-          {/* TITLE */}
-          <Typography variant='h6' className='fontWeight500'>
-            {capitalizeEachWord(dialogType)} Group
-          </Typography>
-        </Stack>
-      </CustomDialogTitle>
-
-      {/* DIALOG CONTENT */}
-      <CustomDialogContent>
+      {/* CONTENT */}
+      <FlyoutContent>
         <Typography variant='subtitle1'>
           Main Information
         </Typography>
@@ -383,10 +380,10 @@ const DialogAddOrEditGroup = (props) => {
           value={selectedFormList}
           onChange={(event, newValue) => setSelectedFormList(newValue)}
         />}
-      </CustomDialogContent>
+      </FlyoutContent>
 
       {/* DIALOG ACTIONS */}
-      <CustomDialogActions>
+      <FlyoutActions>
         {/* CANCEL BUTTON */}
         <CustomDialogActionButton 
           className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
@@ -402,7 +399,7 @@ const DialogAddOrEditGroup = (props) => {
         >
           Save
         </CustomDialogActionButton>
-      </CustomDialogActions>
+      </FlyoutActions>
 
       <Popover
         id={id}
@@ -432,7 +429,7 @@ const DialogAddOrEditGroup = (props) => {
           })}
         </Box>
       </Popover>
-    </DialogAddOrEdit>
+    </Flyout>
   )
 }
 

@@ -18,12 +18,9 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconDateRange from '@mui/icons-material/DateRange'
-import IconDelete from '@mui/icons-material/Delete'
 import IconDownload from '@mui/icons-material/Download'
-import IconEdit from '@mui/icons-material/Edit'
 import IconFilterAlt from '@mui/icons-material/FilterAlt'
 import IconSettings from '@mui/icons-material/Settings'
-import IconShare from '@mui/icons-material/Share'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -50,15 +47,6 @@ const DataGridFilters = (props) => {
     setIsFilterOn,
     // TEXT
     contentTitle,
-    // SHARE
-    isShareButtonEnabled,
-    handleShareButtonClick,
-    // EDIT
-    isEditButtonEnabled,
-    handleEditButtonClick,
-    // DELETE
-    isDeleteButtonEnabled,
-    handleDeleteButtonClick,
     // DOWNLOAD
     isDownloadButtonEnabled,
     handleDownloadButtonClick,
@@ -118,48 +106,6 @@ const DataGridFilters = (props) => {
           onClick={handleDownloadButtonClick}
         >
           <IconDownload/>
-        </IconButton>
-      </CustomTooltip>}
-
-      {/* SHARE ICON */}
-      {isShareButtonEnabled &&
-      <CustomTooltip 
-        title='Share' 
-        placement='top'
-      >
-        <IconButton 
-          className={classes.iconButton}
-          onClick={handleShareButtonClick}
-        >
-          <IconShare/>
-        </IconButton>
-      </CustomTooltip>}
-
-      {/* EDIT ICON */}
-      {isEditButtonEnabled &&
-      <CustomTooltip 
-        title='Edit' 
-        placement='top'
-      >
-        <IconButton 
-          className={classes.iconButton}
-          onClick={handleEditButtonClick}
-        >
-          <IconEdit/>
-        </IconButton>
-      </CustomTooltip>}
-
-      {/* DELETE ICON */}
-      {isDeleteButtonEnabled &&
-      <CustomTooltip 
-        title='Delete' 
-        placement='top'
-      >
-        <IconButton 
-          className={classes.iconButton}
-          onClick={handleDeleteButtonClick}
-        >
-          <IconDelete/>
         </IconButton>
       </CustomTooltip>}
 
@@ -262,12 +208,6 @@ DataGridFilters.defaultProps = {
   dateRangeValue: [],
   isDateRangeTimePickerOpen: false,
   isWithDateTimePicker: false,
-  // SHARE
-  isShareButtonEnabled: false,
-  // EDIT
-  isEditButtonEnabled: false,
-  // DELETE
-  isDeleteButtonEnabled: false,
   // DOWNLOAD
   isDownloadButtonEnabled: false,
 }
@@ -289,15 +229,6 @@ DataGridFilters.propTypes = {
   setIsDateRangeTimePickerOpen: PropTypes.func,
   handleSelectDateRangePickerButtonClick: PropTypes.func,
   handleCancelDateRangePickerButtonClick: PropTypes.func,
-  // SHARE
-  isShareButtonEnabled: PropTypes.bool,
-  handleShareButtonClick: PropTypes.func,
-  // EDIT
-  isEditButtonEnabled: PropTypes.bool,
-  handleEditButtonClick: PropTypes.func,
-  // DELETE
-  isDeleteButtonEnabled: PropTypes.bool,
-  handleDeleteButtonClick: PropTypes.func,
   // DOWNLOAD
   isDownloadButtonEnabled: PropTypes.bool,
   handleDownloadButtonClick: PropTypes.func,

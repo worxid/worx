@@ -12,7 +12,7 @@ const CustomDialogActionButton = styled(({ className, ...props }) => (
   />
 ))(({ theme }) => ({
   textTransform: 'none',
-  fontFamily: values.fontFamilyDmMono
+  fontFamily: values.fontFamilyDmMono,
 }))
 
 export default CustomDialogActionButton
