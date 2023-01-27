@@ -2,7 +2,7 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  flyoutItemIcon: {
+  icon: {
     color: theme.palette.text.secondary,
     height: 14,
     width: 14,

@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from 'react'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
-import FlyoutItem from 'components/FlyoutItem/FlyoutItem'
+import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -333,16 +333,16 @@ const DialogAddOrEditGroup = (props) => {
       </FlyoutHeader>
 
       {/* CONTENT */}
+      {dialogType === 'edit' &&
       <FlyoutContent>
         {/* CREATED DATE INFO */}
-        <FlyoutItem
+        <FlyoutInformationItem
           icon={IconCalendarToday} 
           title='Created Date'
           value='[Dummy Date]'
         />
 
         {/* TABS */}
-        {dialogType === 'edit' &&
         <Tabs 
           value={selectedTab} 
           onChange={(event, newValue) => setSelectedTab(newValue)} 
@@ -354,7 +354,7 @@ const DialogAddOrEditGroup = (props) => {
               label={item}
             />
           ))}
-        </Tabs>}
+        </Tabs>
 
         {/* TAB CONTENT HEADER */}
         <Stack
@@ -453,7 +453,7 @@ const DialogAddOrEditGroup = (props) => {
           value={selectedFormList}
           onChange={(event, newValue) => setSelectedFormList(newValue)}
         />}
-      </FlyoutContent>
+      </FlyoutContent>}
 
       {/* COLOR PICKER MENU */}
       <Menu

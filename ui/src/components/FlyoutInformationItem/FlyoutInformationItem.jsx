@@ -5,9 +5,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // STYLES
-import useStyles from './flyoutItemUseStyles'
+import useStyles from './flyoutInformationItemUseStyles'
 
-const FlyoutItem = (props) => {
+const FlyoutInformationItem = (props) => {
   const { 
     icon, 
     title,
@@ -28,7 +28,7 @@ const FlyoutItem = (props) => {
         spacing='8px'
       >
         {/* ICON */}
-        <SelectedIcon className={classes.flyoutItemIcon}/>
+        <SelectedIcon className={classes.icon}/>
 
         {/* TITLE */}
         <Typography
@@ -50,17 +50,17 @@ const FlyoutItem = (props) => {
   )
 }
 
-FlyoutItem.defaultProps = {
+FlyoutInformationItem.defaultProps = {
   title: '',
   value: '',
   className: '',
 }
 
-FlyoutItem.propTypes = {
+FlyoutInformationItem.propTypes = {
   icon: PropTypes.object.isRequired, 
   title: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
 }
 
-export default FlyoutItem
+export default FlyoutInformationItem
