@@ -2,6 +2,9 @@ import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
+import FlyoutItem from 'components/FlyoutItem/FlyoutItem'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -9,10 +12,6 @@ import { values } from 'constants/values'
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
-
-// CUSTOM COMPONENTS
-import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -32,6 +31,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconCalendarToday from '@mui/icons-material/CalendarToday'
 import IconDelete from '@mui/icons-material/Delete'
 import IconEdit from '@mui/icons-material/Edit'
 
@@ -325,6 +325,13 @@ const DialogAddOrEditGroup = (props) => {
 
       {/* CONTENT */}
       <FlyoutContent>
+        {/* CREATED DATE INFO */}
+        <FlyoutItem
+          icon={IconCalendarToday} 
+          title='Created Date'
+          value='[Dummy Date]'
+        />
+
         {/* DEVICES AUTOCOMPLETE */}
         {dialogType === 'edit' &&
         <Autocomplete
