@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tabs: {
     marginTop: 24,
+    marginBottom: 16,
     borderBottom: `1px solid ${theme.palette.action.active}`,
     '& .MuiButtonBase-root': {
       textTransform: 'capitalize',

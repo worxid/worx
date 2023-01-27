@@ -34,6 +34,7 @@ const FlyoutItem = (props) => {
         <Typography
           variant='caption'
           color='text.secondary'
+          noWrap
         >
           {title}
         </Typography>
@@ -41,6 +42,7 @@ const FlyoutItem = (props) => {
       {/* VALUE */}
       <Typography
         variant='body2'
+        noWrap
       >
         {value}
       </Typography>

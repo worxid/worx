@@ -18,6 +18,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
+import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
@@ -47,6 +48,7 @@ import {
 } from 'services/worx/group'
 
 // STYLES
+import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
@@ -66,6 +68,7 @@ const DialogAddOrEditGroup = (props) => {
   } = props
 
   const classes = useStyles()
+  const layoutClasses = useLayoutStyles()
 
   const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
@@ -78,6 +81,8 @@ const DialogAddOrEditGroup = (props) => {
     groupColor: '#000000',
   }
 
+  const initialTabList = [ 'Devices', 'Forms' ]
+
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
   const [ deviceList, setDeviceList ] = useState([])
@@ -87,7 +92,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
-  const [ tabList, setTabList ] = useState([ 'Devices', 'Forms' ])
+  const [ tabList, setTabList ] = useState(initialTabList)
   const [ selectedTab, setSelectedTab ] = useState(0)
 
   const onSelectColor = (color) => {
@@ -350,6 +355,36 @@ const DialogAddOrEditGroup = (props) => {
             />
           ))}
         </Tabs>}
+
+        {/* TAB CONTENT HEADER */}
+        <Stack
+          direction='row'
+          alignItems='center'
+          justifyContent='space-between'
+        >
+          {/* ITEM COUNT */}
+          <Stack>
+            {/* TITLE */}
+            <Typography fontWeight={500}>
+              {initialTabList[selectedTab]}
+            </Typography>
+
+            {/* COUNT */}
+            <Typography 
+              variant='body2'
+              color='text.secondary'
+            >
+              [Dummy Count] {initialTabList[selectedTab]}
+            </Typography>
+          </Stack>
+          {/* ADD TO GROUP BUTTON */}
+          <Button 
+            variant='contained'
+            className={layoutClasses.flyoutListItemActionButton}
+          >
+            Add to Group
+          </Button>
+        </Stack>
 
         {/* DEVICES AUTOCOMPLETE */}
         {dialogType === 'edit' &&
