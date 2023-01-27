@@ -27,6 +27,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
@@ -85,6 +87,8 @@ const DialogAddOrEditGroup = (props) => {
   const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
+  const [ tabList, setTabList ] = useState([ 'Devices', 'Forms' ])
+  const [ selectedTab, setSelectedTab ] = useState(0)
 
   const onSelectColor = (color) => {
     setColorPickerAnchorElement(null)
@@ -331,6 +335,21 @@ const DialogAddOrEditGroup = (props) => {
           title='Created Date'
           value='[Dummy Date]'
         />
+
+        {/* TABS */}
+        {dialogType === 'edit' &&
+        <Tabs 
+          value={selectedTab} 
+          onChange={(event, newValue) => setSelectedTab(newValue)} 
+          className={classes.tabs}
+        >
+          {tabList.map((item, index) => (
+            <Tab 
+              key={index}
+              label={item}
+            />
+          ))}
+        </Tabs>}
 
         {/* DEVICES AUTOCOMPLETE */}
         {dialogType === 'edit' &&

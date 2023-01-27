@@ -25,6 +25,18 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 6,
     cursor: 'pointer',
   },
+  tabs: {
+    marginTop: 24,
+    borderBottom: `1px solid ${theme.palette.action.active}`,
+    '& .MuiButtonBase-root': {
+      textTransform: 'capitalize',
+      fontSize: 16,
+    },
+    '& .MuiTab-root.Mui-selected': {
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.primary.outlinedHoverBackground,
+    },
+  },
   autocomplete: {
     marginTop: 12,
   },
