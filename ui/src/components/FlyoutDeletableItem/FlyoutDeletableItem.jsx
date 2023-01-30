@@ -15,6 +15,7 @@ const FlyoutDeletableItem = (props) => {
     primaryText,
     secondaryText,
     actionIcon,
+    actionIconHref,
     onActionButtonClick,
   } = props
 
@@ -31,6 +32,7 @@ const FlyoutDeletableItem = (props) => {
         <IconButton 
           edge='end'
           onClick={onActionButtonClick}
+          href={actionIconHref}
         >
           <SelectedActionIcon color='primary'/>
         </IconButton>
@@ -56,6 +58,7 @@ const FlyoutDeletableItem = (props) => {
 FlyoutDeletableItem.defaultProps = {
   primaryText: '',
   secondaryText: '',
+  actionIconHref: '',
 }
 
 FlyoutDeletableItem.propTypes = {
@@ -63,7 +66,8 @@ FlyoutDeletableItem.propTypes = {
   primaryText: PropTypes.string.isRequired,
   secondaryText: PropTypes.string.isRequired,
   actionIcon: PropTypes.object.isRequired,
-  onActionButtonClick: PropTypes.func.isRequired,
+  actionIconHref: PropTypes.string.isRequired,
+  onActionButtonClick: PropTypes.func,
 }
 
 export default FlyoutDeletableItem
