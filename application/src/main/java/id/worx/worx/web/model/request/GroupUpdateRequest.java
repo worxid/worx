@@ -16,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupUpdateRequest implements Serializable {
-
     private static final long serialVersionUID = -6465388113918491543L;
 
     @NotBlank

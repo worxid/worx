@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import id.worx.worx.repository.DeviceRepository;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import java.util.stream.Collectors;
 
 import id.worx.worx.repository.DeviceRepository;
@@ -158,6 +161,7 @@ public class GroupServiceImpl implements GroupService {
                 .devices(devices)
                 .formCount(forms.size())
                 .deviceCount(devices.size())
+                .createdDate(group.getCreatedOn().toString())
                 .build();
     }
 
