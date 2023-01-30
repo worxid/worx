@@ -7,9 +7,9 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 
 // STYLES
-import useStyles from './flyoutDeletableItemUseStyles'
+import useStyles from './flyoutActionableItemUseStyles'
 
-const FlyoutDeletableItem = (props) => {
+const FlyoutActionableItem = (props) => {
   const {
     icon,
     primaryText,
@@ -55,13 +55,13 @@ const FlyoutDeletableItem = (props) => {
   )
 }
 
-FlyoutDeletableItem.defaultProps = {
+FlyoutActionableItem.defaultProps = {
   primaryText: '',
   secondaryText: '',
   actionIconHref: '',
 }
 
-FlyoutDeletableItem.propTypes = {
+FlyoutActionableItem.propTypes = {
   icon: PropTypes.object.isRequired,
   primaryText: PropTypes.string.isRequired,
   secondaryText: PropTypes.string.isRequired,
@@ -70,4 +70,4 @@ FlyoutDeletableItem.propTypes = {
   onActionButtonClick: PropTypes.func,
 }
 
-export default FlyoutDeletableItem
+export default FlyoutActionableItem

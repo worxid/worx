@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react'
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutDeletableItem from 'components/FlyoutDeletableItem/FlyoutDeletableItem'
+import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
