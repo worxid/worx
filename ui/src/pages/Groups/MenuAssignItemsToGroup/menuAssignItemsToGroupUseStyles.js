@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 400,
     overflow: 'auto',
   },
+  actions: {
+    borderTop: `1px solid ${theme.palette.action.active}`,
+    padding: 12,
+  },
 }))
 
 export default useStyles

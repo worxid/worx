@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+// CUSTOM COMPONENTS
+import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
+
 // MUIS
 import Checkbox from '@mui/material/Checkbox'
 import Input from '@mui/material/Input'
@@ -110,6 +113,25 @@ const MenuAssignItemsToGroup = (props) => {
             </ListItemButton>
           ))}
       </List>
+
+      {/* ACTIONS */}
+      <Stack
+        direction='row' 
+        justifyContent='flex-end'
+        className={classes.actions}
+      >
+        <CustomDialogActionButton 
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
+        >
+          Cancel
+        </CustomDialogActionButton>
+
+        <CustomDialogActionButton
+          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`} 
+        >
+          Save
+        </CustomDialogActionButton>
+      </Stack>
     </Menu>
   )
 }
