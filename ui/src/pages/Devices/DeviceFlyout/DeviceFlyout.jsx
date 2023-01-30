@@ -2,9 +2,9 @@ import { useContext } from 'react'
 
 // COMPONENTS
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
-import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
 import Flyout from 'components/Flyout/Flyout'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // CONSTANTS
 import { 
@@ -127,7 +127,7 @@ const DevicesFlyout = (props) => {
       onCloseButtonClick={() => setIsFlyoutOpen(false)}
     >
       {/* HEADER */}
-      <FlyoutTitle>
+      <FlyoutHeader>
         {/* TITLE */}
         <Typography 
           variant='h5' 
@@ -137,14 +137,14 @@ const DevicesFlyout = (props) => {
           {rows.length > 0 && rows[0].label}
         </Typography>
 
-        {/* EXPAND/COLLAPSE ICON  */}
+        {/* DELETE ICON  */}
         <IconButton 
           size='small'
           onClick={handleDeleteDevicesClick}
         >
           <IconDelete color='primary'/>
         </IconButton>
-      </FlyoutTitle>
+      </FlyoutHeader>
 
       {/* LIST */}
       <FlyoutContent>

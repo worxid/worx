@@ -26,6 +26,18 @@ const GlobalStyles = () => {
           transition: 'all 0.25s ease-in-out',
         },
 
+        // EDIT ITEM
+        '.editIcon': {
+          visibility: 'hidden',
+        },
+        '.editIconContainer': {
+          '&:hover': {
+            '.editIcon': {
+              visibility: 'visible',
+            },
+          },
+        },
+
         // GENERAL
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,

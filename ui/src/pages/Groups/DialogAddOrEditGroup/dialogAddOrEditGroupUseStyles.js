@@ -2,26 +2,41 @@
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
-  pickerStyle: {
-    width: '18px',
-    height: '18px',
+  colorPicker: {
+    width: 18,
+    height: 18,
     cursor: 'pointer',
+    marginRight: 8,
   },
-  popOverDialog: {
-    marginTop: 15,
+  colorPickerMenu: {
+    marginTop: 12,
   },
   colorWrap: {
-    width: '198px',
-    padding: '6px 0 0 6px',
-    display: 'flex',
+    width: 200,
+    alignItems: 'center',
     flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingLeft: 4,
   },
   itemColor: {
-    width: '18px',
-    height: '18px',
-    marginRight: '6px',
-    marginBottom: '6px',
+    width: 18,
+    height: 18,
+    marginRight: 6,
+    marginBottom: 6,
     cursor: 'pointer',
+  },
+  tabs: {
+    marginTop: 24,
+    marginBottom: 16,
+    borderBottom: `1px solid ${theme.palette.action.active}`,
+    '& .MuiButtonBase-root': {
+      textTransform: 'capitalize',
+      fontSize: 16,
+    },
+    '& .MuiTab-root.Mui-selected': {
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.primary.outlinedHoverBackground,
+    },
   },
   autocomplete: {
     marginTop: 12,

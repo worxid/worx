@@ -3,7 +3,7 @@ import { useContext } from 'react'
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -20,7 +20,7 @@ const SubmissionDetailFlyout = () => {
       onCloseButtonClick={() => setIsFlyoutOpen(false)}
     >
       {/* TITLE */}
-      <FlyoutTitle>
+      <FlyoutHeader>
         {/* TEXT */}
         <Typography 
           variant='h5' 
@@ -29,7 +29,7 @@ const SubmissionDetailFlyout = () => {
         >
           This is the title
         </Typography>
-      </FlyoutTitle>
+      </FlyoutHeader>
 
       {/* CONTENT */}
       <FlyoutContent>
