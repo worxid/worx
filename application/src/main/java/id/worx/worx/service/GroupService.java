@@ -3,6 +3,7 @@ package id.worx.worx.service;
 import java.util.List;
 
 import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.dto.GroupDetailDTO;
 import id.worx.worx.common.model.projection.GroupSearchProjection;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
@@ -21,7 +22,7 @@ public interface GroupService {
 
     Group read(Long id);
 
-    Group update(Long id, GroupRequest request);
+    Group update(Long id, GroupUpdateRequest request);
 
     void delete(Long id);
 
@@ -31,7 +32,8 @@ public interface GroupService {
 
     GroupDTO toDTO(GroupSearchProjection groupSearchProjection);
 
-    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest, Pageable pageable);
+    GroupDetailDTO toDetailDTO(Group group);
 
-    Group updateDeviceAndForm(Long id, GroupUpdateRequest request);
+    Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest,
+            Pageable pageable);
 }

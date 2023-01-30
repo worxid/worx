@@ -91,7 +91,7 @@ const GlobalStyles = () => {
           textTransform: 'lowercase',
           '&:first-letter': {
             textTransform: 'capitalize'
-          }
+          },
         },
         '.width100': {
           width: '100%',
