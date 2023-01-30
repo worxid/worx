@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 // MUIS
@@ -30,6 +30,21 @@ const MenuAssignItemsToGroup = (props) => {
   const layoutClasses = useLayoutStyles()
 
   const [ search, setSearch ] = useState('')
+  const [ tempSelectedDeviceList, setTempSelectedDeviceList ] = useState([])
+
+  const handleListItemClick = (event, inputItem) => {
+    const hasChecked = [...tempSelectedDeviceList].find(item => item.label === inputItem.label)
+
+    if (!Boolean(hasChecked)) setTempSelectedDeviceList([ ...tempSelectedDeviceList, inputItem ])
+    else {
+      const newSelectedDeviceList = [...tempSelectedDeviceList].filter(item => item.label !== inputItem.label)
+      setTempSelectedDeviceList(newSelectedDeviceList)
+    }
+  }
+
+  useEffect(() => {
+    selectedDeviceList.length > 0 && setTempSelectedDeviceList([...selectedDeviceList])
+  }, [selectedDeviceList])
 
   return (
     <Menu
@@ -83,10 +98,11 @@ const MenuAssignItemsToGroup = (props) => {
               key={index}
               className='borderBottomDivider'
               dense
+              onClick={(event) => handleListItemClick(event, item)}
             >
               {/* RADIO */}
               <ListItemIcon>
-                <Checkbox checked={Boolean(selectedDeviceList?.find(selectedDevice => selectedDevice.label === item.label))}/>
+                <Checkbox checked={Boolean(tempSelectedDeviceList?.find(selectedDevice => selectedDevice.label === item.label))}/>
               </ListItemIcon>
 
               {/* TEXT */}
