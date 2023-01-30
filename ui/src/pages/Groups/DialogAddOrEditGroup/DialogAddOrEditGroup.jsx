@@ -4,6 +4,7 @@ import { useState, useContext, useEffect } from 'react'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
+import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
@@ -19,9 +20,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
 import Button from '@mui/material/Button'
-import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
-import Input from '@mui/material/Input'
 import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
@@ -31,7 +30,6 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconCalendarToday from '@mui/icons-material/CalendarToday'
 import IconDelete from '@mui/icons-material/Delete'
-import IconEdit from '@mui/icons-material/Edit'
 import IconPhoneAndroid from '@mui/icons-material/PhoneAndroid'
 import IconTextSnippet from '@mui/icons-material/TextSnippet'
 
@@ -293,50 +291,16 @@ const DialogAddOrEditGroup = (props) => {
     >
       {/* HEADER */}
       <FlyoutHeader>
-        {/* GROUP NAME */}
-        {(dialogType === 'add' || isEditMode) &&
-        <FormControl 
-          variant='standard' 
-          className='width100'
-        >
-          <Input
-            placeholder='Group Name'
-            type='text'
-            value={groupName}
-            onChange={(event) => setGroupName(event.target.value)}
-            onBlur={() => setShouldSaveGroup(true)}
-          />
-        </FormControl>}
-
-        {dialogType === 'edit' &&
-        <Stack
-          direction='row'
-          alignItems='center'
-          className='editIconContainer'
-          flex={1}
-          width={0}
-          spacing='8px'
-        >
-          {/* TITLE */}
-          {!isEditMode &&
-          <Typography 
-            variant='h6' 
-            className='fontWeight500'
-            noWrap
-          >
-            {groupName}
-          </Typography>}
-
-          {/* EDIT ICON */}
-          {!isEditMode &&
-          <IconButton 
-            size='small'
-            className='editIcon'
-            onClick={() => setIsEditMode(true)}
-          >
-            <IconEdit fontSize='small'/>
-          </IconButton>}
-        </Stack>}
+        {/* EDITABLE TITLE */}
+        <FlyoutEditableTitle
+          dialogType={dialogType ? dialogType : 'add'}
+          titlePlaceholder='Group Name'
+          titleValue={groupName}
+          setTitleValue={(event) => setGroupName(event.target.value)}
+          onInputBlur={() => setShouldSaveGroup(true)}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+        />
 
         <Stack 
           direction='row'
