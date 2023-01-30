@@ -88,7 +88,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
   const [ tabList, setTabList ] = useState(initialTabList)
-  const [ selectedTab, setSelectedTab ] = useState(0)
+  const [ selectedTab, setSelectedTab ] = useState(initialTabList[0].toLowerCase())
 
   const onSelectColor = (color) => {
     setColorPickerAnchorElement(null)
@@ -219,7 +219,7 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const getSelectedTabObject = (inputSelectedTab) => {
-    if (inputSelectedTab === 0) {
+    if (inputSelectedTab === initialTabList[0].toLowerCase()) {
       return {
         count: selectedDeviceList.length,
         list: selectedDeviceList,
@@ -227,7 +227,7 @@ const DialogAddOrEditGroup = (props) => {
         deleteType: 'device',
       }
     }
-    else if (inputSelectedTab === 1) {
+    else if (inputSelectedTab === initialTabList[1].toLowerCase()) {
       return {
         count: selectedFormList.length,
         list: selectedFormList,
@@ -345,6 +345,7 @@ const DialogAddOrEditGroup = (props) => {
             <Tab 
               key={index}
               label={item}
+              value={item.toLowerCase()}
             />
           ))}
         </Tabs>
@@ -359,18 +360,23 @@ const DialogAddOrEditGroup = (props) => {
           {/* ITEM COUNT */}
           <Stack>
             {/* TITLE */}
-            <Typography fontWeight={500}>
-              {initialTabList[selectedTab]}
+            <Typography 
+              fontWeight={500}
+              textTransform='capitalize'
+            >
+              {selectedTab}
             </Typography>
 
             {/* COUNT */}
             <Typography 
               variant='body2'
               color='text.secondary'
+              textTransform='capitalize'
             >
-              {getSelectedTabObject(selectedTab).count} {initialTabList[selectedTab]}
+              {getSelectedTabObject(selectedTab).count} {selectedTab}
             </Typography>
           </Stack>
+
           {/* ADD TO GROUP BUTTON */}
           <Button 
             variant='contained'
