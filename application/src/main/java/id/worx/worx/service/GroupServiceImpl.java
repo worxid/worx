@@ -174,7 +174,7 @@ public class GroupServiceImpl implements GroupService {
                 .devices(devices)
                 .formCount(forms.size())
                 .deviceCount(devices.size())
-                .createdDate(group.getCreatedOn())
+                .createdDate(group.getCreatedOn().toString())
                 .build();
     }
 
