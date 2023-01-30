@@ -45,6 +45,11 @@ const MenuAssignItemsToGroup = (props) => {
     }
   }
 
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+    setTempSelectedDeviceList([...selectedDeviceList])
+  }
+
   useEffect(() => {
     selectedDeviceList.length > 0 && setTempSelectedDeviceList([...selectedDeviceList])
   }, [selectedDeviceList])
@@ -53,7 +58,7 @@ const MenuAssignItemsToGroup = (props) => {
     <Menu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
-      onClose={() => setAnchorEl(null)}
+      onClose={handleCloseMenu}
       className={classes.root}
       anchorOrigin={{
         vertical: 'bottom',
@@ -122,6 +127,7 @@ const MenuAssignItemsToGroup = (props) => {
       >
         <CustomDialogActionButton 
           className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
+          onClick={handleCloseMenu}
         >
           Cancel
         </CustomDialogActionButton>
