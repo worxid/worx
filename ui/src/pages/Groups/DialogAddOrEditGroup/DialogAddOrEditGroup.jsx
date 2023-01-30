@@ -7,6 +7,7 @@ import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionabl
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
+import MenuAssignItemsToGroup from '../MenuAssignItemsToGroup/MenuAssignItemsToGroup'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -89,6 +90,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
   const [ tabList, setTabList ] = useState(initialTabList)
   const [ selectedTab, setSelectedTab ] = useState(initialTabList[0].toLowerCase())
+  const [ menuAssignItemsAnchorElement, setMenuAssignItemsAnchorElement ] = useState(null)
 
   const onSelectColor = (color) => {
     setColorPickerAnchorElement(null)
@@ -381,6 +383,7 @@ const DialogAddOrEditGroup = (props) => {
           <Button 
             variant='contained'
             className={layoutClasses.flyoutListItemActionButton}
+            onClick={(event) => setMenuAssignItemsAnchorElement(event.currentTarget)}
           >
             Add to Group
           </Button>
@@ -431,6 +434,17 @@ const DialogAddOrEditGroup = (props) => {
           })}
         </Stack>
       </Menu>
+
+      {/* ASSIGN ITEMS TO GROUP MENU */}
+      <MenuAssignItemsToGroup
+        anchorEl={menuAssignItemsAnchorElement}
+        setAnchorEl={setMenuAssignItemsAnchorElement}
+        tabType={selectedTab}
+        deviceList={deviceList}
+        selectedDeviceList={selectedDeviceList}
+        setSelectedDeviceList={setSelectedDeviceList}
+        setShouldSaveGroup={setShouldSaveGroup}
+      />
     </Flyout>
   )
 }
