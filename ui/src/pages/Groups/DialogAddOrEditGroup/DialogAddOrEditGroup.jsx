@@ -226,6 +226,25 @@ const DialogAddOrEditGroup = (props) => {
     }
   }
 
+  const getSelectedTabObject = (inputSelectedTab) => {
+    if (inputSelectedTab === 0) {
+      return {
+        count: selectedDeviceList.length,
+        list: selectedDeviceList,
+        icon: IconPhoneAndroid,
+        deleteType: 'device',
+      }
+    }
+    else if (inputSelectedTab === 1) {
+      return {
+        count: selectedFormList.length,
+        list: selectedFormList,
+        icon: IconTextSnippet,
+        deleteType: 'form',
+      }
+    }
+  }
+
   const handleDeleteItem = (inputType, inputId) => {
     if (inputType === 'device') {
       const newSelectedDeviceList = selectedDeviceList.filter(item => item.id !== inputId)
@@ -391,9 +410,7 @@ const DialogAddOrEditGroup = (props) => {
               variant='body2'
               color='text.secondary'
             >
-              {selectedTab === 0 && selectedDeviceList.length}
-              {selectedTab === 1 && selectedFormList.length}
-              &nbsp;{initialTabList[selectedTab]}
+              {getSelectedTabObject(selectedTab).count} {initialTabList[selectedTab]}
             </Typography>
           </Stack>
           {/* ADD TO GROUP BUTTON */}
@@ -407,27 +424,14 @@ const DialogAddOrEditGroup = (props) => {
 
         {/* ITEM LIST */}
         <Stack spacing='8px'>
-          {/* DEVICE LIST */}
-          {selectedTab === 0 &&
-          selectedDeviceList.map((item, index) => (
+          {/* SELECTED LIST */}
+          {getSelectedTabObject(selectedTab).list.map((item, index) => (
             <FlyoutDeletableItem
               key={index}
-              icon={IconPhoneAndroid}
+              icon={getSelectedTabObject(selectedTab).icon}
               primaryText={item.label}
               actionIcon={IconDelete}
-              onActionButtonClick={() => handleDeleteItem('device', item.id)}
-            />
-          ))}
-
-          {/* FORM LIST */}
-          {selectedTab === 1 &&
-          selectedFormList.map((item, index) => (
-            <FlyoutDeletableItem
-              key={index}
-              icon={IconTextSnippet}
-              primaryText={item.label}
-              actionIcon={IconDelete}
-              onActionButtonClick={() => handleDeleteItem('form', item.id)}
+              onActionButtonClick={() => handleDeleteItem(getSelectedTabObject(selectedTab).deleteType, item.id)}
             />
           ))}
         </Stack>
