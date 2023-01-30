@@ -39,6 +39,8 @@ public class JpaUtils {
                     String property = order.getProperty();
                     if (map.containsKey(property)) {
                         property = map.get(property);
+                    } else {
+                        property = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property);
                     }
 
                     if (order.getDirection().isAscending()) {

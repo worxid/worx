@@ -1,7 +1,12 @@
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
-import DialogAddOrEdit from 'components/DialogAddOrEdit/DialogAddOrEdit'
+import Flyout from 'components/Flyout/Flyout'
+import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
+import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
+import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -10,31 +15,29 @@ import { values } from 'constants/values'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
-// CUSTOM COMPONENTS
-import CustomDialogActions from 'components/DialogAddOrEdit/Customs/CustomDialogActions'
-import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
-import CustomDialogContent from 'components/DialogAddOrEdit/Customs/CustomDialogContent'
-import CustomDialogTitle from 'components/DialogAddOrEdit/Customs/CustomDialogTitle'
-
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
-import Box from '@mui/material/Box'
-import Input from '@mui/material/Input'
-import InputAdornment from '@mui/material/InputAdornment'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import Popover from '@mui/material/Popover'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconClose from '@mui/icons-material/Close'
-import IconFormatColorText from '@mui/icons-material/FormatColorText'
+import IconCalendarToday from '@mui/icons-material/CalendarToday'
+import IconDelete from '@mui/icons-material/Delete'
+import IconPhoneAndroid from '@mui/icons-material/PhoneAndroid'
+import IconTextSnippet from '@mui/icons-material/TextSnippet'
 
 // SERVICES
+import { postGetDeviceList } from 'services/worx/devices'
+import { postGetListFormTemplate } from 'services/worx/formTemplate'
 import { 
+  getGroupById,
   postCreateGroup, 
   putEditGroup,
 } from 'services/worx/group'
@@ -44,7 +47,6 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './dialogAddOrEditGroupUseStyles'
 
 // UTILITIES
-import { capitalizeEachWord } from 'utilities/string'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { 
   didSuccessfullyCallTheApi, 
@@ -55,15 +57,15 @@ import {
 const DialogAddOrEditGroup = (props) => {
   const { 
     dialogType, 
-    dataDialogEdit, 
-    setDataDialogEdit, 
+    dataDialogEdit, setDataDialogEdit, 
     setMustReloadDataGrid,
+    setDialogDeleteObject,
   } = props
 
-  const layoutClasses = useLayoutStyles()
   const classes = useStyles()
+  const layoutClasses = useLayoutStyles()
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
   const { setSnackbarObject } = useContext(AllPagesContext)
 
@@ -74,179 +76,330 @@ const DialogAddOrEditGroup = (props) => {
     groupColor: '#000000',
   }
 
+  const initialTabList = [ 'Devices', 'Forms' ]
+
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
-
-  const [ anchorEl, setAnchorEl ] = useState(null)
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-  
-  const handleClosePopOver = () => {
-    setAnchorEl(null)
-  }
-
-  const openPicker = Boolean(anchorEl)
-  const id = openPicker ? 'simple-popover' : undefined
+  const [ deviceList, setDeviceList ] = useState([])
+  const [ formList, setFormList ] = useState([])
+  const [ selectedDeviceList, setSelectedDeviceList ] = useState([])
+  const [ selectedFormList, setSelectedFormList ] = useState([])
+  const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
+  const [ isEditMode, setIsEditMode ] = useState(false)
+  const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
+  const [ tabList, setTabList ] = useState(initialTabList)
+  const [ selectedTab, setSelectedTab ] = useState(0)
 
   const onSelectColor = (color) => {
+    setColorPickerAnchorElement(null)
     setGroupColor(color)
-    setAnchorEl(null)
-    handleClosePopOver()
+    setShouldSaveGroup(true)
   }
 
-  const handleActionButtonClick = async (inputType) => {
-    // SAVE BUTTON
-    if (inputType === 'save') {
-      const abortController = new AbortController()
+  const handleSaveGroup = async () => {
+    const abortController = new AbortController()
 
-      let resultAddOrEditGroup = {}
-      
-      // CREATE A NEW GROUP ITEM
-      if (dialogType === 'add') {
-        resultAddOrEditGroup = await postCreateGroup(
-          abortController.signal,
-          {
-            name: groupName,
-            color: groupColor,
-          },
-          axiosPrivate,
-        )
-      }
-      // EDIT AN EXISTING GROUP ITEM
-      else if (dialogType === 'edit') {
-        resultAddOrEditGroup = await putEditGroup(
-          abortController.signal,
-          dataDialogEdit.id,
-          {
-            name: groupName,
-            color: groupColor,
-          },
-          axiosPrivate,
-        )
-      }
-
-      abortController.abort()
-
-      // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
-      if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
-        handleClose()
-        setMustReloadDataGrid(true)
-
-        let message = ''
-        if (dialogType === 'add') message = 'Successfully creating a new group'
-        if (dialogType === 'edit') message = 'Successfully editing the group properties'
-
-        setSnackbarObject({
-          open: true,
-          severity: 'success',
-          title: '',
-          message: message,
-        })
-      }
-      else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
-        setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
-      }
+    let resultAddOrEditGroup = {}
+    
+    // CREATE A NEW GROUP ITEM
+    if (dialogType === 'add') {
+      resultAddOrEditGroup = await postCreateGroup(
+        abortController.signal,
+        {
+          name: groupName,
+          color: groupColor,
+        },
+        axiosPrivate,
+      )
     }
-    // CANCEL BUTTON IS CLICKED
-    else if (inputType === 'cancel') handleClose()
+    // EDIT AN EXISTING GROUP ITEM
+    else if (dialogType === 'edit') {
+      resultAddOrEditGroup = await putEditGroup(
+        abortController.signal,
+        dataDialogEdit.id,
+        {
+          name: groupName,
+          color: groupColor,
+          form_ids: selectedFormList.map(item => item.id),
+          device_ids: selectedDeviceList.map(item => item.id),
+        },
+        axiosPrivate,
+      )
+    }
+
+    abortController.abort()
+
+    // ACTIONS AFTER SUCCESSFULLY CALLING THE API 
+    if (didSuccessfullyCallTheApi(resultAddOrEditGroup.status)) {
+      setMustReloadDataGrid(true)
+      setIsEditMode(false)
+
+      let message = ''
+      if (dialogType === 'add') message = 'Successfully creating a new group'
+      if (dialogType === 'edit') message = 'Successfully editing the group properties'
+
+      setSnackbarObject({
+        open: true,
+        severity: 'success',
+        title: '',
+        message: message,
+      })
+    }
+    else if (!wasRequestCanceled(resultAddOrEditGroup?.status) && !wasAccessTokenExpired(resultAddOrEditGroup.status)) {
+      setSnackbarObject(getDefaultErrorMessage(resultAddOrEditGroup))
+    }
+
+    setShouldSaveGroup(false)
   }
   
   // CLOSE DIALOG ADD OR EDIT GROUP
   const handleClose = () => {
-    setAnchorEl(null)
+    setColorPickerAnchorElement(null)
     setGroupName(initialFormObject.groupName)
     setGroupColor(initialFormObject.groupColor)
     setDataDialogEdit(null)
-    setIsDialogAddOrEditOpen(false)
+    setIsFlyoutOpen(false)
+  }
+
+  const updateSelectedDevicesAndForms = async (abortController, isMounted) => {
+    const response = await getGroupById(
+      abortController.signal,
+      axiosPrivate,
+      dataDialogEdit.id,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
+      const selectedDeviceIdList = response.data.value.devices.map(item => item.id)
+      const selectedFormIdList = response.data.value.forms.map(item => item.id)
+
+      const newSelectedDeviceList = deviceList.filter(item => selectedDeviceIdList.includes(item.id))
+      setSelectedDeviceList(newSelectedDeviceList)
+
+      const newSelectedFormList = formList.filter(item => selectedFormIdList.includes(item.id))
+      setSelectedFormList(newSelectedFormList)
+    }
+  }
+
+  const fetchDeviceList = async (abortController, isMounted) => {
+    const response = await postGetDeviceList(
+      abortController.signal,
+      {
+        size: 10000,
+        page: 0,
+      },
+      {},
+      axiosPrivate,
+    )
+
+    if (didSuccessfullyCallTheApi(response?.status) && isMounted) {
+      setDeviceList(response.data.content)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
+  }
+
+  const fetchFormList = async (abortController, inputIsMounted) => {
+    const response = await postGetListFormTemplate(
+      abortController.signal,
+      {
+        size: 10000,
+        page: 0,
+      },
+      {},
+      axiosPrivate,
+    )
+
+    if(didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
+      setFormList(response.data.content)
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      setSnackbarObject(getDefaultErrorMessage(response))
+    }
+  }
+
+  const getSelectedTabObject = (inputSelectedTab) => {
+    if (inputSelectedTab === 0) {
+      return {
+        count: selectedDeviceList.length,
+        list: selectedDeviceList,
+        icon: IconPhoneAndroid,
+        deleteType: 'device',
+      }
+    }
+    else if (inputSelectedTab === 1) {
+      return {
+        count: selectedFormList.length,
+        list: selectedFormList,
+        icon: IconTextSnippet,
+        deleteType: 'form',
+      }
+    }
+  }
+
+  const handleDeleteItem = (inputType, inputId) => {
+    if (inputType === 'device') {
+      const newSelectedDeviceList = selectedDeviceList.filter(item => item.id !== inputId)
+      setSelectedDeviceList(newSelectedDeviceList)
+    }
+    else if (inputType === 'form') {
+      const newSelectedFormList = selectedFormList.filter(item => item.id !== inputId)
+      setSelectedFormList(newSelectedFormList)
+    }
+
+    setShouldSaveGroup(true)
   }
 
   useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
+    fetchDeviceList(abortController, isMounted)
+    fetchFormList(abortController, isMounted)
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    const abortController = new AbortController()
+
     // UPDATE THE DIALOG FORM IF THE DIALOG IS ON EDIT MODE
     if (dialogType === 'edit' && dataDialogEdit) {
+      updateSelectedDevicesAndForms(abortController, isMounted)
       setGroupName(dataDialogEdit?.name ?? initialFormObject.groupName)
       setGroupColor(dataDialogEdit?.color ?? initialFormObject.groupColor)
     }
+
+    return () => {
+      isMounted = false
+      abortController.abort()
+    }
   }, [dataDialogEdit])
 
+  useEffect(() => {
+    shouldSaveGroup && handleSaveGroup()
+  }, [shouldSaveGroup])
+
   return (
-    <DialogAddOrEdit>
-      {/* DIALOG TITLE */}
-      <CustomDialogTitle>
-        <Stack direction='row' alignItems='center'>
-          {/* CLOSE ICON */}
-          <IconClose
-            className={layoutClasses.dialogAddOrEditIconClose}
-            onClick={handleClose}
+    <Flyout 
+      position='right'
+      onCloseButtonClick={handleClose}
+    >
+      {/* HEADER */}
+      <FlyoutHeader>
+        {/* EDITABLE TITLE */}
+        <FlyoutEditableTitle
+          dialogType={dialogType ? dialogType : 'add'}
+          titlePlaceholder='Group Name'
+          titleValue={groupName}
+          setTitleValue={(event) => setGroupName(event.target.value)}
+          onInputBlur={() => setShouldSaveGroup(true)}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+        />
+
+        <Stack 
+          direction='row'
+          alignItems='center'
+          marginLeft='16px'
+        >
+          {/* COLOR PICKER */}
+          <Stack
+            className={classes.colorPicker}
+            style={{ backgroundColor: groupColor }}
+            onClick={(event) => setColorPickerAnchorElement(event.currentTarget)}
           />
 
-          {/* TITLE */}
-          <Typography variant='h6' className='fontWeight500'>
-            {capitalizeEachWord(dialogType)} Group
-          </Typography>
-        </Stack>
-      </CustomDialogTitle>
-
-      {/* DIALOG CONTENT */}
-      <CustomDialogContent>
-        <Typography variant='subtitle1'>
-          Main Information
-        </Typography>
-
-        {/* LABEL INPUT */}
-        <Stack direction='row' className={layoutClasses.dialogAddOrEditFormControlContainer}>
-          <IconFormatColorText className={layoutClasses.dialogAddOrEditFormControlIcon}/>
-          <FormControl 
-            variant='standard' 
-            className='width100'
+          {/* DELETE ICON  */}
+          {dialogType === 'edit' &&
+          <IconButton 
+            size='small'
+            onClick={() => setDialogDeleteObject({ id: dataDialogEdit.id })}
           >
-            <InputLabel>
-              Group Name
-            </InputLabel>
-            <Input
-              placeholder='Group Name'
-              type='text'
-              value={groupName}
-              onChange={(event) => setGroupName(event.target.value)}
-              endAdornment={
-                <InputAdornment position='end'>
-                  <Stack
-                    className={classes.pickerStyle}
-                    style={{ backgroundColor: groupColor }}
-                    onClick={handleClick}
-                  />
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+            <IconDelete color='primary'/>
+          </IconButton>}
         </Stack>
-      </CustomDialogContent>
+      </FlyoutHeader>
 
-      {/* DIALOG ACTIONS */}
-      <CustomDialogActions>
-        {/* CANCEL BUTTON */}
-        <CustomDialogActionButton 
-          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton}`}
-          onClick={() => handleActionButtonClick('cancel')}
+      {/* CONTENT */}
+      {dialogType === 'edit' &&
+      <FlyoutContent>
+        {/* CREATED DATE INFO */}
+        <FlyoutInformationItem
+          icon={IconCalendarToday} 
+          title='Created Date'
+          value='[Dummy Date]'
+        />
+
+        {/* TABS */}
+        <Tabs 
+          value={selectedTab} 
+          onChange={(event, newValue) => setSelectedTab(newValue)} 
+          className={classes.tabs}
         >
-          Cancel
-        </CustomDialogActionButton>
+          {tabList.map((item, index) => (
+            <Tab 
+              key={index}
+              label={item}
+            />
+          ))}
+        </Tabs>
 
-        {/* SAVE BUTTON */}
-        <CustomDialogActionButton
-          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton}`} 
-          onClick={() => handleActionButtonClick('save')}
+        {/* TAB CONTENT HEADER */}
+        <Stack
+          direction='row'
+          alignItems='center'
+          justifyContent='space-between'
+          marginBottom='24px'
         >
-          Save
-        </CustomDialogActionButton>
-      </CustomDialogActions>
+          {/* ITEM COUNT */}
+          <Stack>
+            {/* TITLE */}
+            <Typography fontWeight={500}>
+              {initialTabList[selectedTab]}
+            </Typography>
 
-      <Popover
-        id={id}
-        open={openPicker}
-        anchorEl={anchorEl}
-        onClose={handleClose}
+            {/* COUNT */}
+            <Typography 
+              variant='body2'
+              color='text.secondary'
+            >
+              {getSelectedTabObject(selectedTab).count} {initialTabList[selectedTab]}
+            </Typography>
+          </Stack>
+          {/* ADD TO GROUP BUTTON */}
+          <Button 
+            variant='contained'
+            className={layoutClasses.flyoutListItemActionButton}
+          >
+            Add to Group
+          </Button>
+        </Stack>
+
+        {/* ITEM LIST */}
+        <Stack spacing='8px'>
+          {/* SELECTED LIST */}
+          {getSelectedTabObject(selectedTab).list.map((item, index) => (
+            <FlyoutDeletableItem
+              key={index}
+              icon={getSelectedTabObject(selectedTab).icon}
+              primaryText={item.label}
+              actionIcon={IconDelete}
+              onActionButtonClick={() => handleDeleteItem(getSelectedTabObject(selectedTab).deleteType, item.id)}
+            />
+          ))}
+        </Stack>
+      </FlyoutContent>}
+
+      {/* COLOR PICKER MENU */}
+      <Menu
+        open={Boolean(colorPickerAnchorElement)}
+        anchorEl={colorPickerAnchorElement}
+        onClose={() => setColorPickerAnchorElement(null)}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'left',
@@ -255,9 +408,11 @@ const DialogAddOrEditGroup = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        className={classes.popOverDialog}
+        className={classes.colorPickerMenu}
       >
-        <Box className={classes.colorWrap}>
+        <Stack
+          direction='row' 
+          className={classes.colorWrap}>
           {values?.colorsCst?.map((item, index) => {
             return (
               <Stack
@@ -268,9 +423,9 @@ const DialogAddOrEditGroup = (props) => {
               />
             )
           })}
-        </Box>
-      </Popover>
-    </DialogAddOrEdit>
+        </Stack>
+      </Menu>
+    </Flyout>
   )
 }
 

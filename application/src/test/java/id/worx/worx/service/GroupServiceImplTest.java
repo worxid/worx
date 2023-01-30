@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 import id.worx.worx.entity.users.Users;
-import id.worx.worx.repository.DeviceGroupsRepository;
 import id.worx.worx.repository.DeviceRepository;
-import id.worx.worx.repository.TemplateGroupsRepository;
+import id.worx.worx.repository.FormTemplateRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import id.worx.worx.entity.Group;
 import id.worx.worx.exception.WorxException;
+import id.worx.worx.mapper.DeviceMapper;
+import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.mapper.GroupMapper;
 import id.worx.worx.repository.GroupRepository;
 
@@ -30,35 +31,35 @@ class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    FormTemplateRepository formTemplateRepository;
+    @Mock
+    DeviceRepository deviceRepository;
 
     @Mock
     GroupMapper groupMapper;
+    @Mock
+    FormTemplateMapper templateMapper;
+    @Mock
+    DeviceMapper deviceMapper;
 
     private GroupService groupService;
 
     @Mock
     AuthenticationContext authContext;
 
-    @Mock
-    DeviceRepository deviceRepository;
-
-    @Mock
-    DeviceGroupsRepository deviceGroupsRepository;
-
-    @Mock
-    TemplateGroupsRepository templateGroupsRepository;
 
     @BeforeEach
     void init() {
 
         groupService = new GroupServiceImpl(
-            groupRepository,
-            groupMapper,
-            authContext,
-            deviceRepository,
-            deviceGroupsRepository,
-            templateGroupsRepository
-            );
+                groupRepository,
+                formTemplateRepository,
+                deviceRepository,
+                groupMapper,
+                templateMapper,
+                deviceMapper,
+                authContext);
     }
 
     @Test
@@ -118,7 +119,8 @@ class GroupServiceImplTest {
                 .id(1L)
                 .build();
 
-        when(groupRepository.findByIdsAndUserId(groupIds, userId)).thenReturn(List.of(group1, group2));
+        when(groupRepository.findByIdsAndUserId(groupIds, userId))
+                .thenReturn(List.of(group1, group2));
         when(authContext.getUsers()).thenReturn(users);
 
         groupService.delete(groupIds);

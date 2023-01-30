@@ -1,17 +1,33 @@
-// MUI STYLES
+// MUIS
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
+    backgroundColor: alpha(theme.palette.common.black, 0.4),
+    zIndex: theme.zIndex.modal - 1,
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'fixed',
+  },
+  contentContainer: {
     height: '100%',
-    transition: 'all 0.25s ease-in-out',
-    padding: 24,
+    position: 'absolute',
+  },
+  closeIconContainer: {
+    width: 36,
+    height: 36,
+    backgroundColor: theme.palette.action.active,
+    borderTopLeftRadius: '50%',
+    borderBottomLeftRadius: '50%',
+    cursor: 'pointer',
+    color: theme.palette.common.white,
+    marginTop: 24,
+  },
+  childrenContainer: {
     overflowY: 'auto',
     backgroundColor: theme.palette.common.white,
-    boxShadow: theme.shadows[7],
   },
 }))
 

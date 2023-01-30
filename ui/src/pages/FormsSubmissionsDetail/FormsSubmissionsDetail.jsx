@@ -101,11 +101,6 @@ const FormsSubmissionsDetail = () => {
         backLink={`/forms/submissions/${searchParams.get('formTemplateId')}`}
         pageTitle='Form Submission Detail'
         hasSearch={false}
-        hasFlyout={true}
-        isFlyoutShown={isFlyoutShown}
-        flyoutTitle='Information'
-        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
-        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
       <Stack 

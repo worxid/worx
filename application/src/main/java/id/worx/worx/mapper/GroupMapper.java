@@ -8,6 +8,7 @@ import org.mapstruct.MappingTarget;
 import id.worx.worx.common.model.dto.GroupDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.entity.Group;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 
 @Mapper(componentModel = "spring")
 public interface GroupMapper {
@@ -33,6 +34,6 @@ public interface GroupMapper {
     @Mapping(target = "modifiedOn", ignore = true)
     @Mapping(target = "modifiedBy", ignore = true)
     @Mapping(target = "isDefault", ignore = true)
-    void update(@MappingTarget Group group, GroupRequest request);
+    void update(@MappingTarget Group group, GroupUpdateRequest request);
 
 }

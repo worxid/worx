@@ -26,6 +26,18 @@ const GlobalStyles = () => {
           transition: 'all 0.25s ease-in-out',
         },
 
+        // EDIT ITEM
+        '.editIcon': {
+          visibility: 'hidden',
+        },
+        '.editIconContainer': {
+          '&:hover': {
+            '.editIcon': {
+              visibility: 'visible',
+            },
+          },
+        },
+
         // GENERAL
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,
@@ -91,7 +103,7 @@ const GlobalStyles = () => {
           textTransform: 'lowercase',
           '&:first-letter': {
             textTransform: 'capitalize'
-          }
+          },
         },
         '.width100': {
           width: '100%',

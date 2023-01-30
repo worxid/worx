@@ -301,9 +301,9 @@ DataGridTable.propTypes = {
   pageSize: PropTypes.number.isRequired,
   setPageSize: PropTypes.func.isRequired,
   // ORDER
-  order: PropTypes.object,
+  order: PropTypes.string,
   setOrder: PropTypes.func.isRequired,
-  orderBy: PropTypes.object,
+  orderBy: PropTypes.string,
   setOrderBy: PropTypes.func.isRequired,
   // FILTER
   setFilters: PropTypes.func.isRequired,
