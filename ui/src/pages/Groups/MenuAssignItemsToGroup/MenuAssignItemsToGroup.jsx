@@ -26,7 +26,8 @@ const MenuAssignItemsToGroup = (props) => {
   const {
     anchorEl, setAnchorEl,
     deviceList,
-    selectedDeviceList,
+    selectedDeviceList, setSelectedDeviceList,
+    setShouldSaveGroup,
   } = props
 
   const classes = useStyles()
@@ -48,6 +49,12 @@ const MenuAssignItemsToGroup = (props) => {
   const handleCloseMenu = () => {
     setAnchorEl(null)
     setTempSelectedDeviceList([...selectedDeviceList])
+  }
+
+  const handleSaveButtonClick = () => {
+    setAnchorEl(null)
+    setSelectedDeviceList([...tempSelectedDeviceList])
+    setShouldSaveGroup(true)
   }
 
   useEffect(() => {
@@ -134,6 +141,7 @@ const MenuAssignItemsToGroup = (props) => {
 
         <CustomDialogActionButton
           className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`} 
+          onClick={handleSaveButtonClick}
         >
           Save
         </CustomDialogActionButton>
@@ -152,6 +160,8 @@ MenuAssignItemsToGroup.propTypes = {
   setAnchorEl: PropTypes.func.isRequired,
   deviceList: PropTypes.array.isRequired,
   selectedDeviceList: PropTypes.array.isRequired,
+  setSelectedDeviceList: PropTypes.func.isRequired,
+  setShouldSaveGroup: PropTypes.func.isRequired,
 }
 
 export default MenuAssignItemsToGroup
