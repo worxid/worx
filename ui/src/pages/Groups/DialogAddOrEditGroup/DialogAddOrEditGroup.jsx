@@ -225,6 +225,12 @@ const DialogAddOrEditGroup = (props) => {
     }
   }
 
+  const handleDeleteDevice = (inputDeviceId) => {
+    const newSelectedDeviceList = selectedDeviceList.filter(item => item.id !== inputDeviceId)
+    setSelectedDeviceList(newSelectedDeviceList)
+    setShouldSaveGroup(true)
+  }
+
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -391,13 +397,13 @@ const DialogAddOrEditGroup = (props) => {
 
         {/* ITEM LIST */}
         <Stack spacing='8px'>
-          {deviceList.map((item, index) => (
+          {selectedDeviceList.map((item, index) => (
             <FlyoutDeletableItem
               key={index}
               icon={IconPhoneAndroid}
               primaryText={item.label}
               actionIcon={IconDelete}
-              onActionButtonClick={() => console.log('delete item')}
+              onActionButtonClick={() => handleDeleteDevice(item.id)}
             />
           ))}
         </Stack>
