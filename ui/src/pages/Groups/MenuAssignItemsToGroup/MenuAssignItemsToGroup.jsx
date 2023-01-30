@@ -2,7 +2,12 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 // MUIS
+import Checkbox from '@mui/material/Checkbox'
 import Input from '@mui/material/Input'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
 
@@ -17,6 +22,8 @@ import useStyles from './menuAssignItemsToGroupUseStyles'
 const MenuAssignItemsToGroup = (props) => {
   const {
     anchorEl, setAnchorEl,
+    deviceList,
+    selectedDeviceList,
   } = props
 
   const classes = useStyles()
@@ -63,16 +70,44 @@ const MenuAssignItemsToGroup = (props) => {
           />
         )}
       </Stack>
+
+      {/* LIST */}
+      <List 
+        disablePadding 
+        className={`width100 padding0 ${classes.list}`}
+      >
+        {deviceList
+          .filter((item) => item?.label?.toLowerCase().includes(search?.toLowerCase()))
+          .map((item, index) => (
+            <ListItemButton
+              key={index}
+              className='borderBottomDivider'
+              dense
+            >
+              {/* RADIO */}
+              <ListItemIcon>
+                <Checkbox checked={Boolean(selectedDeviceList?.find(selectedDevice => selectedDevice.label === item.label))}/>
+              </ListItemIcon>
+
+              {/* TEXT */}
+              <ListItemText primary={item.label ? item.label : '[No label]'}/>
+            </ListItemButton>
+          ))}
+      </List>
     </Menu>
   )
 }
 
 MenuAssignItemsToGroup.defaultProps = {
+  deviceList: [],
+  selectedDeviceList: [],
 }
 
 MenuAssignItemsToGroup.propTypes = {
   anchorEl: PropTypes.object, 
   setAnchorEl: PropTypes.func.isRequired,
+  deviceList: PropTypes.array.isRequired,
+  selectedDeviceList: PropTypes.array.isRequired,
 }
 
 export default MenuAssignItemsToGroup

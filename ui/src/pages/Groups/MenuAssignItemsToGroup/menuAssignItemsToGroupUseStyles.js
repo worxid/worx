@@ -7,7 +7,11 @@ const useStyles = makeStyles((theme) => ({
       width: 452,
       padding: 0,
     },
-  }
+  },
+  list: {
+    maxHeight: 400,
+    overflow: 'auto',
+  },
 }))
 
 export default useStyles
