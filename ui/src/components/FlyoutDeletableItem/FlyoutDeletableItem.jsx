@@ -6,9 +6,6 @@ import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 
-// MUI ICONS
-import IconDelete from '@mui/icons-material/Delete'
-
 // STYLES
 import useStyles from './flyoutDeletableItemUseStyles'
 
@@ -17,22 +14,25 @@ const FlyoutDeletableItem = (props) => {
     icon,
     primaryText,
     secondaryText,
-    onDeleteButtonClick,
+    actionIcon,
+    onActionButtonClick,
   } = props
 
   const classes = useStyles()
 
   const SelectedIcon = icon
+  const SelectedActionIcon = actionIcon
 
   return (
     <ListItem 
       className={classes.root}
+      sx={{ height: secondaryText ? 'unset' : 56 }}
       secondaryAction={
         <IconButton 
           edge='end'
-          onClick={onDeleteButtonClick}
+          onClick={onActionButtonClick}
         >
-          <IconDelete color='primary'/>
+          <SelectedActionIcon color='primary'/>
         </IconButton>
       }
     >
@@ -62,7 +62,8 @@ FlyoutDeletableItem.propTypes = {
   icon: PropTypes.object.isRequired,
   primaryText: PropTypes.string.isRequired,
   secondaryText: PropTypes.string.isRequired,
-  onDeleteButtonClick: PropTypes.func.isRequired,
+  actionIcon: PropTypes.object.isRequired,
+  onActionButtonClick: PropTypes.func.isRequired,
 }
 
 export default FlyoutDeletableItem

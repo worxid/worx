@@ -38,6 +38,7 @@ import Typography from '@mui/material/Typography'
 import IconCalendarToday from '@mui/icons-material/CalendarToday'
 import IconDelete from '@mui/icons-material/Delete'
 import IconEdit from '@mui/icons-material/Edit'
+import IconPhoneAndroid from '@mui/icons-material/PhoneAndroid'
 
 // SERVICES
 import { postGetDeviceList } from 'services/worx/devices'
@@ -390,22 +391,13 @@ const DialogAddOrEditGroup = (props) => {
 
         {/* ITEM LIST */}
         <Stack spacing='8px'>
-          {[
-            {
-              primaryText: 'test',
-              secondaryText: 'test',
-            },
-            {
-              primaryText: 'test',
-              secondaryText: 'test',
-            },
-          ].map((item, index) => (
+          {deviceList.map((item, index) => (
             <FlyoutDeletableItem
               key={index}
-              icon={IconCalendarToday}
-              primaryText={item.primaryText}
-              secondaryText={item.secondaryText}
-              onDeleteButtonClick={() => console.log('delete item')}
+              icon={IconPhoneAndroid}
+              primaryText={item.label}
+              actionIcon={IconDelete}
+              onActionButtonClick={() => console.log('delete item')}
             />
           ))}
         </Stack>
