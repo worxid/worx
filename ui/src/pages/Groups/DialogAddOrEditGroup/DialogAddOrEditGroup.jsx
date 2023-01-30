@@ -39,6 +39,7 @@ import IconCalendarToday from '@mui/icons-material/CalendarToday'
 import IconDelete from '@mui/icons-material/Delete'
 import IconEdit from '@mui/icons-material/Edit'
 import IconPhoneAndroid from '@mui/icons-material/PhoneAndroid'
+import IconTextSnippet from '@mui/icons-material/TextSnippet'
 
 // SERVICES
 import { postGetDeviceList } from 'services/worx/devices'
@@ -225,9 +226,16 @@ const DialogAddOrEditGroup = (props) => {
     }
   }
 
-  const handleDeleteDevice = (inputDeviceId) => {
-    const newSelectedDeviceList = selectedDeviceList.filter(item => item.id !== inputDeviceId)
-    setSelectedDeviceList(newSelectedDeviceList)
+  const handleDeleteItem = (inputType, inputId) => {
+    if (inputType === 'device') {
+      const newSelectedDeviceList = selectedDeviceList.filter(item => item.id !== inputId)
+      setSelectedDeviceList(newSelectedDeviceList)
+    }
+    else if (inputType === 'form') {
+      const newSelectedFormList = selectedFormList.filter(item => item.id !== inputId)
+      setSelectedFormList(newSelectedFormList)
+    }
+
     setShouldSaveGroup(true)
   }
 
@@ -383,7 +391,9 @@ const DialogAddOrEditGroup = (props) => {
               variant='body2'
               color='text.secondary'
             >
-              [Dummy Count] {initialTabList[selectedTab]}
+              {selectedTab === 0 && selectedDeviceList.length}
+              {selectedTab === 1 && selectedFormList.length}
+              &nbsp;{initialTabList[selectedTab]}
             </Typography>
           </Stack>
           {/* ADD TO GROUP BUTTON */}
@@ -397,13 +407,27 @@ const DialogAddOrEditGroup = (props) => {
 
         {/* ITEM LIST */}
         <Stack spacing='8px'>
-          {selectedDeviceList.map((item, index) => (
+          {/* DEVICE LIST */}
+          {selectedTab === 0 &&
+          selectedDeviceList.map((item, index) => (
             <FlyoutDeletableItem
               key={index}
               icon={IconPhoneAndroid}
               primaryText={item.label}
               actionIcon={IconDelete}
-              onActionButtonClick={() => handleDeleteDevice(item.id)}
+              onActionButtonClick={() => handleDeleteItem('device', item.id)}
+            />
+          ))}
+
+          {/* FORM LIST */}
+          {selectedTab === 1 &&
+          selectedFormList.map((item, index) => (
+            <FlyoutDeletableItem
+              key={index}
+              icon={IconTextSnippet}
+              primaryText={item.label}
+              actionIcon={IconDelete}
+              onActionButtonClick={() => handleDeleteItem('form', item.id)}
             />
           ))}
         </Stack>
