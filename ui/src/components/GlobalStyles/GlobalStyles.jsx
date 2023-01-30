@@ -45,6 +45,9 @@ const GlobalStyles = () => {
         '.borderRadius0': {
           borderRadius: 0,
         },
+        '.borderBottomDivider': {
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        },
         '.colorTextPrimary': {
           color: theme.palette.text.primary,
         },
