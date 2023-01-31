@@ -16,11 +16,9 @@ const FlyoutEditableTitle = (props) => {
   const {
     dialogType,
     titlePlaceholder,
-    titleValue,
-    setTitleValue,
+    titleValue, setTitleValue,
     onInputBlur,
-    isEditMode,
-    setIsEditMode,
+    isEditMode, setIsEditMode,
   } = props
 
   return (
@@ -73,7 +71,6 @@ const FlyoutEditableTitle = (props) => {
 }
 
 FlyoutEditableTitle.defaultProps = {
-  dialogType: 'add',
   titlePlaceholder: '',
   titleValue: '',
   isEditMode: false,
