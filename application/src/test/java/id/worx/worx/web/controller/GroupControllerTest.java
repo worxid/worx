@@ -47,7 +47,9 @@ class GroupControllerTest extends AbstractControllerTest {
     void testSaveGroup() throws Exception {
         String name = "Field 2 Group";
         String color = "#4287f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> actualResponse = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -61,7 +63,9 @@ class GroupControllerTest extends AbstractControllerTest {
     void testUpdateGroup() throws Exception {
         String name = "Field 3 Group";
         String color = "#4387f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -98,7 +102,9 @@ class GroupControllerTest extends AbstractControllerTest {
     void testDeleteGroup() throws Exception {
         String name = "Field 4 Group";
         String color = "#4487f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,

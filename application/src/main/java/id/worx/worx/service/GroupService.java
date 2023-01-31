@@ -36,5 +36,4 @@ public interface GroupService {
 
     Page<GroupSearchProjection> searchGroup(GroupSearchRequest groupSearchRequest,
             Pageable pageable);
-
 }

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupUpdateRequest implements Serializable {
-
     private static final long serialVersionUID = -6465388113918491543L;
 
     @NotBlank
@@ -28,5 +26,4 @@ public class GroupUpdateRequest implements Serializable {
     private List<Long> formIds;
     @JsonProperty("device_ids")
     private List<Long> deviceIds;
-
 }

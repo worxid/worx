@@ -111,5 +111,4 @@ public class GroupController implements SecuredRestController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(BaseResponse.builder().build());
     }
-
 }

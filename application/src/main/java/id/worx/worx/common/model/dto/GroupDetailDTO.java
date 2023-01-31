@@ -34,4 +34,7 @@ public class GroupDetailDTO implements Serializable {
 
     private List<SimpleDeviceDTO> devices;
 
+    @JsonProperty("created_date")
+    private String createdDate;
+
 }

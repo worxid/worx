@@ -26,12 +26,27 @@ const GlobalStyles = () => {
           transition: 'all 0.25s ease-in-out',
         },
 
+        // EDIT ITEM
+        '.editIcon': {
+          visibility: 'hidden',
+        },
+        '.editIconContainer': {
+          '&:hover': {
+            '.editIcon': {
+              visibility: 'visible',
+            },
+          },
+        },
+
         // GENERAL
         '.backgroundColorPrimaryMain': {
           backgroundColor: theme.palette.primary.main,
         },
         '.borderRadius0': {
           borderRadius: 0,
+        },
+        '.borderBottomDivider': {
+          borderBottom: `1px solid ${theme.palette.divider}`,
         },
         '.colorTextPrimary': {
           color: theme.palette.text.primary,

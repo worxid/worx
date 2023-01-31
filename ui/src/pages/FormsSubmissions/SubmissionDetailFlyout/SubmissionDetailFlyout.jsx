@@ -7,7 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutTitle from 'components/Flyout/FlyoutTitle'
+import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // CONTEXTS
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
@@ -161,7 +161,7 @@ const SubmissionDetailFlyout = (props) => {
         onCloseButtonClick={() => setIsFlyoutOpen(false)}
       >
         {/* TITLE */}
-        <FlyoutTitle>
+        <FlyoutHeader>
           {/* TEXT */}
           <Typography 
             variant='h5' 
@@ -225,7 +225,7 @@ const SubmissionDetailFlyout = (props) => {
               </MenuItem>
             </Menu>
           </Stack>
-        </FlyoutTitle>
+        </FlyoutHeader>
 
         {/* CONTENT */}
         <FlyoutContent>
