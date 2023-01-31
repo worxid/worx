@@ -66,6 +66,8 @@ const DevicesFlyout = (props) => {
 
   const axiosPrivate = useAxiosPrivate()
 
+  const selectedDevice = rows[0]
+
   const [ deviceName, setDeviceName ] = useState('')
   const [ isEditMode, setIsEditMode ] = useState(false)
 
@@ -75,14 +77,14 @@ const DevicesFlyout = (props) => {
     mainMenuList = mainMenuTitleList.map(((item, index) => {
       return {
         title: item,
-        value: rows[0][mainMenuKeyList[index]],
+        value: selectedDevice[mainMenuKeyList[index]],
         icon: mainMenuIconList[index],
       }
     }))
   }
 
   const handleChangeGroup = () => {
-    setGroupData(rows[0].groups)
+    setGroupData(selectedDevice.groups)
     setIsDialogFormOpen('dialogChangeGroup')
   }
 
@@ -90,7 +92,7 @@ const DevicesFlyout = (props) => {
     let message
     const abortController = new AbortController()
     const response = await putApprovedDevices(
-      rows[0].id,
+      selectedDevice.id,
       abortController.signal,
       {
         is_approved: type === 'approved' ? true : false
@@ -103,13 +105,13 @@ const DevicesFlyout = (props) => {
         message = {
           severity:'success',
           title: '',
-          message: `Device ${rows[0].label} has been approved`,
+          message: `Device ${selectedDevice.label} has been approved`,
         }
       } else if (response?.data?.value?.device_status === 'DENIED') {
         message = {
           severity:'error',
           title: '',
-          message: `Device ${rows[0].label} has been rejected`,
+          message: `Device ${selectedDevice.label} has been rejected`,
         }
       }
 
@@ -126,8 +128,8 @@ const DevicesFlyout = (props) => {
   }
 
   useEffect(() => {
-    rows[0] && setDeviceName(rows[0].label)
-  }, [rows[0]])
+    selectedDevice && setDeviceName(selectedDevice.label)
+  }, [selectedDevice])
 
   return (
     <Flyout 
