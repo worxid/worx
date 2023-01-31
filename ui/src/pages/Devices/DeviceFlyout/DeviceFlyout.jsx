@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
-import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
+import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
 // CONSTANTS
 import { 
@@ -25,11 +25,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
@@ -190,51 +186,12 @@ const DevicesFlyout = (props) => {
         {rows.length === 1 &&
         <List>
           {mainMenuList.map((item, index) => (
-            <ListItem key={index} disablePadding>
-              {/* ICON */}
-              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon/>
-              </ListItemIcon>
-
-              {/* TEXT */}
-              <ListItemText
-                primary={
-                  <Typography 
-                    variant='caption'
-                    className='colorTextSecondary'
-                    fontWeight={600}
-                  >
-                    {item.title}
-                  </Typography>
-                }
-                secondary={item.title === 'Groups' ? (
-                  <Stack className='colorTextPrimary'>
-                    <CellGroups
-                      dataValue={item.value.map(item => ({ name: item }))}
-                      limitShowGroup={false}
-                    />
-                  </Stack>
-                ) : (
-                  <Typography variant='body2'>
-                    {item.value}
-                  </Typography>
-                )}
-              />
-
-              {/* ACTION */}
-              {item.title === 'Status' &&
-                <>
-                  {(item.value === 'APPROVED' || item.value === 'ONLINE') &&
-                  <Button
-                    variant='contained'
-                    className={layoutClasses.flyoutListItemActionButton}
-                    onClick={handleChangeGroup}
-                  >
-                    Change Group
-                  </Button>}
-                </>
-              }
-            </ListItem>
+            <FlyoutInformationItem
+              key={index}
+              icon={item.icon} 
+              title={item.title}
+              value={item.value}
+            />
           ))}
         </List>}
       </FlyoutContent>
