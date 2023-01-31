@@ -54,6 +54,7 @@ import {
   wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
+import { convertDate } from 'utilities/date'
 
 const DialogAddOrEditGroup = (props) => {
   const { 
@@ -91,6 +92,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ tabList, setTabList ] = useState(initialTabList)
   const [ selectedTab, setSelectedTab ] = useState(initialTabList[0])
   const [ menuAssignItemsAnchorElement, setMenuAssignItemsAnchorElement ] = useState(null)
+  const [ createdDate, setCreatedDate ] = useState('')
 
   const onSelectColor = (color) => {
     setColorPickerAnchorElement(null)
@@ -179,6 +181,8 @@ const DialogAddOrEditGroup = (props) => {
 
       const newSelectedFormList = formList.filter(item => selectedFormIdList.includes(item.id))
       setSelectedFormList(newSelectedFormList)
+
+      setCreatedDate(response.data.value.created_date)
     }
   }
 
@@ -334,7 +338,7 @@ const DialogAddOrEditGroup = (props) => {
         <FlyoutInformationItem
           icon={IconCalendarToday} 
           title='Created Date'
-          value='[Dummy Date]'
+          value={convertDate(createdDate)}
         />
 
         {/* TABS */}
