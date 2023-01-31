@@ -1,9 +1,10 @@
-import { useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
+import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 
 // CONSTANTS
@@ -65,6 +66,9 @@ const DevicesFlyout = (props) => {
 
   const axiosPrivate = useAxiosPrivate()
 
+  const [ deviceName, setDeviceName ] = useState('')
+  const [ isEditMode, setIsEditMode ] = useState(false)
+
   let mainMenuList = []
 
   if (rows.length === 1) {
@@ -121,6 +125,10 @@ const DevicesFlyout = (props) => {
     })
   }
 
+  useEffect(() => {
+    rows[0] && setDeviceName(rows[0].label)
+  }, [rows[0]])
+
   return (
     <Flyout 
       position='right'
@@ -128,14 +136,16 @@ const DevicesFlyout = (props) => {
     >
       {/* HEADER */}
       <FlyoutHeader>
-        {/* TITLE */}
-        <Typography 
-          variant='h5' 
-          className='fontWeight500'
-          noWrap
-        >
-          {rows.length > 0 && rows[0].label}
-        </Typography>
+        {/* EDITABLE TITLE */}
+        <FlyoutEditableTitle
+          dialogType='edit'
+          titlePlaceholder='Device Name'
+          titleValue={deviceName}
+          setTitleValue={(event) => setDeviceName(event.target.value)}
+          onInputBlur={() => setIsEditMode(false)}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+        />
 
         {/* DELETE ICON  */}
         <IconButton 
