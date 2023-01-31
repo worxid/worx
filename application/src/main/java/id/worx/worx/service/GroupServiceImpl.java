@@ -86,9 +86,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        group = this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
-        groupMapper.update(group, request);
-        return groupRepository.save(group);
+        Group updatedGroup = assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
+        groupMapper.update(updatedGroup, request);
+        return groupRepository.save(updatedGroup);
     }
 
     @Override
@@ -131,7 +131,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDetailDTO toDetailDTO(Group group) {
-        // TODO improve mapping performance
         List<SimpleFormTemplateDTO> forms = group.getTemplates()
                 .stream()
                 .sorted(Comparator.comparing(FormTemplate::getId))
@@ -139,7 +138,6 @@ public class GroupServiceImpl implements GroupService {
                 .map(SimpleFormTemplateDTO::from)
                 .collect(Collectors.toList());
 
-        // TODO improve mapping performance
         List<SimpleDeviceDTO> devices = group.getDevices()
                 .stream()
                 .sorted(Comparator.comparing(Device::getId))
@@ -168,7 +166,7 @@ public class GroupServiceImpl implements GroupService {
         Integer globalCountSearch = null;
         String globalSearch = null;
         if (Objects.nonNull(groupSearchRequest.getGlobalSearch())) {
-            if (groupSearchRequest.getGlobalSearch().matches("[0-9]+")) {
+            if (groupSearchRequest.getGlobalSearch().matches("\\d+")) {
                 globalCountSearch = Integer.valueOf(groupSearchRequest.getGlobalSearch());
             } else
                 globalSearch = groupSearchRequest.getGlobalSearch();
