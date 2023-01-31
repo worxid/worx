@@ -87,6 +87,15 @@ const useStyles = makeStyles((theme) => ({
     width: 24,
     height: 24
   },
+  menuSearchBox: {
+    height: 52,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 24px',
+    borderTop: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
 }))
 
 export default useStyles

@@ -18,18 +18,18 @@ const DialogAddOrEdit = (props) => {
     className,
   } = props
 
-  const { pageRef, isDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { pageRef, isFlyoutOpen } = useContext(PrivateLayoutContext)
 
   const classes = useStyles()
 
   return (
     <Backdrop
-      open={isDialogAddOrEditOpen}
+      open={isFlyoutOpen}
       className={classes.root}
     >
       <Slide 
         direction='right' 
-        in={isDialogAddOrEditOpen} 
+        in={isFlyoutOpen} 
         container={pageRef.current}
       >
         <Stack className={`${classes.contentContainer} ${className}`}>
