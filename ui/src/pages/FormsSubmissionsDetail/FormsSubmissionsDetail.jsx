@@ -45,7 +45,7 @@ const FormsSubmissionsDetail = () => {
   const downloadComponentRef = useRef()
 
   // CONTEXT
-  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STYLES
   const classes = useStyles()
