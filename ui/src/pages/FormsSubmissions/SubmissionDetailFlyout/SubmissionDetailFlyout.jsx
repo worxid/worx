@@ -283,7 +283,7 @@ const SubmissionDetailFlyout = (props) => {
       {/* DELETE CONFIRMATION */}
       <DialogConfirmation
         title='Delete Form'
-        caption='Are you sure you want to leave this app?'
+        caption='The data in the form will also be deleted, are you sure you want to delete the form?'
         dialogConfirmationObject={dialogDeleteForm}
         setDialogConfirmationObject={setDialogDeleteForm}
         cancelButtonText='Cancel'
