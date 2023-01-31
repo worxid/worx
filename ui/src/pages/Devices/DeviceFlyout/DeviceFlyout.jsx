@@ -172,13 +172,29 @@ const DevicesFlyout = (props) => {
             </Button>
           </>}
 
-          {/* DELETE ICON */}
-          <IconButton 
-            size='small'
-            onClick={handleDeleteDevicesClick}
+          {/* ACTIONS */}
+          <Stack
+            direction='row'
+            alignItems='center'
+            spacing='4px'
           >
-            <IconDelete color='primary'/>
-          </IconButton>
+            {/* CHANGE GROUP ICON */}
+            <IconButton 
+              size='small'
+              onClick={handleChangeGroup}
+            >
+              <IconGroups/>
+            </IconButton>
+
+            {/* DELETE ICON */}
+            <IconButton 
+              size='small'
+              onClick={handleDeleteDevicesClick}
+            >
+              <IconDelete color='primary'/>
+            </IconButton>
+          </Stack>
+
         </Stack>
       </FlyoutHeader>
 
