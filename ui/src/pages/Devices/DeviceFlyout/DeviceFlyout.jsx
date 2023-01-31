@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
+import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
@@ -24,11 +25,11 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // MUIS
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
 import Stack from '@mui/material/Stack'
 
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
+import IconGroups from '@mui/icons-material/Groups'
 
 // SERVICES
 import { putApprovedDevices } from 'services/worx/devices'
@@ -182,9 +183,17 @@ const DevicesFlyout = (props) => {
       </FlyoutHeader>
 
       {/* LIST */}
+      {rows.length === 1 &&
       <FlyoutContent>
-        {rows.length === 1 &&
-        <List>
+        <Stack spacing='12px'>
+          {/* GROUP INFORMATION */}
+          <FlyoutInformationItem
+            icon={IconGroups} 
+            title='Group Name'
+            value={<CellGroups dataValue={selectedDevice.groups.map(item => ({ name: item }))}/>}
+          />
+
+          {/* NON-GROUP INFORMATION */}
           {mainMenuList.map((item, index) => (
             <FlyoutInformationItem
               key={index}
@@ -193,8 +202,8 @@ const DevicesFlyout = (props) => {
               value={item.value}
             />
           ))}
-        </List>}
-      </FlyoutContent>
+        </Stack>
+      </FlyoutContent>}
     </Flyout>
   )
 }
