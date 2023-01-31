@@ -182,7 +182,7 @@ const BoxAnswer = (props) => {
             )}
             {(type === 'file' || type === 'photo') && (
               <List className='padding0'>
-                {currentFiles.map((itemFile, index) => (
+                {currentFiles.length ? currentFiles.map((itemFile, index) => (
                   <ListItem 
                     className={classes.listFileItem}
                     key={itemFile.id}
@@ -197,19 +197,21 @@ const BoxAnswer = (props) => {
                       primary={itemFile.name}
                     />
                   </ListItem>
-                ))}
+                )) : '-'}
               </List>
             )}
-            {(type === 'signature' || type === 'sketch' && currentFiles[0]?.url) && (
+            {(type === 'signature' || type === 'sketch') && (
               <Stack direction='row' alignItems='center'>
-                <Box
-                  className={classes.signatureBox}
-                  component='img'
-                  src={currentFiles[0]?.url}
-                  onClick={() => handleMediaTypeViewClick(type, 0)}
-                /> 
+                {currentFiles[0]?.url ? (<>
+                  <Box
+                    className={classes.signatureBox}
+                    component='img'
+                    src={currentFiles[0]?.url}
+                    onClick={() => handleMediaTypeViewClick(type, 0)}
+                  /> 
 
-                <Typography className={classes.signatureText} variant='subtitle2'>{currentFiles[0]?.name}</Typography>
+                  <Typography className={classes.signatureText} variant='subtitle2'>{currentFiles[0]?.name}</Typography>
+                </>) : '-'}
               </Stack> 
             )}
           </>}

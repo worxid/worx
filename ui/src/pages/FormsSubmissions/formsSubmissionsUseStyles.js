@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   flyoutBoxInfo: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: alpha(theme.palette.common.black, 0.04),
     padding: 16,
     marginBottom: 16,
   },
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     marginBottom: 8,
     '&.separator': {
-      backgroundColor: alpha(theme.palette.common.black, 0.08),
+      backgroundColor: alpha(theme.palette.common.black, 0.04),
       borderTop: `4px solid ${theme.palette.action.disabled}`,
       alignItems: 'center',
       '& .MuiListItemText-secondary': {
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
   flyoutAnswerAvatar: {
     borderRadius: 4,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: alpha(theme.palette.common.black, 0.08),
     width: 28,
     height: 28,
   },
@@ -151,6 +151,14 @@ const useStyles = makeStyles((theme) => ({
   signatureText: {
     paddingLeft: 8,
     fontWeight: 400,
+  },
+  iconDownloadItem: {
+    color: alpha(theme.palette.common.black, 0.28)
+  },
+  menuDownload: {
+    '& .MuiMenuItem-root': {
+      padding: '12px 16px'
+    }
   }
 }))
 
