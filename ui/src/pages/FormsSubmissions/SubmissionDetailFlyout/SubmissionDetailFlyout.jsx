@@ -152,8 +152,6 @@ const SubmissionDetailFlyout = (props) => {
     return () => abortController.abort()
   }, [submissionId])
 
-  console.log({ submissionDetail })
-
   return (
     <>
       <Flyout 

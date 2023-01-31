@@ -138,8 +138,6 @@ const BoxAnswer = (props) => {
     }
   }, [values])
 
-  console.log({ values, attachments, currentFiles })
-
   return (
     <>
       <ListItem className={`${classes.flyoutAnswerItem}${type === 'separator' ? ' separator' : ''}`}>
