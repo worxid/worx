@@ -77,7 +77,7 @@ const DialogAddOrEditGroup = (props) => {
     groupColor: '#000000',
   }
 
-  const initialTabList = [ 'Devices', 'Forms' ]
+  const initialTabList = [ 'devices', 'forms' ]
 
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
@@ -89,7 +89,7 @@ const DialogAddOrEditGroup = (props) => {
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
   const [ tabList, setTabList ] = useState(initialTabList)
-  const [ selectedTab, setSelectedTab ] = useState(initialTabList[0].toLowerCase())
+  const [ selectedTab, setSelectedTab ] = useState(initialTabList[0])
   const [ menuAssignItemsAnchorElement, setMenuAssignItemsAnchorElement ] = useState(null)
 
   const onSelectColor = (color) => {
@@ -221,7 +221,7 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const getSelectedTabObject = (inputSelectedTab) => {
-    if (inputSelectedTab === initialTabList[0].toLowerCase()) {
+    if (inputSelectedTab === initialTabList[0]) {
       return {
         count: selectedDeviceList.length,
         list: selectedDeviceList,
@@ -229,7 +229,7 @@ const DialogAddOrEditGroup = (props) => {
         deleteType: 'device',
       }
     }
-    else if (inputSelectedTab === initialTabList[1].toLowerCase()) {
+    else if (inputSelectedTab === initialTabList[1]) {
       return {
         count: selectedFormList.length,
         list: selectedFormList,
@@ -347,7 +347,7 @@ const DialogAddOrEditGroup = (props) => {
             <Tab 
               key={index}
               label={item}
-              value={item.toLowerCase()}
+              value={item}
             />
           ))}
         </Tabs>
@@ -439,10 +439,13 @@ const DialogAddOrEditGroup = (props) => {
       <MenuAssignItemsToGroup
         anchorEl={menuAssignItemsAnchorElement}
         setAnchorEl={setMenuAssignItemsAnchorElement}
-        tabType={selectedTab}
+        selectedTab={selectedTab}
         deviceList={deviceList}
         selectedDeviceList={selectedDeviceList}
         setSelectedDeviceList={setSelectedDeviceList}
+        formList={formList}
+        selectedFormList={selectedFormList}
+        setSelectedFormList={setSelectedFormList}
         setShouldSaveGroup={setShouldSaveGroup}
       />
     </Flyout>

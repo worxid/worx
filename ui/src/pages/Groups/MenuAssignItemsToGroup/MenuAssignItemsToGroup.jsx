@@ -22,11 +22,17 @@ import IconSearch from '@mui/icons-material/Search'
 import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './menuAssignItemsToGroupUseStyles'
 
+const tabList = [ 'devices', 'forms' ]
+
 const MenuAssignItemsToGroup = (props) => {
   const {
     anchorEl, setAnchorEl,
+    selectedTab,
     deviceList,
     selectedDeviceList, setSelectedDeviceList,
+    formList,
+    selectedFormList,
+    setSelectedFormList,
     setShouldSaveGroup,
   } = props
 
@@ -35,30 +41,56 @@ const MenuAssignItemsToGroup = (props) => {
 
   const [ search, setSearch ] = useState('')
   const [ tempSelectedDeviceList, setTempSelectedDeviceList ] = useState([])
+  const [ tempSelectedFormList, setTempSelectedFormList ] = useState([])
 
-  const handleListItemClick = (event, inputItem) => {
-    const hasChecked = [...tempSelectedDeviceList].find(item => item.label === inputItem.label)
+  const getSelectedObject = (inputSelectedTab) => {
+    if (inputSelectedTab === tabList[0]) return {
+      list: deviceList,
+      tempList: tempSelectedDeviceList,
+    }
+    else if (inputSelectedTab === tabList[1]) return {
+      list: formList,
+      tempList: tempSelectedFormList,
+    }
+  }
 
-    if (!Boolean(hasChecked)) setTempSelectedDeviceList([ ...tempSelectedDeviceList, inputItem ])
+  const handleListItemClick = (inputSelectedTab,  inputItem) => {
+    let selectedTempList, setSelectedTempList
+
+    if (inputSelectedTab === tabList[0]) {
+      selectedTempList = [...tempSelectedDeviceList]
+      setSelectedTempList = setTempSelectedDeviceList
+    }
+    else if (inputSelectedTab === tabList[1]) {
+      selectedTempList = [...tempSelectedFormList]
+      setSelectedTempList = setTempSelectedFormList
+    }
+
+    const hasChecked = [...selectedTempList].find(item => item.label === inputItem.label)
+
+    if (!Boolean(hasChecked)) setSelectedTempList([ ...selectedTempList, inputItem ])
     else {
-      const newSelectedDeviceList = [...tempSelectedDeviceList].filter(item => item.label !== inputItem.label)
-      setTempSelectedDeviceList(newSelectedDeviceList)
+      const newSelectedList = [...selectedTempList].filter(item => item.label !== inputItem.label)
+      setSelectedTempList(newSelectedList)
     }
   }
 
   const handleCloseMenu = () => {
     setAnchorEl(null)
     setTempSelectedDeviceList([...selectedDeviceList])
+    setTempSelectedFormList([...selectedFormList])
   }
 
   const handleSaveButtonClick = () => {
     setAnchorEl(null)
     setSelectedDeviceList([...tempSelectedDeviceList])
+    setSelectedFormList([...tempSelectedFormList])
     setShouldSaveGroup(true)
   }
 
   useEffect(() => {
     selectedDeviceList.length > 0 && setTempSelectedDeviceList([...selectedDeviceList])
+    selectedFormList.length > 0 && setTempSelectedFormList([...selectedFormList])
   }, [selectedDeviceList])
 
   return (
@@ -106,18 +138,18 @@ const MenuAssignItemsToGroup = (props) => {
         disablePadding 
         className={`width100 padding0 ${classes.list}`}
       >
-        {deviceList
+        {getSelectedObject(selectedTab).list
           .filter((item) => item?.label?.toLowerCase().includes(search?.toLowerCase()))
           .map((item, index) => (
             <ListItemButton
               key={index}
               className='borderBottomDivider'
               dense
-              onClick={(event) => handleListItemClick(event, item)}
+              onClick={(event) => handleListItemClick(selectedTab, item)}
             >
               {/* RADIO */}
               <ListItemIcon>
-                <Checkbox checked={Boolean(tempSelectedDeviceList?.find(selectedDevice => selectedDevice.label === item.label))}/>
+                <Checkbox checked={Boolean(getSelectedObject(selectedTab).tempList?.find(selectedItem => selectedItem.label === item.label))}/>
               </ListItemIcon>
 
               {/* TEXT */}
@@ -151,16 +183,23 @@ const MenuAssignItemsToGroup = (props) => {
 }
 
 MenuAssignItemsToGroup.defaultProps = {
+  selectedTab: tabList[0],
   deviceList: [],
   selectedDeviceList: [],
+  formList: [],
+  selectedFormList: [],
 }
 
 MenuAssignItemsToGroup.propTypes = {
   anchorEl: PropTypes.object, 
   setAnchorEl: PropTypes.func.isRequired,
+  selectedTab: PropTypes.oneOf(tabList).isRequired,
   deviceList: PropTypes.array.isRequired,
   selectedDeviceList: PropTypes.array.isRequired,
   setSelectedDeviceList: PropTypes.func.isRequired,
+  formList: PropTypes.array.isRequired,
+  selectedFormList: PropTypes.array.isRequired,
+  setSelectedFormList: PropTypes.func.isRequired,
   setShouldSaveGroup: PropTypes.func.isRequired,
 }
 
