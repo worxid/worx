@@ -39,7 +39,7 @@ import { getSubmissionListDetail, postExportSubmissionDetail } from 'services/wo
 import { deleteFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
-import useStyles from '../formsSubmissionsUseStyles'
+import useStyles from './useStylesSubmissionDetailFlyout'
 
 // UTILS
 import { didSuccessfullyCallTheApi, wasAccessTokenExpired, wasRequestCanceled } from 'utilities/validation'
@@ -202,10 +202,7 @@ const SubmissionDetailFlyout = (props) => {
                 <ListItemIcon>
                   <IconPictureAsPdf fontSize='small' className={classes.iconDownloadItem}/>
                 </ListItemIcon>
-                <Typography
-                  variant='subtitle2'
-                  className={classes.columnsMenuText}
-                >
+                <Typography variant='subtitle2'>
                   PDF
                 </Typography>
               </MenuItem>
@@ -214,10 +211,7 @@ const SubmissionDetailFlyout = (props) => {
                 <ListItemIcon>
                   <IconFileCopy fontSize='small' className={classes.iconDownloadItem}/>
                 </ListItemIcon>
-                <Typography
-                  variant='subtitle2'
-                  className={classes.columnsMenuText}
-                >
+                <Typography variant='subtitle2'>
                   DOCX
                 </Typography>
               </MenuItem>

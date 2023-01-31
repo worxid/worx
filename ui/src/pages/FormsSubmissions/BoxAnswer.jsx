@@ -42,7 +42,7 @@ import IconQrCode2 from '@mui/icons-material/QrCode2'
 import { postDetailMediaFiles } from 'services/worx/media'
 
 // STYLES
-import useStyles from './formsSubmissionsUseStyles'
+import useStyles from './SubmissionDetailFlyout/useStylesSubmissionDetailFlyout'
 
 // UTILS
 import { 
@@ -175,7 +175,7 @@ const BoxAnswer = (props) => {
                   className={classes.ratingAnswer}
                 />
 
-                <Typography>{Number(values?.[findValuesKey(type)])}/{itemFields?.max_stars}</Typography>
+                <Typography>{Number(values?.[findValuesKey(type)]) || 0}/{itemFields?.max_stars}</Typography>
               </Stack>
             )}
             {(type === 'file' || type === 'photo') && (
