@@ -94,22 +94,20 @@ const DevicesFlyout = (props) => {
     const response = await putApprovedDevices(
       selectedDevice.id,
       abortController.signal,
-      {
-        is_approved: type === 'approved' ? true : false
-      },
+      { is_approved: type === 'approved' ? true : false },
       axiosPrivate,
     )
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       if (response?.data?.value?.device_status === 'APPROVED') {
         message = {
-          severity:'success',
+          severity: 'success',
           title: '',
           message: `Device ${selectedDevice.label} has been approved`,
         }
       } else if (response?.data?.value?.device_status === 'DENIED') {
         message = {
-          severity:'error',
+          severity: 'success',
           title: '',
           message: `Device ${selectedDevice.label} has been rejected`,
         }
@@ -149,13 +147,42 @@ const DevicesFlyout = (props) => {
           setIsEditMode={setIsEditMode}
         />
 
-        {/* DELETE ICON  */}
-        <IconButton 
-          size='small'
-          onClick={handleDeleteDevicesClick}
+        {/* ACTIONS */}
+        <Stack
+          direction='row'
+          alignItems='center'
+          spacing='8px'
         >
-          <IconDelete color='primary'/>
-        </IconButton>
+          {/* APPROVE/REJECT BUTTON */}
+          {(selectedDevice && selectedDevice.device_status === 'PENDING') &&
+          <>
+            {/* REJECT */}
+            <Button
+              variant='contained'
+              className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
+              onClick={() => handleApprovedDevices('reject')}
+            >
+              Reject
+            </Button>
+
+            {/* APPROVE */}
+            <Button
+              variant='contained'
+              className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
+              onClick={() => handleApprovedDevices('approved')}
+            >
+              Approve
+            </Button>
+          </>}
+
+          {/* DELETE ICON */}
+          <IconButton 
+            size='small'
+            onClick={handleDeleteDevicesClick}
+          >
+            <IconDelete color='primary'/>
+          </IconButton>
+        </Stack>
       </FlyoutHeader>
 
       {/* LIST */}
@@ -197,23 +224,6 @@ const DevicesFlyout = (props) => {
               {/* ACTION */}
               {item.title === 'Status' &&
                 <>
-                  {item.value === 'PENDING' &&
-                  <Stack direction='row' spacing='8px'>
-                    <Button
-                      variant='contained'
-                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemRejectButton}`}
-                      onClick={() => handleApprovedDevices('reject')}
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      variant='contained'
-                      className={`${layoutClasses.flyoutListItemActionButton} ${layoutClasses.flyoutListItemApproveButton}`}
-                      onClick={() => handleApprovedDevices('approved')}
-                    >
-                      Approve
-                    </Button>
-                  </Stack>}
                   {(item.value === 'APPROVED' || item.value === 'ONLINE') &&
                   <Button
                     variant='contained'
