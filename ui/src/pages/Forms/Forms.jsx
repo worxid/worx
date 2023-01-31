@@ -240,7 +240,6 @@ const Forms = () => {
     setIsFlyoutOpen(false)
 
     if(selectionModel.length >= 1) {
-      // CURRENTLY JUST CAN DELETE 1 ITEM
       const response = await deleteFormTemplate(
         abortController.signal, 
         axiosPrivate,

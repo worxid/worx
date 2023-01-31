@@ -658,7 +658,7 @@ const FormsSubmissions = () => {
       />
 
       {/* SUBMISSION DETAIL FLYOUT */}
-      <SubmissionDetailFlyout/>
+      <SubmissionDetailFlyout submissionId={selectionModel.length === 1 ? selectionModel[0] : null}/>
     </>
   )
 }
