@@ -72,10 +72,16 @@ const useStyles = makeStyles((theme) => ({
   flyoutAnswerItem: {
     padding: 12,
     border: `1px solid ${theme.palette.action.disabled}`,
+    borderRadius: 4,
     alignItems: 'flex-start',
     marginBottom: 8,
-    '& .separator': {
-      backgroundColor: theme.palette.action.disabled,
+    '&.separator': {
+      backgroundColor: alpha(theme.palette.common.black, 0.08),
+      borderTop: `4px solid ${theme.palette.action.disabled}`,
+      alignItems: 'center',
+      '& .MuiListItemText-secondary': {
+        display: 'none',
+      }
     },
     '&:last-child': {
       marginBottom: 0,
@@ -100,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary
     },
     '& .MuiListItemText-secondary': {
-      marginTop: 4,
+      marginTop: 8,
       color: theme.palette.text.primary
     }
   },
@@ -112,6 +118,39 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 4,
       fontSize: 24,
     }
+  },
+  listFileItem: {
+    padding: 0,
+    width: '100%',
+    cursor: 'pointer',
+  },
+  listFileAvatar: {
+    color: theme.palette.text.secondary,
+    maxWidth: 73,
+  },
+  listFileIcon: {
+    height: 48,
+    width: 44,
+  },
+  listFileItemText: {
+    '& .MuiListItemText-primary': {
+      color: theme.palette.text.primary
+    }
+  },
+  columnsMenuRoot: {
+    '& .MuiList-root': {
+      padding: '12px 4px',
+    },
+  },
+  signatureBox: {
+    border: `2px solid ${alpha(theme.palette.common.black, 0.26)}`,
+    maxWidth: 200,
+    width: '100%',
+    cursor: 'pointer',
+  },
+  signatureText: {
+    paddingLeft: 8,
+    fontWeight: 400,
   }
 }))
 

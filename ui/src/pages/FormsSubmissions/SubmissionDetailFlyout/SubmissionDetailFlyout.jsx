@@ -14,10 +14,10 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
-
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
+import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -37,6 +37,7 @@ import useStyles from '../formsSubmissionsUseStyles'
 import { didSuccessfullyCallTheApi, wasAccessTokenExpired, wasRequestCanceled } from 'utilities/validation'
 import { getDefaultErrorMessage } from 'utilities/object'
 import { convertDate } from 'utilities/date'
+import { Menu } from '@mui/material'
 
 const SubmissionDetailFlyout = (props) => {
   const { submissionId } = props
@@ -47,6 +48,8 @@ const SubmissionDetailFlyout = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
 
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false)
   const [submissionDetail, setSubmissionDetail] = useState({})
 
   // HANDLE GET SUBMISSION DETAIL
@@ -76,6 +79,13 @@ const SubmissionDetailFlyout = (props) => {
     }
   }
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   useEffect(() => {
     const abortController = new AbortController()
     getSubmissionDetail(abortController, submissionId)
@@ -102,13 +112,40 @@ const SubmissionDetailFlyout = (props) => {
         </Typography>
 
         <Stack direction='row'>
-          <IconButton>
+          <IconButton
+            id='menu-download-button'
+            aria-controls={Boolean(anchorEl) ? 'menu-download' : undefined}
+            aria-haspopup='true'
+            aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
+            onClick={handleClick}
+          >
             <IconDownload />
           </IconButton>
 
           <IconButton color='primary'>
             <IconDelete />
           </IconButton>
+
+          {/* CUSTOMIZE COLUMNS MENU */}
+          <Menu
+            id='menu-download'
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'menu-download-button',
+            }}
+            className='neutralize-zoom-menu'
+          >
+            <MenuItem>
+              <Typography
+                variant='subtitle2'
+                className={classes.columnsMenuText}
+              >
+                PDF
+              </Typography>
+            </MenuItem>
+          </Menu>
         </Stack>
       </FlyoutTitle>
 
@@ -158,6 +195,7 @@ const SubmissionDetailFlyout = (props) => {
               values={findValuesByFieldId(submissionDetail.values, item.id)}
               itemFields={submissionDetail.fields.find(itemFind => itemFind.id === item.id)}
               type={item.type}
+              attachments={submissionDetail.attachments}
             />
           ))}
         </List>
