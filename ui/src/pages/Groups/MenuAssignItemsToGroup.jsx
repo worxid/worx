@@ -20,7 +20,6 @@ import IconSearch from '@mui/icons-material/Search'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
-import useStyles from './menuAssignItemsToGroupUseStyles'
 
 const tabList = [ 'devices', 'forms' ]
 
@@ -36,7 +35,6 @@ const MenuAssignItemsToGroup = (props) => {
     setShouldSaveGroup,
   } = props
 
-  const classes = useStyles()
   const layoutClasses = useLayoutStyles()
 
   const [ search, setSearch ] = useState('')
@@ -98,7 +96,7 @@ const MenuAssignItemsToGroup = (props) => {
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
       onClose={handleCloseMenu}
-      className={classes.root}
+      className={layoutClasses.menuChangeRoot}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'right',
@@ -111,7 +109,7 @@ const MenuAssignItemsToGroup = (props) => {
       {/* SEARCH INPUT */}
       <Stack 
         direction='row' 
-        className={layoutClasses.menuSearchBox}
+        className={layoutClasses.menuChangeSearchBox}
       >
         {/* INPUT */}
         <Input
@@ -136,7 +134,7 @@ const MenuAssignItemsToGroup = (props) => {
       {/* LIST */}
       <List 
         disablePadding 
-        className={`width100 padding0 ${classes.list}`}
+        className={`width100 padding0 ${layoutClasses.menuChangeList}`}
       >
         {getSelectedObject(selectedTab).list
           .filter((item) => item?.label?.toLowerCase().includes(search?.toLowerCase()))
@@ -162,7 +160,7 @@ const MenuAssignItemsToGroup = (props) => {
       <Stack
         direction='row' 
         justifyContent='flex-end'
-        className={classes.actions}
+        className={layoutClasses.menuChangeActions}
       >
         <CustomDialogActionButton 
           className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}

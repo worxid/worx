@@ -8,7 +8,7 @@ import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionabl
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
-import MenuAssignItemsToGroup from '../MenuAssignItemsToGroup/MenuAssignItemsToGroup'
+import MenuAssignItemsToGroup from '../MenuAssignItemsToGroup'
 
 // CONSTANTS
 import { values } from 'constants/values'
