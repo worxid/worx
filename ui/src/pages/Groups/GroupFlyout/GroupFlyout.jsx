@@ -1,3 +1,4 @@
+// TO DO: RENAME THIS COMPONENT INTO THE GROUPS FLYOUT
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
@@ -45,7 +46,7 @@ import {
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
-import useStyles from './dialogAddOrEditGroupUseStyles'
+import useStyles from './groupFlyoutUseStyles'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'
@@ -56,7 +57,7 @@ import {
 } from 'utilities/validation'
 import { convertDate } from 'utilities/date'
 
-const DialogAddOrEditGroup = (props) => {
+const GroupFlyout = (props) => {
   const { 
     dialogType, 
     dataDialogEdit, setDataDialogEdit, 
@@ -456,4 +457,4 @@ const DialogAddOrEditGroup = (props) => {
   )
 }
 
-export default DialogAddOrEditGroup
+export default GroupFlyout
