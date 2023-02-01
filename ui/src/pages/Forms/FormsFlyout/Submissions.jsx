@@ -7,9 +7,8 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
+import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import Collapse from '@mui/material/Collapse'
-import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -20,8 +19,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
-import IconAssignment from '@mui/icons-material/Assignment'
+import IconArrowForwardIos from '@mui/icons-material/ArrowForwardIos'
 import IconPhoneIphone from '@mui/icons-material/PhoneIphone'
+import IconWeb from '@mui/icons-material/Web'
 
 // SERVICES
 import { postSearchFormSubmissionList } from 'services/worx/form'
@@ -31,10 +31,9 @@ import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
-import { getExpandOrCollapseIcon } from 'utilities/component'
 import { convertDate } from 'utilities/date'
 import { getDefaultErrorMessage } from 'utilities/object'
-import { 
+import {
   didSuccessfullyCallTheApi, 
   wasAccessTokenExpired,
   wasRequestCanceled,
@@ -52,7 +51,6 @@ const Submissions = (props) => {
   // STATES
   const [ currentForm, setCurrentForm ] = useState(0)
   const [ currentPage, setCurrentPage ] = useState(1)
-  const [ isSubmissionsExpanded, setIsSubmissionsExpanded ] = useState(true)
   const [ submissionData, setSubmissionData ] = useState([])
 
   // GET SUBMISSIONS VIEW ALL URL
@@ -111,114 +109,80 @@ const Submissions = (props) => {
         marginBottom='8px'
       >
         {/* TITLE */}
-        <Typography variant='subtitle1' className='fontWeight500'>
-          Submissions
-        </Typography>
+        <Stack>
+          <Typography variant='h6' fontWeight={400}>Submissions</Typography>
+          <Typography variant='body2' color='text.secondary'>
+            {rows[0]?.submission_count} Responses
+          </Typography>
+        </Stack>
 
-        {/*EXPAND/COLLAPSE ICON  */}
-        <IconButton 
-          size='small'
-          onClick={() => setIsSubmissionsExpanded(current => !current)}
+        {/* ACTION */}
+        <Button
+          variant='text'
+          className={classes.actionViewAll}
+          href={getSubmissionsViewAllUrl()}
         >
-          {getExpandOrCollapseIcon(isSubmissionsExpanded, 'small')}
-        </IconButton>
+          View All
+        </Button>
       </Stack>
 
       {/* LIST */}
-      <Collapse 
-        in={isSubmissionsExpanded} 
-        timeout='auto' 
-        unmountOnExit
-      >
-        {/* TOTAL SUBMISSIONS */}
-        <ListItem disablePadding>
-          {/* ICON */}
-          <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-            <IconAssignment/>
-          </ListItemIcon>
-
-          {/* TEXT */}
-          <ListItemText
-            primary={
-              <Typography 
-                variant='caption'
-                className='colorTextSecondary'
-                fontWeight={600}
-              >
-                Total
-              </Typography>
-            }
-            secondary={
-              <Typography variant='body2'>
-                {rows[0]?.submission_count}
-              </Typography>
-            }
-          />
-
-          {/* ACTION */}
-          <Button
-            variant='contained'
-            className={layoutClasses.flyoutListItemActionButton}
-            href={getSubmissionsViewAllUrl()}
+      <List>
+        {submissionData?.content?.map((item, index) => (
+          <ListItem 
+            key={index}
+            disablePadding
+            className={classes.submissionItem}
           >
-            View All
-          </Button>
-        </ListItem>
+            {/* ICON */}
+            <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
+              <Avatar className={classes.flyoutListItemAvatar}>
+                {item?.source?.label === 'web_browser' ? <IconWeb /> : <IconPhoneIphone />}
+              </Avatar>
+            </ListItemIcon>
 
-        {/* LIST */}
-        <List>
-          {submissionData?.content?.map((item, index) => (
-            <ListItem 
-              key={index}
-              disablePadding
+            {/* TEXT */}
+            <ListItemText
+              primary={
+                <Typography 
+                  variant='subtitle1' 
+                  className='textCapitalize' 
+                  color='text.primary'
+                  fontWeight={400}
+                >
+                  {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
+                </Typography>
+              }
+              secondary={
+                <Typography color='text.secondary' variant='subtitle1' marginTop='8px'>
+                  {convertDate(item.submit_date)}
+                </Typography>
+              }
+            />
+
+            {/* ACTION */}
+            <Link
+              href={getSubmissionsViewAllUrl()}
+              underline='none'
+              className={layoutClasses.flyoutListItemActionLink}
             >
-              {/* ICON */}
-              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <IconPhoneIphone/>
-              </ListItemIcon>
+              <IconArrowForwardIos />
+            </Link>
+          </ListItem>
+        ))}
+      </List>
 
-              {/* TEXT */}
-              <ListItemText
-                primary={
-                  <Typography 
-                    variant='caption' 
-                    className='textCapitalize colorTextSecondary' 
-                    fontWeight={600}
-                  >
-                    {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
-                  </Typography>
-                }
-                secondary={
-                  <Typography variant='body2'>
-                    {convertDate(item.submit_date)}
-                  </Typography>
-                }
-              />
-
-              {/* ACTION */}
-              <Link
-                href={`/forms/submission-detail?formTemplateId=${rows[0]?.id}&submissionId=${item.id}`}
-                underline='none'
-                className={layoutClasses.flyoutListItemActionLink}
-              >
-                View
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-
-        {/* PAGINATION */}
-        {submissionData?.content?.length ? (
-          <Pagination
-            className={classes.pagination}
-            count={submissionData?.totalPages}
-            defaultPage={1}
-            siblingCount={0}
-            onChange={(event, page) => setCurrentPage(page)}
-            shape='rounded'
-          />
-        ) : ''}
-      </Collapse>
+      {/* PAGINATION */}
+      {submissionData?.content?.length ? (
+        <Pagination
+          className={classes.pagination}
+          count={submissionData?.totalPages}
+          defaultPage={1}
+          siblingCount={0}
+          onChange={(event, page) => setCurrentPage(page)}
+          shape='rounded'
+        />
+      ) : ''}
     </>
   )
 }

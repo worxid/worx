@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 // COMPONENTS
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
@@ -7,144 +7,61 @@ import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
 // MUIS
-import Button from '@mui/material/Button'
-import Collapse from '@mui/material/Collapse'
-import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 // MUI ICONS
+import IconCalendarToday from '@mui/icons-material/CalendarToday'
 import IconGroups from '@mui/icons-material/Groups'
-import IconTextSnippet from '@mui/icons-material/TextSnippet'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
-import { getExpandOrCollapseIcon } from 'utilities/component'
+import { convertDate } from 'utilities/date'
+import { Chip } from '@mui/material'
 
 const MainMenu = (props) => {
-  const { rows, setGroupData } = props
+  const { rows } = props
 
-  const layoutClasses = useLayoutStyles()
-
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
-
+  const classes = useStyles()
   const mainMenuIconList = [
-    IconTextSnippet,
-    IconGroups,
-    IconViewHeadline,
+    <IconGroups className={classes.flyoutIconInfo} />,
+    <IconCalendarToday className={classes.flyoutIconInfo} />,
+    <IconCalendarToday className={classes.flyoutIconInfo} />,
+    <IconViewHeadline className={classes.flyoutIconInfo} />,
   ]
 
-  const mainMenuTitleList = [ 'Form Title', 'Groups', 'Fields' ]
-
-  let mainMenuList = []
-  if (rows.length === 1) {
-    mainMenuList = Object.keys(rows[0])
-      .filter(key => {
-        return key === 'label' || key === 'assigned_groups' || key === 'fields_size'
-      })
-      .map((key, index) => {
-        return {
-          title: mainMenuTitleList[index],
-          value: rows[0][key],
-          icon: mainMenuIconList[index],
-        }
-      })
-  }
-
-  const [ isMainMenuExpanded, setIsMainMenuExpanded ] = useState(true)
-
-  const handleChangeGroup = () => {
-    setGroupData(rows[0].assigned_groups)
-    setIsDialogFormOpen('dialogChangeGroup')
-  }
+  const menuKey = ['assigned_groups', 'created_on', 'modified_on', 'fields_size']
+  const menuLabel = ['Groups', 'Form Date Created', 'Form Date Updated', 'Field']
 
   return (
-    <>
-      {/* HEADER */}
-      <Stack 
-        direction='row'
-        justifyContent='space-between'
-        alignItems='center'
-        marginBottom='8px'
-      >
-        {/* TITLE */}
-        <Typography
-          variant='subtitle1'
-          className='fontWeight500'
-        >
-          Main Menu
-        </Typography>
+    <Stack className={classes.flyoutBoxInfo}>
+      <List>
+        {menuLabel.map((name, index) => (
+          <ListItem className={classes.flyoutInfoItem} key={index}>
+            <Stack direction='row' alignItems='center'>
+              {mainMenuIconList[index]}
 
-        {/* EXPAND/COLLAPSE ICON  */}
-        <IconButton 
-          size='small'
-          onClick={() => setIsMainMenuExpanded(current => !current)}
-        >
-          {getExpandOrCollapseIcon(isMainMenuExpanded, 'small')}
-        </IconButton>
-      </Stack>
+              <Typography variant='body2' className={classes.flyoutTitleInfo}>
+                {name}
+              </Typography>
+            </Stack>
 
-      {/* LIST */}
-      <Collapse 
-        in={isMainMenuExpanded} 
-        timeout='auto' 
-        unmountOnExit
-      >
-        {rows.length === 1 &&
-        <List>
-          {mainMenuList.map((item, index) => (
-            <ListItem
-              key={index}
-              disablePadding
-            >
-              {/* ICON */}
-              <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-                <item.icon />
-              </ListItemIcon>
-
-              {/* TEXT */}
-              <ListItemText
-                primary={
-                  <Typography 
-                    variant='caption'
-                    className='colorTextSecondary'
-                    fontWeight={600}
-                  >
-                    {item.title}
-                  </Typography>
-                }
-                secondary={
-                  item.title === 'Groups' 
-                    ? <Stack className='colorTextPrimary'>
-                      <CellGroups dataValue={item.value} limitShowGroup={false} />
-                    </Stack>
-                    : (<Typography variant='body2' noWrap={true} maxWidth='184px' width='100%'>
-                      {item.value}
-                    </Typography>)
-                }
-              />
-
-              {/* ACTION */}
-              {item.title === 'Form Title' &&
-              <Button
-                variant='contained'
-                className={layoutClasses.flyoutListItemActionButton}
-                onClick={handleChangeGroup}
-              >
-                Change Group
-              </Button>}
-            </ListItem>
-          ))}
-        </List>}
-      </Collapse>
-    </>
+            <Typography variant='body1' className={classes.flyoutDescInfo}>
+              {index === 0 && rows[0]?.[menuKey[index]].map(itemGroup => (
+                <Chip key={itemGroup.id} label={itemGroup?.name} className={classes.flyoutGroupChip}/>
+              ))}
+              {(index === 1 || index === 2) && convertDate(rows[0]?.[menuKey[index]])}
+              {index === 3 && rows[0]?.[menuKey[index]]}
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+    </Stack>
   )
 }
 

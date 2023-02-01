@@ -55,7 +55,6 @@ const Forms = () => {
   } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
-
   const initialColumns = [
     {
       field: 'label',
@@ -118,7 +117,6 @@ const Forms = () => {
       isSortShown: true,
     },
   ]
-
   const initialFilters = {}
 
   // NAVIGATE
@@ -353,7 +351,7 @@ const Forms = () => {
       {/* SIDE CONTENT */}
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
-        setGroupData={setGroupData}
+        reloadData={fetchingFormsList}
       />
 
       {/* DIALOG DELETE FORMS */}
