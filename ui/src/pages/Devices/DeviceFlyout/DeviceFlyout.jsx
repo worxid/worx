@@ -32,7 +32,10 @@ import IconDelete from '@mui/icons-material/Delete'
 import IconGroups from '@mui/icons-material/Groups'
 
 // SERVICES
-import { putApprovedDevices } from 'services/worx/devices'
+import { 
+  putApprovedDevices, 
+  putUpdateLabelDevices,
+} from 'services/worx/devices'
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
@@ -87,7 +90,9 @@ const DevicesFlyout = (props) => {
 
   const handleApprovedDevices = async (type) => {
     let message
+
     const abortController = new AbortController()
+
     const response = await putApprovedDevices(
       selectedDevice.id,
       abortController.signal,
@@ -122,6 +127,45 @@ const DevicesFlyout = (props) => {
     })
   }
 
+  const handleSaveDevice = async () => {
+    const abortController = new AbortController()
+
+    if (deviceName.length) {
+      const response = await putUpdateLabelDevices(
+        selectedDevice?.id,
+        abortController.signal,
+        { label: deviceName },
+        axiosPrivate,
+      )
+
+      if (didSuccessfullyCallTheApi(response?.status)) {
+        setSnackbarObject({
+          open: true,
+          severity: 'success',
+          title: '',
+          message: 'Successfully change device',
+        })
+
+        reloadData(abortController.signal, true)
+      }
+      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        setDeviceName(selectedDevice.label)
+        setSnackbarObject(getDefaultErrorMessage(response))
+      }
+    } 
+    else {
+      setDeviceName(selectedDevice.label)
+      setSnackbarObject({
+        open: true,
+        severity: 'error',
+        title: '',
+        message: 'Label field must be filled',
+      })
+    }
+
+    setIsEditMode(false)
+  }
+
   useEffect(() => {
     selectedDevice && setDeviceName(selectedDevice.label)
   }, [selectedDevice])
@@ -139,7 +183,7 @@ const DevicesFlyout = (props) => {
           titlePlaceholder='Device Name'
           titleValue={deviceName}
           setTitleValue={(event) => setDeviceName(event.target.value)}
-          onInputBlur={() => setIsEditMode(false)}
+          onInputBlur={handleSaveDevice}
           isEditMode={isEditMode}
           setIsEditMode={setIsEditMode}
         />
