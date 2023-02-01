@@ -1,12 +1,5 @@
-import { useContext } from 'react'
-
-// COMPONENTS
-import CellGroups from 'components/DataGridRenderCell/CellGroups'
-
-// CONTEXTS
-import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
-
 // MUIS
+import Chip from '@mui/material/Chip'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Stack from '@mui/material/Stack'
@@ -22,7 +15,6 @@ import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
 import { convertDate } from 'utilities/date'
-import { Chip } from '@mui/material'
 
 const MainMenu = (props) => {
   const { rows } = props
@@ -55,6 +47,9 @@ const MainMenu = (props) => {
               {index === 0 && rows[0]?.[menuKey[index]].map(itemGroup => (
                 <Chip key={itemGroup.id} label={itemGroup?.name} className={classes.flyoutGroupChip}/>
               ))}
+              {(index === 0 && rows[0]?.[menuKey[index]].length === 0) && (
+                <Chip label='Default' className={classes.flyoutGroupChip}/>
+              )}
               {(index === 1 || index === 2) && convertDate(rows[0]?.[menuKey[index]])}
               {index === 3 && rows[0]?.[menuKey[index]]}
             </Typography>

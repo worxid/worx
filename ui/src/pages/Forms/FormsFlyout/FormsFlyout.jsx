@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
@@ -46,7 +46,7 @@ import {
 } from 'utilities/validation'
 
 const FormsFlyout = (props) => {
-  const { rows, reloadData } = props
+  const { rows, reloadData, setGroupData } = props
   const classes = useStyles()
   const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate()
@@ -94,6 +94,12 @@ const FormsFlyout = (props) => {
       setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
+
+  useEffect(() => {
+    if(rows[0]?.assigned_groups) {
+      setGroupData(rows[0]?.assigned_groups)
+    }
+  }, [rows])
 
   return (
     <>

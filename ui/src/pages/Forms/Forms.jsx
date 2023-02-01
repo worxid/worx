@@ -312,6 +312,7 @@ const Forms = () => {
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
         reloadData={fetchingFormsList}
+        setGroupData={setGroupData}
       />
 
       {/* DIALOG GROUP */}
