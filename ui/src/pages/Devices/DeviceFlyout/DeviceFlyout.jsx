@@ -238,7 +238,6 @@ const DevicesFlyout = (props) => {
               <IconDelete color='primary'/>
             </IconButton>
           </Stack>
-
         </Stack>
       </FlyoutHeader>
 

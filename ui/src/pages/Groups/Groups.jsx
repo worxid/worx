@@ -4,8 +4,8 @@ import { useState, useEffect, useContext } from 'react'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogAddOrEditGroup from './DialogAddOrEditGroup/DialogAddOrEditGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
+import GroupFlyout from './GroupFlyout/GroupFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
@@ -281,8 +281,8 @@ const Groups = () => {
         </LoadingPaper>
       </Stack>
       
-      {/* DIALOG ADD OR EDIT GROUP */}
-      <DialogAddOrEditGroup
+      {/* GROUP FLYOUT */}
+      <GroupFlyout
         dialogType={dialogType}
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit}

@@ -175,16 +175,6 @@ const Devices = () => {
   const [ groupData, setGroupData ] = useState([])
   // DELETE DIALOG
   const [ dialogDeleteDevice, setDialogDeleteDevice ] = useState({})
-  // DATA EDIT DEVICE
-  const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
-
-  // HANDLE EDIT BUTTON CLICKED
-  const handleEditButtonClick = () => {
-    const editData = tableData.filter(item => item.id === selectionModel[0])
-    setDataDialogEdit(...editData)
-    // TO DO: CHANGE WITH FLYOUT
-    // setIsDialogAddOrEditOpen(true)
-  }
 
   // FETCH TABLE DATA
   const fetchDeviceList = async (abortController, isMounted) => {
