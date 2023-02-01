@@ -45,10 +45,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: alpha(theme.palette.success.main, 0.2),
     }
   },
-  dialogAddOrEditIconClose: {
-    marginRight: 16,
-    cursor: 'pointer',
-  },
   dialogButton: {
     fontWeight: 400,
     border: 'none',
@@ -74,11 +70,6 @@ const useStyles = makeStyles((theme) => ({
     height: 65,
     width: '100%',
     flex: '0 0 65px',
-  },
-  dialogAddOrEditFormControlIcon: {
-    marginRight: 12,
-    marginBottom: 2,
-    color: theme.palette.text.secondary,
   },
   avatar: {
     backgroundColor: theme.palette.background.default,
