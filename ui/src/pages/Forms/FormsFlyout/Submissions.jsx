@@ -1,5 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 
+// COMPONENTS
+import FlyoutActionableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
@@ -7,13 +10,8 @@ import { AllPagesContext } from 'contexts/AllPagesContext'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
-import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -27,7 +25,6 @@ import IconWeb from '@mui/icons-material/Web'
 import { postSearchFormSubmissionList } from 'services/worx/form'
 
 // STYLES
-import useLayoutStyles from 'styles/layoutPrivate'
 import useStyles from './formsFlyoutUseStyles'
 
 // UTILITIES
@@ -41,9 +38,7 @@ import {
 
 const Submissions = (props) => {
   const { rows } = props
-
   const classes = useStyles()
-  const layoutClasses = useLayoutStyles()
   const axiosPrivate = useAxiosPrivate()
 
   const { setSnackbarObject } = useContext(AllPagesContext)
@@ -127,48 +122,16 @@ const Submissions = (props) => {
       </Stack>
 
       {/* LIST */}
-      <List>
+      <List className={classes.submissionList}>
         {submissionData?.content?.map((item, index) => (
-          <ListItem 
+          <FlyoutActionableItem
             key={index}
-            disablePadding
-            className={classes.submissionItem}
-          >
-            {/* ICON */}
-            <ListItemIcon className={layoutClasses.flyoutListItemIcon}>
-              <Avatar className={classes.flyoutListItemAvatar}>
-                {item?.source?.label === 'web_browser' ? <IconWeb /> : <IconPhoneIphone />}
-              </Avatar>
-            </ListItemIcon>
-
-            {/* TEXT */}
-            <ListItemText
-              primary={
-                <Typography 
-                  variant='subtitle1' 
-                  className='textCapitalize' 
-                  color='text.primary'
-                  fontWeight={400}
-                >
-                  {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
-                </Typography>
-              }
-              secondary={
-                <Typography color='text.secondary' variant='subtitle1' marginTop='8px'>
-                  {convertDate(item.submit_date)}
-                </Typography>
-              }
-            />
-
-            {/* ACTION */}
-            <Link
-              href={`${getSubmissionsViewAllUrl()}&submissionId=${item.id}`}
-              underline='none'
-              className={layoutClasses.flyoutListItemActionLink}
-            >
-              <IconArrowForwardIos />
-            </Link>
-          </ListItem>
+            icon={item?.source?.label === 'web_browser' ? IconWeb : IconPhoneIphone}
+            primaryText={item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
+            secondaryText={convertDate(item.submit_date)}
+            actionIcon={IconArrowForwardIos}
+            actionIconHref={`${getSubmissionsViewAllUrl()}&submissionId=${item.id}`}
+          />
         ))}
       </List>
 

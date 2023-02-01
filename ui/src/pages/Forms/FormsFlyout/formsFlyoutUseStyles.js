@@ -40,31 +40,12 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none'
     }
   },
-  submissionItem: {
-    padding: 12,
-    border: `1px solid ${theme.palette.action.disabled}`,
-    borderRadius: 4,
-    marginBottom: 8,
-    '&:last-child': {
-      marginBottom: 0,
-    }
-  },
-  flyoutListItemAvatar: {
-    borderRadius: 4,
-    backgroundColor: alpha(theme.palette.common.black, 0.08),
-    '& svg': {
-      color: theme.palette.text.secondary
-    },
-  },
-  iconActionItem: {
-    color: alpha(theme.palette.common.black, 0.28)
-  },
-  actionMenuItem: {
-    '& .MuiListItemIcon-root': {
-      minWidth: 28,
-    },
-    '& .MuiSvgIcon-root.primary': {
-      color: theme.palette.primary.light
+  submissionList: {
+    '& .MuiListItem-root': {
+      marginBottom: 8,
+      '&:last-child': {
+        marginBottom: 0,
+      }
     }
   },
   pagination: {
