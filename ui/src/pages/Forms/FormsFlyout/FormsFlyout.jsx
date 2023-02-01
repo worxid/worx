@@ -187,7 +187,7 @@ const FormsFlyout = (props) => {
       {/* DELETE CONFIRMATION */}
       <DialogConfirmation
         title='Delete Form'
-        caption='The data in the form will also be deleted, are you sure you want to delete the form?'
+        caption='This action can’t be undone. Are you sure you want to delete this form?'
         dialogConfirmationObject={dialogDeleteForm}
         setDialogConfirmationObject={setDialogDeleteForm}
         cancelButtonText='Cancel'
