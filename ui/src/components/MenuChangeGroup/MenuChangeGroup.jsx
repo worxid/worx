@@ -40,7 +40,7 @@ import {
   wasRequestCanceled,
 } from 'utilities/validation'
 
-const DialogChangeGroup = (props) => {
+const MenuChangeGroup = (props) => {
   const { dataChecked, page, selectedItemId, reloadData } = props
 
   const layoutClasses = useLayoutStyles()
@@ -246,16 +246,16 @@ const DialogChangeGroup = (props) => {
   )
 }
 
-DialogChangeGroup.defaultProps = {
+MenuChangeGroup.defaultProps = {
   dataChecked: [],
   page: 'form-template',
 }
 
-DialogChangeGroup.propTypes = {
+MenuChangeGroup.propTypes = {
   dataChecked: PropTypes.array,
   page: PropTypes.oneOf(['form-template', 'devices']).isRequired,
   selectedItemId: PropTypes.number,
   reloadData: PropTypes.func.isRequired,
 }
 
-export default DialogChangeGroup
+export default MenuChangeGroup

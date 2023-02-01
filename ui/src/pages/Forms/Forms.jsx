@@ -6,11 +6,11 @@ import AppBar from 'components/AppBar/AppBar'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 
 // CONSTANTS
 import { paramsCreateForm } from './formsConstants'
@@ -315,8 +315,8 @@ const Forms = () => {
         setGroupData={setGroupData}
       />
 
-      {/* DIALOG GROUP */}
-      <DialogChangeGroup
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
         dataChecked={groupData}
         page='form-template'
         selectedItemId={selectionModel[0]}

@@ -6,10 +6,10 @@ import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DeviceFlyout from './DeviceFlyout/DeviceFlyout'
-import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogInvite from './DialogInvite/DialogInvite'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -332,8 +332,8 @@ const Devices = () => {
         />
       </Stack>
 
-      {/* DIALOG CHANGE GROUP */}
-      <DialogChangeGroup
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
         dataChecked={groupData.map(item => ({ name: item }))}
         page='devices'
         selectedItemId={selectionModel[0]}
