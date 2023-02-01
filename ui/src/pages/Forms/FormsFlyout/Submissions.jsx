@@ -55,7 +55,7 @@ const Submissions = (props) => {
 
   // GET SUBMISSIONS VIEW ALL URL
   const getSubmissionsViewAllUrl = () => {
-    if(rows.length === 1) return `/forms/submissions/${rows[0].id}`
+    if(rows.length === 1) return `/forms/submissions?formTemplateId=${rows[0].id}`
     else return '#'
   }
 
@@ -162,7 +162,7 @@ const Submissions = (props) => {
 
             {/* ACTION */}
             <Link
-              href={getSubmissionsViewAllUrl()}
+              href={`${getSubmissionsViewAllUrl()}&submissionId=${item.id}`}
               underline='none'
               className={layoutClasses.flyoutListItemActionLink}
             >
