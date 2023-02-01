@@ -39,6 +39,21 @@ export const getGroupList = async (inputSignal, inputAxiosPrivate) => {
   }
 }
 
+export const getGroupById = async (inputSignal, inputAxiosPrivate, inputId) => {
+  try {
+    const response = await inputAxiosPrivate.get(
+      `/groups/${inputId}`, 
+      { signal: inputSignal }
+    )
+
+    return response
+  } catch (error) {
+    if (error.message === 'canceled') return { status: 'Canceled' }
+    else if (!error.response) return { status: 'No Server Response' }
+    else return error.response
+  }
+}
+
 export const postCreateGroup = async (inputSignal, inputBodyParams, inputAxiosPrivate) => {
   try {
     const response = await inputAxiosPrivate.post(

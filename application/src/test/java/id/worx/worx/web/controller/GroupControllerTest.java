@@ -5,8 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -14,6 +17,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import id.worx.worx.common.ModelConstants;
 import id.worx.worx.common.model.dto.GroupDTO;
+import id.worx.worx.common.model.dto.GroupDetailDTO;
+import id.worx.worx.common.model.dto.SimpleDeviceDTO;
+import id.worx.worx.common.model.dto.SimpleFormTemplateDTO;
 import id.worx.worx.common.model.request.GroupRequest;
 import id.worx.worx.common.model.response.BaseListResponse;
 import id.worx.worx.common.model.response.BasePageResponse;
@@ -21,7 +27,7 @@ import id.worx.worx.common.model.response.BaseValueResponse;
 import id.worx.worx.exception.WorxErrorCode;
 import id.worx.worx.web.model.request.GroupSearchRequest;
 
-@ContextConfiguration(classes = { GroupControllerTest.Config.class })
+@ContextConfiguration(classes = {GroupControllerTest.Config.class})
 class GroupControllerTest extends AbstractControllerTest {
 
     static class Config {
@@ -29,10 +35,11 @@ class GroupControllerTest extends AbstractControllerTest {
 
     @Test
     void testMainGroupCreation() throws Exception {
-        BaseListResponse<GroupDTO> response = doGetTyped("/groups", new TypeReference<BaseListResponse<GroupDTO>>() {
-        });
+        BaseListResponse<GroupDTO> response =
+                doGetTyped("/groups", new TypeReference<BaseListResponse<GroupDTO>>() {});
         List<GroupDTO> list = response.getList();
-        boolean isMainGroupExists = list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
+        boolean isMainGroupExists =
+                list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
         assertTrue(isMainGroupExists);
     }
 
@@ -40,12 +47,13 @@ class GroupControllerTest extends AbstractControllerTest {
     void testSaveGroup() throws Exception {
         String name = "Field 2 Group";
         String color = "#4287f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> actualResponse = doPostWithTypedResponse(
                 "/groups",
                 request,
-                new TypeReference<BaseValueResponse<GroupDTO>>() {
-                },
+                new TypeReference<BaseValueResponse<GroupDTO>>() {},
                 status().isCreated());
         assertEquals(name, actualResponse.getValue().getName());
         assertEquals(color, actualResponse.getValue().getColor());
@@ -55,41 +63,52 @@ class GroupControllerTest extends AbstractControllerTest {
     void testUpdateGroup() throws Exception {
         String name = "Field 3 Group";
         String color = "#4387f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
-                new TypeReference<BaseValueResponse<GroupDTO>>() {
-                },
+                new TypeReference<BaseValueResponse<GroupDTO>>() {},
                 status().isCreated());
         GroupDTO dto = response.getValue();
         assertEquals(name, dto.getName());
         assertEquals(color, dto.getColor());
 
+        // TODO add device and form testing
+
         Long groupId = dto.getId();
         String updatedName = "Updated Field 3 Group";
         String updatedColor = "#4387f6";
-        GroupRequest updateRequest = new GroupRequest(updatedName, updatedColor);
-        BaseValueResponse<GroupDTO> actualResponse = doPutWithTypedResponse(
+        List<Long> updateDeviceId = new ArrayList<>(Arrays.asList());
+        List<Long> updateFormId = new ArrayList<>(Arrays.asList());
+        GroupUpdateRequest updateRequest =
+                new GroupUpdateRequest(updatedName, updatedColor, updateDeviceId, updateFormId);
+        BaseValueResponse<GroupDetailDTO> actualResponse = doPutWithTypedResponse(
                 "/groups/" + groupId,
                 updateRequest,
-                new TypeReference<BaseValueResponse<GroupDTO>>() {
-                });
+                new TypeReference<BaseValueResponse<GroupDetailDTO>>() {});
+
+        List<SimpleDeviceDTO> deviceDTOs = actualResponse.getValue().getDevices();
+        List<SimpleFormTemplateDTO> formTemplateDTOs = actualResponse.getValue().getForms();
 
         assertEquals(updatedName, actualResponse.getValue().getName());
         assertEquals(updatedColor, actualResponse.getValue().getColor());
+        assertEquals(updateDeviceId.size(), deviceDTOs.size());
+        assertEquals(updateFormId.size(), formTemplateDTOs.size());
     }
 
     @Test
     void testDeleteGroup() throws Exception {
         String name = "Field 4 Group";
         String color = "#4487f5";
-        GroupRequest request = new GroupRequest(name, color);
+        List<Long> deviceId = new ArrayList<>(Arrays.asList());
+        List<Long> formId = new ArrayList<>(Arrays.asList());
+        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
-                new TypeReference<BaseValueResponse<GroupDTO>>() {
-                },
+                new TypeReference<BaseValueResponse<GroupDTO>>() {},
                 status().isCreated());
         GroupDTO dto = response.getValue();
         assertEquals(name, dto.getName());
@@ -101,7 +120,8 @@ class GroupControllerTest extends AbstractControllerTest {
 
         doGet("/groups/" + groupId)
                 .andExpect(status().isNotFound())
-                .andExpect(statusReason(containsString(WorxErrorCode.ENTITY_NOT_FOUND_ERROR.getReasonPhrase())));
+                .andExpect(statusReason(
+                        containsString(WorxErrorCode.ENTITY_NOT_FOUND_ERROR.getReasonPhrase())));
     }
 
     @Test
@@ -113,13 +133,13 @@ class GroupControllerTest extends AbstractControllerTest {
         request.setColor(color);
 
         BasePageResponse<GroupDTO> response = doPostWithTypedResponse(
-            "/groups/search",
-            request,
-            new TypeReference<BasePageResponse<GroupDTO>>() {
-        });
+                "/groups/search",
+                request,
+                new TypeReference<BasePageResponse<GroupDTO>>() {});
 
         List<GroupDTO> list = response.getContent();
-        boolean isMainGroupExists = list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
+        boolean isMainGroupExists =
+                list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
         assertTrue(isMainGroupExists);
     }
 

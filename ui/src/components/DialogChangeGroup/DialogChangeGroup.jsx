@@ -12,13 +12,13 @@ import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
-import Input from '@mui/material/Input'
-import Stack from '@mui/material/Stack'
 import Checkbox from '@mui/material/Checkbox'
+import Input from '@mui/material/Input'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Stack from '@mui/material/Stack'
 
 // MUI ICONS
 import IconClear from '@mui/icons-material/Clear'
@@ -30,7 +30,7 @@ import { putAssignGroupDevices } from 'services/worx/devices'
 import { putAssignGroupFormTemplate } from 'services/worx/formTemplate'
 
 // STYLES
-import useLayoutStyles from './dialogChangeGroupUseStyles'
+import useLayoutStyles from 'styles/layoutPrivate'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'
@@ -175,12 +175,15 @@ const DialogChangeGroup = (props) => {
   return (
     <DialogForm
       dialogName='dialogChangeGroup'
-      title={'Select Group'} 
+      title='Select Group' 
       handleActionButtonClick={handleActionButtonClick}
       classNames='dialogChangeGroup'
     >
       {/* CONTENT */}
-      <Stack direction='row' className={layoutClasses.menuSearchBox}>
+      <Stack 
+        direction='row' 
+        className={layoutClasses.menuSearchBox}
+      >
         {/* INPUT */}
         <Input
           value={search}
@@ -199,15 +202,22 @@ const DialogChangeGroup = (props) => {
           />
         }
       </Stack>
-      <List disablePadding className='width100 padding0'>
+
+      {/* LIST */}
+      <List 
+        disablePadding 
+        className='width100 padding0'
+      >
         <ListItemButton 
-          className={layoutClasses.groupItem} dense
+          className='borderBottomDivider' 
+          dense
           sx={!'Default'.toLowerCase().includes(search.toLowerCase()) ? { display: 'none' } : {}}
         >
           {/* RADIO */}
           <ListItemIcon>
             <Checkbox checked={groupChecked?.length <= 0}/>
           </ListItemIcon>
+
           {/* TEXT */}
           <ListItemText primary={'Default'}/>
         </ListItemButton>
@@ -218,7 +228,7 @@ const DialogChangeGroup = (props) => {
             <ListItemButton
               onClick={(event) => handleCheckboxClick(event, item)}
               key={index}
-              className={layoutClasses.groupItem}
+              className='borderBottomDivider'
               dense
             >
               {/* RADIO */}

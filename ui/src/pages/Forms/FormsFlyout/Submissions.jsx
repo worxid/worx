@@ -63,12 +63,18 @@ const Submissions = (props) => {
 
   // GET SUBMISSION LIST
   const getSubmissionList = async (inputSignal, inputIsMounted) => {
-    const response = await postSearchFormSubmissionList(inputSignal.signal, {
-      page: currentPage-1,
-      size: 10
-    }, {
-      template_id: rows[0].id,
-    }, axiosPrivate)
+    const response = await postSearchFormSubmissionList(
+      inputSignal.signal, 
+      {
+        page: currentPage - 1,
+        size: 10,
+        sort: 'submit_date,desc',
+      },
+      {
+        template_id: rows[0].id,
+      }, 
+      axiosPrivate,
+    )
 
     if (didSuccessfullyCallTheApi(response?.status) && inputIsMounted) {
       setSubmissionData(response?.data)
@@ -174,8 +180,12 @@ const Submissions = (props) => {
               {/* TEXT */}
               <ListItemText
                 primary={
-                  <Typography variant='caption' className={`${classes.textSource} colorTextSecondary`} fontWeight={600}>
-                    {item?.source?.label?.replace(/_/g, ' ')}
+                  <Typography 
+                    variant='caption' 
+                    className='textCapitalize colorTextSecondary' 
+                    fontWeight={600}
+                  >
+                    {item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
                   </Typography>
                 }
                 secondary={
@@ -198,14 +208,16 @@ const Submissions = (props) => {
         </List>
 
         {/* PAGINATION */}
-        {submissionData?.content?.length ? (<Pagination
-          className={classes.pagination}
-          count={submissionData?.totalPages}
-          defaultPage={1}
-          siblingCount={0}
-          onChange={(event, page) => setCurrentPage(page)}
-          shape='rounded'
-        />) : ''}
+        {submissionData?.content?.length ? (
+          <Pagination
+            className={classes.pagination}
+            count={submissionData?.totalPages}
+            defaultPage={1}
+            siblingCount={0}
+            onChange={(event, page) => setCurrentPage(page)}
+            shape='rounded'
+          />
+        ) : ''}
       </Collapse>
     </>
   )
