@@ -33,6 +33,7 @@ const FlyoutEditableTitle = (props) => {
           type='text'
           value={titleValue}
           onChange={setTitleValue}
+          autoFocus={isEditMode}
           onBlur={onInputBlur}
         />
       </FormControl>}
