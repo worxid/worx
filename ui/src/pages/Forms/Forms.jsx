@@ -6,7 +6,6 @@ import AppBar from 'components/AppBar/AppBar'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
@@ -30,8 +29,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { 
-  deleteFormTemplate, 
+import {
   postCreateFormTemplate, 
   postGetListFormTemplate, 
 } from 'services/worx/formTemplate'
@@ -55,7 +53,6 @@ const Forms = () => {
   } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
-
   const initialColumns = [
     {
       field: 'label',
@@ -118,7 +115,6 @@ const Forms = () => {
       isSortShown: true,
     },
   ]
-
   const initialFilters = {}
 
   // NAVIGATE
@@ -143,8 +139,6 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // DELETE DIALOG
-  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
 
@@ -229,42 +223,6 @@ const Forms = () => {
     }
 
     isDataGridLoading && setIsDataGridLoading(false)
-  }
-
-  // HANLDE DELETE FORM TEMPLATE
-  const handleDeleteFormTemplate = async () => {
-    setIsDataGridLoading(true)
-    const abortController = new AbortController()
-
-    setDialogDeleteForms({})
-    setIsFlyoutOpen(false)
-
-    if(selectionModel.length >= 1) {
-      const response = await deleteFormTemplate(
-        abortController.signal, 
-        axiosPrivate,
-        { ids: selectionModel }, 
-      )
-
-      if (didSuccessfullyCallTheApi(response?.status)) {
-        fetchingFormsList(abortController.signal, true)
-
-        setSnackbarObject({
-          open: true,
-          severity:'success',
-          title:'',
-          message:'Form deleted successfully'
-        })
-
-        setSelectionModel([])
-      } 
-      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
-        setSnackbarObject(getDefaultErrorMessage(response))
-      }
-    }
-
-    setIsDataGridLoading(false)
-    abortController.abort()
   }
 
   useEffect(() => {
@@ -353,19 +311,8 @@ const Forms = () => {
       {/* SIDE CONTENT */}
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
+        reloadData={fetchingFormsList}
         setGroupData={setGroupData}
-      />
-
-      {/* DIALOG DELETE FORMS */}
-      <DialogConfirmation
-        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
-        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
-        dialogConfirmationObject={dialogDeleteForms}
-        setDialogConfirmationObject={setDialogDeleteForms}
-        cancelButtonText='Cancel'
-        continueButtonText='Delete'
-        onContinueButtonClick={() => handleDeleteFormTemplate()}
-        onCancelButtonClick={() => setDialogDeleteForms({})}
       />
 
       {/* DIALOG GROUP */}
