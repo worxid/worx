@@ -164,7 +164,7 @@ const FormsFlyout = (props) => {
                   <IconEdit fontSize='small' className={classes.iconActionItem}/>
                 </ListItemIcon>
                 <Typography variant='subtitle2'>
-                  Edit
+                  Edit Form
                 </Typography>
               </MenuItem>
 
