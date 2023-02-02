@@ -183,6 +183,10 @@ public class GroupServiceImpl implements GroupService {
         for (FormTemplate template : templates) {
             template.getAssignedGroups().remove(group);
         }
+        Set<Device> devices = group.getDevices();
+        for (Device device : devices) {
+            device.getAssignedGroups().remove(group);
+        }
         groupRepository.delete(group);
     }
 
