@@ -1,7 +1,53 @@
 // MUI STYLES
+import { alpha } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
+  flyoutBoxInfo: {
+    backgroundColor: alpha(theme.palette.common.black, 0.04),
+    padding: 16,
+    marginBottom: 16,
+  },
+  flyoutInfoItem: {
+    flexDirection: 'column',
+    alignItems: 'start',
+    padding: 0,
+    marginBottom: 16,
+    '&:last-child': {
+      marginBottom: 0,
+    }
+  },
+  flyoutTitleInfo: {
+    color: theme.palette.text.secondary,
+  },
+  flyoutIconInfo: {
+    color: theme.palette.text.secondary,
+    fontSize: 16,
+    marginRight: 4,
+  },
+  flyoutDescInfo: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  flyoutGroupChip: {
+    margin: '2px 4px 2px 0'
+  },
+  actionViewAll: {
+    fontSize: 12,
+    boxShadow: 'none',
+    border: 'none',
+    '&:hover': {
+      boxShadow: 'none'
+    }
+  },
+  submissionList: {
+    '& .MuiListItem-root': {
+      marginBottom: 8,
+      '&:last-child': {
+        marginBottom: 0,
+      }
+    }
+  },
   pagination: {
     marginTop: 12,
     '& .MuiPagination-ul': {
@@ -22,12 +68,9 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 24,
       '&:hover': {
         backgroundColor: 'transparent',
-      }
-    }
+      },
+    },
   },
-  textSource: {
-    textTransform: 'capitalize'
-  }
 }))
 
 export default useStyles

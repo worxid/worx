@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -10,6 +10,7 @@ import DialogMediasPreview from 'components/DialogMediasPreview/DialogMediasPrev
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
+import SubmissionDetailFlyout from './SubmissionDetailFlyout/SubmissionDetailFlyout'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -53,18 +54,21 @@ import {
   wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
+import { convertCamelCaseToSnakeCase } from 'utilities/string'
 
 const FormsSubmissions = () => {
   // CONTEXT
   const { setSnackbarObject } = useContext(AllPagesContext)
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
 
   // STYLES
   const classes = useStyles()
 
   // NAVIGATE
-  const navigate = useNavigate()
-  const { formTemplateId } = useParams()
+  const [searchParams] = useSearchParams()
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -83,7 +87,7 @@ const FormsSubmissions = () => {
       valueGetter: (params) => lodash.startCase(params.row.source.label),
     },
     {
-      field: 'submissionDate',
+      field: 'submitDate',
       headerName: 'Submission Date',
       flex: 0,
       minWidth: 210,
@@ -110,7 +114,7 @@ const FormsSubmissions = () => {
           width='100%'
           alignItems='center'
         >
-          <IconButton onClick={() => window.open(`https://maps.google.com/?q=${params.row.submissionLatitude},${params.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')}>
+          <IconButton onClick={() => handleMapIconButtonClick(params)}>
             <IconMap
               color='primary'
               fontSize='small'
@@ -129,7 +133,6 @@ const FormsSubmissions = () => {
   // CONTENT
   const [ formTemplateDetail, setFormTemplateDetail ] = useState(null)
   const [ isDataGridLoading, setIsDataGridLoading ] = useState(false)
-  // const [ areDynamicColumnsValuesAdded, setAreDynamicColumnsValuesAdded ] = useState(false)
   // DATA GRID - BASE
   const [ columnList, setColumnList ] = useState(initialColumns)
   const [ rawTableData, setRawTableData ] = useState([])
@@ -139,10 +142,10 @@ const FormsSubmissions = () => {
   const [ pageNumber, setPageNumber ] = useState(0)
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
-  const [ order, setOrder ] = useState(null)
-  const [ orderBy, setOrderBy ] = useState(null)
+  const [ order, setOrder ] = useState('desc')
+  const [ orderBy, setOrderBy ] = useState('submitDate')
   // DATA GRID - FILTER
-  const [ isFilterOn, setIsFilterOn ] = useState(false)
+  const [ isFilterOn, setIsFilterOn ] = useState(true)
   const [ filters, setFilters ] = useState(initialFilters)
   const [ isDateRangeTimePickerOpen, setIsDateRangeTimePickerOpen ] = useState(false)
   const [ dateRangeTimeValue, setDateRangeTimeValue ] = useState(['', ''])
@@ -153,6 +156,13 @@ const FormsSubmissions = () => {
   const [ mediaPreviewList, setMediaPreviewList ] = useState([])
   const [ mediaPreviewType, setMediaPreviewType ] = useState(null)
   const [ mediaPreviewActiveStep, setMediaPreviewActiveStep ] = useState(0)
+  // FLYOUT
+  const [ shouldFlyoutOpen, setShouldFlyoutOpen ] = useState(true)
+
+  const handleMapIconButtonClick = (inputParams) => {
+    setShouldFlyoutOpen(false)
+    window.open(`https://maps.google.com/?q=${inputParams.row.submissionLatitude},${inputParams.row.submissionLongitude}`, '_blank', 'noopener,noreferrer')
+  }
 
   const handleSelectDateRangePickerButtonClick = (newValue) => {
     setDateRangeTimeValue(newValue)
@@ -163,7 +173,7 @@ const FormsSubmissions = () => {
     setIsDataGridLoading(true)
 
     const resultFormTemplateDetail = await getDetailFormTemplate(
-      formTemplateId,
+      searchParams.get('formTemplateId'),
       inputAbortController.signal,
       axiosPrivate,
     )
@@ -185,7 +195,7 @@ const FormsSubmissions = () => {
       size: pageSize,
       page: pageNumber,
     }
-    if (order && orderBy) requestParams.sort = `${orderBy},${order}`
+    if (order && orderBy) requestParams.sort = `${convertCamelCaseToSnakeCase(orderBy)},${order}`
 
     let bodyParams = { 
       submit_address: filters.submissionAddress,
@@ -193,7 +203,7 @@ const FormsSubmissions = () => {
         type: null,
         label: filters.source,
       },
-      template_id: formTemplateId, 
+      template_id: searchParams.get('formTemplateId'), 
       from: dateRangeTimeValue[0],
       to: dateRangeTimeValue[1],
     }
@@ -210,7 +220,7 @@ const FormsSubmissions = () => {
         return {
           id: submissionItem?.id,
           source: submissionItem?.source ?? '-',
-          submissionDate: submissionItem?.submit_date ?? '-',
+          submitDate: submissionItem?.submit_date ?? '-',
           submissionAddress: submissionItem?.submit_location?.address ?? '-',
           submissionLatitude: submissionItem?.submit_location?.lat ?? null,
           submissionLongitude: submissionItem?.submit_location?.lng ?? null,
@@ -254,6 +264,8 @@ const FormsSubmissions = () => {
   }
 
   const handleMediaTypeCellClick = async (inputValue) => {
+    setShouldFlyoutOpen(false)
+
     const abortController = new AbortController()
 
     const resultMediaFilesData = await postDetailMediaFiles(
@@ -467,16 +479,6 @@ const FormsSubmissions = () => {
     setFinalTableData(newFinalTableData)
   }
 
-  const handleSubmissionDateSortChange = () => {
-    let newFinalTableData = [...finalTableData]
-
-    if (order === 'asc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? -1 : 1)
-    else if (order === 'desc') newFinalTableData.sort((a, b) => (a.submissionDate > b.submissionDate) ? 1 : -1)
-    else newFinalTableData.sort((a, b) => (a.id > b.id) ? 1 : -1)
-
-    setFinalTableData(newFinalTableData)
-  }
-  
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
@@ -492,9 +494,7 @@ const FormsSubmissions = () => {
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
-
-    if (orderBy === 'submissionDate') handleSubmissionDateSortChange()
-    else getSubmissionList(isMounted, abortController)
+    getSubmissionList(isMounted, abortController)
 
     return () => {
       isMounted = false
@@ -510,6 +510,20 @@ const FormsSubmissions = () => {
     updateTableDataDynamically()
   }, [columnList, rawTableData])
 
+  useEffect(() => {
+    if (selectionModel.length === 1 && shouldFlyoutOpen) setIsFlyoutOpen(true)
+    else {
+      setIsFlyoutOpen(false)
+      setShouldFlyoutOpen(true)
+    }
+  }, [selectionModel])
+
+  useEffect(() => {
+    if(searchParams.get('submissionId')) {
+      setSelectionModel([Number(searchParams.get('submissionId'))])
+    }
+  }, [searchParams.get('submissionId')])
+
   return (
     <>
       {/* APP BAR */}
@@ -519,7 +533,6 @@ const FormsSubmissions = () => {
         backLink='/forms'
         pageTitle='Submissions'
         hasSearch={false}
-        hasFlyout={false}
       />
 
       {/* CONTENTS */}
@@ -626,20 +639,18 @@ const FormsSubmissions = () => {
             checkboxSelection={false}
             // CLASSES
             className={classes.tableFormsSubmissions}
-            // ROW
-            onRowDoubleClick={(params, event, details) => navigate(`/forms/submission-detail?formTemplateId=${formTemplateId}&submissionId=${params.row.id}`)}
           />
         </LoadingPaper>
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(formTemplateId)} />
+      <DialogShareLink id={Number(searchParams.get('formTemplateId'))} />
 
       {/* DIALOG EXPORT */}
-      <DialogExport id={Number(formTemplateId)} title={formTemplateDetail?.label ?? ''} />
+      <DialogExport id={Number(searchParams.get('formTemplateId'))} title={formTemplateDetail?.label ?? ''} />
 
       {/* DIALOG QR CODE */}
-      <DialogQrCode id={Number(formTemplateId)} />
+      <DialogQrCode id={Number(searchParams.get('formTemplateId'))} />
 
       {/* DIALOG MEDIAS PREVIEW */}
       <DialogMediasPreview 
@@ -651,6 +662,9 @@ const FormsSubmissions = () => {
         activeStep={mediaPreviewActiveStep}
         setActiveStep={setMediaPreviewActiveStep}
       />
+
+      {/* SUBMISSION DETAIL FLYOUT */}
+      <SubmissionDetailFlyout submissionId={selectionModel.length === 1 ? selectionModel[0] : null}/>
     </>
   )
 }

@@ -1,6 +1,8 @@
 package id.worx.worx.service.users;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -19,7 +21,9 @@ import id.worx.worx.mapper.UsersUpdateMapper;
 import id.worx.worx.repository.FileRepository;
 import id.worx.worx.service.AuthenticationContext;
 import id.worx.worx.service.storage.FileStorageService;
+import id.worx.worx.service.storage.client.MinioClientService;
 import id.worx.worx.web.model.request.UserUpdateRequest;
+import io.minio.errors.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -64,6 +68,7 @@ public class UsersServiceImpl implements UsersService {
 
     private static final String REGEX_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>_]).{8,20}$";
 
+    private static final String FAILED_GENERATE_DOWNLOAD_URL = "File Storage failed to generate download url: {}";
     private final UsersRepository usersRepository;
 
     private final WorxProperties worxProps;
@@ -86,6 +91,8 @@ public class UsersServiceImpl implements UsersService {
     private final FileRepository fileRepository;
 
     private final FileStorageService fileStorageService;
+
+    private final MinioClientService clientService;
 
     @Override
     @Transactional
@@ -322,10 +329,26 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public UserDetailsResponse getByEmail(String email) {
         Optional<Users> getEmail = usersRepository.findByEmail(email);
+        String url = "";
         if (getEmail.isEmpty()) {
             throw new WorxException(WorxErrorCode.EMAIL_NOT_FOUND);
         }
         Users data = getEmail.get();
+        try {
+            if(data.getDashboardLogo().getPath() == null){
+                url = "";
+            }else{
+                url = clientService.getDownloadPresignedObjectUrl(data.getDashboardLogo().getPath());
+            }
+
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
+                 | IllegalArgumentException | IOException e) {
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
+            url = "";
+        }
+
+
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
         userDetailsResponse.setFullname(data.getFullname());
         userDetailsResponse.setCountry(data.getCountry());
@@ -333,6 +356,7 @@ public class UsersServiceImpl implements UsersService {
         userDetailsResponse.setOrganizationCode(data.getOrganizationCode());
         userDetailsResponse.setEmail(data.getEmail());
         userDetailsResponse.setPhone(data.getPhone());
+        userDetailsResponse.setLogoUrl(url);
 
         return userDetailsResponse;
     }
@@ -456,7 +480,22 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public UserDetailsResponse toDTOUserDetails(Users users) {
-        return usersUpdateMapper.toDto(users);
+        String url = "";
+        UserDetailsResponse detailsResponse = usersUpdateMapper.toResponse(users);
+        try {
+            if(users.getDashboardLogo().getPath() == null){
+                url = "";
+            }else{
+                url = clientService.getDownloadPresignedObjectUrl(users.getDashboardLogo().getPath());
+            }
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                 | InvalidResponseException | NoSuchAlgorithmException | XmlParserException | ServerException
+                 | IllegalArgumentException | IOException e) {
+            log.trace(FAILED_GENERATE_DOWNLOAD_URL, e.getMessage());
+            url = "";
+        }
+        detailsResponse.setLogoUrl(url);
+        return detailsResponse;
     }
 
     public UserResponse toDTO(Users users) {
@@ -489,7 +528,7 @@ public class UsersServiceImpl implements UsersService {
         }else{
             File files = checkFileId.get();
             if(fileStorageService.isObjectExist(files.getPath())){
-
+                userData.setId(userData.getId());
                 userData.setFullname(userUpdateRequest.getFullname());
                 userData.setOrganizationName(userUpdateRequest.getOrganizationName());
                 userData.setPhone(userUpdateRequest.getPhone());

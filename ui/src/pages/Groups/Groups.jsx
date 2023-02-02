@@ -4,8 +4,8 @@ import { useState, useEffect, useContext } from 'react'
 import AppBar from 'components/AppBar/AppBar'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogAddOrEditGroup from './DialogAddOrEditGroup/DialogAddOrEditGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
+import GroupFlyout from './GroupFlyout/GroupFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONTEXTS
@@ -87,7 +87,7 @@ const Groups = () => {
     }
   ]
 
-  const { setIsDialogAddOrEditOpen } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -117,20 +117,17 @@ const Groups = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-
   // DELETE DIALOG
   const [ dialogDeleteObject, setDialogDeleteObject ] = useState({})
-
   // DIALOG TYPE
   const [ dialogType, setDialogType ] = useState('')
-
   // DATA EDIT GROUP
   const [ dataDialogEdit, setDataDialogEdit ] = useState(null)
 
   // HANDLE ADD BUTTON CLICKED
   const handleAddButtonClick = () => {
     setDialogType('add')
-    setIsDialogAddOrEditOpen(true)
+    setIsFlyoutOpen(true)
   }
 
   // HANDLE EDIT BUTTON CLICKED
@@ -138,7 +135,7 @@ const Groups = () => {
     const editData = tableData.filter(item => item.id === selectionModel[0])
     setDialogType('edit')
     setDataDialogEdit(...editData)
-    setIsDialogAddOrEditOpen(true)
+    setIsFlyoutOpen(true)
   }
 
   const loadGroupListData = async (inputIsMounted, inputAbortController) => {
@@ -192,6 +189,8 @@ const Groups = () => {
           title: '',
           message: 'Successfully delete the selected group'
         })
+
+        setIsFlyoutOpen(false)
       }
       else if (!wasRequestCanceled(resultDeleteGroup?.status) && !wasAccessTokenExpired(resultDeleteGroup.status)) {
         setSnackbarObject(getDefaultErrorMessage(resultDeleteGroup))
@@ -217,6 +216,11 @@ const Groups = () => {
     setMustReloadDataGrid(true)
   }, [filters, pageNumber, pageSize, order, orderBy, pageSearch])
 
+  useEffect(() => {
+    if (selectionModel.length === 1) handleEditButtonClick()
+    else setIsFlyoutOpen(false)
+  }, [selectionModel])
+
   return (
     <>
       {/* APP BAR */}
@@ -227,7 +231,6 @@ const Groups = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
-        hasFlyout={false}
       />
 
       {/* CONTENTS */}
@@ -249,9 +252,6 @@ const Groups = () => {
             setIsFilterOn={setIsFilterOn}
             // TEXT
             contentTitle='Group List'
-            // EDIT
-            isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={handleEditButtonClick}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
             handleDeleteButtonClick={() => setDialogDeleteObject({ id: selectionModel[0] })}
@@ -284,12 +284,13 @@ const Groups = () => {
         </LoadingPaper>
       </Stack>
       
-      {/* DIALOG ADD OR EDIT GROUP NAME */}
-      <DialogAddOrEditGroup
+      {/* GROUP FLYOUT */}
+      <GroupFlyout
         dialogType={dialogType}
         dataDialogEdit={dataDialogEdit}
         setDataDialogEdit={setDataDialogEdit}
         setMustReloadDataGrid={setMustReloadDataGrid}
+        setDialogDeleteObject={setDialogDeleteObject}
       />
 
       {/* DIALOG DELETE GROUP NAME */}

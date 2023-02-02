@@ -499,6 +499,8 @@ const InputForm = (props) => {
             inputProps={{
               type: item.type === 'integer' ? 'number' : 'text'
             }}
+            //rows={4}
+            //multiline
           />
 
           {formObjectError?.[item.id] && (
@@ -645,62 +647,64 @@ const InputForm = (props) => {
       {/* DATE */}
       {item.type === 'date' && (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <FormControl
-            fullWidth
-            className={classes.formControl}
-            required={item.required}
-            error={Boolean(formObjectError?.[item.id])}
-          >
-            <Stack direction='row' alignItems='center'>
-              <TextField
-                value={formObject[item.id]?.[getKeyValue(item.type)] ? new Date(formObject[item.id][getKeyValue(item.type)] || Date.now()).toLocaleDateString('ID') : ''}
-                label='Answer'
-                variant='filled'
-                size='small'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
-                        <IconCancel
-                          fontSize='small'
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  )
+          <Stack className={classes.timeControlWrapper}>
+            <FormControl
+              fullWidth
+              className={classes.formControl}
+              required={item.required}
+              error={Boolean(formObjectError?.[item.id])}
+            >
+              <Stack direction='row' alignItems='center'>
+                <TextField
+                  value={formObject[item.id]?.[getKeyValue(item.type)] ? new Date(formObject[item.id][getKeyValue(item.type)] || Date.now()).toLocaleDateString('ID') : ''}
+                  label='Answer'
+                  variant='filled'
+                  size='small'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton size='small' onClick={() => handleInputChange(item.id, item.type, getKeyValue(item.type), null)}>
+                          <IconCancel
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  className='heightFitContent'
+                  fullWidth
+                />
+
+                <IconButton
+                  size='large'
+                  className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}
+                  onClick={() => setIsDatePickerOpen(true)}
+                >
+                  <IconDateRange fontSize='small'/>
+                </IconButton>
+              </Stack>
+
+              {formObjectError?.[item.id] && (
+                <FormHelperText variant='error' className={classes.formHelperText}>
+                  {formObjectError?.[item.id]}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            <FormControl error={Boolean(formObjectError?.[item.id])}>
+              <MobileDatePicker
+                label='Date Picker'
+                renderInput={(params) => <TextField {...params}/>}
+                onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'yyyy-MM-dd'))}
+                onClose={() => setIsDatePickerOpen(false)}
+                open={isDatePickerOpen}
+                value={formObject[item.id]?.[getKeyValue(item.type)]}
+                componentsProps={{
+                  actionBar: { className: classes.actionCalendar },
                 }}
-                className='heightFitContent'
-                fullWidth
               />
-
-              <IconButton
-                size='large'
-                className={`${classes.buttonRedPrimary} buttonDateRange heightFitContent`}
-                onClick={() => setIsDatePickerOpen(true)}
-              >
-                <IconDateRange fontSize='small'/>
-              </IconButton>
-            </Stack>
-
-            {formObjectError?.[item.id] && (
-              <FormHelperText variant='error' className={classes.formHelperText}>
-                {formObjectError?.[item.id]}
-              </FormHelperText>
-            )}
-          </FormControl>
-
-          <FormControl error={Boolean(formObjectError?.[item.id])}>
-            <MobileDatePicker
-              label='For mobile'
-              renderInput={(params) => <></>}
-              onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'yyyy-MM-dd'))}
-              onClose={() => setIsDatePickerOpen(false)}
-              open={isDatePickerOpen}
-              value={formObject[item.id]?.[getKeyValue(item.type)]}
-              componentsProps={{
-                actionBar: { className: classes.actionCalendar },
-              }}
-            />
-          </FormControl>
+            </FormControl>
+          </Stack>
         </LocalizationProvider>
       )}
 
@@ -1044,7 +1048,7 @@ const InputForm = (props) => {
             <FormControl error={Boolean(formObjectError?.[item.id])}>
               <MobileTimePicker
                 orientation='portrait'
-                label='For mobile'
+                label='Time Picker'
                 renderInput={(params) => <TextField {...params} />}
                 onChange={(newValue) => handleInputChange(item.id, item.type, getKeyValue(item.type), convertDate(newValue, 'HH:mm:ss'))}
                 onClose={() => setIsTimePickerOpen(false)}

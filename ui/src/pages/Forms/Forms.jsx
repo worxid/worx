@@ -6,17 +6,15 @@ import AppBar from 'components/AppBar/AppBar'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
-import Flyout from 'components/Flyout/Flyout'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
 
 // CONSTANTS
 import { paramsCreateForm } from './formsConstants'
-import { values } from 'constants/values'
 
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
@@ -32,8 +30,8 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { 
-  deleteFormTemplate, 
+import {
+  deleteFormTemplate,
   postCreateFormTemplate, 
   postGetListFormTemplate, 
 } from 'services/worx/formTemplate'
@@ -50,11 +48,13 @@ import {
 
 const Forms = () => {
   // CONTEXT
-  const { breakpointZoomBoundary, setSnackbarObject } = useContext(AllPagesContext)
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+  const { setSnackbarObject } = useContext(AllPagesContext)
+  const { 
+    setIsDialogFormOpen, 
+    setIsFlyoutOpen,
+  } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
-
   const initialColumns = [
     {
       field: 'label',
@@ -117,7 +117,6 @@ const Forms = () => {
       isSortShown: true,
     },
   ]
-
   const initialFilters = {}
 
   // NAVIGATE
@@ -142,12 +141,10 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // DELETE DIALOG
-  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
-  // FLYOUT
-  const [ isFlyoutShown, setIsFlyoutShown ] = useState(false)
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
+  // DELETE DIALOG
+  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
 
   // HANDLE FAB CLICK
   const handleFabClick = async () => {
@@ -238,7 +235,6 @@ const Forms = () => {
     const abortController = new AbortController()
 
     setDialogDeleteForms({})
-    setIsFlyoutShown(false)
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
@@ -270,11 +266,8 @@ const Forms = () => {
   }
 
   useEffect(() => {
-    if (selectionModel.length === 1) {
-      setIsFlyoutShown(true)
-    } else {
-      setIsFlyoutShown(false)
-    }
+    if (selectionModel.length === 1) setIsFlyoutOpen(true)
+    else setIsFlyoutOpen(false)
   }, [selectionModel])
 
   // SIDE EFFECT FETCHING DATA
@@ -300,23 +293,15 @@ const Forms = () => {
         hasSearch={true}
         search={pageSearch}
         setSearch={setPageSearch}
-        hasFlyout={true}
-        isFlyoutShown={isFlyoutShown}
-        flyoutTitle='Information'
-        flyoutTitleMargin={breakpointZoomBoundary ? 300 : 232}
-        onToggleFlyoutClick={() => setIsFlyoutShown((current) => !current)}
       />
 
-      {/* CONTENTS */}
+      {/* MAIN CONTENT */}
       <Stack 
         direction='row'
         position='relative'
         flex='1'
         height='100%'
-        className='contentContainer'
-        sx={{ paddingRight: isFlyoutShown ? `${values.flyoutWidth + 24}px` : 0 }}
       >
-        {/* MAIN CONTENT */}
         <LoadingPaper isLoading={isDataGridLoading}>
           <DataGridFilters
             // COLUMN
@@ -334,9 +319,6 @@ const Forms = () => {
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
-            // EDIT
-            isEditButtonEnabled={selectionModel.length === 1}
-            handleEditButtonClick={() => navigate(`/forms/edit/${selectionModel[0]}`)}
             // DELETE
             isDeleteButtonEnabled={selectionModel.length > 0}
             handleDeleteButtonClick={() => setDialogDeleteForms({id: selectionModel})}
@@ -365,30 +347,15 @@ const Forms = () => {
             // SELECTION
             selectionModel={selectionModel} 
             setSelectionModel={setSelectionModel}
-            // ACTIONS
-            onRowDoubleClick={(params, event, details) => navigate(`/forms/submissions/${params.row.id}`)}
           />
         </LoadingPaper>
-
-        {/* SIDE CONTENT */}
-        <Flyout
-          isFlyoutShown={isFlyoutShown}
-          flyoutWidth={values.flyoutWidth}
-        >
-          <FormFlyout rows={tableData.filter(item => selectionModel.includes(item.id))} setGroupData={setGroupData}/>
-        </Flyout>
       </Stack>
 
-      {/* DIALOG DELETE FORMS */}
-      <DialogConfirmation
-        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
-        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
-        dialogConfirmationObject={dialogDeleteForms}
-        setDialogConfirmationObject={setDialogDeleteForms}
-        cancelButtonText='Cancel'
-        continueButtonText='Delete'
-        onContinueButtonClick={() => handleDeleteFormTemplate()}
-        onCancelButtonClick={() => setDialogDeleteForms({})}
+      {/* SIDE CONTENT */}
+      <FormFlyout 
+        rows={tableData.filter(item => selectionModel.includes(item.id))} 
+        reloadData={fetchingFormsList}
+        setGroupData={setGroupData}
       />
 
       {/* DIALOG GROUP */}
@@ -404,6 +371,18 @@ const Forms = () => {
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(selectionModel[0])}/>
+
+      {/* DIALOG DELETE FORMS */}
+      <DialogConfirmation
+        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
+        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
+        dialogConfirmationObject={dialogDeleteForms}
+        setDialogConfirmationObject={setDialogDeleteForms}
+        cancelButtonText='Cancel'
+        continueButtonText='Delete'
+        onContinueButtonClick={() => handleDeleteFormTemplate()}
+        onCancelButtonClick={() => setDialogDeleteForms({})}
+      />
     </>
   )
 }

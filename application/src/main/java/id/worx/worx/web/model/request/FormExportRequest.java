@@ -23,4 +23,7 @@ public class FormExportRequest implements Serializable {
     @JsonProperty("form_id")
     private Long formId;
 
+    @JsonProperty("option")
+    private String option = "PDF";
+
 }
