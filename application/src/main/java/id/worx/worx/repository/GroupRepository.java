@@ -34,13 +34,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         ") as wG " +
         "LEFT JOIN " +
         "(SELECT group_id as id, COUNT(group_id) as dev_group_cnt " +
-        "FROM device_groups " +
+        "FROM device_groups inner join devices as dvc on dvc.id = device_groups.device_id where dvc.deleted = false " +
         "GROUP BY group_id " +
         ") as dG " +
         "ON wG.id=dG.id " +
         "LEFT JOIN " +
         "(SELECT group_id as id, COUNT(group_id) as form_group_cnt " +
-        "FROM template_groups " +
+        "FROM template_groups inner join form_templates as ft on ft.id = template_groups.template_id where ft.deleted = false " +
         "GROUP BY group_id " +
         ") as tG " +
         "ON wG.id=tG.id " +

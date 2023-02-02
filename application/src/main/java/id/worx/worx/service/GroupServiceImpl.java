@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.web.model.request.GroupUpdateRequest;
 import java.util.stream.Collectors;
@@ -91,9 +90,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
-        groupMapper.update(group, request);
-        return groupRepository.save(group);
+        Group updatedGroup = assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
+        groupMapper.update(updatedGroup, request);
+        return groupRepository.save(updatedGroup);
     }
 
     @Override
@@ -136,7 +135,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDetailDTO toDetailDTO(Group group) {
-        // TODO improve mapping performance
         List<SimpleFormTemplateDTO> forms = group.getTemplates()
                 .stream()
                 .sorted(Comparator.comparing(FormTemplate::getId))
@@ -144,7 +142,6 @@ public class GroupServiceImpl implements GroupService {
                 .map(SimpleFormTemplateDTO::from)
                 .collect(Collectors.toList());
 
-        // TODO improve mapping performance
         List<SimpleDeviceDTO> devices = group.getDevices()
                 .stream()
                 .sorted(Comparator.comparing(Device::getId))
@@ -190,6 +187,10 @@ public class GroupServiceImpl implements GroupService {
         Set<FormTemplate> templates = group.getTemplates();
         for (FormTemplate template : templates) {
             template.getAssignedGroups().remove(group);
+        }
+        Set<Device> devices = group.getDevices();
+        for (Device device : devices) {
+            device.getAssignedGroups().remove(group);
         }
         groupRepository.delete(group);
     }
