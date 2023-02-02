@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import id.worx.worx.repository.DeviceRepository;
-import id.worx.worx.web.model.request.GroupUpdateRequest;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +26,12 @@ import id.worx.worx.exception.WorxException;
 import id.worx.worx.mapper.DeviceMapper;
 import id.worx.worx.mapper.FormTemplateMapper;
 import id.worx.worx.mapper.GroupMapper;
+import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.repository.FormTemplateRepository;
 import id.worx.worx.repository.GroupRepository;
 import id.worx.worx.util.JpaUtils;
 import id.worx.worx.web.model.request.GroupSearchRequest;
+import id.worx.worx.web.model.request.GroupUpdateRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -49,7 +48,6 @@ public class GroupServiceImpl implements GroupService {
 
     private final AuthenticationContext authContext;
 
-
     @Override
     public List<Group> list() {
         return groupRepository.findAllByUserId(authContext.getUsers().getId());
@@ -59,13 +57,8 @@ public class GroupServiceImpl implements GroupService {
     public Group create(GroupRequest request) {
         Group group = groupMapper.fromRequest(request);
         group.setUserId(authContext.getUsers().getId());
+        group = this.assignDeviceAndForm(request.getDeviceIds(), request.getFormIds(), group);
         group = groupRepository.save(group);
-        Group finalGroup = group;
-        if(!request.getDeviceIds().isEmpty() || !request.getFormIds().isEmpty()){
-            this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),finalGroup);
-        }
-
-
         return group;
     }
 
@@ -90,9 +83,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        Group updatedGroup = assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
-        groupMapper.update(updatedGroup, request);
-        return groupRepository.save(updatedGroup);
+        group = this.assignDeviceAndForm(request.getDeviceIds(), request.getFormIds(), group);
+        groupMapper.update(group, request);
+        return groupRepository.save(group);
     }
 
     @Override
@@ -206,29 +199,50 @@ public class GroupServiceImpl implements GroupService {
         return group.get();
     }
 
-    private Group assignDeviceAndForm(List<Long> deviceId, List<Long> formId,Group group){
+    private Group assignDeviceAndForm(List<Long> deviceIds, List<Long> formIds, Group group) {
 
-        List<Device> devices = deviceRepository.findAllById(deviceId);
-        group.setDevices(new HashSet<>());
-        devices = devices.stream()
-            .map(device -> {
-                group.getDevices().add(device);
-                device.getAssignedGroups().add(group);
-                return device;
-            }).collect(Collectors.toList());
+        Set<FormTemplate> oldTemplates = group.getTemplates();
+        for (FormTemplate template : oldTemplates) {
+            template.getAssignedGroups().remove(group);
+        }
 
-        List<FormTemplate> formTemplates = formTemplateRepository.findAllById(formId);
-        group.setTemplates(new HashSet<>());
-        formTemplates = formTemplates.stream()
-            .map(formTemplate -> {
-                group.getTemplates().add(formTemplate);
-                formTemplate.getAssignedGroups().add(group);
-                return formTemplate;
-            }).collect(Collectors.toList());
+        Set<Device> oldDevices = group.getDevices();
+        for (Device device : oldDevices) {
+            device.getAssignedGroups().remove(group);
+        }
 
-        deviceRepository.saveAll(devices);
-        formTemplateRepository.saveAll(formTemplates);
+        if (Objects.nonNull(deviceIds)) {
+            List<Device> devices = List.of();
+            if (!deviceIds.isEmpty()) {
+                devices = deviceRepository.findAllById(deviceIds);
+            }
 
-        return group;
+            group.setDevices(new HashSet<>());
+            devices = devices.stream()
+                    .map(device -> {
+                        group.getDevices().add(device);
+                        device.getAssignedGroups().add(group);
+                        return device;
+                    }).collect(Collectors.toList());
+            deviceRepository.saveAll(devices);
+        }
+
+        if (Objects.nonNull(formIds)) {
+            List<FormTemplate> formTemplates = List.of();
+            if (!formIds.isEmpty()) {
+                formTemplates = formTemplateRepository.findAllById(formIds);
+            }
+
+            group.setTemplates(new HashSet<>());
+            formTemplates = formTemplates.stream()
+                    .map(formTemplate -> {
+                        group.getTemplates().add(formTemplate);
+                        formTemplate.getAssignedGroups().add(group);
+                        return formTemplate;
+                    }).collect(Collectors.toList());
+            formTemplateRepository.saveAll(formTemplates);
+        }
+
+        return groupRepository.save(group);
     }
 }

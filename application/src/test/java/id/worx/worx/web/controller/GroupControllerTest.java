@@ -49,7 +49,7 @@ class GroupControllerTest extends AbstractControllerTest {
         String color = "#4287f5";
         List<Long> deviceId = new ArrayList<>(Arrays.asList());
         List<Long> formId = new ArrayList<>(Arrays.asList());
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color, deviceId, formId);
         BaseValueResponse<GroupDTO> actualResponse = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -57,6 +57,19 @@ class GroupControllerTest extends AbstractControllerTest {
                 status().isCreated());
         assertEquals(name, actualResponse.getValue().getName());
         assertEquals(color, actualResponse.getValue().getColor());
+
+        name = "Field 2A Group";
+        color = "#4287f5";
+        GroupRequest simpleRequest = new GroupRequest(name, color, null, null);
+        actualResponse = doPostWithTypedResponse(
+                "/groups",
+                simpleRequest,
+                new TypeReference<BaseValueResponse<GroupDTO>>() {},
+                status().isCreated());
+        assertEquals(name, actualResponse.getValue().getName());
+        assertEquals(color, actualResponse.getValue().getColor());
+        assertEquals(0, actualResponse.getValue().getDeviceCount());
+        assertEquals(0, actualResponse.getValue().getFormCount());
     }
 
     @Test
@@ -65,7 +78,7 @@ class GroupControllerTest extends AbstractControllerTest {
         String color = "#4387f5";
         List<Long> deviceId = new ArrayList<>(Arrays.asList());
         List<Long> formId = new ArrayList<>(Arrays.asList());
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color, deviceId, formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
@@ -104,7 +117,7 @@ class GroupControllerTest extends AbstractControllerTest {
         String color = "#4487f5";
         List<Long> deviceId = new ArrayList<>(Arrays.asList());
         List<Long> formId = new ArrayList<>(Arrays.asList());
-        GroupRequest request = new GroupRequest(name, color,deviceId,formId);
+        GroupRequest request = new GroupRequest(name, color, deviceId, formId);
         BaseValueResponse<GroupDTO> response = doPostWithTypedResponse(
                 "/groups",
                 request,
