@@ -228,6 +228,8 @@ DataGridFilters.defaultProps = {
   isWithDateTimePicker: false,
   // DOWNLOAD
   isDownloadButtonEnabled: false,
+  // DELETE
+  isDeleteButtonEnabled: false
 }
 
 DataGridFilters.propTypes = {
