@@ -83,7 +83,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        group = assignDeviceAndForm(request.getDeviceIds(), request.getFormIds(), group);
+        group = this.assignDeviceAndForm(request.getDeviceIds(), request.getFormIds(), group);
         groupMapper.update(group, request);
         return groupRepository.save(group);
     }
@@ -200,6 +200,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Group assignDeviceAndForm(List<Long> deviceIds, List<Long> formIds, Group group) {
+
+        Set<FormTemplate> oldTemplates = group.getTemplates();
+        for (FormTemplate template : oldTemplates) {
+            template.getAssignedGroups().remove(group);
+        }
+
+        Set<Device> oldDevices = group.getDevices();
+        for (Device device : oldDevices) {
+            device.getAssignedGroups().remove(group);
+        }
 
         if (Objects.nonNull(deviceIds)) {
             List<Device> devices = List.of();
