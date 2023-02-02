@@ -1,3 +1,4 @@
+// TO DO: RENAME THIS COMPONENT INTO THE GROUPS FLYOUT
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
@@ -7,6 +8,7 @@ import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionabl
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
+import MenuAssignItemsToGroup from '../MenuAssignItemsToGroup/MenuAssignItemsToGroup'
 
 // CONSTANTS
 import { values } from 'constants/values'
@@ -44,7 +46,7 @@ import {
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
-import useStyles from './dialogAddOrEditGroupUseStyles'
+import useStyles from './groupFlyoutUseStyles'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'
@@ -53,8 +55,9 @@ import {
   wasAccessTokenExpired,
   wasRequestCanceled,
 } from 'utilities/validation'
+import { convertDate } from 'utilities/date'
 
-const DialogAddOrEditGroup = (props) => {
+const GroupFlyout = (props) => {
   const { 
     dialogType, 
     dataDialogEdit, setDataDialogEdit, 
@@ -76,7 +79,7 @@ const DialogAddOrEditGroup = (props) => {
     groupColor: '#000000',
   }
 
-  const initialTabList = [ 'Devices', 'Forms' ]
+  const initialTabList = [ 'devices', 'forms' ]
 
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
@@ -88,7 +91,9 @@ const DialogAddOrEditGroup = (props) => {
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
   const [ tabList, setTabList ] = useState(initialTabList)
-  const [ selectedTab, setSelectedTab ] = useState(0)
+  const [ selectedTab, setSelectedTab ] = useState(initialTabList[0])
+  const [ menuAssignItemsAnchorElement, setMenuAssignItemsAnchorElement ] = useState(null)
+  const [ createdDate, setCreatedDate ] = useState('')
 
   const onSelectColor = (color) => {
     setColorPickerAnchorElement(null)
@@ -177,6 +182,8 @@ const DialogAddOrEditGroup = (props) => {
 
       const newSelectedFormList = formList.filter(item => selectedFormIdList.includes(item.id))
       setSelectedFormList(newSelectedFormList)
+
+      setCreatedDate(response.data.value.created_date)
     }
   }
 
@@ -219,7 +226,7 @@ const DialogAddOrEditGroup = (props) => {
   }
 
   const getSelectedTabObject = (inputSelectedTab) => {
-    if (inputSelectedTab === 0) {
+    if (inputSelectedTab === initialTabList[0]) {
       return {
         count: selectedDeviceList.length,
         list: selectedDeviceList,
@@ -227,7 +234,7 @@ const DialogAddOrEditGroup = (props) => {
         deleteType: 'device',
       }
     }
-    else if (inputSelectedTab === 1) {
+    else if (inputSelectedTab === initialTabList[1]) {
       return {
         count: selectedFormList.length,
         list: selectedFormList,
@@ -332,7 +339,7 @@ const DialogAddOrEditGroup = (props) => {
         <FlyoutInformationItem
           icon={IconCalendarToday} 
           title='Created Date'
-          value='[Dummy Date]'
+          value={convertDate(createdDate)}
         />
 
         {/* TABS */}
@@ -345,6 +352,7 @@ const DialogAddOrEditGroup = (props) => {
             <Tab 
               key={index}
               label={item}
+              value={item}
             />
           ))}
         </Tabs>
@@ -359,22 +367,28 @@ const DialogAddOrEditGroup = (props) => {
           {/* ITEM COUNT */}
           <Stack>
             {/* TITLE */}
-            <Typography fontWeight={500}>
-              {initialTabList[selectedTab]}
+            <Typography 
+              fontWeight={500}
+              textTransform='capitalize'
+            >
+              {selectedTab}
             </Typography>
 
             {/* COUNT */}
             <Typography 
               variant='body2'
               color='text.secondary'
+              textTransform='capitalize'
             >
-              {getSelectedTabObject(selectedTab).count} {initialTabList[selectedTab]}
+              {getSelectedTabObject(selectedTab).count} {selectedTab}
             </Typography>
           </Stack>
+
           {/* ADD TO GROUP BUTTON */}
           <Button 
             variant='contained'
             className={layoutClasses.flyoutListItemActionButton}
+            onClick={(event) => setMenuAssignItemsAnchorElement(event.currentTarget)}
           >
             Add to Group
           </Button>
@@ -425,8 +439,22 @@ const DialogAddOrEditGroup = (props) => {
           })}
         </Stack>
       </Menu>
+
+      {/* ASSIGN ITEMS TO GROUP MENU */}
+      <MenuAssignItemsToGroup
+        anchorEl={menuAssignItemsAnchorElement}
+        setAnchorEl={setMenuAssignItemsAnchorElement}
+        selectedTab={selectedTab}
+        deviceList={deviceList}
+        selectedDeviceList={selectedDeviceList}
+        setSelectedDeviceList={setSelectedDeviceList}
+        formList={formList}
+        selectedFormList={selectedFormList}
+        setSelectedFormList={setSelectedFormList}
+        setShouldSaveGroup={setShouldSaveGroup}
+      />
     </Flyout>
   )
 }
 
-export default DialogAddOrEditGroup
+export default GroupFlyout

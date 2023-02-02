@@ -43,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     }
   },
+  columnsMenuRoot: {
+    '& .MuiList-root': {
+      padding: '12px 4px',
+    },
+  },
 }))
 
 export default useStyles

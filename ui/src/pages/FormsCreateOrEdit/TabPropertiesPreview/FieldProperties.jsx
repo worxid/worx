@@ -227,6 +227,16 @@ const FieldProperties = () => {
         </>
       )}
 
+      {/* TEXT */}
+      {selectedFieldsType === 'text' && (
+        <FormGroup className={`${classes.formControl} marginBottom0`}>
+          <FormControlLabel
+            control={(<Checkbox />)}
+            label='Allow multiple lines'
+          />
+        </FormGroup>
+      )}
+
       {/* OPTION LIST */}
       {(selectedFieldsType === 'checkbox_group' || selectedFieldsType === 'radio_group' || selectedFieldsType === 'dropdown') && (
         <FormGroup className={`${classes.formControl} formControlGrouped`}>

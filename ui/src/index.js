@@ -13,7 +13,6 @@ import { AllPagesContextProvider } from 'contexts/AllPagesContext'
 
 // MUIS
 import { 
-  createTheme,
   StyledEngineProvider, 
   ThemeProvider, 
 } from '@mui/material/styles'
@@ -23,7 +22,7 @@ import './index.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <ThemeProvider theme={createTheme(theme)}>
+  <ThemeProvider theme={theme}>
     <StyledEngineProvider injectFirst>
       <AllPagesContextProvider>
         <BrowserRouter>

@@ -19,7 +19,6 @@ const FillFormFinish = lazy(() => import('pages/FillFormFinish/FillFormFinish'))
 const ForgotPassword = lazy(() => import('pages/ForgotPassword/ForgotPassword'))
 const FormsCreateOrEdit = lazy(() => import('pages/FormsCreateOrEdit/FormsCreateOrEdit'))
 const FormsSubmissions = lazy(() => import('pages/FormsSubmissions/FormsSubmissions'))
-const FormsSubmissionsDetail = lazy(() => import('pages/FormsSubmissionsDetail/FormsSubmissionsDetail'))
 const ResetPassword = lazy(() => import('pages/ResetPassword/ResetPassword'))
 const SignIn = lazy(() => import('pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('pages/SignUp/SignUp'))
@@ -72,13 +71,8 @@ const routes = [
     routeType: 'private',
   },
   {
-    path: '/forms/submissions/:formTemplateId',
+    path: '/forms/submissions',
     element: <FormsSubmissions/>,
-    routeType: 'private',
-  },
-  {
-    path: '/forms/submission-detail',
-    element: <FormsSubmissionsDetail/>,
     routeType: 'private',
   },
   {

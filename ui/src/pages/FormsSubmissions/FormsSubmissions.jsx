@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -68,7 +68,7 @@ const FormsSubmissions = () => {
   const classes = useStyles()
 
   // NAVIGATE
-  const { formTemplateId } = useParams()
+  const [searchParams] = useSearchParams()
 
   const axiosPrivate = useAxiosPrivate()
 
@@ -173,7 +173,7 @@ const FormsSubmissions = () => {
     setIsDataGridLoading(true)
 
     const resultFormTemplateDetail = await getDetailFormTemplate(
-      formTemplateId,
+      searchParams.get('formTemplateId'),
       inputAbortController.signal,
       axiosPrivate,
     )
@@ -203,7 +203,7 @@ const FormsSubmissions = () => {
         type: null,
         label: filters.source,
       },
-      template_id: formTemplateId, 
+      template_id: searchParams.get('formTemplateId'), 
       from: dateRangeTimeValue[0],
       to: dateRangeTimeValue[1],
     }
@@ -518,6 +518,12 @@ const FormsSubmissions = () => {
     }
   }, [selectionModel])
 
+  useEffect(() => {
+    if(searchParams.get('submissionId')) {
+      setSelectionModel([Number(searchParams.get('submissionId'))])
+    }
+  }, [searchParams.get('submissionId')])
+
   return (
     <>
       {/* APP BAR */}
@@ -638,13 +644,13 @@ const FormsSubmissions = () => {
       </Stack>
 
       {/* DIALOG SHARE LINK */}
-      <DialogShareLink id={Number(formTemplateId)} />
+      <DialogShareLink id={Number(searchParams.get('formTemplateId'))} />
 
       {/* DIALOG EXPORT */}
-      <DialogExport id={Number(formTemplateId)} title={formTemplateDetail?.label ?? ''} />
+      <DialogExport id={Number(searchParams.get('formTemplateId'))} title={formTemplateDetail?.label ?? ''} />
 
       {/* DIALOG QR CODE */}
-      <DialogQrCode id={Number(formTemplateId)} />
+      <DialogQrCode id={Number(searchParams.get('formTemplateId'))} />
 
       {/* DIALOG MEDIAS PREVIEW */}
       <DialogMediasPreview 
@@ -658,7 +664,7 @@ const FormsSubmissions = () => {
       />
 
       {/* SUBMISSION DETAIL FLYOUT */}
-      <SubmissionDetailFlyout/>
+      <SubmissionDetailFlyout submissionId={selectionModel.length === 1 ? selectionModel[0] : null}/>
     </>
   )
 }

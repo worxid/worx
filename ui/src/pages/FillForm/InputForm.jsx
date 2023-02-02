@@ -499,6 +499,8 @@ const InputForm = (props) => {
             inputProps={{
               type: item.type === 'integer' ? 'number' : 'text'
             }}
+            //rows={4}
+            //multiline
           />
 
           {formObjectError?.[item.id] && (

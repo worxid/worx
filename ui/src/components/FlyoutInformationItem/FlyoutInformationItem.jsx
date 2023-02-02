@@ -39,11 +39,9 @@ const FlyoutInformationItem = (props) => {
           {title}
         </Typography>
       </Stack>
+
       {/* VALUE */}
-      <Typography
-        variant='body2'
-        noWrap
-      >
+      <Typography variant='body2'>
         {value}
       </Typography>
     </Stack>

@@ -6,8 +6,8 @@ import AppBar from 'components/AppBar/AppBar'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
+import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import FormFlyout from './FormsFlyout/FormsFlyout'
@@ -30,8 +30,8 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
-import { 
-  deleteFormTemplate, 
+import {
+  deleteFormTemplate,
   postCreateFormTemplate, 
   postGetListFormTemplate, 
 } from 'services/worx/formTemplate'
@@ -55,7 +55,6 @@ const Forms = () => {
   } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
-
   const initialColumns = [
     {
       field: 'label',
@@ -118,7 +117,6 @@ const Forms = () => {
       isSortShown: true,
     },
   ]
-
   const initialFilters = {}
 
   // NAVIGATE
@@ -143,10 +141,10 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // DELETE DIALOG
-  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
   // SELECTED GROUP DATA
   const [ groupData, setGroupData ] = useState([])
+  // DELETE DIALOG
+  const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
 
   // HANDLE FAB CLICK
   const handleFabClick = async () => {
@@ -237,7 +235,6 @@ const Forms = () => {
     const abortController = new AbortController()
 
     setDialogDeleteForms({})
-    setIsFlyoutOpen(false)
 
     if(selectionModel.length >= 1) {
       // CURRENTLY JUST CAN DELETE 1 ITEM
@@ -322,6 +319,9 @@ const Forms = () => {
             // SHARE
             isShareButtonEnabled={selectionModel.length === 1}
             handleShareButtonClick={() => setIsDialogFormOpen('dialogShareLink')}
+            // DELETE
+            isDeleteButtonEnabled={selectionModel.length > 0}
+            handleDeleteButtonClick={() => setDialogDeleteForms({id: selectionModel})}
           />
 
           <DataGridTable
@@ -354,19 +354,8 @@ const Forms = () => {
       {/* SIDE CONTENT */}
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
+        reloadData={fetchingFormsList}
         setGroupData={setGroupData}
-      />
-
-      {/* DIALOG DELETE FORMS */}
-      <DialogConfirmation
-        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
-        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
-        dialogConfirmationObject={dialogDeleteForms}
-        setDialogConfirmationObject={setDialogDeleteForms}
-        cancelButtonText='Cancel'
-        continueButtonText='Delete'
-        onContinueButtonClick={() => handleDeleteFormTemplate()}
-        onCancelButtonClick={() => setDialogDeleteForms({})}
       />
 
       {/* DIALOG GROUP */}
@@ -382,6 +371,18 @@ const Forms = () => {
 
       {/* DIALOG QR CODE */}
       <DialogQrCode id={Number(selectionModel[0])}/>
+
+      {/* DIALOG DELETE FORMS */}
+      <DialogConfirmation
+        title={`Delete ${selectionModel.length >= 2 ? 'Forms' : 'Form'}`}
+        caption={`Are you sure you want to delete ${selectionModel.length >= 2 ? 'these forms' : 'this form'}?`}
+        dialogConfirmationObject={dialogDeleteForms}
+        setDialogConfirmationObject={setDialogDeleteForms}
+        cancelButtonText='Cancel'
+        continueButtonText='Delete'
+        onContinueButtonClick={() => handleDeleteFormTemplate()}
+        onCancelButtonClick={() => setDialogDeleteForms({})}
+      />
     </>
   )
 }
