@@ -1,6 +1,7 @@
 package id.worx.worx.web.controller;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -8,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.junit.jupiter.api.Test;
@@ -128,6 +131,8 @@ class GroupControllerTest extends AbstractControllerTest {
     void testSearchGroup() throws Exception {
         String name = ModelConstants.GROUP_DEFAULT_NAME;
         String color = ModelConstants.GROUP_DEFAULT_COLOR;
+        List<Integer> device = new ArrayList<>(Arrays.asList(1));
+        List<Integer> form = new ArrayList<>(Arrays.asList(1));
         GroupSearchRequest request = new GroupSearchRequest();
         request.setName(name);
         request.setColor(color);
@@ -140,7 +145,12 @@ class GroupControllerTest extends AbstractControllerTest {
         List<GroupDTO> list = response.getContent();
         boolean isMainGroupExists =
                 list.stream().anyMatch(group -> group.getIsDefault().booleanValue());
+
+        List<Integer> deviceCount = list.stream().map(GroupDTO::getDeviceCount).collect(Collectors.toList());
+        List<Integer> formCount = list.stream().map(GroupDTO::getFormCount).collect(Collectors.toList());
         assertTrue(isMainGroupExists);
+        assertEquals(device.size(),deviceCount.size());
+        assertEquals(form.size(),formCount.size());
     }
 
 }
