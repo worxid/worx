@@ -6,13 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import id.worx.worx.repository.DeviceRepository;
 import id.worx.worx.web.model.request.GroupUpdateRequest;
 import java.util.stream.Collectors;
-
-import id.worx.worx.repository.DeviceRepository;
-import id.worx.worx.web.model.request.GroupUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +49,6 @@ public class GroupServiceImpl implements GroupService {
     private final AuthenticationContext authContext;
 
 
-
     @Override
     public List<Group> list() {
         return groupRepository.findAllByUserId(authContext.getUsers().getId());
@@ -91,9 +86,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Long id, GroupUpdateRequest request) {
         Group group = this.findByIdorElseThrowNotFound(id);
-        this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
-        groupMapper.update(group, request);
-        return groupRepository.save(group);
+        Group updatedGroup = assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),group);
+        groupMapper.update(updatedGroup, request);
+        return groupRepository.save(updatedGroup);
     }
 
     @Override
@@ -136,7 +131,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDetailDTO toDetailDTO(Group group) {
-        // TODO improve mapping performance
         List<SimpleFormTemplateDTO> forms = group.getTemplates()
                 .stream()
                 .sorted(Comparator.comparing(FormTemplate::getId))
@@ -144,7 +138,6 @@ public class GroupServiceImpl implements GroupService {
                 .map(SimpleFormTemplateDTO::from)
                 .collect(Collectors.toList());
 
-        // TODO improve mapping performance
         List<SimpleDeviceDTO> devices = group.getDevices()
                 .stream()
                 .sorted(Comparator.comparing(Device::getId))
@@ -173,7 +166,7 @@ public class GroupServiceImpl implements GroupService {
         Integer globalCountSearch = null;
         String globalSearch = null;
         if (Objects.nonNull(groupSearchRequest.getGlobalSearch())) {
-            if (groupSearchRequest.getGlobalSearch().matches("[0-9]+")) {
+            if (groupSearchRequest.getGlobalSearch().matches("\\d+")) {
                 globalCountSearch = Integer.valueOf(groupSearchRequest.getGlobalSearch());
             } else
                 globalSearch = groupSearchRequest.getGlobalSearch();
