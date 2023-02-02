@@ -62,7 +62,10 @@ public class GroupServiceImpl implements GroupService {
         group.setUserId(authContext.getUsers().getId());
         group = groupRepository.save(group);
         Group finalGroup = group;
-        this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),finalGroup);
+        if(!request.getDeviceIds().isEmpty() || !request.getFormIds().isEmpty()){
+            this.assignDeviceAndForm(request.getDeviceIds(),request.getFormIds(),finalGroup);
+        }
+
 
         return group;
     }
@@ -170,7 +173,7 @@ public class GroupServiceImpl implements GroupService {
         Integer globalCountSearch = null;
         String globalSearch = null;
         if (Objects.nonNull(groupSearchRequest.getGlobalSearch())) {
-            if (groupSearchRequest.getGlobalSearch().matches("[0-9]+")) {
+            if (groupSearchRequest.getGlobalSearch().matches("\\d")) {
                 globalCountSearch = Integer.valueOf(groupSearchRequest.getGlobalSearch());
             } else
                 globalSearch = groupSearchRequest.getGlobalSearch();
