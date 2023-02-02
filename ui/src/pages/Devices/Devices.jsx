@@ -295,6 +295,9 @@ const Devices = () => {
             setIsFilterOn={setIsFilterOn}
             // TEXT
             contentTitle='Device List'
+            // DELETE
+            isDeleteButtonEnabled={selectionModel.length > 0}
+            handleDeleteButtonClick={() => setDialogDeleteDevice({id: selectionModel})}
           />
 
           <DataGridTable
