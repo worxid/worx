@@ -89,7 +89,7 @@ const MenuAssignItemsToGroup = (props) => {
   useEffect(() => {
     selectedDeviceList.length > 0 && setTempSelectedDeviceList([...selectedDeviceList])
     selectedFormList.length > 0 && setTempSelectedFormList([...selectedFormList])
-  }, [selectedDeviceList])
+  }, [selectedDeviceList, selectedFormList])
 
   return (
     <Menu
