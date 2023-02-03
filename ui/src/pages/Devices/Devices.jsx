@@ -337,7 +337,7 @@ const Devices = () => {
 
       {/* MENU CHANGE GROUP */}
       <MenuChangeGroup
-        dataChecked={groupData.map(item => ({ name: item }))}
+        selectedGroupList={groupData.map(item => ({ name: item }))}
         page='devices'
         selectedItemId={selectionModel[0]}
         reloadData={fetchDeviceList}
