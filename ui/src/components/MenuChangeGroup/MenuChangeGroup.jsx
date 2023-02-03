@@ -1,12 +1,11 @@
 import { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-// COMPONENTS
-import DialogForm from 'components/DialogForm/DialogForm'
-
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
-import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
+
+// CUSTOM COMPONENTS
+import CustomDialogActionButton from 'components/Customs/CustomDialogActionButton'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -18,6 +17,7 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import Menu from '@mui/material/Menu'
 import Stack from '@mui/material/Stack'
 
 // MUI ICONS
@@ -41,12 +41,18 @@ import {
 } from 'utilities/validation'
 
 const MenuChangeGroup = (props) => {
-  const { dataChecked, page, selectedItemId, reloadData } = props
+  const { 
+    className,
+    selectedGroupList, 
+    page, 
+    selectedItemId, 
+    reloadData, 
+    anchorEl, setAnchorEl,
+  } = props
 
   const layoutClasses = useLayoutStyles()
 
   // CONTEXTS
-  const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -54,65 +60,59 @@ const MenuChangeGroup = (props) => {
   // STATES
   const [ search, setSearch ] = useState('')
   const [ groupList, setGroupList ] = useState([])
-  const [ groupChecked, setGroupChecked ] = useState([])
+  const [ tempSelectedGroupList, setTempSelectedGroupList ] = useState([])
 
-  const handleActionButtonClick = async (inputType) => {
+  const handleSaveButtonClick = async () => {
     const abortController = new AbortController()
 
-    if (inputType === 'save') {
-      const listSelectedGroupId = groupChecked.map(item => item.id)
-      let response
-      let message = {}
-      
-      if (page === 'form-template') {
-        response = await putAssignGroupFormTemplate(
-          selectedItemId,
-          abortController.signal,
-          {
-            assignedGroups: listSelectedGroupId
-          },
-          axiosPrivate,
-        )
-      } 
-      else if (page === 'devices') {
-        response = await putAssignGroupDevices(
-          selectedItemId,
-          abortController.signal,
-          {
-            group_ids: listSelectedGroupId
-          },
-          axiosPrivate,
-        )
-      }
+    const listSelectedGroupId = tempSelectedGroupList.map(item => item.id)
 
-      if (didSuccessfullyCallTheApi(response?.status)) {
-        message = {
-          severity: 'success',
-          title: '',
-          message: 'Change group success'
-        }
-
-        reloadData(abortController, true)
-      } 
-      else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
-        message = getDefaultErrorMessage(response)
-      }
-
-      setSnackbarObject({
-        open: true,
-        ...message,
-      })
+    let response
+    let message = {}
+    
+    if (page === 'form-template') {
+      response = await putAssignGroupFormTemplate(
+        selectedItemId,
+        abortController.signal,
+        { assignedGroups: listSelectedGroupId },
+        axiosPrivate,
+      )
     } 
-    else {
-      setGroupChecked(dataChecked)
+    else if (page === 'devices') {
+      response = await putAssignGroupDevices(
+        selectedItemId,
+        abortController.signal,
+        { group_ids: listSelectedGroupId },
+        axiosPrivate,
+      )
     }
 
-    handleClose()
+    if (didSuccessfullyCallTheApi(response?.status)) {
+      message = {
+        severity: 'success',
+        title: '',
+        message: 'Change group success'
+      }
+
+      reloadData(abortController, true)
+    } 
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+      message = getDefaultErrorMessage(response)
+    }
+
+    setSnackbarObject({
+      open: true,
+      ...message,
+    })
+
+    handleCloseMenu()
+    setTempSelectedGroupList([...tempSelectedGroupList])
   }
-  
-  const handleClose = () => {
+
+  const handleCloseMenu = () => {
     setSearch('')
-    setIsDialogFormOpen(false)
+    setAnchorEl(null)
+    setTempSelectedGroupList([...selectedGroupList])
   }
 
   const handleSearch = (e) => {
@@ -122,14 +122,14 @@ const MenuChangeGroup = (props) => {
   }
 
   const handleCheckboxClick = (event, itemGroup) => {
-    const hasChecked = groupChecked.find(item => item.name === itemGroup.name)
+    const hasChecked = tempSelectedGroupList.find(item => item.name === itemGroup.name)
     if(!Boolean(hasChecked)) {
       // CHECKED
-      setGroupChecked([ ...groupChecked, itemGroup ])
+      setTempSelectedGroupList([ ...tempSelectedGroupList, itemGroup ])
     } else {
       // UNCHECKED
-      const tempGroupChecked = groupChecked.filter(item => item.name !== itemGroup.name)
-      setGroupChecked(tempGroupChecked)
+      const temptempSelectedGroupList = tempSelectedGroupList.filter(item => item.name !== itemGroup.name)
+      setTempSelectedGroupList(temptempSelectedGroupList)
     }
   }
 
@@ -161,28 +161,34 @@ const MenuChangeGroup = (props) => {
 
   // SIDE EFFECT SET GROUP CHECKED
   useEffect(() => {
-    if(dataChecked?.length) {
-      page === 'form-template' && setGroupChecked(dataChecked)
-      page === 'devices' && setGroupChecked(dataChecked.map(item => {
+    if(selectedGroupList?.length) {
+      page === 'form-template' && setTempSelectedGroupList(selectedGroupList)
+      page === 'devices' && setTempSelectedGroupList(selectedGroupList.map(item => {
         const findItemGroup = groupList.find(itemGroup => itemGroup.name === item.name)
         return findItemGroup
       }))
-    } else {
-      setGroupChecked([])
-    }
-  }, [dataChecked, groupList])
+    } else setTempSelectedGroupList([])
+  }, [selectedGroupList, groupList])
 
   return (
-    <DialogForm
-      dialogName='dialogChangeGroup'
-      title='Select Group' 
-      handleActionButtonClick={handleActionButtonClick}
-      classNames='dialogChangeGroup'
+    <Menu
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={handleCloseMenu}
+      className={`${layoutClasses.menuChangeRoot} ${className}`}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
     >
       {/* CONTENT */}
       <Stack 
         direction='row' 
-        className={layoutClasses.menuSearchBox}
+        className={layoutClasses.menuChangeSearchBox}
       >
         {/* INPUT */}
         <Input
@@ -194,13 +200,14 @@ const MenuChangeGroup = (props) => {
         />
 
         {/* ICON */}
-        {search === '' 
-          ? <IconSearch className={'cursorPointer'} /> 
-          : <IconClear
-            className={'cursorPointer'}
+        {search === '' ? (
+          <IconSearch className='cursorPointer' />
+        ) : (
+          <IconClear
+            className='cursorPointer'
             onClick={() => setSearch('')}
           />
-        }
+        )}
       </Stack>
 
       {/* LIST */}
@@ -215,7 +222,7 @@ const MenuChangeGroup = (props) => {
         >
           {/* RADIO */}
           <ListItemIcon>
-            <Checkbox checked={groupChecked?.length <= 0}/>
+            <Checkbox checked={tempSelectedGroupList?.length <= 0}/>
           </ListItemIcon>
 
           {/* TEXT */}
@@ -234,7 +241,7 @@ const MenuChangeGroup = (props) => {
               {/* RADIO */}
               <ListItemIcon>
                 <Checkbox
-                  checked={Boolean(groupChecked?.find(itemData => itemData.name === item.name))}
+                  checked={Boolean(tempSelectedGroupList?.find(itemData => itemData.name === item.name))}
                 />
               </ListItemIcon>
               {/* TEXT */}
@@ -242,17 +249,40 @@ const MenuChangeGroup = (props) => {
             </ListItemButton>
           ))}
       </List>
-    </DialogForm>
+
+      {/* ACTIONS */}
+      <Stack
+        direction='row' 
+        justifyContent='flex-end'
+        className={layoutClasses.menuChangeActions}
+      >
+        <CustomDialogActionButton 
+          className={`${layoutClasses.dialogButton} ${layoutClasses.greyButton} fontWeight600`}
+          onClick={handleCloseMenu}
+        >
+          Cancel
+        </CustomDialogActionButton>
+
+        <CustomDialogActionButton
+          className={`${layoutClasses.dialogButton} ${layoutClasses.redButton} fontWeight600`} 
+          onClick={handleSaveButtonClick}
+        >
+          Save
+        </CustomDialogActionButton>
+      </Stack>
+    </Menu>
   )
 }
 
 MenuChangeGroup.defaultProps = {
-  dataChecked: [],
+  className: '',
+  selectedGroupList: [],
   page: 'form-template',
 }
 
 MenuChangeGroup.propTypes = {
-  dataChecked: PropTypes.array,
+  selectedGroupList: PropTypes.array.isRequired,
+  className: PropTypes.string.isRequired,
   page: PropTypes.oneOf(['form-template', 'devices']).isRequired,
   selectedItemId: PropTypes.number,
   reloadData: PropTypes.func.isRequired,
