@@ -34,7 +34,7 @@ class FormControllerTest extends AbstractControllerTest {
         String label = "Monthly Form #1";
         String description = "Monthly Form Number 1";
         List<Field> fields = new ArrayList<>();
-        fields.add(new TextField("text-field-id", "Text Field 1", false, "description"));
+        fields.add(new TextField("text-field-id", "Text Field 1", false, "description", false));
         Boolean submitInZone = false;
         Boolean isDefaultForm = false;
         FormTemplateRequest request =

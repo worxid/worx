@@ -27,8 +27,11 @@ public class TextField extends Field {
     @JsonProperty("max_length")
     private Integer maxLength;
 
+    @JsonProperty("allow_multi_lines")
+    private Boolean allowMultiLines;
+
     @JsonCreator
-    public TextField(String id, String label, Boolean required, String description) {
+    public TextField(String id, String label, Boolean required, String description, Boolean allowMultiLines) {
         super(id, label, description, FieldType.TEXT, required);
 
         if (required.equals(Boolean.TRUE)) {
@@ -38,6 +41,13 @@ public class TextField extends Field {
         }
 
         this.maxLength = MAXIMUM_ALLOWED_MAX_LENGTH;
+
+        if (Objects.nonNull(allowMultiLines)) {
+            this.allowMultiLines = allowMultiLines;
+        } else {
+            this.allowMultiLines = false;
+        }
+
     }
 
     public Integer getMinLength() {
@@ -46,6 +56,10 @@ public class TextField extends Field {
 
     public Integer getMaxLength() {
         return maxLength;
+    }
+
+    public Boolean getAllowMultiLines() {
+        return allowMultiLines;
     }
 
     @Override
