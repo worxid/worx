@@ -7,6 +7,7 @@ import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import MainMenu from './MainMenu'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 import Submissions from './Submissions'
 
 // CONTEXTS
@@ -46,7 +47,12 @@ import {
 } from 'utilities/validation'
 
 const FormsFlyout = (props) => {
-  const { rows, reloadData, setGroupData } = props
+  const { 
+    rows, 
+    reloadData, 
+    selectionModel, 
+  } = props
+
   const classes = useStyles()
   const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate()
@@ -56,8 +62,10 @@ const FormsFlyout = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STATES
-  const [anchorActionEl, setAnchorActionEl] = useState(null)
-  const [dialogDeleteForm, setDialogDeleteForm] = useState({})
+  const [ anchorActionEl, setAnchorActionEl ] = useState(null)
+  const [ dialogDeleteForm, setDialogDeleteForm ] = useState({})
+  const [ groupData, setGroupData ] = useState([])
+  const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
   // HANDLE ACTION MENU
   const handleActionMenuClick = (event) => {
@@ -118,18 +126,17 @@ const FormsFlyout = (props) => {
             {rows.length > 0 && rows[0].label}
           </Typography>
 
-          <Stack direction='row' alignItems='center'>
+          <Stack 
+            direction='row' 
+            alignItems='center'
+          >
             {/* BUTTON SHARE */}
-            <IconButton
-              onClick={() => setIsDialogFormOpen('dialogShareLink')}
-            >
+            <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
               <IconShare fontSize='small'/>
             </IconButton>
 
             {/* BUTTON GROUP */}
-            <IconButton
-              onClick={() => setIsDialogFormOpen('dialogChangeGroup')}
-            >
+            <IconButton onClick={(event) => setMenuChangeGroupAnchorElement(event.currentTarget)}>
               <IconGroups fontSize='small'/>
             </IconButton>
 
@@ -189,6 +196,16 @@ const FormsFlyout = (props) => {
           <Submissions rows={rows}/>
         </FlyoutContent>
       </Flyout>
+
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
+        anchorEl={menuChangeGroupAnchorElement}
+        setAnchorEl={setMenuChangeGroupAnchorElement}
+        selectedGroupList={groupData}
+        page='form-template'
+        selectedItemId={selectionModel[0]}
+        reloadData={reloadData}
+      />
 
       {/* DELETE CONFIRMATION */}
       <DialogConfirmation

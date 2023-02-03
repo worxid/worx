@@ -11,7 +11,6 @@ import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
 import FormFlyout from './FormsFlyout/FormsFlyout'
 import LoadingPaper from 'components/LoadingPaper/LoadingPaper'
-import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 
 // CONSTANTS
 import { paramsCreateForm } from './formsConstants'
@@ -141,8 +140,6 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // SELECTED GROUP DATA
-  const [ groupData, setGroupData ] = useState([])
   // DELETE DIALOG
   const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
 
@@ -355,15 +352,7 @@ const Forms = () => {
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
         reloadData={fetchingFormsList}
-        setGroupData={setGroupData}
-      />
-
-      {/* MENU CHANGE GROUP */}
-      <MenuChangeGroup
-        dataChecked={groupData}
-        page='form-template'
-        selectedItemId={selectionModel[0]}
-        reloadData={fetchingFormsList}
+        selectionModel={selectionModel}
       />
 
       {/* DIALOG SHARE LINK */}
