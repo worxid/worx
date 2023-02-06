@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
   flyoutItemGroup: {
     marginBottom: 16,
   },
+  menuChangeGroup: {
+    marginLeft: 16,
+  },
   actionViewAll: {
     fontSize: 12,
     boxShadow: 'none',

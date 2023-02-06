@@ -28,7 +28,6 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
 import IconEdit from '@mui/icons-material/Edit'
-import IconGroups from '@mui/icons-material/Groups'
 import IconShare from '@mui/icons-material/Share'
 import IconMoreVert from '@mui/icons-material/MoreVert'
 
@@ -206,6 +205,7 @@ const FormsFlyout = (props) => {
         page='forms'
         selectedItemId={selectionModel[0]}
         reloadData={reloadData}
+        className={classes.menuChangeGroup}
       />
 
       {/* DELETE CONFIRMATION */}
