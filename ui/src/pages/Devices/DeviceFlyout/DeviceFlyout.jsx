@@ -169,10 +169,7 @@ const DevicesFlyout = (props) => {
   }, [selectedDevice])
 
   return (
-    <Flyout 
-      position='right'
-      onCloseButtonClick={() => setIsFlyoutOpen(false)}
-    >
+    <Flyout onCloseButtonClick={() => setIsFlyoutOpen(false)}>
       {/* HEADER */}
       <FlyoutHeader>
         {/* EDITABLE TITLE */}
