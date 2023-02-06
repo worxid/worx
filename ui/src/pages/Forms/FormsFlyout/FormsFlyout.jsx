@@ -7,6 +7,7 @@ import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import MainMenu from './MainMenu'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 import Submissions from './Submissions'
 
 // CONTEXTS
@@ -27,7 +28,6 @@ import Typography from '@mui/material/Typography'
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
 import IconEdit from '@mui/icons-material/Edit'
-import IconGroups from '@mui/icons-material/Groups'
 import IconShare from '@mui/icons-material/Share'
 import IconMoreVert from '@mui/icons-material/MoreVert'
 
@@ -46,7 +46,14 @@ import {
 } from 'utilities/validation'
 
 const FormsFlyout = (props) => {
-  const { rows, reloadData, setGroupData } = props
+  const { 
+    rows, 
+    reloadData, 
+    selectionModel, 
+  } = props
+
+  const selectedForm = rows[0]
+
   const classes = useStyles()
   const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate()
@@ -56,8 +63,10 @@ const FormsFlyout = (props) => {
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   // STATES
-  const [anchorActionEl, setAnchorActionEl] = useState(null)
-  const [dialogDeleteForm, setDialogDeleteForm] = useState({})
+  const [ anchorActionEl, setAnchorActionEl ] = useState(null)
+  const [ dialogDeleteForm, setDialogDeleteForm ] = useState({})
+  const [ groupList, setGroupList ] = useState([])
+  const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
   // HANDLE ACTION MENU
   const handleActionMenuClick = (event) => {
@@ -76,7 +85,7 @@ const FormsFlyout = (props) => {
     const response = await deleteFormTemplate(
       abortController.signal, 
       axiosPrivate,
-      { ids: [rows[0].id] }, 
+      { ids: [selectedForm.id] }, 
     )
 
     if (didSuccessfullyCallTheApi(response?.status)) {
@@ -96,9 +105,7 @@ const FormsFlyout = (props) => {
   }
 
   useEffect(() => {
-    if(rows[0]?.assigned_groups) {
-      setGroupData(rows[0]?.assigned_groups)
-    }
+    if(selectedForm?.assigned_groups) setGroupList(selectedForm?.assigned_groups)
   }, [rows])
 
   return (
@@ -115,22 +122,16 @@ const FormsFlyout = (props) => {
             className='fontWeight500'
             noWrap
           >
-            {rows.length > 0 && rows[0].label}
+            {rows.length > 0 && selectedForm.label}
           </Typography>
 
-          <Stack direction='row' alignItems='center'>
+          <Stack 
+            direction='row' 
+            alignItems='center'
+          >
             {/* BUTTON SHARE */}
-            <IconButton
-              onClick={() => setIsDialogFormOpen('dialogShareLink')}
-            >
+            <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
               <IconShare fontSize='small'/>
-            </IconButton>
-
-            {/* BUTTON GROUP */}
-            <IconButton
-              onClick={() => setIsDialogFormOpen('dialogChangeGroup')}
-            >
-              <IconGroups fontSize='small'/>
             </IconButton>
 
             {/* BUTTON ACTION */}
@@ -158,7 +159,7 @@ const FormsFlyout = (props) => {
             >
               <MenuItem
                 className={classes.actionMenuItem}
-                onClick={() => navigate(`/forms/edit/${rows[0].id}`)}
+                onClick={() => navigate(`/forms/edit/${selectedForm.id}`)}
               >
                 <ListItemIcon>
                   <IconEdit fontSize='small' className={classes.iconActionItem}/>
@@ -185,10 +186,27 @@ const FormsFlyout = (props) => {
 
         {/* CONTENT */}
         <FlyoutContent>
-          <MainMenu rows={rows}/>
+          {/* MAIN MENU */}
+          <MainMenu 
+            rows={rows}
+            setMenuChangeGroupAnchorElement={setMenuChangeGroupAnchorElement}
+          />
+
+          {/* SUBMISSION LIST */}
           <Submissions rows={rows}/>
         </FlyoutContent>
       </Flyout>
+
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
+        anchorEl={menuChangeGroupAnchorElement}
+        setAnchorEl={setMenuChangeGroupAnchorElement}
+        selectedGroupList={groupList}
+        page='forms'
+        selectedItemId={selectionModel[0]}
+        reloadData={reloadData}
+        className={classes.menuChangeGroup}
+      />
 
       {/* DELETE CONFIRMATION */}
       <DialogConfirmation

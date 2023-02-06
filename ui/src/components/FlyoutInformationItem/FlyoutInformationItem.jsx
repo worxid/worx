@@ -57,7 +57,7 @@ FlyoutInformationItem.defaultProps = {
 FlyoutInformationItem.propTypes = {
   icon: PropTypes.object.isRequired, 
   title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.any.isRequired,
   className: PropTypes.string.isRequired,
 }
 

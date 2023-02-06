@@ -78,7 +78,13 @@ const useStyles = makeStyles((theme) => ({
     width: 24,
     height: 24
   },
-  menuSearchBox: {
+  menuChangeRoot: {
+    '& .MuiList-root': {
+      width: 452,
+      padding: 0,
+    },
+  },
+  menuChangeSearchBox: {
     height: 52,
     width: '100%',
     alignItems: 'center',
@@ -86,6 +92,14 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 24px',
     borderTop: `1px solid ${theme.palette.divider}`,
     borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  menuChangeList: {
+    maxHeight: 400,
+    overflow: 'auto',
+  },
+  menuChangeActions: {
+    borderTop: `1px solid ${theme.palette.action.active}`,
+    padding: 12,
   },
 }))
 

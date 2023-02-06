@@ -1,3 +1,6 @@
+// COMPONENTS
+import FlyoutInformationGroup from 'components/FlyoutInformationGroup/FlyoutInformationGroup'
+
 // MUIS
 import Chip from '@mui/material/Chip'
 import List from '@mui/material/List'
@@ -7,7 +10,6 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconCalendarToday from '@mui/icons-material/CalendarToday'
-import IconGroups from '@mui/icons-material/Groups'
 import IconViewHeadline from '@mui/icons-material/ViewHeadline'
 
 // STYLES
@@ -17,22 +19,33 @@ import useStyles from './formsFlyoutUseStyles'
 import { convertDate } from 'utilities/date'
 
 const MainMenu = (props) => {
-  const { rows } = props
+  const { 
+    rows, 
+    setMenuChangeGroupAnchorElement,
+  } = props
+
+  const selectedRow = rows[0]
 
   const classes = useStyles()
   const mainMenuIconList = [
-    <IconGroups className={classes.flyoutIconInfo} />,
     <IconCalendarToday className={classes.flyoutIconInfo} />,
     <IconCalendarToday className={classes.flyoutIconInfo} />,
     <IconViewHeadline className={classes.flyoutIconInfo} />,
   ]
 
   const menuKey = ['assigned_groups', 'created_on', 'modified_on', 'fields_size']
-  const menuLabel = ['Groups', 'Form Date Created', 'Form Date Updated', 'Field']
+  const menuLabel = ['Form Date Created', 'Form Date Updated', 'Field']
 
   return (
     <Stack className={classes.flyoutBoxInfo}>
       <List>
+        {/* GROUP INFORMATION */}
+        <FlyoutInformationGroup
+          value={selectedRow?.assigned_groups.map(item => ({ name: item.name }))}
+          onEditButtonClick={(event) => setMenuChangeGroupAnchorElement(event.currentTarget)}
+          className={classes.flyoutItemGroup}
+        />
+
         {menuLabel.map((name, index) => (
           <ListItem className={classes.flyoutInfoItem} key={index}>
             <Stack direction='row' alignItems='center'>
@@ -44,14 +57,14 @@ const MainMenu = (props) => {
             </Stack>
 
             <Typography variant='body1' className={classes.flyoutDescInfo}>
-              {index === 0 && rows[0]?.[menuKey[index]].map(itemGroup => (
+              {index === 0 && selectedRow?.[menuKey[index]].map(itemGroup => (
                 <Chip key={itemGroup.id} label={itemGroup?.name} className={classes.flyoutGroupChip}/>
               ))}
-              {(index === 0 && rows[0]?.[menuKey[index]].length === 0) && (
+              {(index === 0 && selectedRow?.[menuKey[index]].length === 0) && (
                 <Chip label='Default' className={classes.flyoutGroupChip}/>
               )}
-              {(index === 1 || index === 2) && convertDate(rows[0]?.[menuKey[index]])}
-              {index === 3 && rows[0]?.[menuKey[index]]}
+              {(index === 1 || index === 2) && convertDate(selectedRow?.[menuKey[index]])}
+              {index === 3 && selectedRow?.[menuKey[index]]}
             </Typography>
           </ListItem>
         ))}

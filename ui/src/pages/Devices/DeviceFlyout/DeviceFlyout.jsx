@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from 'react'
 
 // COMPONENTS
-import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
+import FlyoutInformationGroup from 'components/FlyoutInformationGroup/FlyoutInformationGroup'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 
 // CONSTANTS
 import { 
@@ -29,7 +30,6 @@ import Stack from '@mui/material/Stack'
 
 // MUI ICONS
 import IconDelete from '@mui/icons-material/Delete'
-import IconGroups from '@mui/icons-material/Groups'
 
 // SERVICES
 import { 
@@ -51,17 +51,14 @@ import {
 const DevicesFlyout = (props) => {
   const { 
     rows, 
-    setGroupData, 
+    groupData, setGroupData, 
     reloadData, 
     handleDeleteDevicesClick,
   } = props
 
   const layoutClasses = useLayoutStyles()
 
-  const { 
-    setIsDialogFormOpen, 
-    setIsFlyoutOpen,
-  } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -70,6 +67,7 @@ const DevicesFlyout = (props) => {
 
   const [ deviceName, setDeviceName ] = useState('')
   const [ isEditMode, setIsEditMode ] = useState(false)
+  const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
   let mainMenuList = []
 
@@ -83,9 +81,9 @@ const DevicesFlyout = (props) => {
     }))
   }
 
-  const handleChangeGroup = () => {
+  const handleChangeGroup = (inputEvent) => {
+    setMenuChangeGroupAnchorElement(inputEvent.currentTarget)
     setGroupData(selectedDevice.groups)
-    setIsDialogFormOpen('dialogChangeGroup')
   }
 
   const handleApprovedDevices = async (type) => {
@@ -216,28 +214,13 @@ const DevicesFlyout = (props) => {
             </Button>
           </>}
 
-          {/* ACTIONS */}
-          <Stack
-            direction='row'
-            alignItems='center'
-            spacing='4px'
+          {/* DELETE ICON */}
+          <IconButton 
+            size='small'
+            onClick={handleDeleteDevicesClick}
           >
-            {/* CHANGE GROUP ICON */}
-            <IconButton 
-              size='small'
-              onClick={handleChangeGroup}
-            >
-              <IconGroups/>
-            </IconButton>
-
-            {/* DELETE ICON */}
-            <IconButton 
-              size='small'
-              onClick={handleDeleteDevicesClick}
-            >
-              <IconDelete color='primary'/>
-            </IconButton>
-          </Stack>
+            <IconDelete color='primary'/>
+          </IconButton>
         </Stack>
       </FlyoutHeader>
 
@@ -246,10 +229,9 @@ const DevicesFlyout = (props) => {
       <FlyoutContent>
         <Stack spacing='12px'>
           {/* GROUP INFORMATION */}
-          <FlyoutInformationItem
-            icon={IconGroups} 
-            title='Group Name'
-            value={<CellGroups dataValue={selectedDevice.groups.map(item => ({ name: item }))}/>}
+          <FlyoutInformationGroup
+            value={selectedDevice.groups.map(item => ({ name: item }))}
+            onEditButtonClick={handleChangeGroup}
           />
 
           {/* NON-GROUP INFORMATION */}
@@ -263,6 +245,16 @@ const DevicesFlyout = (props) => {
           ))}
         </Stack>
       </FlyoutContent>}
+
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
+        anchorEl={menuChangeGroupAnchorElement}
+        setAnchorEl={setMenuChangeGroupAnchorElement}
+        selectedGroupList={groupData.map(item => ({ name: item }))}
+        page='devices'
+        selectedItemId={selectedDevice ? selectedDevice.id : null}
+        reloadData={reloadData}
+      />
     </Flyout>
   )
 }

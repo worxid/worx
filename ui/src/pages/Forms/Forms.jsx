@@ -6,7 +6,6 @@ import AppBar from 'components/AppBar/AppBar'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
-import DialogChangeGroup from 'components/DialogChangeGroup/DialogChangeGroup'
 import DialogConfirmation from 'components/DialogConfirmation/DialogConfirmation'
 import DialogShareLink from 'components/DialogShareLink/DialogShareLink'
 import DialogQrCode from 'components/DialogQrCode/DialogQrCode'
@@ -141,8 +140,6 @@ const Forms = () => {
   const [ filters, setFilters ] = useState(initialFilters)
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
-  // SELECTED GROUP DATA
-  const [ groupData, setGroupData ] = useState([])
   // DELETE DIALOG
   const [ dialogDeleteForms, setDialogDeleteForms ] = useState({})
 
@@ -355,15 +352,7 @@ const Forms = () => {
       <FormFlyout 
         rows={tableData.filter(item => selectionModel.includes(item.id))} 
         reloadData={fetchingFormsList}
-        setGroupData={setGroupData}
-      />
-
-      {/* DIALOG GROUP */}
-      <DialogChangeGroup
-        dataChecked={groupData}
-        page='form-template'
-        selectedItemId={selectionModel[0]}
-        reloadData={fetchingFormsList}
+        selectionModel={selectionModel}
       />
 
       {/* DIALOG SHARE LINK */}
