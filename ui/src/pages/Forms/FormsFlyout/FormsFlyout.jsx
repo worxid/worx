@@ -110,10 +110,7 @@ const FormsFlyout = (props) => {
 
   return (
     <>
-      <Flyout 
-        position='right'
-        onCloseButtonClick={() => setIsFlyoutOpen(false)}
-      >
+      <Flyout onCloseButtonClick={() => setIsFlyoutOpen(false)}>
         {/* TITLE */}
         <FlyoutHeader>
           {/* TEXT */}

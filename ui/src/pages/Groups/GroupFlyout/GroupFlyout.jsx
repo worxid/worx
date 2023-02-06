@@ -292,10 +292,7 @@ const GroupFlyout = (props) => {
   }, [shouldSaveGroup])
 
   return (
-    <Flyout 
-      position='right'
-      onCloseButtonClick={handleClose}
-    >
+    <Flyout onCloseButtonClick={handleClose}>
       {/* HEADER */}
       <FlyoutHeader>
         {/* EDITABLE TITLE */}

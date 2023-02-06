@@ -2,7 +2,6 @@
 import FlyoutInformationGroup from 'components/FlyoutInformationGroup/FlyoutInformationGroup'
 
 // MUIS
-import Chip from '@mui/material/Chip'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Stack from '@mui/material/Stack'
@@ -33,8 +32,8 @@ const MainMenu = (props) => {
     <IconViewHeadline className={classes.flyoutIconInfo} />,
   ]
 
-  const menuKey = ['assigned_groups', 'created_on', 'modified_on', 'fields_size']
-  const menuLabel = ['Form Date Created', 'Form Date Updated', 'Field']
+  const menuKeyList = ['created_on', 'modified_on', 'fields_size']
+  const menuLabelList = ['Form Date Created', 'Form Date Updated', 'Field']
 
   return (
     <Stack className={classes.flyoutBoxInfo}>
@@ -46,7 +45,7 @@ const MainMenu = (props) => {
           className={classes.flyoutItemGroup}
         />
 
-        {menuLabel.map((name, index) => (
+        {menuLabelList.map((name, index) => (
           <ListItem className={classes.flyoutInfoItem} key={index}>
             <Stack direction='row' alignItems='center'>
               {mainMenuIconList[index]}
@@ -57,14 +56,8 @@ const MainMenu = (props) => {
             </Stack>
 
             <Typography variant='body1' className={classes.flyoutDescInfo}>
-              {index === 0 && selectedRow?.[menuKey[index]].map(itemGroup => (
-                <Chip key={itemGroup.id} label={itemGroup?.name} className={classes.flyoutGroupChip}/>
-              ))}
-              {(index === 0 && selectedRow?.[menuKey[index]].length === 0) && (
-                <Chip label='Default' className={classes.flyoutGroupChip}/>
-              )}
-              {(index === 1 || index === 2) && convertDate(selectedRow?.[menuKey[index]])}
-              {index === 3 && selectedRow?.[menuKey[index]]}
+              {(index === 0 || index === 1) && convertDate(selectedRow?.[menuKeyList[index]])}
+              {index === 2 && selectedRow?.[menuKeyList[index]]}
             </Typography>
           </ListItem>
         ))}
