@@ -135,11 +135,6 @@ const FormsFlyout = (props) => {
               <IconShare fontSize='small'/>
             </IconButton>
 
-            {/* BUTTON GROUP */}
-            <IconButton onClick={(event) => setMenuChangeGroupAnchorElement(event.currentTarget)}>
-              <IconGroups fontSize='small'/>
-            </IconButton>
-
             {/* BUTTON ACTION */}
             <IconButton
               id='menu-action-button'
@@ -192,7 +187,13 @@ const FormsFlyout = (props) => {
 
         {/* CONTENT */}
         <FlyoutContent>
-          <MainMenu rows={rows}/>
+          {/* MAIN MENU */}
+          <MainMenu 
+            rows={rows}
+            setMenuChangeGroupAnchorElement={setMenuChangeGroupAnchorElement}
+          />
+
+          {/* SUBMISSION LIST */}
           <Submissions rows={rows}/>
         </FlyoutContent>
       </Flyout>

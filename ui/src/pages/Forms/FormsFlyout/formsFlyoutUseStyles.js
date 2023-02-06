@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   flyoutGroupChip: {
     margin: '2px 4px 2px 0'
   },
+  flyoutItemGroup: {
+    marginBottom: 16,
+  },
   actionViewAll: {
     fontSize: 12,
     boxShadow: 'none',
