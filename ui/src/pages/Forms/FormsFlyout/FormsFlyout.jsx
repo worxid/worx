@@ -53,6 +53,8 @@ const FormsFlyout = (props) => {
     selectionModel, 
   } = props
 
+  const selectedForm = rows[0]
+
   const classes = useStyles()
   const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate()
@@ -64,7 +66,7 @@ const FormsFlyout = (props) => {
   // STATES
   const [ anchorActionEl, setAnchorActionEl ] = useState(null)
   const [ dialogDeleteForm, setDialogDeleteForm ] = useState({})
-  const [ groupData, setGroupData ] = useState([])
+  const [ groupList, setGroupList ] = useState([])
   const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
   // HANDLE ACTION MENU
@@ -84,7 +86,7 @@ const FormsFlyout = (props) => {
     const response = await deleteFormTemplate(
       abortController.signal, 
       axiosPrivate,
-      { ids: [rows[0].id] }, 
+      { ids: [selectedForm.id] }, 
     )
 
     if (didSuccessfullyCallTheApi(response?.status)) {
@@ -104,9 +106,7 @@ const FormsFlyout = (props) => {
   }
 
   useEffect(() => {
-    if(rows[0]?.assigned_groups) {
-      setGroupData(rows[0]?.assigned_groups)
-    }
+    if(selectedForm?.assigned_groups) setGroupList(selectedForm?.assigned_groups)
   }, [rows])
 
   return (
@@ -123,7 +123,7 @@ const FormsFlyout = (props) => {
             className='fontWeight500'
             noWrap
           >
-            {rows.length > 0 && rows[0].label}
+            {rows.length > 0 && selectedForm.label}
           </Typography>
 
           <Stack 
@@ -165,7 +165,7 @@ const FormsFlyout = (props) => {
             >
               <MenuItem
                 className={classes.actionMenuItem}
-                onClick={() => navigate(`/forms/edit/${rows[0].id}`)}
+                onClick={() => navigate(`/forms/edit/${selectedForm.id}`)}
               >
                 <ListItemIcon>
                   <IconEdit fontSize='small' className={classes.iconActionItem}/>
@@ -201,8 +201,8 @@ const FormsFlyout = (props) => {
       <MenuChangeGroup
         anchorEl={menuChangeGroupAnchorElement}
         setAnchorEl={setMenuChangeGroupAnchorElement}
-        selectedGroupList={groupData}
-        page='form-template'
+        selectedGroupList={groupList}
+        page='forms'
         selectedItemId={selectionModel[0]}
         reloadData={reloadData}
       />

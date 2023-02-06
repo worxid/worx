@@ -70,7 +70,7 @@ const MenuChangeGroup = (props) => {
     let response
     let message = {}
     
-    if (page === 'form-template') {
+    if (page === 'forms') {
       response = await putAssignGroupFormTemplate(
         selectedItemId,
         abortController.signal,
@@ -162,7 +162,7 @@ const MenuChangeGroup = (props) => {
   // SIDE EFFECT SET GROUP CHECKED
   useEffect(() => {
     if(selectedGroupList?.length) {
-      page === 'form-template' && setTempSelectedGroupList(selectedGroupList)
+      page === 'forms' && setTempSelectedGroupList(selectedGroupList)
       page === 'devices' && setTempSelectedGroupList(selectedGroupList.map(item => {
         const findItemGroup = groupList.find(itemGroup => itemGroup.name === item.name)
         return findItemGroup
@@ -277,13 +277,13 @@ const MenuChangeGroup = (props) => {
 MenuChangeGroup.defaultProps = {
   className: '',
   selectedGroupList: [],
-  page: 'form-template',
+  page: 'forms',
 }
 
 MenuChangeGroup.propTypes = {
   selectedGroupList: PropTypes.array.isRequired,
   className: PropTypes.string.isRequired,
-  page: PropTypes.oneOf(['form-template', 'devices']).isRequired,
+  page: PropTypes.oneOf(['forms', 'devices']).isRequired,
   selectedItemId: PropTypes.number,
   reloadData: PropTypes.func.isRequired,
 }
