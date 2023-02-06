@@ -25,7 +25,7 @@ const FlyoutInformationGroup = (props) => {
       justifyContent='space-between'
       alignItems='center'
       spacing='8px'
-      className={className}
+      className={`editIconContainer ${className}`}
     >
       {/* GROUP CHIP LIST */}
       <FlyoutInformationItem
@@ -43,6 +43,7 @@ const FlyoutInformationGroup = (props) => {
       <IconButton 
         size='small'
         onClick={onEditButtonClick}
+        className='editIcon'
       >
         <IconEdit fontSize='small'/>
       </IconButton>
