@@ -330,6 +330,7 @@ const Devices = () => {
         <DeviceFlyout
           rows={tableData.filter(item => selectionModel.includes(item.id))}
           reloadData={fetchDeviceList}
+          groupData={groupData}
           setGroupData={setGroupData}
           handleDeleteDevicesClick={handleDeleteDevicesClick}
         />

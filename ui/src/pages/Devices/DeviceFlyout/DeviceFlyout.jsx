@@ -7,6 +7,7 @@ import FlyoutContent from 'components/Flyout/FlyoutContent'
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
+import MenuChangeGroup from 'components/MenuChangeGroup/MenuChangeGroup'
 
 // CONSTANTS
 import { 
@@ -51,17 +52,14 @@ import {
 const DevicesFlyout = (props) => {
   const { 
     rows, 
-    setGroupData, 
+    groupData, setGroupData, 
     reloadData, 
     handleDeleteDevicesClick,
   } = props
 
   const layoutClasses = useLayoutStyles()
 
-  const { 
-    setIsDialogFormOpen, 
-    setIsFlyoutOpen,
-  } = useContext(PrivateLayoutContext)
+  const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
 
   const axiosPrivate = useAxiosPrivate()
@@ -70,6 +68,7 @@ const DevicesFlyout = (props) => {
 
   const [ deviceName, setDeviceName ] = useState('')
   const [ isEditMode, setIsEditMode ] = useState(false)
+  const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
   let mainMenuList = []
 
@@ -83,9 +82,9 @@ const DevicesFlyout = (props) => {
     }))
   }
 
-  const handleChangeGroup = () => {
+  const handleChangeGroup = (inputEvent) => {
+    setMenuChangeGroupAnchorElement(inputEvent.currentTarget)
     setGroupData(selectedDevice.groups)
-    setIsDialogFormOpen('dialogChangeGroup')
   }
 
   const handleApprovedDevices = async (type) => {
@@ -263,6 +262,16 @@ const DevicesFlyout = (props) => {
           ))}
         </Stack>
       </FlyoutContent>}
+
+      {/* MENU CHANGE GROUP */}
+      <MenuChangeGroup
+        anchorEl={menuChangeGroupAnchorElement}
+        setAnchorEl={setMenuChangeGroupAnchorElement}
+        selectedGroupList={groupData.map(item => ({ name: item }))}
+        page='devices'
+        selectedItemId={selectedDevice ? selectedDevice.id : null}
+        reloadData={reloadData}
+      />
     </Flyout>
   )
 }
