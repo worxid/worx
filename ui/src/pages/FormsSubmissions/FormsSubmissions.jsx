@@ -16,6 +16,9 @@ import SubmissionDetailFlyout from './SubmissionDetailFlyout/SubmissionDetailFly
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
@@ -114,12 +117,17 @@ const FormsSubmissions = () => {
           width='100%'
           alignItems='center'
         >
-          <IconButton onClick={() => handleMapIconButtonClick(params)}>
-            <IconMap
-              color='primary'
-              fontSize='small'
-            />
-          </IconButton>
+          <CustomTooltip
+            title='Show Location' 
+            placement='top'
+          >
+            <IconButton onClick={() => handleMapIconButtonClick(params)}>
+              <IconMap
+                color='primary'
+                fontSize='small'
+              />
+            </IconButton>
+          </CustomTooltip>
         </Stack>
       ),
     },

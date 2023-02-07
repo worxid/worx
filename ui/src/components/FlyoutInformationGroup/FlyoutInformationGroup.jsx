@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // MUIS
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -40,13 +43,18 @@ const FlyoutInformationGroup = (props) => {
       />
 
       {/* EDIT ICON */}
-      <IconButton 
-        size='small'
-        onClick={onEditButtonClick}
-        className='editIcon'
+      <CustomTooltip
+        title='Edit Groups' 
+        placement='bottom'
       >
-        <IconEdit fontSize='small'/>
-      </IconButton>
+        <IconButton 
+          size='small'
+          onClick={onEditButtonClick}
+          className='editIcon'
+        >
+          <IconEdit fontSize='small'/>
+        </IconButton>
+      </CustomTooltip>
     </Stack>
   )
 }

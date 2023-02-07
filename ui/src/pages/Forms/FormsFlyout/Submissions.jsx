@@ -129,6 +129,7 @@ const Submissions = (props) => {
             icon={item?.source?.label === 'web_browser' ? IconWeb : IconPhoneIphone}
             primaryText={item?.source?.label ? item?.source?.label?.replace(/_/g, ' ') : '[No Label]'}
             secondaryText={convertDate(item.submit_date)}
+            actionTooltip='View Submission'
             actionIcon={IconArrowForwardIos}
             actionIconHref={`${getSubmissionsViewAllUrl()}&submissionId=${item.id}`}
           />

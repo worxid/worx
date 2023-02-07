@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // MUIS
 import IconButton from '@mui/material/IconButton'
 import ListItem from '@mui/material/ListItem'
@@ -14,6 +17,7 @@ const FlyoutActionableItem = (props) => {
     icon,
     primaryText,
     secondaryText,
+    actionTooltip,
     actionIcon,
     actionIconHref,
     onActionButtonClick,
@@ -29,13 +33,22 @@ const FlyoutActionableItem = (props) => {
       className={classes.root}
       sx={{ height: secondaryText ? 'unset' : 56 }}
       secondaryAction={
-        <IconButton 
-          edge='end'
-          onClick={onActionButtonClick}
-          href={actionIconHref}
+        <CustomTooltip
+          title={actionTooltip} 
+          placement='top'
         >
-          <SelectedActionIcon color='primary'/>
-        </IconButton>
+          <IconButton 
+            edge='end'
+            onClick={onActionButtonClick}
+            href={actionIconHref}
+            size='small'
+          >
+            <SelectedActionIcon 
+              color='primary'
+              fontSize='small'
+            />
+          </IconButton>
+        </CustomTooltip>
       }
     >
       {/* ICON */}
@@ -58,6 +71,7 @@ const FlyoutActionableItem = (props) => {
 FlyoutActionableItem.defaultProps = {
   primaryText: '',
   secondaryText: '',
+  actionTooltip: '',
   actionIconHref: '',
 }
 
@@ -65,6 +79,7 @@ FlyoutActionableItem.propTypes = {
   icon: PropTypes.object.isRequired,
   primaryText: PropTypes.string.isRequired,
   secondaryText: PropTypes.string.isRequired,
+  actionTooltip: PropTypes.string.isRequired,
   actionIcon: PropTypes.object.isRequired,
   actionIconHref: PropTypes.string.isRequired,
   onActionButtonClick: PropTypes.func,

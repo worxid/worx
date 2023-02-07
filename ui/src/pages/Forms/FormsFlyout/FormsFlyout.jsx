@@ -14,6 +14,9 @@ import Submissions from './Submissions'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
@@ -68,14 +71,6 @@ const FormsFlyout = (props) => {
   const [ groupList, setGroupList ] = useState([])
   const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
-  // HANDLE ACTION MENU
-  const handleActionMenuClick = (event) => {
-    setAnchorActionEl(event.currentTarget)
-  }
-  const handleActionMenuClose = () => {
-    setAnchorActionEl(null)
-  }
-
   // HANDLE DELETE FORM
   const handleDeleteForm = async () => {
     setAnchorActionEl(null)
@@ -127,31 +122,36 @@ const FormsFlyout = (props) => {
             alignItems='center'
           >
             {/* BUTTON SHARE */}
-            <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
-              <IconShare fontSize='small'/>
-            </IconButton>
+            <CustomTooltip
+              title='Share Form' 
+              placement='bottom'
+            >
+              <IconButton onClick={() => setIsDialogFormOpen('dialogShareLink')}>
+                <IconShare fontSize='small'/>
+              </IconButton>
+            </CustomTooltip>
 
             {/* BUTTON ACTION */}
-            <IconButton
-              id='menu-action-button'
-              aria-controls={Boolean(anchorActionEl) ? 'menu-action' : undefined}
-              aria-haspopup='true'
-              aria-expanded={Boolean(anchorActionEl) ? 'true' : undefined}
-              onClick={handleActionMenuClick}
-              className='no-zoom'
+            <CustomTooltip
+              title='Options' 
+              placement='bottom'
             >
-              <IconMoreVert className='zoom' fontSize='small'/>
-            </IconButton>
+              <IconButton
+                onClick={(event) => setAnchorActionEl(event.currentTarget)}
+                className='no-zoom'
+              >
+                <IconMoreVert 
+                  className='zoom' 
+                  fontSize='small'
+                />
+              </IconButton>
+            </CustomTooltip>
 
             {/* CUSTOMIZE ACTION MENU */}
             <Menu
-              id='menu-action'
               anchorEl={anchorActionEl}
               open={Boolean(anchorActionEl)}
-              onClose={handleActionMenuClose}
-              MenuListProps={{
-                'aria-labelledby': 'menu-action-button',
-              }}
+              onClose={(event) => setAnchorActionEl(null)}
               className={`${classes.menuDownload} neutralize-zoom-menu`}
             >
               <MenuItem

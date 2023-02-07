@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // MUIS
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
@@ -59,13 +62,18 @@ const FlyoutEditableTitle = (props) => {
 
         {/* EDIT ICON */}
         {!isEditMode &&
-        <IconButton 
-          size='small'
-          className='editIcon'
-          onClick={() => setIsEditMode(true)}
+        <CustomTooltip
+          title='Edit Label' 
+          placement='bottom'
         >
-          <IconEdit fontSize='small'/>
-        </IconButton>}
+          <IconButton 
+            size='small'
+            className='editIcon'
+            onClick={() => setIsEditMode(true)}
+          >
+            <IconEdit fontSize='small'/>
+          </IconButton>
+        </CustomTooltip>}
       </Stack>}
     </>
   )
