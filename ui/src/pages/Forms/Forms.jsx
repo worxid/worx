@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
+import CellDateTime from 'components/DataGridRenderCell/CellDateTime'
 import CellGroups from 'components/DataGridRenderCell/CellGroups'
 import DataGridFilters from 'components/DataGridFilters/DataGridFilters'
 import DataGridTable from 'components/DataGridTable/DataGridTable'
@@ -26,6 +27,7 @@ import moment from 'moment'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // MUIS
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 
 // SERVICES
@@ -58,40 +60,26 @@ const Forms = () => {
     {
       field: 'label',
       headerName: 'Form Title',
-      flex: 1,
-      minWidth: 200,
+      width: 240,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
     },
     {
-      field: 'description',
-      headerName: 'Description',
-      flex: 1,
-      minWidth: 200,
+      field: 'submission_count',
+      headerName: 'Submissions',
+      width: 120,
       hide: false,
       isFilterShown: true,
       isSortShown: true,
-    },
-    {
-      field: 'created_on',
-      headerName: 'Created',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      isFilterShown: false,
-      isSortShown: true,
-      valueGetter: params => convertDate(params.value)
-    },
-    {
-      field: 'modified_on',
-      headerName: 'Updated',
-      flex: 1,
-      minWidth: 200,
-      hide: false,
-      isFilterShown: false,
-      isSortShown: true,
-      valueGetter: params => convertDate(params.value)
+      renderCell: (params) => (
+        <Link
+          href={`/forms/submissions?formTemplateId=${params.id}`}
+          underline='hover'
+        >
+          {params.value}
+        </Link>
+      ),
     },
     {
       field: 'assigned_groups',
@@ -101,19 +89,43 @@ const Forms = () => {
       hide: false,
       isFilterShown: true,
       isSortShown: true,
-      renderCell: (params) =>
-        params.value && (
-          <CellGroups dataValue={params.value} />
-        ),
+      renderCell: (params) => params.value && (<CellGroups dataValue={params.value} />),
     },
     {
-      field: 'submission_count',
-      headerName: 'Submissions',
-      flex: 1,
-      minWidth: 200,
+      field: 'created_on',
+      headerName: 'Created',
+      width: 120,
       hide: false,
-      isFilterShown: true,
+      isFilterShown: false,
       isSortShown: true,
+      renderCell: (params) => {
+        const dateTime = convertDate(params.value).split(', ')
+
+        return (
+          <CellDateTime
+            date={dateTime[0]}
+            time={dateTime[1]}
+          />
+        )
+      },
+    },
+    {
+      field: 'modified_on',
+      headerName: 'Updated',
+      width: 120,
+      hide: false,
+      isFilterShown: false,
+      isSortShown: true,
+      renderCell: (params) => {
+        const dateTime = convertDate(params.value).split(', ')
+
+        return (
+          <CellDateTime
+            date={dateTime[0]}
+            time={dateTime[1]}
+          />
+        )
+      },
     },
   ]
   const initialFilters = {}
