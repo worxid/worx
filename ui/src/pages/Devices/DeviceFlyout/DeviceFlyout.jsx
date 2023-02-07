@@ -20,6 +20,9 @@ import {
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
@@ -212,12 +215,17 @@ const DevicesFlyout = (props) => {
           </>}
 
           {/* DELETE ICON */}
-          <IconButton 
-            size='small'
-            onClick={handleDeleteDevicesClick}
+          <CustomTooltip
+            title='Delete Device' 
+            placement='bottom'
           >
-            <IconDelete color='primary'/>
-          </IconButton>
+            <IconButton 
+              size='small'
+              onClick={handleDeleteDevicesClick}
+            >
+              <IconDelete color='primary'/>
+            </IconButton>
+          </CustomTooltip>
         </Stack>
       </FlyoutHeader>
 
