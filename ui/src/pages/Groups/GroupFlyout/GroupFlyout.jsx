@@ -1,10 +1,9 @@
-// TO DO: RENAME THIS COMPONENT INTO THE GROUPS FLYOUT
 import { useState, useContext, useEffect } from 'react'
 
 // COMPONENTS
 import Flyout from 'components/Flyout/Flyout'
 import FlyoutContent from 'components/Flyout/FlyoutContent'
-import FlyoutDeletableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
+import FlyoutActionableItem from 'components/FlyoutActionableItem/FlyoutActionableItem'
 import FlyoutEditableTitle from 'components/FlyoutEditableTitle/FlyoutEditableTitle'
 import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import FlyoutInformationItem from 'components/FlyoutInformationItem/FlyoutInformationItem'
@@ -16,6 +15,9 @@ import { values } from 'constants/values'
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
+
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
 
 // HOOKS
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
@@ -79,7 +81,7 @@ const GroupFlyout = (props) => {
     groupColor: '#000000',
   }
 
-  const initialTabList = [ 'devices', 'forms' ]
+  const tabList = [ 'devices', 'forms' ]
 
   const [ groupName, setGroupName ] = useState(initialFormObject.groupName)
   const [ groupColor, setGroupColor ] = useState(initialFormObject.groupColor)
@@ -90,8 +92,7 @@ const GroupFlyout = (props) => {
   const [ colorPickerAnchorElement, setColorPickerAnchorElement ] = useState(null)
   const [ isEditMode, setIsEditMode ] = useState(false)
   const [ shouldSaveGroup, setShouldSaveGroup ] = useState(false)
-  const [ tabList, setTabList ] = useState(initialTabList)
-  const [ selectedTab, setSelectedTab ] = useState(initialTabList[0])
+  const [ selectedTab, setSelectedTab ] = useState(tabList[0])
   const [ menuAssignItemsAnchorElement, setMenuAssignItemsAnchorElement ] = useState(null)
   const [ createdDate, setCreatedDate ] = useState('')
 
@@ -226,7 +227,7 @@ const GroupFlyout = (props) => {
   }
 
   const getSelectedTabObject = (inputSelectedTab) => {
-    if (inputSelectedTab === initialTabList[0]) {
+    if (inputSelectedTab === tabList[0]) {
       return {
         count: selectedDeviceList.length,
         list: selectedDeviceList,
@@ -234,7 +235,7 @@ const GroupFlyout = (props) => {
         deleteType: 'device',
       }
     }
-    else if (inputSelectedTab === initialTabList[1]) {
+    else if (inputSelectedTab === tabList[1]) {
       return {
         count: selectedFormList.length,
         list: selectedFormList,
@@ -312,20 +313,30 @@ const GroupFlyout = (props) => {
           marginLeft='16px'
         >
           {/* COLOR PICKER */}
-          <Stack
-            className={classes.colorPicker}
-            style={{ backgroundColor: groupColor }}
-            onClick={(event) => setColorPickerAnchorElement(event.currentTarget)}
-          />
+          <CustomTooltip
+            title='Change Color' 
+            placement='bottom'
+          >
+            <Stack
+              className={classes.colorPicker}
+              style={{ backgroundColor: groupColor }}
+              onClick={(event) => setColorPickerAnchorElement(event.currentTarget)}
+            />
+          </CustomTooltip>
 
           {/* DELETE ICON  */}
           {dialogType === 'edit' &&
-          <IconButton 
-            size='small'
-            onClick={() => setDialogDeleteObject({ id: dataDialogEdit.id })}
+          <CustomTooltip
+            title='Delete Group' 
+            placement='bottom'
           >
-            <IconDelete color='primary'/>
-          </IconButton>}
+            <IconButton 
+              size='small'
+              onClick={() => setDialogDeleteObject({ id: dataDialogEdit.id })}
+            >
+              <IconDelete color='primary'/>
+            </IconButton>
+          </CustomTooltip>}
         </Stack>
       </FlyoutHeader>
 
@@ -395,10 +406,11 @@ const GroupFlyout = (props) => {
         <Stack spacing='8px'>
           {/* SELECTED LIST */}
           {getSelectedTabObject(selectedTab).list.map((item, index) => (
-            <FlyoutDeletableItem
+            <FlyoutActionableItem
               key={index}
               icon={getSelectedTabObject(selectedTab).icon}
               primaryText={item.label}
+              actionTooltip='Remove Item'
               actionIcon={IconDelete}
               onActionButtonClick={() => handleDeleteItem(getSelectedTabObject(selectedTab).deleteType, item.id)}
             />
