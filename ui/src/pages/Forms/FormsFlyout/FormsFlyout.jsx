@@ -68,14 +68,6 @@ const FormsFlyout = (props) => {
   const [ groupList, setGroupList ] = useState([])
   const [ menuChangeGroupAnchorElement, setMenuChangeGroupAnchorElement ] = useState(null)
 
-  // HANDLE ACTION MENU
-  const handleActionMenuClick = (event) => {
-    setAnchorActionEl(event.currentTarget)
-  }
-  const handleActionMenuClose = () => {
-    setAnchorActionEl(null)
-  }
-
   // HANDLE DELETE FORM
   const handleDeleteForm = async () => {
     setAnchorActionEl(null)
@@ -137,7 +129,7 @@ const FormsFlyout = (props) => {
               aria-controls={Boolean(anchorActionEl) ? 'menu-action' : undefined}
               aria-haspopup='true'
               aria-expanded={Boolean(anchorActionEl) ? 'true' : undefined}
-              onClick={handleActionMenuClick}
+              onClick={(event) => setAnchorActionEl(event.currentTarget)}
               className='no-zoom'
             >
               <IconMoreVert className='zoom' fontSize='small'/>
@@ -148,7 +140,7 @@ const FormsFlyout = (props) => {
               id='menu-action'
               anchorEl={anchorActionEl}
               open={Boolean(anchorActionEl)}
-              onClose={handleActionMenuClose}
+              onClose={(event) => setAnchorActionEl(null)}
               MenuListProps={{
                 'aria-labelledby': 'menu-action-button',
               }}
