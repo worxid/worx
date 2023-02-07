@@ -56,6 +56,7 @@ const Forms = () => {
   } = useContext(PrivateLayoutContext)
 
   const axiosPrivate = useAxiosPrivate()
+
   const initialColumns = [
     {
       field: 'label',
@@ -128,7 +129,6 @@ const Forms = () => {
       },
     },
   ]
-  const initialFilters = {}
 
   // NAVIGATE
   const navigate = useNavigate()
@@ -145,11 +145,11 @@ const Forms = () => {
   const [ pageNumber, setPageNumber ] = useState(0)
   const [ pageSize, setPageSize ] = useState(100)
   // DATA GRID - ORDER
-  const [ order, setOrder ] = useState(null)
-  const [ orderBy, setOrderBy ] = useState(null)
+  const [ order, setOrder ] = useState('desc')
+  const [ orderBy, setOrderBy ] = useState('created_on')
   // DATA GRID - FILTER
   const [ isFilterOn, setIsFilterOn ] = useState(false)
-  const [ filters, setFilters ] = useState(initialFilters)
+  const [ filters, setFilters ] = useState({})
   // DATA GRID - SELECTION
   const [ selectionModel, setSelectionModel ] = useState([])
   // DELETE DIALOG
