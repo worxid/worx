@@ -200,6 +200,11 @@
 			<artifactId>javaxt-core</artifactId>
 			<version>${javaxt.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-spring-boot-starter</artifactId>
+			<version>6.13.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
