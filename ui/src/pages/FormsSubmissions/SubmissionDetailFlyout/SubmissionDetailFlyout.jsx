@@ -13,6 +13,9 @@ import FlyoutHeader from 'components/Flyout/FlyoutHeader'
 import { PrivateLayoutContext } from 'contexts/PrivateLayoutContext'
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
+// CUSTOM COMPONENTS
+import CustomTooltip from 'components/Customs/CustomTooltip'
+
 // HOOK
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
@@ -167,32 +170,41 @@ const SubmissionDetailFlyout = (props) => {
           </Typography>
 
           <Stack direction='row' alignItems='center'>
-            {!isLoadingDownload && (<IconButton
-              id='menu-download-button'
-              aria-controls={Boolean(anchorEl) ? 'menu-download' : undefined}
-              aria-haspopup='true'
-              aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-              onClick={handleDownloadMenuClick}
-              className='no-zoom'
+            {/* DOWNLOAD SUBMISSION ICON BUTTON */}
+            {!isLoadingDownload && 
+            <CustomTooltip
+              title='Download Submission' 
+              placement='bottom'
             >
-              <IconDownload className='zoom'/>
-            </IconButton>)}
+              <IconButton
+                onClick={handleDownloadMenuClick}
+                className='no-zoom'
+              >
+                <IconDownload className='zoom'/>
+              </IconButton>
+            </CustomTooltip>}
 
+            {/* LOADING INDICATOR */}
             {isLoadingDownload && <CircularProgress color='primary' size={20} />}
 
-            <IconButton color='primary' onClick={() => setDialogDeleteForm(true)}>
-              <IconDelete />
-            </IconButton>
+            {/* DELETE FORM ICON BUTTON */}
+            <CustomTooltip
+              title='Delete Form' 
+              placement='bottom'
+            >
+              <IconButton 
+                color='primary' 
+                onClick={() => setDialogDeleteForm(true)}
+              >
+                <IconDelete />
+              </IconButton>
+            </CustomTooltip>
 
             {/* CUSTOMIZE COLUMNS MENU */}
             <Menu
-              id='menu-download'
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleDownloadMenuClose}
-              MenuListProps={{
-                'aria-labelledby': 'menu-download-button',
-              }}
               className={`${classes.menuDownload} neutralize-zoom-menu`}
             >
               <MenuItem onClick={() => handleDownloadIconButtonClick('pdf')}>
