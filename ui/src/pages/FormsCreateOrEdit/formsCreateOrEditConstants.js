@@ -22,6 +22,7 @@ export const dataListComponents = [
     id: uuid(),
     label: 'Text Field',
     description: 'Description',
+    allow_multi_lines: false,
     required: false,
     type: 'text',
     duplicateFrom: null,

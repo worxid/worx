@@ -231,7 +231,12 @@ const FieldProperties = () => {
       {selectedFieldsType === 'text' && (
         <FormGroup className={`${classes.formControl} marginBottom0`}>
           <FormControlLabel
-            control={(<Checkbox />)}
+            control={(<Checkbox
+              onChange={(event) => handleUpdateFieldPropertiesById(
+                selectedFieldsId, 'allow_multi_lines', Boolean(event.target.checked)
+              )}
+              checked={Boolean(getFieldPropertiesValueById(selectedFieldsId, 'allow_multi_lines'))}
+            />)}
             label='Allow multiple lines'
           />
         </FormGroup>
