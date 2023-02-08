@@ -152,7 +152,7 @@ const BoxAnswer = (props) => {
           primary={label}
           secondary={<>
             {(type === 'text' || type === 'date' || type === 'time' || type === 'integer') && (
-              <Typography>{values[findValuesKey(type)] || '-'}</Typography>
+              <Typography className={classes.textAnswer}>{values[findValuesKey(type)] || '-'}</Typography>
             )}
             {(type === 'checkbox_group') && itemFields?.group?.map((itemCheckbox, index) => (
               values[findValuesKey(type)][index] && <Chip className={classes.chipAnswer} label={itemCheckbox?.label || '-'} key={index} />

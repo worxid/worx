@@ -115,6 +115,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 8,
     fontWeight: 400,
   },
+  textAnswer: {
+    whiteSpace: 'pre-wrap',
+  }
 }))
 
 export default useStyles
