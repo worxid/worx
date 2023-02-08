@@ -114,9 +114,6 @@ const useStyles = makeStyles((theme) => ({
   signatureText: {
     paddingLeft: 8,
     fontWeight: 400,
-  },
-  textAnswer: {
-    whiteSpace: 'pre-wrap',
   }
 }))
 

@@ -108,6 +108,9 @@ const GlobalStyles = () => {
             textTransform: 'capitalize'
           },
         },
+        '.whiteSpacePreWrap': {
+          whiteSpace: 'pre-wrap'
+        },
         '.width100': {
           width: '100%',
         },
