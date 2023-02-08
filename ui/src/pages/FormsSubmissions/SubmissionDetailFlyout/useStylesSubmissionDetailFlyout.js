@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
   signatureText: {
     paddingLeft: 8,
     fontWeight: 400,
-  },
+  }
 }))
 
 export default useStyles
