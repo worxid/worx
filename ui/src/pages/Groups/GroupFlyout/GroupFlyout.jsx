@@ -395,10 +395,10 @@ const GroupFlyout = (props) => {
           {/* ADD TO GROUP BUTTON */}
           <Button 
             variant='contained'
-            className={layoutClasses.flyoutListItemActionButton}
+            className={`${layoutClasses.flyoutListItemActionButton} no-zoom`}
             onClick={(event) => setMenuAssignItemsAnchorElement(event.currentTarget)}
           >
-            Add to Group
+            <Typography variant='body2' className='zoom'>Add to Group</Typography>
           </Button>
         </Stack>
 
@@ -431,7 +431,7 @@ const GroupFlyout = (props) => {
           vertical: 'top',
           horizontal: 'left',
         }}
-        className={classes.colorPickerMenu}
+        className={`${classes.colorPickerMenu} neutralize-zoom-menu`}
       >
         <Stack
           direction='row' 
