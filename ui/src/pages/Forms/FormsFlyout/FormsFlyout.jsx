@@ -138,10 +138,8 @@ const FormsFlyout = (props) => {
             >
               <IconButton
                 onClick={(event) => setAnchorActionEl(event.currentTarget)}
-                className='no-zoom'
               >
-                <IconMoreVert 
-                  className='zoom' 
+                <IconMoreVert
                   fontSize='small'
                 />
               </IconButton>
@@ -202,7 +200,7 @@ const FormsFlyout = (props) => {
         page='forms'
         selectedItemId={selectionModel[0]}
         reloadData={reloadData}
-        className={classes.menuChangeGroup}
+        className={`${classes.menuChangeGroup} neutralize-zoom-menu`}
       />
 
       {/* DELETE CONFIRMATION */}

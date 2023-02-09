@@ -42,12 +42,12 @@ const Flyout = (props) => {
   return (
     <Dialog
       open={isFlyoutOpen}
-      className={classes.root}
+      className={`${classes.root} no-zoom`}
       TransitionComponent={Transition}
       onClose={() => setIsFlyoutOpen(false)}
     >
       <Stack 
-        className={`${classes.contentContainer} ${className}`}
+        className={`${classes.contentContainer} zoom ${className}`}
         direction='row'
       >
         {/* CLOSE ICON */}

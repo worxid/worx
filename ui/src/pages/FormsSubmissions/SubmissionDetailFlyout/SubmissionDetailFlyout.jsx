@@ -176,11 +176,8 @@ const SubmissionDetailFlyout = (props) => {
               title='Download Submission' 
               placement='bottom'
             >
-              <IconButton
-                onClick={handleDownloadMenuClick}
-                className='no-zoom'
-              >
-                <IconDownload className='zoom'/>
+              <IconButton onClick={handleDownloadMenuClick}>
+                <IconDownload />
               </IconButton>
             </CustomTooltip>}
 

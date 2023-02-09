@@ -42,6 +42,7 @@ import {
 
 // STYLES
 import useLayoutStyles from 'styles/layoutPrivate'
+import useStyles from '../devicesUseStyles'
 
 // UTILITIES
 import { getDefaultErrorMessage } from 'utilities/object'
@@ -60,6 +61,7 @@ const DevicesFlyout = (props) => {
   } = props
 
   const layoutClasses = useLayoutStyles()
+  const classes = useStyles()
 
   const { setIsFlyoutOpen } = useContext(PrivateLayoutContext)
   const { setSnackbarObject } = useContext(AllPagesContext)
@@ -259,6 +261,7 @@ const DevicesFlyout = (props) => {
         page='devices'
         selectedItemId={selectedDevice ? selectedDevice.id : null}
         reloadData={reloadData}
+        className={`${classes.menuChangeGroup} neutralize-zoom-menu`}
       />
     </Flyout>
   )

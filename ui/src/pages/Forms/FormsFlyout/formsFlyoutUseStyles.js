@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
   menuChangeGroup: {
     marginLeft: 16,
+    '& .MuiList-root': {
+      width: 760,
+    }
   },
   actionViewAll: {
     fontSize: 12,

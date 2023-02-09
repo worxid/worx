@@ -96,7 +96,7 @@ const MenuAssignItemsToGroup = (props) => {
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
       onClose={handleCloseMenu}
-      className={layoutClasses.menuChangeRoot}
+      className={`${layoutClasses.menuChangeRoot} neutralize-zoom-menu`}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'right',
@@ -104,6 +104,11 @@ const MenuAssignItemsToGroup = (props) => {
       transformOrigin={{
         vertical: 'top',
         horizontal: 'right',
+      }}
+      sx={{
+        '& .MuiList-root': {
+          width: '652px !important',
+        }
       }}
     >
       {/* SEARCH INPUT */}
