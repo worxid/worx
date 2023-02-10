@@ -96,7 +96,7 @@ public class FormServiceImpl implements FormService {
     @Override
     public Form submit(FormSubmitRequest request) {
         LocationDTO location = request.getSubmitLocation();
-        if (location.getAddress().isEmpty()) {
+        if (Objects.nonNull(location) && location.getAddress().isEmpty()) {
             String address = this.fetchAddress(location);
             request.getSubmitLocation().setAddress(address);
         }
