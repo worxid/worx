@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import id.worx.worx.common.exception.FormValidationReason;
 import id.worx.worx.common.exception.detail.ErrorDetail;
 import id.worx.worx.common.model.dto.Attachment;
 import id.worx.worx.common.model.dto.FormDTO;
+import id.worx.worx.common.model.dto.LocationDTO;
 import id.worx.worx.common.model.dto.SearchFormDTO;
 import id.worx.worx.common.model.forms.field.Field;
 import id.worx.worx.common.model.forms.field.FileField;
@@ -46,6 +48,7 @@ import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.FileSubmissionRepository;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
+import id.worx.worx.service.geocoder.GeocoderService;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.service.storage.FileStorageService;
 import id.worx.worx.util.JpaUtils;
@@ -70,6 +73,9 @@ public class FormServiceImpl implements FormService {
     private final FileStorageService fileStorageService;
     private final FileRepository fileRepository;
     private final FileSubmissionRepository fileSubmissionRepository;
+
+    private final GeocoderService geocoderService;
+
     private final AuthenticationContext authContext;
 
 
@@ -89,11 +95,18 @@ public class FormServiceImpl implements FormService {
 
     @Override
     public Form submit(FormSubmitRequest request) {
+        LocationDTO location = request.getSubmitLocation();
+        if (location.getAddress().isEmpty()) {
+            String address = this.fetchAddress(location);
+            request.getSubmitLocation().setAddress(address);
+        }
+
         Form form = this.submitOrElseThrowInvalid(request);
         form.setRespondentType(RespondentType.WEB_BROWSER);
         form.setRespondentLabel(RespondentType.WEB_BROWSER.getName());
         // TODO set respondent IP ?
         form.setRespondentIP("0.0.0.0");
+
 
         form = formRepository.save(form);
         updateFileState(form, request.getFields(), request.getValues());
@@ -156,7 +169,8 @@ public class FormServiceImpl implements FormService {
     }
 
     public Form getById(Long id) {
-        return formRepository.findById(id).orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
+        return formRepository.findById(id)
+                .orElseThrow(() -> new WorxException(WorxErrorCode.ENTITY_NOT_FOUND_ERROR));
     }
 
     private Form submitOrElseThrowInvalid(FormSubmitRequest request) {
@@ -263,19 +277,22 @@ public class FormServiceImpl implements FormService {
         Optional<File> optFile = fileRepository.findById(fileId);
 
         if (optFile.isEmpty()) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE,
+                    fieldId));
             return details;
         }
 
         File file = optFile.get();
         if (!fileStorageService.isObjectExist(file.getPath())) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE, fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_STATE,
+                    fieldId));
             return details;
         }
 
         Optional<FileSubmission> fileSubmission = fileSubmissionRepository.findByFile(file);
         if (fileSubmission.isPresent()) {
-            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION, fieldId));
+            details.add(new FormValidationErrorDetail(FormValidationReason.INVALID_FILE_SUBMISSION,
+                    fieldId));
             return details;
         }
 
@@ -432,6 +449,22 @@ public class FormServiceImpl implements FormService {
                         .path(file.getPath())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    private String fetchAddress(LocationDTO location) {
+        if (Objects.isNull(location.getLat()) || Objects.isNull(location.getLng())) {
+            return "";
+        }
+
+        List<id.worx.worx.common.model.dto.geocoder.LocationDTO> results =
+                geocoderService.reverse(location.getLat(), location.getLng(), false);
+
+        if (results.isEmpty()) {
+            return "";
+        }
+
+        id.worx.worx.common.model.dto.geocoder.LocationDTO firstResult = results.get(0);
+        return firstResult.getAddress();
     }
 
 }
