@@ -192,7 +192,7 @@ const FormsSubmissions = () => {
       setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
     }
     else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && wasRequestNotFound(resultFormTemplateDetail?.status)) {
-      navigate('/error', { state: { code: 404 } })
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
     }
     else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && !wasAccessTokenExpired(resultFormTemplateDetail.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultFormTemplateDetail))
@@ -246,7 +246,7 @@ const FormsSubmissions = () => {
       setTotalRow(resultSubmissionList?.data?.totalElements)
     }
     else if (!wasRequestCanceled(resultSubmissionList?.status) && wasRequestNotFound(resultSubmissionList?.status)) {
-      navigate('/error', { state: { code: 404 } })
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
     }
     else if (!wasRequestCanceled(resultSubmissionList?.status) && !wasAccessTokenExpired(resultSubmissionList.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultSubmissionList))
@@ -297,7 +297,7 @@ const FormsSubmissions = () => {
       setIsDialogMediasPreviewOpen(true)
     }
     else if (!wasRequestCanceled(resultMediaFilesData?.status) && wasRequestNotFound(resultMediaFilesData?.status)) {
-      navigate('/error', { state: { code: 404 } })
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
     }
     else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))

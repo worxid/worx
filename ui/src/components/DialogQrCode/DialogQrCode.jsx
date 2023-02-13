@@ -80,10 +80,7 @@ const DialogQrCode = (props) => {
     if (didSuccessfullyCallTheApi(response?.status)) {
       generateQR(response.data.value.link)
     }
-    else if (!wasRequestCanceled(response?.status) && wasRequestNotFound(response?.status)) {
-      navigate('/error', { state: { code: 404 } })
-    }
-    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status)) {
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status) && !wasRequestNotFound(response?.status)) {
       setSnackbarObject(getDefaultErrorMessage(response))
     }
   }

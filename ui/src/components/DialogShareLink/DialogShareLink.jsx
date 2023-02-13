@@ -118,10 +118,7 @@ const DialogShareLink = (props) => {
           setReceivers([])
           setIsDialogFormOpen(false)
         }
-        else if (!wasRequestCanceled(response?.status) && wasRequestNotFound(response?.status)) {
-          navigate('/error', { state: { code: 404 } })
-        }
-        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status)) {
+        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status) && !wasRequestNotFound(response?.status)) {
           message = getDefaultErrorMessage(response)
         }
       } 
@@ -172,10 +169,7 @@ const DialogShareLink = (props) => {
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
     }
-    else if (!wasRequestCanceled(response?.status) && wasRequestNotFound(response?.status)) {
-      navigate('/error', { state: { code: 404 } })
-    }
-    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status) && !wasRequestNotFound(response?.status)) {
       setFormLink('')
       setSnackbarObject(getDefaultErrorMessage(response))
     }
