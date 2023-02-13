@@ -1,6 +1,3 @@
-//APIS
-import axios from 'apis/axios'
-
 // QUERY
 import { stringify } from 'query-string'
 
