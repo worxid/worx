@@ -29,7 +29,7 @@ const Error = () => {
     Please go `
   }
   
-  if (location?.state?.source === 'submissions') source = '/forms'
+  if (location?.state?.source === 'submissions' || location?.state?.source === 'forms') source = '/forms'
 
   return (
     <Container className={`${classes.mainContainer} containerMaxWidth1400`}>
