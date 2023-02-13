@@ -21,6 +21,7 @@ const Error = () => {
   let title = 'Oops! Something went wrong.'
   let caption = `We’re sorry, the page you requested could not be found.
   Please go `
+  let source = '/'
 
   if (location?.state?.code === 404) {
     title = 'Not Found'
@@ -28,6 +29,8 @@ const Error = () => {
     Please go `
   }
   
+  if (location?.state?.source === 'submissions') source = '/forms'
+
   return (
     <Container className={`${classes.mainContainer} containerMaxWidth1400`}>
       <Stack 
@@ -58,9 +61,15 @@ const Error = () => {
         >
           {/* CAPTION */}
           {caption}
+          
+          {/* BACK LINK */}
+          {location?.state?.source &&
+          <Link href={source}>
+            back
+          </Link>}
 
           {/* HOMEPAGE LINK */}
-          to the&nbsp;
+          {location?.state?.source && ' or go '}to the&nbsp;
           <Link href='/'>
             homepage
           </Link>
