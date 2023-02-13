@@ -45,3 +45,8 @@ export const wasRequestCanceled = (inputStatus) => {
   if (inputStatus === 'Canceled') return true
   else return false
 }
+
+export const wasRequestNotFound = (inputStatus) => {
+  if (inputStatus === 404) return true
+  else return false
+}

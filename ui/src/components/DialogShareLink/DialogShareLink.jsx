@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // COMPONENTS
@@ -51,6 +52,7 @@ import {
   isEmailFormatValid, 
   wasAccessTokenExpired,
   wasRequestCanceled,
+  wasRequestNotFound,
 } from 'utilities/validation'
 
 const a11yProps = (index) => ({
@@ -70,6 +72,8 @@ const DialogShareLink = (props) => {
   // CONTEXTS
   const { breakpointType, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+
+  const navigate = useNavigate()
 
   // STATES
   const [currentTab, setCurrentTab] = useState(defaultSelectedTab || 0)
@@ -113,8 +117,8 @@ const DialogShareLink = (props) => {
 
           setReceivers([])
           setIsDialogFormOpen(false)
-        } 
-        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+        }
+        else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status) && !wasRequestNotFound(response?.status)) {
           message = getDefaultErrorMessage(response)
         }
       } 
@@ -128,9 +132,9 @@ const DialogShareLink = (props) => {
     } 
     else {
       message = {
-        severity:'error',
-        title:'',
-        message:'Email field must be filled'
+        severity: 'error',
+        title: '',
+        message: 'Email field must be filled'
       }
     }
 
@@ -148,9 +152,9 @@ const DialogShareLink = (props) => {
     navigator.clipboard.writeText(text)
     setSnackbarObject({
       open: true,
-      severity:'success',
-      title:'',
-      message:'Copied to clipboard'
+      severity: 'success',
+      title: '',
+      message: 'Copied to clipboard'
     })
   }
 
@@ -164,8 +168,8 @@ const DialogShareLink = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
-    } 
-    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status) && !wasRequestNotFound(response?.status)) {
       setFormLink('')
       setSnackbarObject(getDefaultErrorMessage(response))
     }

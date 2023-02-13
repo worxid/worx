@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -31,10 +31,11 @@ import {
   didSuccessfullyCallTheApi, 
   wasAccessTokenExpired,
   wasRequestCanceled,
+  wasRequestNotFound,
 } from 'utilities/validation'
 
 const FormsCreateOrEdit = () => {
-  // PARAMS
+  const navigate = useNavigate()
   const { formTemplateId } = useParams()
 
   // CONTEXT
@@ -78,6 +79,9 @@ const FormsCreateOrEdit = () => {
       })
       setListFields(addOtherKeyToFields)
       setIsFormLoading(false)
+    }
+    else if (!wasRequestCanceled(response?.status) && wasRequestNotFound(response?.status)) {
+      navigate('/error', { state: { code: 404, source: 'forms' } })
     }
     else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
       setSnackbarObject(getDefaultErrorMessage(response))
