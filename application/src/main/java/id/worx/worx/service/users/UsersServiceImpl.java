@@ -335,7 +335,7 @@ public class UsersServiceImpl implements UsersService {
         }
         Users data = getEmail.get();
         try {
-            if(data.getDashboardLogo().getPath() == null){
+            if(data.getDashboardLogo() == null){
                 url = "";
             }else{
                 url = clientService.getDownloadPresignedObjectUrl(data.getDashboardLogo().getPath());
