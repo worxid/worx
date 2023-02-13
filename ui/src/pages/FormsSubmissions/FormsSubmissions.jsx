@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -71,7 +71,6 @@ const FormsSubmissions = () => {
   // STYLES
   const classes = useStyles()
 
-  const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
