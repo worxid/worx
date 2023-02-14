@@ -1,14 +1,15 @@
 package id.worx.worx.repository;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import id.worx.worx.web.model.request.FormTemplateSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import id.worx.worx.entity.FormTemplate;
@@ -29,30 +30,22 @@ public interface FormTemplateRepository
         " INNER JOIN ft.forms f " +
         " INNER JOIN ft.assignedGroups g " +
         "WHERE (:userId IS NULL OR ft.userId = :userId) " +
-        " AND (:label IS NULL OR upper(ft.label) LIKE upper(concat('%', :label, '%'))) " +
-        " AND (:description IS NULL OR upper(ft.description) LIKE upper(concat('%', :description, '%'))) " +
-        " AND (:createdOn IS NULL OR ft.createdOn <= :createdOn) " +
-        " AND (:modifiedOn IS NULL OR ft.modifiedOn <= :modifiedOn) " +
-        " AND (:from IS NULL OR :to IS NULL OR ft.createdOn BETWEEN :from AND :to) " +
-        " AND (:assignedGroups IS NULL OR g.name IN :assignedGroups) " +
-        " AND (:submissionCount IS NULL OR size(ft.forms) = :submissionCount) " +
-        " AND (:globalSearch IS NULL OR (" +
-        "  upper(ft.label) LIKE upper(concat('%', :globalSearch, '%')) " +
-        "  OR upper(ft.description) LIKE upper(concat('%', :globalSearch, '%')) " +
-        "  OR upper(g.name) LIKE upper(concat('%', :globalSearch, '%')) " +
+        " AND (:#{#search.label} IS NULL OR upper(ft.label) LIKE upper(concat('%', :#{#search.label}, '%'))) " +
+        " AND (:#{#search.description} IS NULL OR upper(ft.description) LIKE upper(concat('%', :#{#search.description}, '%'))) " +
+        " AND (:#{#search.createdOn} IS NULL OR ft.createdOn <= :#{#search.createdOn}) " +
+        " AND (:#{#search.modifiedOn} IS NULL OR ft.modifiedOn <= :#{#search.modifiedOn}) " +
+        " AND (:#{#search.from} IS NULL OR :#{#search.to} IS NULL OR ft.createdOn BETWEEN :#{#search.from} AND :#{#search.to}) " +
+        " AND (:#{#search.assignedGroups} IS NULL OR g.name IN :#{#search.assignedGroups}) " +
+        " AND (:#{#search.submissionCount} IS NULL OR size(ft.forms) = :#{#search.submissionCount}) " +
+        " AND (:#{#search.globalSearch} IS NULL OR (" +
+        "  upper(ft.label) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
+        "  OR upper(ft.description) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
+        "  OR upper(g.name) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
         "))" +
         "GROUP BY ft.id")
     Page<FormTemplate> searchFormTemplates(
         @Nullable Long userId,
-        @Nullable String label,
-        @Nullable String description,
-        @Nullable Instant createdOn,
-        @Nullable Instant modifiedOn,
-        @Nullable Instant from,
-        @Nullable Instant to,
-        @Nullable List<String> assignedGroups,
-        @Nullable Integer submissionCount,
-        @Nullable String globalSearch,
+        @Param("search") FormTemplateSearchRequest search,
         Pageable pageable
     );
 }

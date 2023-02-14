@@ -64,27 +64,15 @@ public class FormTemplateServiceImpl implements FormTemplateService {
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
 
-        //Specification<FormTemplate> spec = specification.fromSearchRequest(
-        //    request,
-        //    authContext.getUsers().getId()
-        //);
         Pageable adjustedPageable = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),
             JpaUtils.replaceUnsafeSort(pageable.getSort(), sortMap)
         );
-        // return templateRepository.findAll(spec, adjustedPageable);
+
         return templateRepository.searchFormTemplates(
             authContext.getUsers().getId(),
-            request.getLabel(),
-            request.getDescription(),
-            request.getCreatedOn(),
-            request.getModifiedOn(),
-            request.getFrom(),
-            request.getTo(),
-            request.getAssignedGroups(),
-            request.getSubmissionCount(),
-            request.getGlobalSearch(),
+            request,
             adjustedPageable
         );
     }
