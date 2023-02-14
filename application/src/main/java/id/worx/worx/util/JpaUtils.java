@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
 import com.google.common.base.CaseFormat;
+import org.springframework.data.jpa.domain.JpaSort;
 
 public class JpaUtils {
 
@@ -53,5 +54,24 @@ public class JpaUtils {
                 })
                 .collect(Collectors.toList());
         return Sort.by(orders);
+    }
+
+    public static JpaSort replaceUnsafeSort(Sort sort, Map<String, String> map) {
+        Sort newSort = Sort.unsorted();
+
+        for (Order order : sort) {
+            String property = order.getProperty();
+            if (map.containsKey(order.getProperty())) {
+                property = map.get(order.getProperty());
+            }
+
+            if (newSort.isEmpty()) {
+                newSort = JpaSort.unsafe(order.getDirection(), property);
+            } else {
+                newSort.and(JpaSort.unsafe(order.getDirection(), property));
+            }
+        }
+
+        return (JpaSort) newSort;
     }
 }
