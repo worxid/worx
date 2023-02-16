@@ -56,7 +56,7 @@ public class JpaUtils {
         return Sort.by(orders);
     }
 
-    public static JpaSort replaceUnsafeSort(Sort sort, Map<String, String> map) {
+    public static Sort replaceUnsafeSort(Sort sort, Map<String, String> map) {
         Sort newSort = Sort.unsorted();
 
         for (Order order : sort) {
@@ -72,6 +72,6 @@ public class JpaUtils {
             }
         }
 
-        return (JpaSort) newSort;
+        return newSort;
     }
 }

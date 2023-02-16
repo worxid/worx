@@ -41,8 +41,8 @@ public interface FormTemplateRepository
         "  upper(ft.label) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
         "  OR upper(ft.description) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
         "  OR upper(g.name) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
-        "))" +
-        "GROUP BY ft.id")
+        ")) " +
+        "GROUP BY ft.id, g.name")
     Page<FormTemplate> searchFormTemplates(
         @Nullable Long userId,
         @Param("search") FormTemplateSearchRequest search,

@@ -57,8 +57,11 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     private final AuthenticationContext authContext;
 
-    private static final Map<String, String> sortMap = Map.ofEntries(
-        Map.entry("submission_count", "(size(ft.forms))")
+    private static final Map<String, String> sortMap = Map.of(
+        "submission_count", "(size(ft.forms))",
+        "modified_on", "(ft.modifiedOn)",
+        "created_on", "(ft.createdOn)",
+        "assigned_groups", "(g.name)"
     );
 
     @Override
