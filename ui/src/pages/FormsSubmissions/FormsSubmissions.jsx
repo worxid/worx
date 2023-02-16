@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 // COMPONENTS
 import AppBar from 'components/AppBar/AppBar'
@@ -56,6 +56,7 @@ import {
   didSuccessfullyCallTheApi, 
   wasAccessTokenExpired,
   wasRequestCanceled,
+  wasRequestNotFound,
 } from 'utilities/validation'
 import { convertCamelCaseToSnakeCase } from 'utilities/string'
 
@@ -70,7 +71,7 @@ const FormsSubmissions = () => {
   // STYLES
   const classes = useStyles()
 
-  // NAVIGATE
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
   const axiosPrivate = useAxiosPrivate()
@@ -189,6 +190,9 @@ const FormsSubmissions = () => {
     if (resultFormTemplateDetail.status === 200 && inputIsMounted) {
       setFormTemplateDetail({ ...resultFormTemplateDetail.data.value })
     }
+    else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && wasRequestNotFound(resultFormTemplateDetail?.status)) {
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
+    }
     else if (!wasRequestCanceled(resultFormTemplateDetail?.status) && !wasAccessTokenExpired(resultFormTemplateDetail.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultFormTemplateDetail))
     }
@@ -240,6 +244,9 @@ const FormsSubmissions = () => {
       setRawTableData(submissionList)
       setTotalRow(resultSubmissionList?.data?.totalElements)
     }
+    else if (!wasRequestCanceled(resultSubmissionList?.status) && wasRequestNotFound(resultSubmissionList?.status)) {
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
+    }
     else if (!wasRequestCanceled(resultSubmissionList?.status) && !wasAccessTokenExpired(resultSubmissionList.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultSubmissionList))
     }
@@ -287,6 +294,9 @@ const FormsSubmissions = () => {
       setMediaPreviewList(resultMediaFilesData.data.list)
       setMediaPreviewActiveStep(0)
       setIsDialogMediasPreviewOpen(true)
+    }
+    else if (!wasRequestCanceled(resultMediaFilesData?.status) && wasRequestNotFound(resultMediaFilesData?.status)) {
+      navigate('/error', { state: { code: 404, source: 'submissions' } })
     }
     else if (!wasRequestCanceled(resultMediaFilesData?.status) && !wasAccessTokenExpired(resultMediaFilesData.status)) {
       setSnackbarObject(getDefaultErrorMessage(resultMediaFilesData))

@@ -90,7 +90,9 @@ const Forms = () => {
       hide: false,
       isFilterShown: true,
       isSortShown: true,
-      renderCell: (params) => params.value && (<CellGroups dataValue={params.value} />),
+      renderCell: (params) => {
+        return params.value && (<CellGroups dataValue={params.value} limitShowGroup={true} isColumnGroup={true} />)
+      },
     },
     {
       field: 'created_on',

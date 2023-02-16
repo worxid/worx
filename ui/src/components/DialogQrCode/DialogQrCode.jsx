@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // COMPONENTS
@@ -38,6 +39,7 @@ import {
   didSuccessfullyCallTheApi,
   wasAccessTokenExpired,
   wasRequestCanceled,
+  wasRequestNotFound,
 } from 'utilities/validation'
 
 const DialogQrCode = (props) => {
@@ -50,6 +52,8 @@ const DialogQrCode = (props) => {
   // CONTEXTS
   const { setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
+
+  const navigate = useNavigate()
 
   // STATES
   const [qrCode, setqrCode] = useState('')
@@ -75,8 +79,8 @@ const DialogQrCode = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       generateQR(response.data.value.link)
-    } 
-    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status)) {
+    }
+    else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response?.status) && !wasRequestNotFound(response?.status)) {
       setSnackbarObject(getDefaultErrorMessage(response))
     }
   }
