@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -56,15 +57,24 @@ public class FormTemplateServiceImpl implements FormTemplateService {
 
     private final AuthenticationContext authContext;
 
+    private static final Map<String, String> sortMap = Map.ofEntries(
+        Map.entry("submission_count", "(size(ft.forms))")
+    );
+
     @Override
     public Page<FormTemplate> search(FormTemplateSearchRequest request, Pageable pageable) {
 
-        Specification<FormTemplate> spec = specification.fromSearchRequest(request,
-            authContext.getUsers().getId());
+        Pageable adjustedPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            JpaUtils.replaceUnsafeSort(pageable.getSort(), sortMap)
+        );
 
-        Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            JpaUtils.replaceSort(pageable.getSort()));
-        return templateRepository.findAll(spec, adjustedPageable);
+        return templateRepository.searchFormTemplates(
+            authContext.getUsers().getId(),
+            request,
+            adjustedPageable
+        );
     }
 
     @Override
