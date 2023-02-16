@@ -106,7 +106,10 @@ const SubmissionDetailFlyout = (props) => {
 
     const resultDownload = await postExportSubmissionDetail(
       abortController.signal,
-      { form_id: submissionDetail.id },
+      { 
+        form_id: submissionDetail.id,
+        option: format.toUpperCase(), 
+      },
       axiosPrivate,
     )
 
