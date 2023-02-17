@@ -26,8 +26,8 @@ public interface FormTemplateRepository
 
     List<FormTemplate> findAllByUserId(Long userId);
 
-    @Query(
-        value = "SELECT DISTINCT ft FROM FormTemplate ft " +
+        @Query(
+        value = "SELECT ft FROM FormTemplate ft " +
             " LEFT JOIN ft.forms f " +
             " LEFT JOIN ft.assignedGroups g " +
             "WHERE (:userId IS NULL OR ft.userId = :userId) " +
@@ -42,7 +42,7 @@ public interface FormTemplateRepository
             "  upper(ft.label) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
             "  OR upper(ft.description) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
             "  OR upper(g.name) LIKE upper(concat('%', :#{#search.globalSearch}, '%')) " +
-            ")) GROUP BY ft.id, g.name"
+            ")) GROUP BY ft.id"
     )
     Page<FormTemplate> searchFormTemplates(
         @Nullable Long userId,

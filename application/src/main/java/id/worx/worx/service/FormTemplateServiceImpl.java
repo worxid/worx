@@ -61,7 +61,7 @@ public class FormTemplateServiceImpl implements FormTemplateService {
         "submission_count", "(size(ft.forms))",
         "modified_on", "(ft.modifiedOn)",
         "created_on", "(ft.createdOn)",
-        "assigned_groups", "(g.name)"
+        "assigned_groups", "GROUP_CONCAT(g.name)"
     );
 
     @Override
