@@ -11,9 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import org.springframework.util.Assert;
-
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import id.worx.worx.common.model.dto.FileDTO;
@@ -43,7 +41,8 @@ public class FormUtils {
     private static final String FILL_STAR_VALUE = "★";
     private static final String EMPTY_STAR_VALUE = "☆";
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm:ss a z");
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm:ss a z");
 
     private FormUtils() {
         throw new IllegalStateException("Utility class");
@@ -156,7 +155,8 @@ public class FormUtils {
         return context;
     }
 
-    public static FieldContext toFieldContext(Field field, List<FileDTO> files, Dimension boundary) {
+    public static FieldContext toFieldContext(Field field, List<FileDTO> files,
+            Dimension boundary) {
         Assert.isTrue(field.getType().containsFile(), "only accept file related field");
 
         FieldContext context = FieldContext.builder()
@@ -214,10 +214,11 @@ public class FormUtils {
 
     public static List<String> getValueAsString(Field field, Value value) {
         Assert.isTrue(!field.getType().containsFile(), "only accept non file field");
+        List<String> results = List.of(NO_DATA_PROVIDED_STRING);
 
         if (value instanceof TextValue) {
             TextValue temp = (TextValue) value;
-            return List.of(temp.getValue());
+            results = List.of(temp.getValue());
         }
 
         if (value instanceof CheckboxGroupValue) {
@@ -234,7 +235,7 @@ public class FormUtils {
                 }
             }
 
-            return labels;
+            results = labels;
         }
 
         if (value instanceof DropdownValue) {
@@ -244,7 +245,7 @@ public class FormUtils {
             Integer index = temp.getValueIndex();
             Option option = options.get(index);
 
-            return List.of(option.getLabel());
+            results = List.of(option.getLabel());
         }
 
         if (value instanceof RadioGroupValue) {
@@ -254,41 +255,43 @@ public class FormUtils {
             Integer index = temp.getValueIndex();
             Option option = options.get(index);
 
-            return List.of(option.getLabel());
+            results = List.of(option.getLabel());
         }
 
         if (value instanceof DateValue) {
             DateValue temp = (DateValue) value;
-            return List.of(temp.getValue().toString());
+            results = List.of(temp.getValue().toString());
         }
 
         if (value instanceof RatingValue) {
             RatingField tempField = (RatingField) field;
             RatingValue temp = (RatingValue) value;
-            return List.of(FormUtils.generateRatingString(temp.getValue(), tempField.getMaxStars()));
+            results = List.of(
+                    FormUtils.generateRatingString(
+                            temp.getValue(), tempField.getMaxStars()));
         }
 
         if (value instanceof BarcodeValue) {
             BarcodeValue temp = (BarcodeValue) value;
-            return List.of(temp.getValue());
+            results = List.of(temp.getValue());
         }
 
         if (value instanceof TimeValue) {
             TimeValue temp = (TimeValue) value;
-            return List.of(temp.getValue().toString());
+            results = List.of(temp.getValue().toString());
         }
 
         if (value instanceof BooleanValue) {
             BooleanValue temp = (BooleanValue) value;
-            return List.of(temp.getValue().toString());
+            results = List.of(temp.getValue().toString());
         }
 
         if (value instanceof IntegerValue) {
             IntegerValue temp = (IntegerValue) value;
-            return List.of(temp.getValue().toString());
+            results = List.of(temp.getValue().toString());
         }
 
-        return List.of(NO_DATA_PROVIDED_STRING);
+        return results;
     }
 
     public static List<String> getValueAsString(List<FileDTO> files) {
