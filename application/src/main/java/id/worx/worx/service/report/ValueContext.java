@@ -1,7 +1,7 @@
 package id.worx.worx.service.report;
 
 import java.util.Objects;
-
+import fr.opensagres.xdocreport.core.utils.StringEscapeUtils;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
 import fr.opensagres.xdocreport.template.annotations.FieldMetadata;
 import fr.opensagres.xdocreport.template.annotations.ImageMetadata;
@@ -35,11 +35,11 @@ public class ValueContext {
     @FieldMetadata(syntaxKind = "Html")
     public String getLabel() {
         if (hasHyperlink()) {
-            String encodedHyperlink = hyperlink.replace("&", "&amp;");
+            String encodedHyperlink = StringEscapeUtils.escapeHtml(hyperlink);
             return String.format("<a href=\"%s\"> %s </a>", encodedHyperlink, label);
         }
 
-        return label;
+        return StringEscapeUtils.escapeHtml(label);
     }
 
     public boolean hasHyperlink() {
