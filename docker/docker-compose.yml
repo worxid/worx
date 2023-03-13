@@ -5,6 +5,8 @@ services:
     image: ${WORX_NODE_DOCKER_NAME}
     ports:
       - "8080:8080"
+    networks:
+      - backend
     restart: always
     env_file:
       - worx-core.env
@@ -25,9 +27,16 @@ services:
       - mysql.env
     ports:
       - "3306"
+    networks:
+      - backend
     restart: always
     volumes:
       - ./.docker/db/data:/var/lib/mysql
       - ./.docker/db/conf.d:/etc/mysql/conf.d/
       - ./.docker/db/log:/var/log/mysql
       - ./.docker/db/backup:/backup
+
+networks:
+  backend:
+    name: backend_network
+    driver: bridge
