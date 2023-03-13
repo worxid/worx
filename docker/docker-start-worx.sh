@@ -33,9 +33,27 @@ docker-compose -f minio.yml up -d
 echo -e "${GREEN}\xE2\x9C\x94${NC} Object storage"
 
 echo "Starting application ..."
+
+if [[ -z "${WORX_NODE_DOCKER_NAME}" ]]; then
+    echo "Using default image for worx-core"
+    WORX_NODE_DOCKER_NAME="shygnome3/worx:latest"
+else
+    WORX_NODE_DOCKER_NAME="${WORX_NODE_DOCKER_NAME}"
+fi
+
+if [[ -z "${WEB_UI_DOCKER_NAME}" ]]; then
+    echo "Using default image for worx-ui"
+    WEB_UI_DOCKER_NAME="shygnome3/worx-web-ui:latest"
+else
+    WEB_UI_DOCKER_NAME="${WEB_UI_DOCKER_NAME}"
+fi
+
+export WORX_NODE_DOCKER_NAME
+export WEB_UI_DOCKER_NAME
+
 mkdir -p .docker/db
 docker-compose -f docker-compose.yml pull
 docker-compose -f docker-compose.yml up -d
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
-echo "Worx is starting ${GREEN}\xE2\x9C\x94${NC}"
+echo -e "Worx is starting ${GREEN}\xE2\x9C\x94${NC}"
