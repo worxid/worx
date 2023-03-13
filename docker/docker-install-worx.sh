@@ -59,10 +59,10 @@ docker-compose -f docker-compose.yml up -d
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
 echo "Stopping object storage ..."
-docker-compose -f minio.yml down -v
+docker-compose -f minio.yml down -v --remove-orphans
 
 echo "Stopping application ..."
-docker-compose -f docker-compose.yml down -v
+docker-compose -f docker-compose.yml down -v --remove-orphans
 
 echo "Installation process is complete."
 echo "To start the services, run \"docker-start-worx.sh\""

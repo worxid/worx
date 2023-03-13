@@ -20,7 +20,7 @@ else
 fi
 
 echo "Stopping object storage ..."
-docker-compose -f minio.yml down -v
+docker-compose -f minio.yml down -v --remove-orphans
 
 echo "Stopping application ..."
 
@@ -41,4 +41,4 @@ fi
 export WORX_NODE_DOCKER_NAME
 export WEB_UI_DOCKER_NAME
 
-docker-compose -f docker-compose.yml down -v
+docker-compose -f docker-compose.yml down -v --remove-orphans
