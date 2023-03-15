@@ -69,8 +69,7 @@ cp -rf worx-web-ui.env ../ui/.env
 cp -rf worx-core.env ../application/.env
 
 mkdir -p .docker/db
-docker-compose -f docker-compose.build.yml pull
-docker-compose -f docker-compose.build.yml up -d
+docker-compose -f docker-compose.build.yml up -d --build
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
 echo "Installation in progress ..."

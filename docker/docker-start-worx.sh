@@ -54,8 +54,7 @@ export SPRING_JPA_HIBERNATE_DDL_AUTO=update
 export SPRING_PROFILE=dev,swagger
 
 mkdir -p .docker/db
-docker-compose -f docker-compose.build.yml pull
-docker-compose -f docker-compose.build.yml up -d
+docker-compose -f docker-compose.build.yml up -d --build
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
 echo -e "Worx is starting ${GREEN}\xE2\x9C\x94${NC}"

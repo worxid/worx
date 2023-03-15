@@ -3,9 +3,6 @@ version: '3.8'
 services:
   worx-core1:
     image: ${WORX_NODE_DOCKER_NAME}
-    build:
-      context: ../application/
-      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: always
