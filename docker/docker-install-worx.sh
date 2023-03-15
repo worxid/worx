@@ -82,7 +82,7 @@ echo "Stopping object storage ..."
 docker-compose -f minio.yml down -v --remove-orphans
 
 echo "Stopping application ..."
-docker-compose -f docker-compose.yml down -v --remove-orphans
+docker-compose -f docker-compose.build.yml down -v --remove-orphans
 
 echo "Installation process is complete."
 echo "To start the services, run \"docker-start-worx.sh\""

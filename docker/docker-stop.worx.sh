@@ -41,4 +41,4 @@ fi
 export WORX_NODE_DOCKER_NAME
 export WEB_UI_DOCKER_NAME
 
-docker-compose -f docker-compose.yml down -v --remove-orphans
+docker-compose -f docker-compose.build.yml down -v --remove-orphans
