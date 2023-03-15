@@ -50,6 +50,8 @@ fi
 
 export WORX_NODE_DOCKER_NAME
 export WEB_UI_DOCKER_NAME
+export SPRING_JPA_HIBERNATE_DDL_AUTO=update
+export SPRING_PROFILE=dev,swagger
 
 mkdir -p .docker/db
 docker-compose -f docker-compose.build.yml pull
