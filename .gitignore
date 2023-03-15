@@ -34,3 +34,6 @@ build/
 
 ### .env ###
 .env
+
+### Docker ###
+.docker
