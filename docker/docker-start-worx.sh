@@ -52,8 +52,8 @@ export WORX_NODE_DOCKER_NAME
 export WEB_UI_DOCKER_NAME
 
 mkdir -p .docker/db
-docker-compose -f docker-compose.yml pull
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.build.yml pull
+docker-compose -f docker-compose.build.yml up -d
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
 echo -e "Worx is starting ${GREEN}\xE2\x9C\x94${NC}"
