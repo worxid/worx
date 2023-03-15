@@ -62,8 +62,7 @@ fi
 
 export WORX_NODE_DOCKER_NAME
 export WEB_UI_DOCKER_NAME
-export SPRING_JPA_HIBERNATE_DDL_AUTO=update
-export SPRING_PROFILE=dev,swagger
+
 
 cp -rf worx-web-ui.env ../ui/.env
 cp -rf worx-core.env ../application/.env
