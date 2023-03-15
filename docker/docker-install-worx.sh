@@ -73,6 +73,11 @@ docker-compose -f docker-compose.build.yml pull
 docker-compose -f docker-compose.build.yml up -d
 echo -e "${GREEN}\xE2\x9C\x94${NC} Application"
 
+echo "Installation in progress ..."
+sleep 1m
+echo "Installation done"
+
+
 echo "Stopping object storage ..."
 docker-compose -f minio.yml down -v --remove-orphans
 
