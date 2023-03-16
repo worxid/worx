@@ -449,6 +449,7 @@ const FormsSubmissions = () => {
           cellClassName: 'cell-source-custom',
           fieldInformation: {...item},
           renderCell: (params) => getRenderCellByColumnType(params),
+          sortable: false,
         }
       })]
 

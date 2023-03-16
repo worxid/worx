@@ -241,7 +241,7 @@ const MenuChangeGroup = (props) => {
               {/* RADIO */}
               <ListItemIcon>
                 <Checkbox
-                  checked={Boolean(tempSelectedGroupList?.find(itemData => itemData.name === item.name))}
+                  checked={Boolean(tempSelectedGroupList?.find(itemData => itemData?.name === item?.name))}
                 />
               </ListItemIcon>
               {/* TEXT */}
