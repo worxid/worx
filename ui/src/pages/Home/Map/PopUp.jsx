@@ -72,7 +72,7 @@ const Popup = (props) => {
           {/* LINK */}
           {item.type === 'link' &&
           <Link
-            href={`/forms/submission-detail?formTemplateId=${markerData?.template_id}&submissionId=${markerData?.id}`}
+            href={`/forms/submissions?formTemplateId=${markerData?.template_id}&submissionId=${markerData?.id}`}
             underline='hover'
             className={classes.popUpListItemLink}
           >
