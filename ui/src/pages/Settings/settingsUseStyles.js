@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     border: '1px dashed #020202',
+    position: 'relative',
+    backgroundColor: alpha(theme.palette.common.black, 0.14),
+    padding: 8,
+  },
+  buttonDeletelogo: {
+    position: 'absolute',
+    top: -20,
+    right: -20,
+    color: theme.palette.primary.main
   },
   iconAddLogo: {
     width: 14,
