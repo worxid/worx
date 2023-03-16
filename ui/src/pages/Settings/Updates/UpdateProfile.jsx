@@ -202,8 +202,6 @@ const UpdateProfile = (props) => {
     if(auth?.user?.logo_url) setInitialLogo(auth?.user?.logo_url)
   }, [auth])
 
-  console.log({ preview, selectedFile })
-
   return (
     <form
       onSubmit={handleFormButtonClick}
