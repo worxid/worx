@@ -629,9 +629,10 @@ const InputForm = (props) => {
           error={Boolean(formObjectError?.[item.id])}
         >
           <Rating
+            className='no-zoom'
             value={formObject[item.id]?.[getKeyValue(item.type)] >= 1
               ? formObject[item.id]?.[getKeyValue(item.type)] : 0}
-            max={item.ratingStarsCount}
+            max={item.max_stars}
             size='medium'
             emptyIcon={<IconStar className={classes.opacityHalf}/>}
           />
