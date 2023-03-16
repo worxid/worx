@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
+// ASSETS
+import LogoProduct from 'assets/images/logos/product-logo-with-text-white.svg'
+
 // CONTEXTS
 import { AllPagesContext } from 'contexts/AllPagesContext'
 
@@ -11,6 +14,7 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import IconButton from '@mui/material/IconButton'
 import Input from '@mui/material/Input'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -19,6 +23,7 @@ import Typography from '@mui/material/Typography'
 
 // MUI ICONS
 import IconAdd from '@mui/icons-material/Add'
+import IconDelete from '@mui/icons-material/Delete'
 import IconUpload from '@mui/icons-material/Upload'
 
 // MUI LABS
@@ -81,18 +86,6 @@ const UpdateProfile = (props) => {
     })
   }
 
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined)
-      return
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile)
-    setPreview(objectUrl)
-
-    return () => URL.revokeObjectURL(objectUrl)
-  }, [selectedFile])
-
   const onSelectFile = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined)
@@ -100,6 +93,9 @@ const UpdateProfile = (props) => {
     }
 
     setSelectedFile(e.target.files[0])
+    const objectUrl = URL.createObjectURL(e.target.files[0])
+    setPreview(objectUrl)
+    setInitialLogo(objectUrl)
   }
 
   // HANDLE BUTTON CLICK
@@ -159,14 +155,19 @@ const UpdateProfile = (props) => {
           
       } 
       else {
+        const paramsSubmit = {
+          fullname: formObject.fullName,
+          phone: formObject.phoneNumber,
+          organization_name: formObject.organizationName,
+        }
+
+        if(initialLogo === LogoProduct) {
+          paramsSubmit['logo_file_id'] = null
+        }
+
         const resultEditProfile = await putEditProfile(
           abortController.signal,
-          {
-            fullname: formObject.fullName,
-            phone: formObject.phoneNumber,
-            organization_name: formObject.organizationName,
-            logo_file_id: null,
-          },
+          paramsSubmit,
           axiosPrivate,
         )
   
@@ -190,6 +191,18 @@ const UpdateProfile = (props) => {
 
     setIsLoading(false)
   }
+
+  const handleDeleteLogoClick = () => {
+    setPreview(undefined)
+    setSelectedFile(null)
+    setInitialLogo(LogoProduct)
+  }
+
+  useEffect(() => {
+    if(auth?.user?.logo_url) setInitialLogo(auth?.user?.logo_url)
+  }, [auth])
+
+  console.log({ preview, selectedFile })
 
   return (
     <form
@@ -291,8 +304,12 @@ const UpdateProfile = (props) => {
       </Typography>
       <Stack direction={'row'}>
         <Box className={classes.boxAddLogo}>
+          <IconButton className={classes.buttonDeletelogo} onClick={() => handleDeleteLogoClick()}>
+            <IconDelete />
+          </IconButton>
+
           {selectedFile &&  <img src={preview} className={classes.imagePreview} alt='' /> }
-          {initialLogo && !selectedFile &&  <img src={initialLogo} className={classes.imagePreview} alt='' /> }
+          {initialLogo && !selectedFile &&  <img src={initialLogo ? initialLogo : LogoProduct} className={classes.imagePreview} alt='' /> }
           {!selectedFile && !initialLogo && <IconAdd className={classes.iconAddLogo} />}
         </Box>
         <Stack>
