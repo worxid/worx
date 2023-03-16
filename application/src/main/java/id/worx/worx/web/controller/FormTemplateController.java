@@ -77,7 +77,7 @@ public class FormTemplateController implements SecuredRestController {
     })
     @PostMapping
     public ResponseEntity<BaseValueResponse<FormTemplateDTO>> create(
-            @RequestBody @Valid FormTemplateRequest request) {
+            @RequestBody FormTemplateRequest request) {
         FormTemplate template = templateService.create(request);
         FormTemplateDTO dto = templateService.toDTO(template);
         BaseValueResponse<FormTemplateDTO> response = BaseValueResponse.<FormTemplateDTO>builder()
