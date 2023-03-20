@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // COMPONENTS
@@ -72,8 +71,6 @@ const DialogShareLink = (props) => {
   // CONTEXTS
   const { breakpointType, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
-
-  const navigate = useNavigate()
 
   // STATES
   const [currentTab, setCurrentTab] = useState(defaultSelectedTab || 0)
@@ -202,15 +199,42 @@ const DialogShareLink = (props) => {
       {!hideTabHeader
         ? (
           <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
-            {isShowTabEmail && <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />}
-            {isShowTabLink && <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />}
+            {isShowTabLink && <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(0)} />}
+            {isShowTabEmail && <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(1)} />}
           </Tabs>
         )
         : <Divider />
       }
 
+      {/* CONTENT DIRECT LINK */}
+      {(currentTab === 0 && isShowTabLink) && (<Stack className={classes.content}>
+        <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
+        <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
+
+        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
+          <Stack direction='row' alignItems='center' className={classes.boxLink}>
+            <IconLink className={classes.iconLink} fontSize='small'/>
+
+            <Typography variant='caption' color='text.secondary' noWrap fontWeight={600}>
+              {formLink}
+            </Typography>
+          </Stack>
+
+          <Stack className={classes.actionWrap} width='100%'>
+            <Button
+              size='small'
+              variant='contained'
+              className={`${classes.buttonRedPrimary} heightFitContent`}
+              onClick={(event) => handleButtonCopyClick(event, formLink)}
+            >
+              Copy Link
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>)}
+
       {/* CONTENT SHARE EMAIL */}
-      {(currentTab === 0 && isShowTabEmail) && (
+      {(currentTab === 1 && isShowTabEmail) && (
         <Stack className={classes.content}>
           <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
           <Typography variant='caption' color='text.secondary' fontWeight={600}>Share a direct link to your form via email</Typography>
@@ -263,33 +287,6 @@ const DialogShareLink = (props) => {
           </Stack>
         </Stack>
       )}
-
-      {/* CONTENT DIRECT LINK */}
-      {(currentTab === 1 && isShowTabLink) && (<Stack className={classes.content}>
-        <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
-        <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
-
-        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
-          <Stack direction='row' alignItems='center' className={classes.boxLink}>
-            <IconLink className={classes.iconLink} fontSize='small'/>
-
-            <Typography variant='caption' color='text.secondary' noWrap fontWeight={600}>
-              {formLink}
-            </Typography>
-          </Stack>
-
-          <Stack className={classes.actionWrap} width='100%'>
-            <Button
-              size='small'
-              variant='contained'
-              className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={(event) => handleButtonCopyClick(event, formLink)}
-            >
-              Copy Link
-            </Button>
-          </Stack>
-        </Stack>
-      </Stack>)}
 
       <Divider className={classes.dividerContent}/>
 
