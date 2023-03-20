@@ -64,8 +64,8 @@ export const getTransactionChartOptions = (
         fontWeight: 400,
       },
       formatter: function (value) {
-        if (value === Math.min(...inputList.map(item => item.y))) return `min ${value}`
-        else if (value === Math.max(...inputList.map(item => item.y))) return `max ${value}`
+        if (value === Math.min(...inputList.map(item => item.y))) return value
+        else if (value === Math.max(...inputList.map(item => item.y))) return value
         else return ''
       },
     },
