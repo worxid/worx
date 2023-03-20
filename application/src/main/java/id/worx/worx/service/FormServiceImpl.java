@@ -48,6 +48,7 @@ import id.worx.worx.repository.FileRepository;
 import id.worx.worx.repository.FileSubmissionRepository;
 import id.worx.worx.repository.FormRepository;
 import id.worx.worx.repository.FormTemplateRepository;
+import id.worx.worx.service.geocoder.DisabledGeocoderService;
 import id.worx.worx.service.geocoder.GeocoderService;
 import id.worx.worx.service.specification.FormSpecification;
 import id.worx.worx.service.storage.FileStorageService;
@@ -452,6 +453,11 @@ public class FormServiceImpl implements FormService {
     }
 
     private String fetchAddress(LocationDTO location) {
+        // TODO handle disabled geocoder condition properly
+        if (geocoderService instanceof DisabledGeocoderService) {
+            return "";
+        }
+
         if (Objects.isNull(location.getLat()) || Objects.isNull(location.getLng())) {
             return "";
         }
