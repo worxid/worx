@@ -147,6 +147,9 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 12,
       fontWeight: 600,
       color: theme.palette.text.secondary,
+      '&.Mui-disabled': {
+        '-webkit-text-fill-color': theme.palette.text.secondary,
+      }
     },
     '& .MuiOutlinedInput-notchedOutline': {
       border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)} !important`
