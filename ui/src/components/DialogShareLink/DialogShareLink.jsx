@@ -17,6 +17,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Stack from '@mui/material/Stack'
 import Tabs from '@mui/material/Tabs'
@@ -212,12 +213,18 @@ const DialogShareLink = (props) => {
         <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
 
         <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
-          <Stack direction='row' alignItems='center' className={classes.boxLink}>
-            <IconLink className={classes.iconLink} fontSize='small'/>
-
-            <Typography variant='caption' color='text.secondary' noWrap fontWeight={600}>
-              {formLink}
-            </Typography>
+          <Stack>
+            <TextField
+              className={classes.inputCopyLink}
+              defaultValue={formLink}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <IconLink className={classes.iconLink} fontSize='small'/>
+                  </InputAdornment>)
+              }}
+              disabled
+            />
           </Stack>
 
           <Stack className={classes.actionWrap} width='100%'>
