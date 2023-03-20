@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // COMPONENTS
@@ -15,9 +14,11 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Stack from '@mui/material/Stack'
 import Tabs from '@mui/material/Tabs'
@@ -55,6 +56,9 @@ import {
   wasRequestNotFound,
 } from 'utilities/validation'
 
+// QR CODE
+import QRCode from 'qrcode'
+
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
   'aria-controls': `simple-tabpanel-${index}`,
@@ -73,15 +77,25 @@ const DialogShareLink = (props) => {
   const { breakpointType, setSnackbarObject } = useContext(AllPagesContext)
   const { setIsDialogFormOpen } = useContext(PrivateLayoutContext)
 
-  const navigate = useNavigate()
-
   // STATES
   const [currentTab, setCurrentTab] = useState(defaultSelectedTab || 0)
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
   const [formLink, setFormLink] = useState('')
+  const [qrCode, setqrCode] = useState('')
 
   const axiosPrivate = useAxiosPrivate()
+
+  // GENERATE QR
+  const generateQR = async text => {
+    if(!text) return
+    try {
+      const result = await QRCode.toDataURL(text)
+      setqrCode(result)
+    } catch (err) {
+      setqrCode(err)
+    }
+  }
 
   // HANDLE BUTTON SEND CLICK
   const handleButtonSendClick = async () => {
@@ -168,6 +182,7 @@ const DialogShareLink = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
+      generateQR(response.data.value.link)
     }
     else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status) && !wasRequestNotFound(response?.status)) {
       setFormLink('')
@@ -202,15 +217,52 @@ const DialogShareLink = (props) => {
       {!hideTabHeader
         ? (
           <Tabs className={classes.tabs} value={currentTab} onChange={(event, newValue) => setCurrentTab(newValue)}>
-            {isShowTabEmail && <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(0)} />}
-            {isShowTabLink && <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(1)} />}
+            {isShowTabLink && <Tab icon={breakpointType !== 'xs' && <IconLink fontSize='small'/>} iconPosition='start' label='Link' {...a11yProps(0)} />}
+            {isShowTabEmail && <Tab icon={breakpointType !== 'xs' && <IconMailOutline fontSize='small'/>} iconPosition='start' label='Email' {...a11yProps(1)} />}
           </Tabs>
         )
         : <Divider />
       }
 
+      {/* CONTENT DIRECT LINK */}
+      {(currentTab === 0 && isShowTabLink) && (<Stack className={classes.content}>
+        <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
+        <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
+
+        <Stack>
+          <Box component='img' src={qrCode} className={classes.imgQrCode} />
+        </Stack>
+
+        <Stack direction='row' alignItems='center' className={classes.inputWrap}>
+          <Stack>
+            <TextField
+              className={classes.inputCopyLink}
+              defaultValue={formLink}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <IconLink className={classes.iconLink} fontSize='small'/>
+                  </InputAdornment>)
+              }}
+              disabled
+            />
+          </Stack>
+
+          <Stack className={classes.actionWrap} width='100%'>
+            <Button
+              size='small'
+              variant='contained'
+              className={`${classes.buttonRedPrimary} heightFitContent`}
+              onClick={(event) => handleButtonCopyClick(event, formLink)}
+            >
+              Copy Link
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>)}
+
       {/* CONTENT SHARE EMAIL */}
-      {(currentTab === 0 && isShowTabEmail) && (
+      {(currentTab === 1 && isShowTabEmail) && (
         <Stack className={classes.content}>
           <Typography variant='subtitle2' className='fontWeight400'>Share on email</Typography>
           <Typography variant='caption' color='text.secondary' fontWeight={600}>Share a direct link to your form via email</Typography>
@@ -264,33 +316,6 @@ const DialogShareLink = (props) => {
         </Stack>
       )}
 
-      {/* CONTENT DIRECT LINK */}
-      {(currentTab === 1 && isShowTabLink) && (<Stack className={classes.content}>
-        <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
-        <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
-
-        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
-          <Stack direction='row' alignItems='center' className={classes.boxLink}>
-            <IconLink className={classes.iconLink} fontSize='small'/>
-
-            <Typography variant='caption' color='text.secondary' noWrap fontWeight={600}>
-              {formLink}
-            </Typography>
-          </Stack>
-
-          <Stack className={classes.actionWrap} width='100%'>
-            <Button
-              size='small'
-              variant='contained'
-              className={`${classes.buttonRedPrimary} heightFitContent`}
-              onClick={(event) => handleButtonCopyClick(event, formLink)}
-            >
-              Copy Link
-            </Button>
-          </Stack>
-        </Stack>
-      </Stack>)}
-
       <Divider className={classes.dividerContent}/>
 
       {/* FOOTER */}
@@ -314,7 +339,8 @@ const DialogShareLink = (props) => {
             disableRipple
             className={classes.buttonQrCode}
             startIcon={<IconQrCode2 />}
-            onClick={() => setIsDialogFormOpen('dialogQrCode')}
+            href={qrCode}
+            download='qrcode.png'
           >QR Code</Button>
         </Stack>
       </Stack>

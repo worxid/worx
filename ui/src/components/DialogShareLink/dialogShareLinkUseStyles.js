@@ -80,20 +80,6 @@ const useStyles = makeStyles((theme) => ({
   dividerContent: {
     margin: '0 24px'
   },
-  boxLink: {
-    border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)}`,
-    padding: '8px 16px',
-    width: '100%',
-    maxWidth: 348,
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: '100%',
-      width: '100%'
-    }
-  },
-  iconLink: {
-    color: theme.palette.text.secondary,
-    marginRight: 12,
-  },
   tabs: {
     minHeight: 39,
     borderBottom: `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
@@ -151,7 +137,30 @@ const useStyles = makeStyles((theme) => ({
       flex: 1,
       width: '100%'
     }
-  }
+  },
+  inputCopyLink: {
+    '& .MuiInputBase-root': {
+      width: 348,
+      height: 38.64,
+    },
+    '& .MuiInputBase-input': {
+      fontSize: 12,
+      fontWeight: 600,
+      color: theme.palette.text.secondary,
+      '&.Mui-disabled': {
+        '-webkit-text-fill-color': theme.palette.text.secondary,
+      }
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)} !important`
+    }
+  },
+  imgQrCode: {
+    width: '100%',
+    maxWidth: 128,
+    display: 'block',
+    margin: '0 auto',
+  },
 }))
 
 export default useStyles

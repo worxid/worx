@@ -79,8 +79,10 @@ const Filters = (props) => {
     <Stack
       direction='row'
       alignItems='center'
-      height='70px'
+      minHeight='70px'
       spacing='20px'
+      flexWrap='wrap'
+      paddingTop='8px'
     >
       {/* FORM FILTER */}
       <Stack
@@ -158,6 +160,7 @@ const Filters = (props) => {
         direction='row'
         alignItems='center'
         spacing='8px'
+        className={classes.deviceFilterWrap}
       >
         {/* TEXT */}
         <Typography

@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: 'none',
     },
   },
+  deviceFilterWrap: {
+    [theme.breakpoints.down('lg')]: {
+      marginLeft: '0 !important'
+    }
+  }
 }))
 
 export default useStyles
