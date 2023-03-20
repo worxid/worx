@@ -154,7 +154,13 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiOutlinedInput-notchedOutline': {
       border: `1.5px solid ${alpha(theme.palette.common.black, 0.08)} !important`
     }
-  }
+  },
+  imgQrCode: {
+    width: '100%',
+    maxWidth: 128,
+    display: 'block',
+    margin: '0 auto',
+  },
 }))
 
 export default useStyles

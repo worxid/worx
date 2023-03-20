@@ -14,6 +14,7 @@ import useAxiosPrivate from 'hooks/useAxiosPrivate'
 // MUIS
 import Autocomplete from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
@@ -55,6 +56,9 @@ import {
   wasRequestNotFound,
 } from 'utilities/validation'
 
+// QR CODE
+import QRCode from 'qrcode'
+
 const a11yProps = (index) => ({
   id: `simple-tab-${index}`,
   'aria-controls': `simple-tabpanel-${index}`,
@@ -78,8 +82,20 @@ const DialogShareLink = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [receivers, setReceivers] = useState([])
   const [formLink, setFormLink] = useState('')
+  const [qrCode, setqrCode] = useState('')
 
   const axiosPrivate = useAxiosPrivate()
+
+  // GENERATE QR
+  const generateQR = async text => {
+    if(!text) return
+    try {
+      const result = await QRCode.toDataURL(text)
+      setqrCode(result)
+    } catch (err) {
+      setqrCode(err)
+    }
+  }
 
   // HANDLE BUTTON SEND CLICK
   const handleButtonSendClick = async () => {
@@ -166,6 +182,7 @@ const DialogShareLink = (props) => {
 
     if (didSuccessfullyCallTheApi(response?.status)) {
       setFormLink(response.data.value.link)
+      generateQR(response.data.value.link)
     }
     else if (!wasRequestCanceled(response?.status) && !wasAccessTokenExpired(response.status) && !wasRequestNotFound(response?.status)) {
       setFormLink('')
@@ -212,7 +229,11 @@ const DialogShareLink = (props) => {
         <Typography variant='subtitle2' className='fontWeight400'>Direct Link</Typography>
         <Typography variant='caption' color='text.secondary' fontWeight={600}>You can share the direct link to your form</Typography>
 
-        <Stack direction='row' alignItems='center' marginTop={'20px'} className={classes.inputWrap}>
+        <Stack>
+          <Box component='img' src={qrCode} className={classes.imgQrCode} />
+        </Stack>
+
+        <Stack direction='row' alignItems='center' className={classes.inputWrap}>
           <Stack>
             <TextField
               className={classes.inputCopyLink}
@@ -318,7 +339,8 @@ const DialogShareLink = (props) => {
             disableRipple
             className={classes.buttonQrCode}
             startIcon={<IconQrCode2 />}
-            onClick={() => setIsDialogFormOpen('dialogQrCode')}
+            href={qrCode}
+            download='qrcode.png'
           >QR Code</Button>
         </Stack>
       </Stack>
