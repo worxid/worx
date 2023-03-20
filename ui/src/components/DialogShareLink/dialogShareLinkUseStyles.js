@@ -141,7 +141,7 @@ const useStyles = makeStyles((theme) => ({
   inputCopyLink: {
     '& .MuiInputBase-root': {
       width: 348,
-      height: 36,
+      height: 38.64,
     },
     '& .MuiInputBase-input': {
       fontSize: 12,
